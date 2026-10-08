@@ -38,3 +38,16 @@ Build arsip harus memakai checkout bersih: `scripts/package_source.py` menolak
 menimpa artefak versi yang sudah ada. Arsip lokal 0.1.2 terdahulu tetap dipertahankan;
 artefak CI dikaitkan dengan commit/run masing-masing dan dapat memuat dokumentasi
 yang lebih baru. Jangan menyalin state atau secret ke checkout untuk build.
+
+## Hasil pertama — 8 Oktober 2026
+
+[Run 37806541495](https://github.com/LuiLuiLui886/vanguard-ztna/actions/runs/37806541495) pada commit `a254f1e` selesai **success**.
+Python 3.10: 54 tes lulus dalam 41,722 detik; Python 3.12: 54 tes lulus dalam
+41,456 detik. Tidak ada failure, error atau skip. Kedua job berhasil menjalankan
+pemeriksaan source, build, checksum, serta upload JUnit dan paket.
+
+Keempat artefak diunduh ke `state/deployment/ci-2026-10-08/artifacts/`. Checksum
+paket diperiksa ulang; arsip source berisi 65 berkas, termasuk workflow, tanpa
+state/secret. JUnit CI ini terpisah dari hasil suite lokal/guest sebelumnya.
+Commit sesudah run yang hanya mencatat hasil memakai `[skip ci]`; tidak ada
+perubahan workflow/kode pada commit catatan tersebut.

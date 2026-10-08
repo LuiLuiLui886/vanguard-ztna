@@ -1,6 +1,6 @@
 # Checkpoint VanGuard — 8 Oktober 2026
 
-Pembaruan **22:58 WIB**. Versi 0.1.2 terpasang dan teruji; observasi selesai PASS.
+Pembaruan **23:12 WIB**. Versi 0.1.2 terpasang dan teruji; observasi selesai PASS.
 Arsip source/wheel/checksum selesai dan terverifikasi. Source serta dokumentasi
 sudah dipush ke GitHub **private**, branch `main`; detail di bawah.
 
@@ -76,8 +76,15 @@ Commit implementasi: `242dffd`; backup Git sebelum publikasi tersedia di
 `state/backups/final-source-2026-10-08-225332/`. State, secret, database,
 private key dan disk VM tetap lokal. Jangan mengulang enrollment/deployment.
 
-## Progres CI (8 Oktober, 23:11 WIB)
+## Progres CI (8 Oktober, 23:12 WIB)
 
-Workflow dua versi Python dan build arsip sudah divalidasi lokal; run GitHub
-akan diperiksa setelah push. Status saat ini BELUM TERVERIFIKASI di runner.
+**COMPLETE/PASS** — [run 37806541495](https://github.com/LuiLuiLui886/vanguard-ztna/actions/runs/37806541495) pada commit `a254f1e`.
+Ubuntu 22.04/Python 3.10 dan 3.12 masing-masing 54 tes PASS, nol failure/error/skip.
+Ruff, pip check, sintaks shell, build wheel/source dan checksum PASS di kedua job.
+Artefak diunduh dan checksum diperiksa ulang; source memuat 65 berkas termasuk CI.
 Panduan: [CI.md](CI.md). Bukti lokal: `state/deployment/ci-2026-10-08/`.
+
+Kelima VM lulus preflight dan health ulang sebelum pekerjaan CI. Tidak ada
+perubahan kode aplikasi/layanan/topologi; versi lab tetap 0.1.2. Pekerjaan lanjut
+yang memerlukan operator: konfirmasi TOTP di HP/login pribadi dan jadwal uji
+reboot workstation. CI berikutnya berjalan otomatis pada push kode/PR.

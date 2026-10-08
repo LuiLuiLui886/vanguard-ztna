@@ -42,6 +42,7 @@ admission dihapus dari skrip operasional; unit test adapter memori tetap tersedi
 | Pemeriksaan | Hasil dan bukti |
 |---|---|
 | Suite lokal Python 3.12 | 54 PASS, `docs/test-results.xml` |
+| GitHub CI Ubuntu 22.04 | 54 PASS Python 3.10 + 54 PASS Python 3.12; build/checksum PASS, [bukti CI](CI.md) |
 | Suite guest Ubuntu 22.04/Python 3.10 | 54 PASS, `docs/guest-test-results.xml` |
 | Kualitas source | Ruff, pip check dan sintaks shell PASS |
 | Paket terpasang | Lima VM versi 0.1.2, SHA-256 source cocok, `installed-manifest.json` |
