@@ -1,0 +1,7 @@
+{% extends 'base.html' %}{% block content %}
+<section class="login"><p class="eyebrow">ADMIN ACCESS</p><h1>Masuk ke VanGuard</h1><p>Gunakan akun administrator dan kode authenticator.</p>
+<form method="post"><input type="hidden" name="csrf" value="{{ session.csrf }}">
+<label>Username<input name="username" required autocomplete="username" maxlength="64"></label>
+<label>Password<input name="password" type="password" required autocomplete="current-password"></label>
+<label>Kode TOTP<input name="totp" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" required autocomplete="one-time-code"></label>
+<button class="primary">Masuk</button></form></section>{% endblock %}

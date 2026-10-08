@@ -1,0 +1,18 @@
+[Unit]
+Description=VanGuard admitted WireGuard client
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=root
+EnvironmentFile=/etc/vanguard/client.env
+ExecStart=/opt/vanguard/venv/bin/vanguard-client connect --server-key ${VANGUARD_SERVER_WG_PUBLIC_KEY}
+Restart=on-failure
+RestartSec=10
+# Let the Python SIGTERM handler finish its wg-quick teardown subprocess.
+KillMode=mixed
+TimeoutStopSec=40
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

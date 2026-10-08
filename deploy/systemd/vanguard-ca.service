@@ -1,0 +1,22 @@
+[Unit]
+Description=VanGuard OpenSSL CA API
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=vanguard
+Group=vanguard
+EnvironmentFile=/etc/vanguard/ca.env
+WorkingDirectory=/var/lib/vanguard/ca
+ExecStart=/opt/vanguard/venv/bin/gunicorn --workers 1 --threads 4 --timeout 120 --bind 192.168.100.10:8080 --certfile /etc/vanguard/tls.crt --keyfile /etc/vanguard/tls.key vanguard.ca:create_app()
+Restart=on-failure
+RestartSec=5
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/vanguard/ca
+
+[Install]
+WantedBy=multi-user.target

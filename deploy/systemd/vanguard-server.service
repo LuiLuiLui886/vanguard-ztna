@@ -1,0 +1,23 @@
+[Unit]
+Description=VanGuard certificate admission API
+After=network-online.target wg-quick@wg0.service vanguard-daemon.service
+Wants=network-online.target
+BindsTo=wg-quick@wg0.service vanguard-daemon.service
+
+[Service]
+User=root
+EnvironmentFile=/etc/vanguard/server.env
+WorkingDirectory=/var/lib/vanguard/server
+ExecStart=/opt/vanguard/venv/bin/gunicorn --workers 1 --threads 4 --timeout 120 --bind 192.168.100.20:8081 --certfile /etc/vanguard/tls.crt --keyfile /etc/vanguard/tls.key vanguard.server:create_app()
+Restart=on-failure
+RestartSec=5
+UMask=0077
+CapabilityBoundingSet=CAP_NET_ADMIN
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/vanguard/server
+
+[Install]
+WantedBy=multi-user.target

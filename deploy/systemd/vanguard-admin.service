@@ -1,0 +1,22 @@
+[Unit]
+Description=VanGuard administrator dashboard
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=vanguard
+Group=vanguard
+EnvironmentFile=/etc/vanguard/admin.env
+WorkingDirectory=/var/lib/vanguard/admin
+ExecStart=/opt/vanguard/venv/bin/gunicorn --workers 1 --threads 4 --timeout 120 --bind 192.168.100.40:5000 --certfile /etc/vanguard/tls.crt --keyfile /etc/vanguard/tls.key vanguard.admin:create_app()
+Restart=on-failure
+RestartSec=5
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/vanguard/admin
+
+[Install]
+WantedBy=multi-user.target

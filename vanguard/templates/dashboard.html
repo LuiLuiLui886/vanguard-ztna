@@ -1,0 +1,18 @@
+{% extends 'base.html' %}{% block content %}
+<p class="eyebrow">ACCESS CONTROL</p><h1>Perangkat & admission</h1>
+<p>Registrasi menyiapkan identitas. Akses tunnel aktif setelah client lolos admission.</p>
+{% if error %}<p class="notice error">Status server tidak tersedia: {{ error }}. Status peer belum dapat dipastikan.</p>{% endif %}
+<section><h2>Registrasi perangkat</h2><form method="post" action="/devices" enctype="multipart/form-data">
+<input type="hidden" name="csrf" value="{{ session.csrf }}"><label>Request dari aplikasi client<input type="file" name="enrollment" accept=".json" required></label>
+<button class="primary">Terbitkan sertifikat & daftarkan binding</button></form></section>
+<section><h2>Perangkat terdaftar</h2><div class="table-scroll"><table><thead><tr><th>Perangkat</th><th>Workflow</th><th>Tunnel</th><th>Peer</th><th>Tindakan</th></tr></thead><tbody>
+{% for device in devices %}{% set peer = live.get(device.device_id) %}<tr><td><strong>{{ device.device_id }}</strong><small>Serial {{ device.serial or '—' }}</small></td>
+<td>{{ device.status }}{% if device.last_error %}<small class="error">{{ device.last_error }}</small>{% endif %}</td>
+<td>{{ peer.tunnel_ip if peer else '—' }}</td><td>{{ ('Aktif' if peer.live else 'Tidak aktif') if peer else 'Tidak tersedia' }}</td>
+<td>{% if device.certificate %}<a href="/devices/{{ device.device_id }}/certificate">Unduh sertifikat</a>{% endif %}
+{% if device.status not in ['registered', 'revoked'] %}<form action="/devices/{{ device.device_id }}/retry" method="post"><input type="hidden" name="csrf" value="{{ session.csrf }}"><button>Ulangi workflow</button></form>{% endif %}
+{% if device.certificate and device.status != 'revoked' %}<form action="/devices/{{ device.device_id }}/revoke" method="post"><input type="hidden" name="csrf" value="{{ session.csrf }}"><button class="danger">Cabut akses & sertifikat</button></form>{% endif %}</td></tr>
+{% else %}<tr><td colspan="5">Belum ada perangkat. Unggah request.json untuk memulai.</td></tr>{% endfor %}</tbody></table></div></section>
+<section><h2>Audit terbaru</h2><div class="table-scroll"><table><thead><tr><th>Waktu (Unix)</th><th>Peristiwa</th><th>Perangkat</th><th>Detail</th></tr></thead><tbody>
+{% for event in events %}<tr><td>{{ event.timestamp|int }}</td><td>{{ event.event }}</td><td>{{ event.device_id or '—' }}</td><td>{{ event.detail }}</td></tr>
+{% else %}<tr><td colspan="4">Belum ada peristiwa yang tersedia.</td></tr>{% endfor %}</tbody></table></div></section>{% endblock %}

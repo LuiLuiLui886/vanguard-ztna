@@ -1,0 +1,7 @@
+<!doctype html>
+<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VanGuard · Zero Trust Access</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
+<body><header><a href="/">VanGuard</a><span>Certificate admission · WireGuard</span>
+{% if session.get('token') %}<form action="/logout" method="post"><input type="hidden" name="csrf" value="{{ session.csrf }}"><button>Keluar</button></form>{% endif %}</header>
+<main>{% for category, message in get_flashed_messages(with_categories=true) %}<p class="notice {{ category }}">{{ message }}</p>{% endfor %}
+{% block content %}{% endblock %}</main><footer>Sistem VanGuard · Lab ZTNA lima node</footer></body></html>
