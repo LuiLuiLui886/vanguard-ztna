@@ -21,6 +21,7 @@ def main():
                         (ROOT / "pyproject.toml").read_text(), re.MULTILINE).group(1)
     files = [ROOT / name for name in TOP_LEVEL]
     files.append(ROOT / "deploy/inventory.example.json")
+    files.append(ROOT / ".github/workflows/ci.yml")
     for directory in DIRECTORIES:
         files.extend(p for p in (ROOT / directory).rglob("*")
                      if p.is_file() and not p.is_symlink() and p.suffix in SUFFIXES

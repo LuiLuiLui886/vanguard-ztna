@@ -75,3 +75,9 @@ mengembalikan `isPrivate: true`. Catatan akhir dipush sebagai commit berikutnya.
 Commit implementasi: `242dffd`; backup Git sebelum publikasi tersedia di
 `state/backups/final-source-2026-10-08-225332/`. State, secret, database,
 private key dan disk VM tetap lokal. Jangan mengulang enrollment/deployment.
+
+## Progres CI (8 Oktober, 23:11 WIB)
+
+Workflow dua versi Python dan build arsip sudah divalidasi lokal; run GitHub
+akan diperiksa setelah push. Status saat ini BELUM TERVERIFIKASI di runner.
+Panduan: [CI.md](CI.md). Bukti lokal: `state/deployment/ci-2026-10-08/`.

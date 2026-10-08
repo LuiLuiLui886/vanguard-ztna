@@ -49,6 +49,7 @@ dalam `deploy/`. Baca:
 - [Jurnal perubahan 8 Oktober 2026](docs/PROGRESS_2026-10-08.md)
 - [Aktivasi admin dan authenticator](docs/AKTIVASI_ADMIN.md)
 - [Urutan demo Tugas Akhir](docs/DEMO_TA.md)
+- [Pengujian otomatis dan artefak GitHub](docs/CI.md)
 
 Uji lokal (tidak membutuhkan root atau mengubah jaringan host):
 
