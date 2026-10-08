@@ -1,6 +1,6 @@
 # Lanjutkan proyek VanGuard
 
-Status diperbarui **8 Oktober 2026, 22:55 WIB**. Proyek: `/home/lui/vanguard`.
+Status diperbarui **8 Oktober 2026, 22:58 WIB**. Proyek: `/home/lui/vanguard`.
 Selalu baca `AGENTS.md`, `VANGUARD_CONTEXT.md`, [checkpoint](docs/CHECKPOINT.md),
 dan [jurnal terbaru](docs/PROGRESS_2026-10-08.md) sebelum mengubah sesuatu.
 
@@ -41,13 +41,12 @@ backing image, CA, private key, atau identitas utama yang dibuat ulang.
    `.venv/bin/python scripts/health_lab.py state/lab/inventory.json --state state/deployment/health-run-baru`.
 3. Jika observasi masih RUNNING setelah prosesnya terputus, periksa sampel terakhir;
    jalankan observasi baru dengan direktori baru. Jangan menyebutnya lulus.
-4. Selesaikan publikasi GitHub setelah autentikasi terminal tersedia. Tidak perlu
-   mengulang deployment, enrollment, pencabutan, atau tes lease yang sudah terbukti.
+4. Source dan dokumentasi telah dipush ke GitHub private (tautan di bawah).
+   Tidak perlu mengulang deployment, enrollment, pencabutan, atau tes lease.
 5. Catat rencana sebelum setiap kelompok perubahan dan hasil sesudahnya. Perbarui
-   checkpoint sebelum berhenti. Git lokal memakai branch `main`;
-   pembuatan repo/push GitHub privat menunggu autentikasi device operator.
-   Gunakan CLI lokal `state/tooling/github/cli/usr/bin/gh`; ulangi
-   `auth login --hostname github.com --git-protocol https --web` jika kode expired.
+   checkpoint sebelum berhenti. Git lokal memakai branch `main` dan melacak
+   `origin/main`. CLI lokal: `state/tooling/github/cli/usr/bin/gh`.
+   Simpan perubahan berikutnya dengan commit dan push setelah validasi.
 
 ## Bukti dan backup
 
@@ -68,8 +67,9 @@ workstation belum diuji dalam sesi ini. Gunakan [panduan demo](docs/DEMO_TA.md).
 
 ## Status penyimpanan Git
 
-Commit implementasi lokal: `242dffd`; backup Git terverifikasi berada di
-`state/backups/final-source-2026-10-08-225332/`. Repo GitHub belum dibuat dan
-belum ada push: menunggu autentikasi device operator. Setelah login, periksa
-akun, buat repo privat `vanguard-ztna`, push `main`, verifikasi SHA remote,
-lalu catat URL/hasil. Jangan mengulang enrollment atau deployment.
+Repository **private**: [https://github.com/LuiLuiLui886/vanguard-ztna](https://github.com/LuiLuiLui886/vanguard-ztna), branch `main`, remote `origin`.
+Push pertama terverifikasi: `19cf0cb`; HEAD lokal/remote sama dan GitHub
+mengembalikan `isPrivate: true`. Catatan akhir dipush sebagai commit berikutnya.
+Commit implementasi: `242dffd`; backup Git sebelum publikasi tersedia di
+`state/backups/final-source-2026-10-08-225332/`. State, secret, database,
+private key dan disk VM tetap lokal. Jangan mengulang enrollment/deployment.

@@ -1,8 +1,8 @@
 # Checkpoint VanGuard — 8 Oktober 2026
 
-Pembaruan **22:55 WIB**. Versi 0.1.2 terpasang dan teruji; observasi selesai PASS.
-Arsip source/wheel/checksum selesai dan terverifikasi. Git lokal branch `main`
-tersedia; pembuatan repo/push GitHub menunggu autentikasi device oleh operator.
+Pembaruan **22:58 WIB**. Versi 0.1.2 terpasang dan teruji; observasi selesai PASS.
+Arsip source/wheel/checksum selesai dan terverifikasi. Source serta dokumentasi
+sudah dipush ke GitHub **private**, branch `main`; detail di bawah.
 
 ## Keadaan terverifikasi
 
@@ -36,8 +36,8 @@ yang diganti. Kernel/source WireGuard tidak diubah.
 ## Titik lanjut yang konkret
 
 1. Observasi `state/deployment/resume-2026-10-08-2145/stability/health.json` COMPLETE.
-2. Selesaikan autentikasi GitHub terminal, repo privat dan push sesuai
-   [jurnal](PROGRESS_2026-10-08.md). Jangan unggah state atau backup rahasia.
+2. Publikasi GitHub selesai; lanjutkan kebutuhan TA/demonstrasi melalui
+   [panduan demo](DEMO_TA.md). Jangan unggah state atau backup rahasia.
 3. TOTP di HP/login pribadi masih menunggu konfirmasi operator. Panduan:
    [AKTIVASI_ADMIN.md](AKTIVASI_ADMIN.md). Reboot workstation belum diuji.
 
@@ -69,8 +69,9 @@ di perangkat lain. Jangan memulihkan CA index/CRL lama untuk rollback paket.
 
 ## Status penyimpanan Git
 
-Commit implementasi lokal: `242dffd`; backup Git terverifikasi berada di
-`state/backups/final-source-2026-10-08-225332/`. Repo GitHub belum dibuat dan
-belum ada push: menunggu autentikasi device operator. Setelah login, periksa
-akun, buat repo privat `vanguard-ztna`, push `main`, verifikasi SHA remote,
-lalu catat URL/hasil. Jangan mengulang enrollment atau deployment.
+Repository **private**: [https://github.com/LuiLuiLui886/vanguard-ztna](https://github.com/LuiLuiLui886/vanguard-ztna), branch `main`, remote `origin`.
+Push pertama terverifikasi: `19cf0cb`; HEAD lokal/remote sama dan GitHub
+mengembalikan `isPrivate: true`. Catatan akhir dipush sebagai commit berikutnya.
+Commit implementasi: `242dffd`; backup Git sebelum publikasi tersedia di
+`state/backups/final-source-2026-10-08-225332/`. State, secret, database,
+private key dan disk VM tetap lokal. Jangan mengulang enrollment/deployment.
