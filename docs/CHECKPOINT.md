@@ -1,6 +1,6 @@
 # Checkpoint VanGuard — 8 Oktober 2026
 
-Pembaruan **22:53 WIB**. Versi 0.1.2 terpasang dan teruji; observasi selesai PASS.
+Pembaruan **22:55 WIB**. Versi 0.1.2 terpasang dan teruji; observasi selesai PASS.
 Arsip source/wheel/checksum selesai dan terverifikasi. Git lokal branch `main`
 tersedia; pembuatan repo/push GitHub menunggu autentikasi device oleh operator.
 
@@ -66,3 +66,11 @@ dashboard. Jaringan libvirt autostart.
 
 Backup mencakup source dan state aplikasi, bukan snapshot disk VM atau backup
 di perangkat lain. Jangan memulihkan CA index/CRL lama untuk rollback paket.
+
+## Status penyimpanan Git
+
+Commit implementasi lokal: `242dffd`; backup Git terverifikasi berada di
+`state/backups/final-source-2026-10-08-225332/`. Repo GitHub belum dibuat dan
+belum ada push: menunggu autentikasi device operator. Setelah login, periksa
+akun, buat repo privat `vanguard-ztna`, push `main`, verifikasi SHA remote,
+lalu catat URL/hasil. Jangan mengulang enrollment atau deployment.

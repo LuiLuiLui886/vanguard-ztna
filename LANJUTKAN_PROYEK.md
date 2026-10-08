@@ -1,6 +1,6 @@
 # Lanjutkan proyek VanGuard
 
-Status diperbarui **8 Oktober 2026, 22:53 WIB**. Proyek: `/home/lui/vanguard`.
+Status diperbarui **8 Oktober 2026, 22:55 WIB**. Proyek: `/home/lui/vanguard`.
 Selalu baca `AGENTS.md`, `VANGUARD_CONTEXT.md`, [checkpoint](docs/CHECKPOINT.md),
 dan [jurnal terbaru](docs/PROGRESS_2026-10-08.md) sebelum mengubah sesuatu.
 
@@ -65,3 +65,11 @@ disk VM. Autostart guest pada boot host tetap nonaktif; jaringan libvirt autosta
 
 Langkah operator yang belum terkonfirmasi: TOTP di HP dan login dashboard. Reboot
 workstation belum diuji dalam sesi ini. Gunakan [panduan demo](docs/DEMO_TA.md).
+
+## Status penyimpanan Git
+
+Commit implementasi lokal: `242dffd`; backup Git terverifikasi berada di
+`state/backups/final-source-2026-10-08-225332/`. Repo GitHub belum dibuat dan
+belum ada push: menunggu autentikasi device operator. Setelah login, periksa
+akun, buat repo privat `vanguard-ztna`, push `main`, verifikasi SHA remote,
+lalu catat URL/hasil. Jangan mengulang enrollment atau deployment.
