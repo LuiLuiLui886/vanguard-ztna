@@ -1,5 +1,10 @@
 # Lanjutkan proyek VanGuard
 
+> **Aktif 13:46 WIB:** S-03 3/3 PASS, suite lokal 90 PASS, pilot S-04 PASS;
+> seri S-04 10 pengulangan berjalan. Catatan tahap, kegagalan pilot dan pemulihan
+> ada di jurnal 9 Oktober serta `state/deployment/security-2026-10-09/`.
+> Jangan menyimpulkan seri S-04 selesai sebelum JSON menyatakan COMPLETE.
+
 Status **9 Oktober 2026**: tahap **0.1.3 selesai dan terpasang pada lima VM**.
 Akun karyawan untuk VPN dan metadata dashboard sudah tersedia. Skenario S-01
 dengan kredensial karyawan valid pada perangkat attacker **PASS**: login akun

@@ -1,5 +1,12 @@
 # Checkpoint VanGuard — 9 Oktober 2026
 
+> **Pekerjaan aktif 13:46 WIB:** S-03 3/3 PASS, suite lokal 90 PASS,
+> pilot S-04 valid PASS setelah satu kegagalan instrumentasi yang dibersihkan.
+> Seri S-04 10 pengulangan berjalan pada `state/deployment/security-2026-10-09/series/`.
+> Lima VM sudah dinyalakan kembali setelah ditemukan mati pada resume 13:42.
+> Lihat jurnal terbaru untuk bukti gagal/cleanup dan langkah pemulihan. Rilis
+> aplikasi tetap 0.1.3; jangan menganggap seri pengukuran yang RUNNING selesai.
+
 **Tahap 0.1.3 selesai:** akun karyawan dan metadata dashboard terpasang pada lima
 VM; S-01 live lulus. Source `0c56374` telah dipush ke
 [repository private](https://github.com/LuiLuiLui886/vanguard-ztna).
