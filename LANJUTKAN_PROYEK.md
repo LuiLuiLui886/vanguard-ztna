@@ -1,5 +1,10 @@
 # Lanjutkan proyek VanGuard
 
+> **Pekerjaan aktif 9 Oktober:** selesaikan metadata dashboard dan akun karyawan
+> versi 0.1.3 sesuai keputusan S-01. Source lokal belum commit/deploy; jangan
+> menganggap semua hasil 0.1.2 berlaku pada perubahan baru.
+> Rencana dan titik interupsi: [jurnal terbaru](docs/PROGRESS_2026-10-09.md).
+
 Status diperbarui **8 Oktober 2026, 23:12 WIB**. Proyek: `/home/lui/vanguard`.
 Selalu baca `AGENTS.md`, `VANGUARD_CONTEXT.md`, [checkpoint](docs/CHECKPOINT.md),
 dan [jurnal terbaru](docs/PROGRESS_2026-10-08.md) sebelum mengubah sesuatu.

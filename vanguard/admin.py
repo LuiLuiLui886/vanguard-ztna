@@ -27,6 +27,22 @@ from .common import (
 )
 from .pki import check_csr
 
+DEVICE_METADATA = {"display_name": 100, "department": 80, "owner": 100, "platform": 80}
+
+
+def device_metadata(value):
+    if not isinstance(value, dict):
+        raise Rejected("Data perangkat harus berupa objek")
+    result = {}
+    for field, maximum in DEVICE_METADATA.items():
+        text = value.get(field)
+        if not isinstance(text, str) or not text.strip() or len(text) > maximum:
+            raise Rejected(f"Data {field} wajib diisi, maksimal {maximum} karakter")
+        if any(ord(char) < 32 or ord(char) == 127 for char in text):
+            raise Rejected(f"Data {field} mengandung karakter kontrol")
+        result[field] = text.strip()
+    return result
+
 
 class Dashboard:
     def __init__(self, directory, ca, server):
@@ -84,7 +100,7 @@ class Dashboard:
             db.execute("INSERT INTO sessions VALUES (?,?,?)", (token, username, at + 1800))
             return token
 
-    def register(self, body):
+    def register(self, body, metadata=None):
         if not isinstance(body, dict) or not all(
             isinstance(body.get(k), str) for k in ("device_id", "csr", "wg_public_key", "tunnel_ip")
         ):
@@ -93,6 +109,13 @@ class Dashboard:
         wg_key(body["wg_public_key"])
         tunnel_ip(body["tunnel_ip"])
         check_csr(body["csr"], name)
+        body = dict(body)
+        if body.get('employee_username') is not None:
+            body['employee_username'] = device_name(body['employee_username'])
+        # Legacy client requests remain valid; the interactive form supplies metadata.
+        supplied = metadata if metadata is not None else body.get("metadata")
+        if supplied is not None:
+            body["metadata"] = device_metadata(supplied)
         with locked(self.lock):
             try:
                 with database(self.db) as db:
@@ -105,6 +128,28 @@ class Dashboard:
                     "Device already exists; use retry on the existing workflow", 409
                 ) from exc
             self._enroll(name)
+
+    def update_metadata(self, name, metadata):
+        metadata = device_metadata(metadata)
+        with locked(self.lock), database(self.db) as db:
+            row = db.execute("SELECT request FROM devices WHERE device_id=?", (name,)).fetchone()
+            if not row:
+                raise Rejected("Unknown device", 404)
+            body = json.loads(row["request"])
+            body["metadata"] = metadata
+            db.execute("UPDATE devices SET request=? WHERE device_id=?",
+                       (json.dumps(body, sort_keys=True), name))
+
+    def bind_employee(self, name, username):
+        username = device_name(username)
+        with locked(self.lock):
+            row = self.device(name)
+            self.server.call('POST', f'/api/devices/{name}/employee', {'username': username})
+            body = json.loads(row['request'])
+            body['employee_username'] = username
+            with database(self.db) as db:
+                db.execute('UPDATE devices SET request=? WHERE device_id=?',
+                           (json.dumps(body, sort_keys=True), name))
 
     def retry(self, name):
         with locked(self.lock):
@@ -146,6 +191,9 @@ class Dashboard:
                     "tunnel_ip": body["tunnel_ip"],
                 },
             )
+            if body.get('employee_username'):
+                self.server.call('POST', f'/api/devices/{name}/employee',
+                                 {'username': device_name(body['employee_username'])})
             with database(self.db) as db:
                 db.execute(
                     "UPDATE devices SET status='registered',last_error=NULL WHERE device_id=?",
@@ -275,17 +323,22 @@ def create_app(config=None):
     @login_required
     def index():
         with database(dashboard.db) as db:
-            devices = db.execute("SELECT * FROM devices ORDER BY device_id").fetchall()
-        live, events, error = {}, [], None
+            devices = [dict(row) for row in db.execute("SELECT * FROM devices ORDER BY device_id")]
+        for device in devices:
+            device["metadata"] = json.loads(device["request"]).get("metadata", {})
+            device['employee_username'] = json.loads(device['request']).get('employee_username')
+        live, events, error, employees = {}, [], None, []
         try:
             live = {
                 d["device_id"]: d for d in dashboard.server.call("GET", "/api/devices")["devices"]
             }
             events = dashboard.server.call("GET", "/api/audit")["events"][:25]
+            employees = dashboard.server.call('GET', '/api/employees')['employees']
         except Rejected as exc:
             error = str(exc)
         return render_template(
-            "dashboard.html", devices=devices, live=live, events=events, error=error
+            "dashboard.html", devices=devices, live=live, events=events, error=error,
+            employees=employees,
         )
 
     @app.post("/devices")
@@ -299,18 +352,50 @@ def create_app(config=None):
                 body = json.load(uploaded)
             except (ValueError, UnicodeDecodeError) as exc:
                 raise Rejected("Invalid enrollment JSON") from exc
-            dashboard.register(body)
+            if not isinstance(body, dict):
+                raise Rejected("Invalid enrollment JSON")
+            body['employee_username'] = device_name(request.form.get('employee_username'))
+            dashboard.register(body, {field: request.form.get(field) for field in DEVICE_METADATA})
             flash("Sertifikat diterbitkan dan binding terdaftar. Client dapat memulai admission.")
         except Rejected as exc:
             flash(str(exc), "error")
         return redirect(url_for("index"))
+
+    @app.post('/employees')
+    @login_required
+    def create_employee():
+        try:
+            dashboard.server.call('POST', '/api/employees', {
+                'username': device_name(request.form.get('username')),
+                'password': request.form.get('password', ''),
+            })
+            flash('Akun karyawan dibuat. Daftarkan perangkat untuk akun tersebut.')
+        except Rejected as exc:
+            flash(str(exc), 'error')
+        return redirect(url_for('index'))
+
+    @app.post('/employees/<username>/disable')
+    @login_required
+    def disable_employee(username):
+        try:
+            dashboard.server.call('POST', f'/api/employees/{device_name(username)}/disable', {})
+            flash('Akun karyawan dinonaktifkan dan akses perangkat dicabut.')
+        except Rejected as exc:
+            flash(str(exc), 'error')
+        return redirect(url_for('index'))
 
     @app.post("/devices/<name>/<action>")
     @login_required
     def action(name, action):
         device_name(name)
         try:
-            if action == "revoke":
+            if action == "metadata":
+                dashboard.update_metadata(
+                    name, {field: request.form.get(field) for field in DEVICE_METADATA}
+                )
+            elif action == 'employee':
+                dashboard.bind_employee(name, request.form.get('username'))
+            elif action == "revoke":
                 dashboard.revoke(name)
             elif action == "retry":
                 dashboard.retry(name)

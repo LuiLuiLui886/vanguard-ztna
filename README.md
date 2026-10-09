@@ -50,6 +50,8 @@ dalam `deploy/`. Baca:
 - [Aktivasi admin dan authenticator](docs/AKTIVASI_ADMIN.md)
 - [Urutan demo Tugas Akhir](docs/DEMO_TA.md)
 - [Pengujian otomatis dan artefak GitHub](docs/CI.md)
+- [Akun karyawan dan pengujian S-01](docs/EMPLOYEE_ACCESS.md)
+- [Kesesuaian implementasi dengan proposal](docs/PROPOSAL_ALIGNMENT.md)
 
 Uji lokal (tidak membutuhkan root atau mengubah jaringan host):
 

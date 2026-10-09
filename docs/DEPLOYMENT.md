@@ -230,8 +230,13 @@ state secara privat. CA: seluruh `/var/lib/vanguard/ca`; server: SQLite registry
 SQLite users/sessions/workflows; client: identitas dan sertifikat; semua VM: config yang relevan
 di `/etc/vanguard`, serta `/etc/wireguard` pada server. Pertahankan owner dan permission.
 
-Installer tidak melakukan migrasi database antar versi. Versi awal ini membuat schema jika
-belum ada. Jangan menjalankan versi berbeda terhadap database yang tidak kompatibel.
+Versi 0.1.3 menambahkan tabel akun/sesi/binding karyawan melalui inisialisasi schema;
+data registry/CA lama dipertahankan. Perangkat lama tanpa binding akun gagal admission.
+Sebelum menyalakan client, buat akun karyawan eksplisit, tautkan perangkat dan login
+sesuai [EMPLOYEE_ACCESS.md](EMPLOYEE_ACCESS.md). Jangan menjalankan versi berbeda
+terhadap database yang tidak kompatibel. Rollback 0.1.2 juga menghilangkan kewajiban
+login karyawan: bukan recovery transparan; pertahankan layanan berhenti jika
+semantik otorisasi versi lama tidak boleh kembali berlaku.
 Rollback paket/config tidak boleh mengembalikan index CA/CRL lama yang menghidupkan kembali
 sertifikat dicabut. Hentikan admission dan pulihkan state yang konsisten sebelum membuka akses.
 

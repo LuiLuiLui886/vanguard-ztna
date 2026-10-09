@@ -45,27 +45,25 @@ def main():
         request = json.loads(v.ssh("client", "sudo cat " + directory + "/request.json"))
         request["tunnel_ip"] = "10.8.0.3"
         key = request["wg_public_key"]
-        certificate = v.dashboard(
-            "import json,sys\nb=json.load(sys.stdin)\nd.register(b)\n"
-            "sys.stdout.write(d.device(b['device_id'])['certificate'])\n",
-            json.dumps(request).encode(),
-        )
+        certificate = v.register_identity(request, directory)
         registered = True
         v.write("client", directory + "/device.crt", certificate)
         assert key not in v.ssh("server", "sudo wg show wg0 peers").decode()
         record("registration", "Disposable identity registered at 10.8.0.3 without a live peer")
         report["current_step"] = "admission_proof_replay"
         save()
-        program = """import base64,sys,requests
+        program = """import base64,json,sys,requests
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import ec
 from vanguard.client import identity
 from vanguard.pki import fingerprint,proof_message
-pem,cert,key,public=identity(sys.stdin.read())
+directory=sys.stdin.read()
+pem,cert,key,public=identity(directory)
+with open(directory+'/employee-session.json') as f: session=json.load(f)['session_token']
 def post(path,body):
  return requests.post('https://192.168.100.20:8081'+path,json=body,
   verify='/etc/vanguard/root.crt',timeout=15)
-body={'certificate':pem,'wg_public_key':public}
+body={'certificate':pem,'wg_public_key':public,'employee_session':session}
 assert post('/api/challenge',{**body,'wg_public_key':base64.b64encode(b'x'*32).decode()}).status_code==403
 c=post('/api/challenge',body); assert c.status_code==200; c=c.json()
 bad={**body,'challenge_id':c['challenge_id'],'signature':base64.b64encode(b'invalid').decode()}
@@ -118,7 +116,7 @@ else: raise RuntimeError('Revoked identity admitted')
         save()
         try:
             if registered:
-                v.dashboard("d.revoke(" + repr(name) + ")\n")
+                v.cleanup_identity(name)
                 record("cleanup", "Disposable identity revoked and disabled; main identity unchanged")
         except BaseException as exc:
             report["status"] = "FAIL"

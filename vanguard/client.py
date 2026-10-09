@@ -1,8 +1,10 @@
 import argparse
 import base64
+import getpass
 import json
 import os
 import signal
+import tempfile
 import time
 from pathlib import Path
 
@@ -82,7 +84,13 @@ def identity(directory):
 
 def admit(directory, remote):
     pem, cert, key, public = identity(directory)
-    challenge = remote.call("POST", "/api/challenge", {"certificate": pem, "wg_public_key": public})
+    saved_session = json.loads((Path(directory) / 'employee-session.json').read_text())
+    if saved_session['expires_at'] <= time.time():
+        raise Rejected("Employee session expired; run client login again")
+    employee_session = saved_session['session_token']
+    challenge = remote.call("POST", "/api/challenge", {
+        "certificate": pem, "wg_public_key": public, "employee_session": employee_session,
+    })
     message = proof_message(
         challenge["challenge_id"],
         challenge["nonce"],
@@ -101,8 +109,25 @@ def admit(directory, remote):
             "wg_public_key": public,
             "challenge_id": challenge["challenge_id"],
             "signature": signature,
+            "employee_session": employee_session,
         },
     )
+
+
+def login_employee(directory, remote, username, password):
+    directory = private_dir(directory)
+    result = remote.call('POST', '/api/employee/login', {'username': username, 'password': password})
+    target = directory / 'employee-session.json'
+    with tempfile.NamedTemporaryFile(mode='w', dir=directory, delete=False) as out:
+        temporary = Path(out.name)
+        try:
+            json.dump(result, out)
+            out.flush()
+            os.fsync(out.fileno())
+            temporary.replace(target)
+        finally:
+            temporary.unlink(missing_ok=True)
+    return {'username': result['username'], 'expires_at': result['expires_at']}
 
 
 def connect(directory, remote, server_key):
@@ -145,6 +170,8 @@ def main():
     init = sub.add_parser("init")
     init.add_argument("--device-id", default="vm-client")
     sub.add_parser("admit")
+    login = sub.add_parser('login')
+    login.add_argument('--username', required=True)
     connection = sub.add_parser("connect")
     connection.add_argument("--server-key", required=True)
     args = parser.parse_args()
@@ -154,7 +181,11 @@ def main():
             print(initialize(args.directory, args.device_id))
         else:
             remote = Remote(args.server, args.trust)
-            if args.command == "admit":
+            if args.command == 'login':
+                result = login_employee(args.directory, remote, args.username,
+                                        getpass.getpass('Employee password: '))
+                print(json.dumps(result, indent=2))
+            elif args.command == "admit":
                 print(json.dumps(admit(args.directory, remote), indent=2))
             else:
 

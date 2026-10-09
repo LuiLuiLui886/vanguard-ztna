@@ -12,6 +12,9 @@ from vanguard.admin import Dashboard, create_app
 from vanguard.ca import create_app as ca_app
 from vanguard.common import Rejected, database
 
+METADATA = {"display_name": "Laptop Produksi", "department": "Produksi",
+            "owner": "Karyawan Uji", "platform": "Ubuntu 22.04"}
+
 
 @pytest.fixture
 def dashboard(lab, tmp_path):
@@ -92,10 +95,13 @@ def test_dashboard_enrollment_revocation_and_logout(lab, dashboard):
         data={
             "csrf": token,
             "enrollment": (io.BytesIO(json.dumps(lab["request"]).encode()), "request.json"),
+            **METADATA,
+            'employee_username': 'employee-test',
         },
     )
     assert response.status_code == 302
     assert dash.device("vm-client")["status"] == "registered"
+    assert json.loads(dash.device("vm-client")["request"])["metadata"] == METADATA
     assert lab["wg"].additions == []
     assert (
         client.get("/devices/vm-client/certificate", base_url="https://localhost").status_code
@@ -146,3 +152,91 @@ def test_ca_revocation_still_attempted_when_server_offline(lab, dashboard):
 
     crl = validate_crl(lab["admission"].root, lab["ca"].crl())
     assert crl.get_revoked_certificate_by_serial_number(int(lab["issued"]["serial"], 16))
+
+
+def test_legacy_metadata_edit_preserves_identity_and_escapes_html(lab, dashboard):
+    dash, client, secret = dashboard
+    dash.register(lab["request"])
+    before = dict(dash.device("vm-client"))
+    assert client.post('/devices/vm-client/metadata', base_url='https://localhost',
+                       data={'csrf': csrf(client), **METADATA}).status_code == 302
+    assert dash.device("vm-client")["request"] == before["request"]
+    assert login(client, secret).status_code == 302
+    with client.session_transaction() as state:
+        token = state["csrf"]
+    assert b'Belum diisi' in client.get('/', base_url='https://localhost').data
+    response = client.post('/devices/vm-client/metadata', base_url='https://localhost',
+                           data=METADATA)
+    assert response.status_code == 403
+    metadata = {**METADATA, 'display_name': '<script>alert(1)</script>'}
+    assert client.post('/devices/vm-client/metadata', base_url='https://localhost',
+                       data={'csrf': token, **metadata}).status_code == 302
+    reloaded = Dashboard(dash.path, dash.ca, dash.server)
+    after = dict(reloaded.device("vm-client"))
+    request = json.loads(after.pop("request"))
+    assert request.pop("metadata") == metadata
+    assert request == json.loads(before.pop("request"))
+    assert after == before  # No certificate, serial, workflow or identity changes.
+    assert lab["wg"].additions == []
+    page = client.get('/', base_url='https://localhost').data
+    assert b'&lt;script&gt;' in page and b'<script>alert(1)</script>' not in page
+
+
+@pytest.mark.parametrize('metadata', [
+    None, {}, {**METADATA, 'owner': ''}, {**METADATA, 'owner': 'a' * 101},
+    {**METADATA, 'platform': []}, {**METADATA, 'department': 'QA\nAdmin'},
+])
+def test_invalid_metadata_cannot_change_existing_identity(lab, dashboard, metadata):
+    dash, _, _ = dashboard
+    dash.register(lab["request"])
+    before = dict(dash.device('vm-client'))
+    with pytest.raises(Rejected):
+        dash.update_metadata('vm-client', metadata)
+    assert dict(dash.device('vm-client')) == before
+    assert lab['wg'].additions == []
+
+
+def test_metadata_survives_registry_retry(lab, dashboard):
+    dash, _, _ = dashboard
+    server = dash.server
+
+    class Offline:
+        def call(self, *args, **kwargs):
+            raise Rejected('Offline', 503)
+
+    dash.server = Offline()
+    with pytest.raises(Rejected):
+        dash.register(lab['request'], METADATA)
+    serial = dash.device('vm-client')['serial']
+    dash.server = server
+    dash.retry('vm-client')
+    assert dash.device('vm-client')['serial'] == serial
+    assert json.loads(dash.device('vm-client')['request'])['metadata'] == METADATA
+    assert lab['wg'].additions == []
+
+
+def test_admin_manages_employee_and_binds_legacy_device(lab, dashboard):
+    dash, client, secret = dashboard
+    legacy = {k: v for k, v in lab['request'].items() if k != 'employee_username'}
+    dash.register(legacy)
+    assert login(client, secret).status_code == 302
+    with client.session_transaction() as state:
+        token = state['csrf']
+    assert client.post('/employees', base_url='https://localhost', data={
+        'username': 'production-user', 'password': 'production-test-password',
+    }).status_code == 403
+    response = client.post('/employees', base_url='https://localhost', data={
+        'csrf': token, 'username': 'production-user', 'password': 'production-test-password',
+    })
+    assert response.status_code == 302
+    assert any(e['username'] == 'production-user' for e in lab['admission'].employees.listing())
+    response = client.post('/devices/vm-client/employee', base_url='https://localhost', data={
+        'csrf': token, 'username': 'production-user',
+    })
+    assert response.status_code == 302
+    assert json.loads(dash.device('vm-client')['request'])['employee_username'] == 'production-user'
+    assert lab['wg'].additions == []
+    assert client.post('/employees/production-user/disable', base_url='https://localhost',
+                       data={'csrf': token}).status_code == 302
+    assert next(e for e in lab['admission'].employees.listing()
+                if e['username'] == 'production-user')['enabled'] == 0

@@ -9,6 +9,7 @@ Reports contain no credentials or WireGuard private keys.
 import argparse
 import json
 import os
+import secrets
 import shlex
 import time
 from datetime import datetime, timezone
@@ -18,6 +19,44 @@ from deploy_lab import Deployment
 
 
 class Verification(Deployment):
+    def register_identity(self, request, directory, password=None):
+        """Create a disposable employee and enroll an identity; never return a password."""
+        username = 'u-' + request['device_id'][:62]
+        credentials = {'username': username, 'password': password or secrets.token_urlsafe(24)}
+        request = {**request, 'employee_username': username}
+        self.dashboard("import json,sys\nd.server.call('POST','/api/employees',json.load(sys.stdin))\n",
+                       json.dumps(credentials).encode())
+        try:
+            certificate = self.dashboard(
+                "import json,sys\np=json.load(sys.stdin)\n"
+                "d.register(p['request'])\n"
+                "sys.stdout.write(d.device(p['request']['device_id'])['certificate'])\n",
+                json.dumps({'request': request}).encode(),
+            )
+            self.python('client',
+                "import json,sys\nfrom vanguard.client import login_employee\n"
+                "from vanguard.common import Remote\np=json.load(sys.stdin)\n"
+                "login_employee(p['directory'],Remote('https://192.168.100.20:8081',"
+                "'/etc/vanguard/root.crt'),p['username'],p['password'])\n",
+                json.dumps({**credentials, 'directory': directory}).encode())
+            return certificate
+        except BaseException:
+            self.cleanup_identity(request['device_id'])
+            raise
+
+    def cleanup_identity(self, name):
+        self.dashboard(
+            "from vanguard.common import Rejected\n"
+            "try:\n row=d.device(" + repr(name) + ")\n"
+            " if row['certificate']: d.revoke(" + repr(name) + ")\n"
+            "except Rejected as e:\n"
+            " if e.status!=404: raise\n"
+            "finally:\n"
+            " try:\n  d.server.call('POST'," + repr('/api/employees/u-' + name[:62] + '/disable')
+            + ",{})\n except Rejected as e:\n"
+            "  if getattr(e,'upstream_status',None)!=404: raise\n"
+        )
+
     def python(self, role, code, data=None):
         return self.ssh(
             role, "sudo /opt/vanguard/venv/bin/python -c " + shlex.quote(code), data
@@ -95,11 +134,8 @@ class Verification(Deployment):
                 "sudo /opt/vanguard/venv/bin/vanguard-client --directory " + self.directory
                 + " init --device-id " + self.name,
             )
-            request = self.ssh("client", "sudo cat " + self.directory + "/request.json")
-            cert = self.dashboard(
-                "import json,sys\nb=json.load(sys.stdin)\nd.register(b)\n"
-                "sys.stdout.write(d.device(b['device_id'])['certificate'])\n", request
-            )
+            request = json.loads(self.ssh("client", "sudo cat " + self.directory + "/request.json"))
+            cert = self.register_identity(request, self.directory)
             registered = True
             self.write("client", self.directory + "/device.crt", cert)
             if self.ssh("server", "sudo wg show wg0 peers").strip():
@@ -111,11 +147,13 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import ec
 from vanguard.client import identity
 from vanguard.pki import fingerprint,proof_message
-pem,cert,key,public=identity(sys.stdin.read())
+directory=sys.stdin.read()
+pem,cert,key,public=identity(directory)
+with open(directory+'/employee-session.json') as f: session=json.load(f)['session_token']
 base='https://192.168.100.20:8081'
 def post(path, body):
  return requests.post(base+path,json=body,verify='/etc/vanguard/root.crt',timeout=15)
-body={'certificate':pem,'wg_public_key':public}
+body={'certificate':pem,'wg_public_key':public,'employee_session':session}
 r=post('/api/challenge',{**body,'wg_public_key':base64.b64encode(b'x'*32).decode()})
 assert r.status_code==403, ('binding',r.status_code)
 c=post('/api/challenge',body); assert c.status_code==200
@@ -198,7 +236,7 @@ else:
                 self.stop_tunnel()
             self.ssh("server", "sudo systemctl start vanguard-server")
             if registered:
-                self.dashboard("d.revoke(" + repr(self.name) + ")\n")
+                self.cleanup_identity(self.name)
         self.record("cleanup", "Disposable identity revoked and disabled; production slot available")
 
 

@@ -14,7 +14,7 @@ from werkzeug.serving import make_server
 
 from vanguard.admin import Dashboard
 from vanguard.ca import create_app as create_ca
-from vanguard.client import admit
+from vanguard.client import admit, login_employee
 from vanguard.common import Rejected, Remote
 from vanguard.pki import now
 from vanguard.server import Admission
@@ -78,12 +78,15 @@ def test_real_https_ca_admin_server_client_flow(lab, tmp_path):
             wg,
         )
         app = create_server({"ADMISSION": admission, "TOKEN": "s" * 32, "TESTING": True})
+        admission.employees.create('employee-test', 'employee-test-password')
         with https(app, certificate, key_path) as server_url:
             dashboard = Dashboard(
                 tmp_path / "https-admin", ca_remote, Remote(server_url, root_path, "s" * 32)
             )
             dashboard.register(lab["request"])
             assert wg.active == {}
+            login_employee(lab['directory'], Remote(server_url, root_path),
+                           'employee-test', 'employee-test-password')
             result = admit(lab["directory"], Remote(server_url, root_path))
             assert result["decision"] == "ACCEPT" and len(wg.active) == 1
             dashboard.revoke("vm-client")

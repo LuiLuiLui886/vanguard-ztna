@@ -6,7 +6,7 @@ from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import ec, x25519
 
 from vanguard.ca import Authority
-from vanguard.client import initialize
+from vanguard.client import initialize, login_employee
 from vanguard.common import Rejected
 from vanguard.pki import fingerprint, load_cert, proof_message
 from vanguard.server import Admission, create_app
@@ -50,12 +50,16 @@ def lab(tmp_path):
     client_dir = tmp_path / "client"
     initialize(client_dir, "vm-client")
     request = json.loads((client_dir / "request.json").read_text())
+    request['employee_username'] = 'employee-test'
     issued = ca.issue(request["device_id"], request["csr"])
     (client_dir / "device.crt").write_text(issued["certificate"])
     key = serialization.load_pem_private_key((client_dir / "identity.key").read_bytes(), None)
     wg = FakeWireGuard()
     admission = Admission(tmp_path / "server", (ca.path / "root.crt").read_bytes(), ca.crl, wg)
     app = create_app({"ADMISSION": admission, "TOKEN": "s" * 32, "TESTING": True})
+    admission.employees.create('employee-test', 'employee-test-password')
+    login_employee(client_dir, LocalRemote(app), 'employee-test', 'employee-test-password')
+    employee_session = json.loads((client_dir / 'employee-session.json').read_text())['session_token']
     return {
         "ca": ca,
         "directory": client_dir,
@@ -67,6 +71,7 @@ def lab(tmp_path):
         "app": app,
         "remote": LocalRemote(app),
         "management": LocalRemote(app, "s" * 32),
+        "employee_session": employee_session,
     }
 
 
@@ -78,13 +83,15 @@ def register(lab):
         "tunnel_ip": "10.8.0.2",
     }
     lab["management"].call("POST", "/api/devices", body)
+    lab['management'].call('POST', '/api/devices/vm-client/employee', {'username': 'employee-test'})
     return body
 
 
 def proof(lab):
     pem, public = lab["issued"]["certificate"], lab["request"]["wg_public_key"]
     challenge = lab["remote"].call(
-        "POST", "/api/challenge", {"certificate": pem, "wg_public_key": public}
+        "POST", "/api/challenge", {"certificate": pem, "wg_public_key": public,
+                                  "employee_session": lab['employee_session']}
     )
     message = proof_message(
         challenge["challenge_id"],
@@ -99,6 +106,7 @@ def proof(lab):
         "certificate": pem,
         "wg_public_key": public,
         "signature": base64.b64encode(signature).decode(),
+        "employee_session": lab['employee_session'],
     }
 
 

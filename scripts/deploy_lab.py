@@ -14,6 +14,7 @@ import shlex
 import subprocess
 from pathlib import Path
 
+from evidence import save_json
 from ssh_preflight import check
 
 ROLES = ("ca", "server", "client", "admin", "attacker")
@@ -57,6 +58,41 @@ class Deployment:
         if owner:
             code += f"shutil.chown(p,user={owner!r},group={owner!r}); "
         self.ssh(role, "sudo python3 -c " + shlex.quote(code), data)
+
+    def employee_access(self, username='employee-lab', name='vm-client',
+                        directory='/var/lib/vanguard/client'):
+        """Bootstrap an explicit lab employee; retain credentials only in private state."""
+        path = self.state / 'employee-onboarding.json'
+        if path.exists():
+            credentials = json.loads(path.read_text())
+            if credentials['username'] != username:
+                raise RuntimeError('Employee onboarding belongs to a different username')
+        else:
+            credentials = {'username': username, 'password': secrets.token_urlsafe(24)}
+            save_json(path, credentials)
+        code = """import json,sys
+from vanguard.admin import create_app
+d=create_app().extensions['dashboard']
+p=json.load(sys.stdin)
+employees=d.server.call('GET','/api/employees')['employees']
+if not any(e['username']==p['username'] for e in employees):
+ d.server.call('POST','/api/employees',{'username':p['username'],'password':p['password']})
+d.bind_employee(p['device_id'],p['username'])
+"""
+        inner = ('set -a; . /etc/vanguard/admin.env; set +a; '
+                 'exec sudo -E -u vanguard /opt/vanguard/venv/bin/python -c ' + shlex.quote(code))
+        self.ssh('admin', 'sudo bash -c ' + shlex.quote(inner),
+                 json.dumps({**credentials, 'device_id': name}).encode())
+        code = """import json,sys
+from vanguard.client import login_employee
+from vanguard.common import Remote
+p=json.load(sys.stdin)
+login_employee(p['directory'],Remote('https://192.168.100.20:8081','/etc/vanguard/root.crt'),
+ p['username'],p['password'])
+"""
+        self.ssh('client', 'sudo /opt/vanguard/venv/bin/python -c ' + shlex.quote(code),
+                 json.dumps({**credentials, 'directory': directory}).encode())
+        return path
 
     def install(self, archive):
         for role in ROLES:
@@ -219,6 +255,7 @@ sys.stdout.write(d.device(body['device_id'])['certificate'])
         (self.state / "peers-after-registration.txt").write_bytes(after)
         if before != after:
             raise RuntimeError("Peer state changed during registration; inspect before connecting")
+        self.employee_access()
         self.ssh("client", "sudo systemctl enable --now vanguard-client")
         self.ssh(
             "client",

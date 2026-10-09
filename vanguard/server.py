@@ -23,6 +23,7 @@ from .common import (
     tunnel_ip,
     wg_key,
 )
+from .employees import Employees
 from .pki import (
     fingerprint,
     load_cert,
@@ -89,6 +90,7 @@ class Admission:
                 );
                 CREATE UNIQUE INDEX IF NOT EXISTS active_tunnel_ip ON devices(tunnel_ip) WHERE enabled=1;
             """)
+        self.employees = Employees(self.db)
 
     def audit(self, event, name, detail):
         with database(self.db) as db:
@@ -170,11 +172,14 @@ class Admission:
             ).fetchone()
             if not row or row["wg_public_key"] != body["wg_public_key"]:
                 raise Rejected("Device binding rejected", 403)
+            session_hash, _ = self.employees.require(body.get("employee_session"), row["device_id"])
             # Check trust/revocation before allocating a challenge, and again on verification.
             validate_certificate(
                 self.root, body["certificate"], self.current_crl(), row["device_id"]
             )
             db.execute("DELETE FROM challenges WHERE expires <= ?", (time.time(),))
+            db.execute("DELETE FROM employee_challenges WHERE challenge_id NOT IN "
+                       "(SELECT id FROM challenges)")
             if (
                 db.execute(
                     "SELECT count(*) FROM challenges WHERE device_id=?", (row["device_id"],)
@@ -188,6 +193,7 @@ class Admission:
                 "INSERT INTO challenges VALUES (?,?,?,?)",
                 (identity, row["device_id"], nonce, expires),
             )
+            db.execute("INSERT INTO employee_challenges VALUES (?,?)", (identity, session_hash))
             message = proof_message(
                 identity, nonce, row["fingerprint"], row["wg_public_key"], row["tunnel_ip"]
             )
@@ -209,6 +215,12 @@ class Admission:
                         "SELECT * FROM challenges WHERE id=?", (body["challenge_id"],)
                     ).fetchone()
                     db.execute("DELETE FROM challenges WHERE id=?", (body["challenge_id"],))
+                    employee_challenge = db.execute(
+                        "SELECT token_hash FROM employee_challenges WHERE challenge_id=?",
+                        (body["challenge_id"],),
+                    ).fetchone()
+                    db.execute("DELETE FROM employee_challenges WHERE challenge_id=?",
+                               (body["challenge_id"],))
                     if challenge:
                         name = challenge["device_id"]
                         row = db.execute(
@@ -218,6 +230,9 @@ class Admission:
                     raise Rejected("Unknown, consumed, or expired challenge", 403)
                 if not row or not row["enabled"]:
                     raise Rejected("Device disabled", 403)
+                session_hash, employee = self.employees.require(body.get("employee_session"), name)
+                if not employee_challenge or employee_challenge[0] != session_hash:
+                    raise Rejected("Employee session does not match challenge", 403)
                 crl = self.current_crl()
                 cert = validate_certificate(self.root, body["certificate"], crl, name)
                 if (
@@ -238,21 +253,28 @@ class Admission:
                     cert.not_valid_after_utc.timestamp(),
                     crl.next_update_utc.timestamp(),
                     self.root.not_valid_after_utc.timestamp(),
+                    employee["expires"],
                 )
                 if lease <= time.time():
                     raise Rejected("Admission validity elapsed", 403)
                 if challenge["expires"] <= time.time():
                     raise Rejected("Challenge expired during verification", 403)
+                self.employees.require_hash(session_hash, name)
                 try:
                     self.wg.add(row["wg_public_key"], row["tunnel_ip"])
                     with database(self.db) as db:
                         db.execute(
                             "UPDATE devices SET lease_until=? WHERE device_id=?", (lease, name)
                         )
+                        db.execute("INSERT INTO employee_leases VALUES (?,?) "
+                                   "ON CONFLICT(device_id) DO UPDATE SET token_hash=excluded.token_hash",
+                                   (name, session_hash))
                 except Exception:
                     self.wg.remove(row["wg_public_key"])
                     raise
-                self.audit("accepted", name, "All six admission checks passed")
+                self.audit("accepted", name, json.dumps({
+                    "reason": "all_six_checks_and_employee_passed", "username": employee["username"]
+                }, sort_keys=True))
                 return {"decision": "ACCEPT", "tunnel_ip": row["tunnel_ip"], "lease_until": lease}
         except Rejected as exc:
             self.audit("rejected", name, str(exc))
@@ -269,6 +291,27 @@ class Admission:
             self.wg.remove(row["wg_public_key"])
             self.audit("disabled", name, "Peer removed; identity cannot be re-enabled")
         return {"device_id": name, "disabled": True}
+
+    def bind_employee(self, name, username):
+        with locked(self.lock):
+            result = self.employees.bind(name, username)
+            self.audit("employee_bound", name, json.dumps({"username": username}))
+            return result
+
+    def disable_employee(self, username):
+        with locked(self.lock):
+            result = self.employees.disable(username)
+            with database(self.db) as db:
+                rows = db.execute("SELECT d.device_id,d.wg_public_key FROM devices d "
+                                  "JOIN employee_devices e ON e.device_id=d.device_id "
+                                  "WHERE e.username=?", (username,)).fetchall()
+                for row in rows:
+                    db.execute("UPDATE devices SET lease_until=0 WHERE device_id=?",
+                               (row['device_id'],))
+            for row in rows:
+                self.wg.remove(row['wg_public_key'])
+            self.audit("employee_disabled", None, json.dumps({"username": username}))
+            return result
 
     def reconcile(self, startup=False):
         with locked(self.lock):
@@ -293,6 +336,9 @@ class Admission:
                         reason = "device_disabled"
                     else:
                         try:
+                            session = db.execute("SELECT token_hash FROM employee_leases "
+                                                 "WHERE device_id=?", (row['device_id'],)).fetchone()
+                            self.employees.require_hash(session[0] if session else '', row['device_id'])
                             cert = validate_certificate(
                                 self.root, row["certificate"], crl, row["device_id"]
                             )
@@ -371,6 +417,43 @@ def create_app(config=None):
     @bearer(token)
     def devices():
         return {"devices": admission.listing()}
+
+    @app.get("/api/employees")
+    @bearer(token)
+    def employees():
+        return {"employees": admission.employees.listing()}
+
+    @app.post("/api/employees")
+    @bearer(token)
+    def create_employee():
+        body = json_body("username", "password")
+        with locked(admission.lock):
+            result = admission.employees.create(body['username'], body['password'])
+            admission.audit('employee_created', None, json.dumps({'username': body['username']}))
+        return result, 201
+
+    @app.post("/api/employees/<username>/disable")
+    @bearer(token)
+    def disable_employee(username):
+        return admission.disable_employee(device_name(username))
+
+    @app.post("/api/devices/<name>/employee")
+    @bearer(token)
+    def bind_employee(name):
+        return admission.bind_employee(device_name(name), device_name(json_body('username')['username']))
+
+    @app.post("/api/employee/login")
+    def employee_login():
+        admission.throttle(request_ip())
+        body = json_body('username', 'password')
+        try:
+            with locked(admission.lock):
+                result = admission.employees.login(body['username'], body['password'], request_ip())
+            admission.audit('employee_login', None, json.dumps({'username': result['username']}))
+            return result
+        except Rejected:
+            admission.audit('employee_login_rejected', None, 'Employee credentials rejected')
+            raise
 
     @app.post("/api/devices/<name>/disable")
     @bearer(token)

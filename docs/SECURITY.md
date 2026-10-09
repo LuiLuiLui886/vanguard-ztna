@@ -26,6 +26,14 @@ allowed-ips `/32` dari registry, bukan dari nilai yang dikirim saat verify.
 
 ## Lifecycle akses
 
+Mulai 0.1.3 sesi akun karyawan wajib dan terikat ke device melalui registry akun.
+Password disimpan sebagai hash scrypt dan token sesi hanya sebagai SHA-256 pada
+server. Sesi delapan jam dikirim pada challenge/verify lewat HTTPS; kedua request
+harus memakai sesi yang sama. Password/sesi karyawan tidak memberi akses management.
+Penonaktifan akun menghapus sesi dan peer; daemon juga memeriksa validitas sesi.
+Perangkat lama tanpa binding akun gagal admission. Metadata pemilik/departemen
+hanya deskriptif, bukan kebijakan akses atau attestation hardware.
+
 Lease maksimal 300 detik. Daemon memeriksa ulang setiap 5 detik **setelah** siklus sebelumnya
 selesai. Peer expired/revoked/disabled/unknown dihapus. Kegagalan fetch/validasi CRL membatalkan
 lease dan menghapus semua peer. Restart API/daemon mengosongkan peer dan lease agar memerlukan

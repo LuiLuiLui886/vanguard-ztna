@@ -1,0 +1,64 @@
+# Penyelarasan VanGuard terhadap proposal
+
+Acuan: [proposal TA Louis Andreas](https://docs.google.com/document/d/1FWkmRWSUzfvPzLz1S2Bdxv2lCrgtB35IMzyWPZNX6BA/edit),
+dibaca 8 Oktober 2026. Pengguna menetapkan kesesuaian proposal sebagai tujuan
+pekerjaan berikutnya. Status tabel ini adalah hasil audit implementasi dan bukti,
+bukan pernyataan bahwa seluruh proposal telah selesai.
+
+## Matriks kebutuhan
+
+| Acuan | Kebutuhan | Status awal dan pekerjaan berikutnya |
+|---|---|---|
+| §1.2–1.3, §3.1 | Client, server gateway, CA, dashboard; simulasi manufaktur | Empat komponen pada empat VM + VM attacker tersedia. Kasus departemen/pemilik belum direpresentasikan pada dashboard. |
+| §1.2 | WireGuard tanpa perubahan source/kernel | Sesuai. Admission HTTPS terpisah mendahului handshake standar. |
+| §1.2, §3.2.3 | Single-tier private CA, tanpa IdP/SSO eksternal | Sesuai: OpenSSL CA internal. Aplikasi TOTP bukan IdP/SSO. |
+| §1.2, §3.3.1 | X.509 terikat public key WireGuard | Sesuai, ditambah proof-of-possession dan challenge sekali pakai. |
+| §1.2–1.3 | PEP/IEP, default-deny, mikrosegmentasi | Firewall dan admission tersedia. Perlu pemetaan kebijakan/resource dan bukti isolasi skenario manufaktur; jangan mengklaim segmentasi aplikasi/departemen dari firewall host saja. |
+| §3.2.1 | Client Python Linux dan Windows | Ubuntu 22.04 teruji. Windows belum diimplementasikan/divalidasi; jangan mengklaim portabilitas dari bahasa Python saja. |
+| §3.3.2 | Login admin 2FA | Ada, tes TOTP/CSRF/replay lulus; onboarding HP pribadi belum dikonfirmasi. |
+| §3.3.2 | Nama, departemen, pemilik, platform | Implementasi 0.1.3 dan tes lokal selesai; menunggu rollout. Metadata bukan bukti kondisi/attestation perangkat. |
+| §3.3.2 | Health check CA, issuance, sinkronisasi, audit | Issuance/retry idempotent tersedia; pemeriksaan health eksplisit dan audit admin terstruktur masih perlu ditinjau. |
+| §3.3.2 | Provisioning bundle dan notifikasi endpoint | Unduh sertifikat ada; paket konfigurasi dan notifikasi pemilik belum ada. Private key tetap dibuat/disimpan pada client sesuai arsitektur terbaru. |
+| §3.3.3 | Revocation aktif, log dan notifikasi | CA revoke + disable/daemon tersedia. Notifikasi pemilik dan pengukuran latensi berulang belum ada. |
+| §3.4 | Riwayat sertifikat per perangkat dan alasan pencabutan | CA menyimpan index; dashboard belum menyajikan riwayat renewal per perangkat atau alasan pencabutan. Binding sekarang immutable. |
+| §3.5.1, F-01–F-06 | Sah, asing, revoked, expired, revoke aktif, registrasi | Bukti fungsi dan lab tersedia. Expired terutama fixture; dua client aktif bersamaan belum dibuktikan sebagai dua tunnel nyata. |
+| §3.5.2 | Tanpa VPN / WireGuard / VanGuard, masing-masing 10 kali | Belum dilakukan. Perlu protokol eksperimen, definisi baseline dan persetujuan pengecualian admission khusus baseline. |
+| §3.5.2 | Throughput, latency, jitter, CPU | Belum ada dataset komparatif. RTT perlu probe tersendiri; iperf3 UDP menyediakan jitter, bukan pengukuran latency lengkap. |
+| S-01 | Kredensial valid, perangkat asing | Pengguna memilih akun karyawan. Login, binding akun-perangkat, sesi 8 jam dan tes negatif lokal selesai; skrip S-01 live tersedia, hasil VM masih menunggu rollout. |
+| S-02 | Sertifikat revoked dipakai kembali | Sudah diuji pada fixture dan identitas lab sementara. Berbeda dengan replay challenge yang juga diuji. |
+| S-03 | Penyadapan lalu lintas tunnel | Belum ada packet capture terukur. Capture pada interface underlay, karena wg0 menampilkan paket sesudah dekripsi. Tidak membuktikan kekuatan kriptografi secara formal. |
+| S-04 | Sesi terputus <60 detik sesudah revoke | Peer dihapus dan audit tervalidasi; perlu timestamp request/deteksi/enforcement serta bukti penghentian trafik pada sesi uji berulang. |
+| §1.2–1.3 | MTTD dan MTTR | Definisi awal/akhir per kejadian perlu ditetapkan sebelum pengukuran; jangan menyebut waktu polling sebagai nilai eksperimen. |
+
+## Keputusan arsitektur yang harus diselaraskan
+
+Proposal §1.2 melarang perubahan kernel, tetapi §3.3.1/§3.3.4 menggambarkan
+sertifikat berada dalam handshake WireGuard. Implementasi memakai admission HTTPS
+sebelum aktivasi peer; pertukaran kunci sesi tetap protokol WireGuard standar.
+Ini bukan implementasi ekstensi AKE pada pesan WireGuard.
+
+Proposal §3.3.2 menyebut peer aktif saat registrasi dan bundle berisi private key.
+Instruksi proyek terbaru menetapkan registry-only sampai admission enam pemeriksaan,
+dengan key independen dibuat di client. Pertahankan aturan tersebut sampai ada
+keputusan eksplisit atas konflik; jangan mengubah protokol atau mengendurkan admission
+hanya untuk mencocokkan uraian yang saling bertentangan.
+
+Baseline WireGuard murni memerlukan peer yang disiapkan tanpa admission VanGuard.
+Karena itu belum boleh dieksekusi pada lab saat ini. Sebelum meminta keputusan,
+siapkan rencana berisi isolasi tes, backup, durasi, pemulihan konfigurasi dan bukti
+bahwa kelima node serta identitas utama tetap dipertahankan.
+
+## Urutan pekerjaan
+
+1. Lengkapi metadata perangkat pada dashboard, validasi dan kompatibilitas data lama.
+2. Akun karyawan telah dipilih pengguna; selesaikan rollout dan bukti S-01 live.
+3. Siapkan protokol dan instrumentasi S-03/S-04 serta MTTD/MTTR; gunakan identitas uji.
+4. Siapkan eksperimen performa tiga konfigurasi × 10 pengulangan dan batas baseline.
+5. Lengkapi lifecycle/provisioning/notifikasi serta keputusan cakupan Windows dan
+   kebijakan resource manufaktur. Jangan mengarang departemen/pemilik nyata.
+6. Rekonsiliasi setiap baris dengan hasil aktual, lalu susun evaluasi TA.
+
+Klaim penurunan insiden, throughput tanpa overhead, autentikasi perangkat fisik
+yang tidak bisa dikloning, dan superioritas terhadap produk lain belum dibuktikan.
+Kepemilikan private key membuktikan identitas kriptografis; salinan seluruh key
+di perangkat lain tetap berada di luar jaminan pengikatan hardware.

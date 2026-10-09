@@ -29,8 +29,18 @@ untuk reenrollment. Revoke serial yang sudah dicabut bersifat idempotent.
 | GET | `/api/devices` | Bearer server token | Daftar registry, enabled, lease, keberadaan peer |
 | POST | `/api/devices/<device_id>/disable` | Bearer server token | Disable permanen, batalkan challenge, hapus peer |
 | GET | `/api/audit` | Bearer server token | 200 peristiwa terakhir |
-| POST | `/api/challenge` | Pemilik identitas terdaftar | Challenge untuk proof-of-possession |
-| POST | `/api/verify` | Proof-of-possession | Admission; setelah lulus menambahkan peer |
+| GET/POST | `/api/employees` | Bearer server token | Daftar akun tanpa hash; buat akun dengan username/password |
+| POST | `/api/employees/<username>/disable` | Bearer server token | Nonaktifkan akun/sesi dan hapus peer miliknya |
+| POST | `/api/devices/<device_id>/employee` | Bearer server token | Ikat perangkat ke username aktif; immutable |
+| POST | `/api/employee/login` | Username/password karyawan | Sesi karyawan, tidak menambah peer |
+| POST | `/api/challenge` | Sesi karyawan + identitas terdaftar | Challenge untuk proof-of-possession |
+| POST | `/api/verify` | Sesi yang sama + proof-of-possession | Admission; setelah lulus menambahkan peer |
+
+Mulai 0.1.3 login menerima `username` dan `password` melalui HTTPS; hasil berisi
+`session_token`, `username`, dan `expires_at` (Unix). Sesi berlaku 8 jam dan tidak
+memberi hak management. Password 12–256 karakter, disimpan sebagai hash scrypt.
+Lima kegagalan per username/IP mengunci login selama 5 menit. Server menyimpan
+hash token saja. Perangkat tanpa binding akun tidak bisa melakukan admission.
 
 Registrasi:
 
@@ -52,7 +62,7 @@ server, dan broadcast. Client lab tetap meminta `10.8.0.2`.
 Challenge request:
 
 ```json
-{"certificate":"PEM", "wg_public_key":"BASE64"}
+{"certificate":"PEM", "wg_public_key":"BASE64", "employee_session":"TOKEN-PRIVAT"}
 ```
 
 Response memuat `challenge_id`, `nonce`, `expires_at` (Unix seconds), `tunnel_ip`, `message`.
@@ -68,7 +78,7 @@ menggunakan ECDSA P-256/SHA-256. Signature ASN.1 DER dikirim sebagai base64 stan
 Verify request:
 
 ```json
-{"challenge_id":"...", "certificate":"PEM", "wg_public_key":"BASE64", "signature":"BASE64-DER"}
+{"challenge_id":"...", "certificate":"PEM", "wg_public_key":"BASE64", "signature":"BASE64-DER", "employee_session":"TOKEN-PRIVAT"}
 ```
 
 Keberhasilan:
@@ -80,7 +90,8 @@ Keberhasilan:
 TTL challenge 60 detik, maksimal 5 outstanding per perangkat. Challenge yang ditemukan
 dikonsumsi sebelum validasi proof; retry perlu challenge baru. Endpoint admission dibatasi
 30 request/menit/IP serta 240 request/menit global. Lease maksimal 300 detik, dipotong oleh
-masa berlaku sertifikat, Root CA, atau CRL. CLI connect memperbarui admission maksimal tiap 60 detik.
+masa berlaku sertifikat, Root CA, CRL, dan sesi karyawan. CLI connect memperbarui admission maksimal tiap 60 detik.
+Sesi verify harus sama dengan sesi challenge dan masih aktif setelah fetch CRL/proof.
 Masa challenge diperiksa kembali sebelum `wg set`. Fetch CRL yang bertanda tangan
 sah tetapi <=1 detik lebih maju dapat menunggu satu kali lalu divalidasi ulang;
 tidak ada penerimaan CRL sebelum lastUpdate atau setelah nextUpdate.
@@ -97,7 +108,7 @@ berupa string JSON, misalnya:
 Alasan mencakup `startup_reset`, `device_disabled`, `lease_expired`, `unknown_peer`,
 `binding_mismatch`, `certificate_revoked`, `certificate_future`, `certificate_expired`,
 `certificate_invalid`, `crl_unavailable`, `crl_future`, `crl_expired`,
-`crl_signature_invalid`, `crl_invalid`, atau `root_validity`. Pada kegagalan CRL,
+`crl_signature_invalid`, `crl_invalid`, `employee_session_invalid`, atau `root_validity`. Pada kegagalan CRL,
 `crl_error` memberikan detail diagnostik termasuk waktu issuer/validator bila relevan.
 Peristiwa lama sebelum diagnosis terstruktur bisa berisi teks biasa; konsumen audit
 harus mempertahankannya sebagai riwayat dan tidak mengasumsikan selalu JSON.
@@ -115,7 +126,11 @@ Antarmuka HTML; POST memakai form/multipart, cookie sesi, dan CSRF token.
 | GET/POST | `/login` | Password + TOTP |
 | POST | `/logout` | Invalidasi sesi pada database |
 | GET | `/` | Dashboard, status perangkat, audit |
-| POST | `/devices` | Upload `request.json` sebagai field `enrollment` |
+| POST | `/devices` | Upload `enrollment`; metadata display_name/department/owner/platform dan employee_username |
+| POST | `/devices/<id>/metadata` | Edit metadata; tidak mengubah sertifikat/key/binding |
+| POST | `/devices/<id>/employee` | Tautkan username ke perangkat lama |
+| POST | `/employees` | Buat akun karyawan dengan username/password |
+| POST | `/employees/<username>/disable` | Nonaktifkan akun karyawan |
 | POST | `/devices/<id>/retry` | Melanjutkan workflow parsial |
 | POST | `/devices/<id>/revoke` | Disable server dan revoke CA |
 | GET | `/devices/<id>/certificate` | Download sertifikat perangkat |

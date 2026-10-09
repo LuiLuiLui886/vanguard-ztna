@@ -2,14 +2,40 @@
 <p class="eyebrow">ACCESS CONTROL</p><h1>Perangkat & admission</h1>
 <p>Registrasi menyiapkan identitas. Akses tunnel aktif setelah client lolos admission.</p>
 {% if error %}<p class="notice error">Status server tidak tersedia: {{ error }}. Status peer belum dapat dipastikan.</p>{% endif %}
+<section><h2>Akun karyawan</h2><p>Akun karyawan digunakan pada aplikasi client. Akses tetap memerlukan perangkat yang terdaftar.</p>
+<form method="post" action="/employees"><input type="hidden" name="csrf" value="{{ session.csrf }}">
+<label>Username karyawan<input name="username" maxlength="64" pattern="[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}" required></label>
+<label>Password awal<input type="password" name="password" minlength="12" maxlength="256" autocomplete="new-password" required></label>
+<button>Buat akun karyawan</button></form>
+{% for employee in employees %}<p>{{ employee.username }} — {{ 'Aktif' if employee.enabled else 'Nonaktif' }}</p>
+{% if employee.enabled %}<form method="post" action="/employees/{{ employee.username }}/disable"><input type="hidden" name="csrf" value="{{ session.csrf }}"><button class="danger">Nonaktifkan {{ employee.username }}</button></form>{% endif %}
+{% endfor %}</section>
 <section><h2>Registrasi perangkat</h2><form method="post" action="/devices" enctype="multipart/form-data">
 <input type="hidden" name="csrf" value="{{ session.csrf }}"><label>Request dari aplikasi client<input type="file" name="enrollment" accept=".json" required></label>
+<label>Nama perangkat<input name="display_name" maxlength="100" required></label>
+<label>Departemen<input name="department" maxlength="80" required></label>
+<label>Pemilik<input name="owner" maxlength="100" required></label>
+<label>Platform<input name="platform" maxlength="80" placeholder="Contoh: Ubuntu 22.04" required></label>
+<label>Akun karyawan<select name="employee_username" required><option value="">Pilih akun</option>{% for employee in employees %}{% if employee.enabled %}<option value="{{ employee.username }}">{{ employee.username }}</option>{% endif %}{% endfor %}</select></label>
 <button class="primary">Terbitkan sertifikat & daftarkan binding</button></form></section>
 <section><h2>Perangkat terdaftar</h2><div class="table-scroll"><table><thead><tr><th>Perangkat</th><th>Workflow</th><th>Tunnel</th><th>Peer</th><th>Tindakan</th></tr></thead><tbody>
-{% for device in devices %}{% set peer = live.get(device.device_id) %}<tr><td><strong>{{ device.device_id }}</strong><small>Serial {{ device.serial or '—' }}</small></td>
+{% for device in devices %}{% set peer = live.get(device.device_id) %}<tr><td><strong>{{ device.metadata.get('display_name') or device.device_id }}</strong><small>ID {{ device.device_id }} · Serial {{ device.serial or '—' }}</small>
+<small>Pemilik: {{ device.metadata.get('owner') or 'Belum diisi' }}</small>
+<small>Akun VPN: {{ device.employee_username or 'Belum ditautkan' }}</small>
+<small>Departemen: {{ device.metadata.get('department') or 'Belum diisi' }}</small>
+<small>Platform: {{ device.metadata.get('platform') or 'Belum diisi' }}</small></td>
 <td>{{ device.status }}{% if device.last_error %}<small class="error">{{ device.last_error }}</small>{% endif %}</td>
 <td>{{ peer.tunnel_ip if peer else '—' }}</td><td>{{ ('Aktif' if peer.live else 'Tidak aktif') if peer else 'Tidak tersedia' }}</td>
 <td>{% if device.certificate %}<a href="/devices/{{ device.device_id }}/certificate">Unduh sertifikat</a>{% endif %}
+{% if not device.employee_username and device.status == 'registered' %}<form action="/devices/{{ device.device_id }}/employee" method="post">
+<input type="hidden" name="csrf" value="{{ session.csrf }}"><label>Akun VPN<select name="username" required><option value="">Pilih akun</option>{% for employee in employees %}{% if employee.enabled %}<option value="{{ employee.username }}">{{ employee.username }}</option>{% endif %}{% endfor %}</select></label><button>Tautkan akun VPN</button></form>{% endif %}
+<details><summary>Edit data perangkat</summary><form action="/devices/{{ device.device_id }}/metadata" method="post">
+<input type="hidden" name="csrf" value="{{ session.csrf }}">
+<label>Nama perangkat<input name="display_name" maxlength="100" value="{{ device.metadata.get('display_name', '') }}" required></label>
+<label>Departemen<input name="department" maxlength="80" value="{{ device.metadata.get('department', '') }}" required></label>
+<label>Pemilik<input name="owner" maxlength="100" value="{{ device.metadata.get('owner', '') }}" required></label>
+<label>Platform<input name="platform" maxlength="80" value="{{ device.metadata.get('platform', '') }}" required></label>
+<button>Simpan data perangkat</button></form></details>
 {% if device.status not in ['registered', 'revoked'] %}<form action="/devices/{{ device.device_id }}/retry" method="post"><input type="hidden" name="csrf" value="{{ session.csrf }}"><button>Ulangi workflow</button></form>{% endif %}
 {% if device.certificate and device.status != 'revoked' %}<form action="/devices/{{ device.device_id }}/revoke" method="post"><input type="hidden" name="csrf" value="{{ session.csrf }}"><button class="danger">Cabut akses & sertifikat</button></form>{% endif %}</td></tr>
 {% else %}<tr><td colspan="5">Belum ada perangkat. Unggah request.json untuk memulai.</td></tr>{% endfor %}</tbody></table></div></section>

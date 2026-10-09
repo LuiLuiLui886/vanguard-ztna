@@ -1,5 +1,10 @@
 # Checkpoint VanGuard — 8 Oktober 2026
 
+> **Dilanjutkan 9 Oktober 2026, 08:41 WIB:** source 0.1.3 masih dalam pengerjaan,
+> belum di-rollout. Ada perubahan lokal akun karyawan dan metadata dashboard yang
+> belum commit. Status 0.1.2 di bawah adalah baseline terakhir yang terverifikasi.
+> Baca [jurnal 9 Oktober](PROGRESS_2026-10-09.md) untuk pekerjaan aktif.
+
 Pembaruan **23:12 WIB**. Versi 0.1.2 terpasang dan teruji; observasi selesai PASS.
 Arsip source/wheel/checksum selesai dan terverifikasi. Source serta dokumentasi
 sudah dipush ke GitHub **private**, branch `main`; detail di bawah.
