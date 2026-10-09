@@ -9,6 +9,10 @@ ditolak tanpa peer VPN. Mean **MTTD aplikasi 69,649 ms**, **MTTR Respond aplikas
 Baca `AGENTS.md`, `VANGUARD_CONTEXT.md`, [checkpoint](docs/CHECKPOINT.md) dan
 [jurnal terbaru](docs/PROGRESS_2026-10-10.md) sebelum perubahan.
 
+Panduan operator tersedia di [tutorial penggunaan lengkap](docs/TUTORIAL_PENGGUNAAN.md):
+boot/login/VPN, dashboard, latihan registrasi terpisah, pengujian, shutdown dan
+troubleshooting. Penambahan tutorial tidak mengubah aplikasi atau keadaan VM.
+
 ## Hasil terakhir
 
 - 100 tes lokal, 100 guest, serta 100 pada masing-masing CI Python 3.10/3.12 PASS.

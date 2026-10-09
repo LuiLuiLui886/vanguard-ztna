@@ -29,6 +29,12 @@ aplikasi yang didefinisikan sebelum pengujian; RTT dicatat terpisah.
 Lihat [hasil S-01](RESPONSE_METRICS_2026-10-10.md),
 [laporan](IMPLEMENTATION_REPORT.md) dan [jurnal terbaru](PROGRESS_2026-10-10.md).
 
+Tutorial operator dari awal sampai akhir tersedia di
+[TUTORIAL_PENGGUNAAN.md](TUTORIAL_PENGGUNAAN.md). Disusun dari CLI/template 0.1.4;
+latihan registrasi manual dan shutdown tidak dieksekusi saat penulisannya.
+Panduan deployment diperbaiki agar enrollment baru mencakup akun/binding/login
+karyawan sebelum connect. Tidak ada perubahan source atau VM pada pekerjaan ini.
+
 ## Melanjutkan sesi berikutnya
 
 1. Baca `AGENTS.md`, `VANGUARD_CONTEXT.md`, checkpoint ini dan jurnal terbaru.

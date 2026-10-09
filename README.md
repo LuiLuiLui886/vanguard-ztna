@@ -48,6 +48,7 @@ dalam `deploy/`. Baca:
 - [Keputusan keamanan dan batas operasional](docs/SECURITY.md)
 - [Skenario uji Tugas Akhir](docs/TEST_PLAN.md)
 - [Hasil verifikasi dan status deployment](docs/IMPLEMENTATION_REPORT.md)
+- [Tutorial penggunaan dari awal sampai akhir](docs/TUTORIAL_PENGGUNAAN.md)
 - [Checkpoint untuk melanjutkan pekerjaan](docs/CHECKPOINT.md)
 - [Jurnal perubahan 8 Oktober 2026](docs/PROGRESS_2026-10-08.md)
 - [Jurnal perubahan 9 Oktober 2026](docs/PROGRESS_2026-10-09.md)

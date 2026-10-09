@@ -1,5 +1,9 @@
 # Deployment Ubuntu Server 22.04 — lima VM
 
+Panduan ini untuk pemasangan baru dan pemeliharaan oleh operator. Untuk memakai
+lab yang sudah terpasang, ikuti [tutorial penggunaan](TUTORIAL_PENGGUNAAN.md);
+jangan membuat ulang CA/identitas utama pada lab tersebut.
+
 ## 1. Prasyarat dan akses
 
 Topologi: CA `.10`, SERVER `.20`, CLIENT `.30`, ADMIN `.40`, ATTACKER `.50` pada
@@ -173,14 +177,26 @@ sudo /opt/vanguard/venv/bin/vanguard-client init --device-id vm-client
 ```
 
 Output menunjukkan `/var/lib/vanguard/client/request.json`. Salin file tersebut ke operator
-admin (CSR dan public key saja), login ke `https://192.168.100.40:5000`, lalu unggah untuk
-registrasi. Unduh sertifikat perangkat dan pasang pada client:
+admin (CSR dan public key saja), lalu login ke `https://192.168.100.40:5000`.
+Pada **Akun karyawan**, buat akun VPN dengan password awal minimal 12 karakter.
+Unggah request pada **Registrasi perangkat**, isi metadata dan pilih akun karyawan
+tersebut sebelum menerbitkan sertifikat/binding. Unduh sertifikat dan pasang pada client:
 
 ```bash
 sudo install -m 0600 /path/to/vm-client.crt /var/lib/vanguard/client/device.crt
 ```
 
-Pastikan `wg show wg0 peers` pada SERVER masih kosong setelah registrasi.
+Pada instalasi baru tanpa client lain, pastikan `wg show wg0 peers` pada SERVER
+masih kosong setelah registrasi. Pada lab aktif, yang harus belum ada adalah
+peer perangkat yang baru didaftarkan; peer client lain boleh tetap ada.
+Login karyawan di CLIENT memakai username yang baru dibuat (ganti `USERNAME_KARYAWAN`):
+
+```bash
+sudo /opt/vanguard/venv/bin/vanguard-client login --username USERNAME_KARYAWAN
+```
+
+Password diminta secara interaktif. Sesi berlaku delapan jam; boot/renewal tidak
+memperpanjangnya. Detail ada di [panduan akun](EMPLOYEE_ACCESS.md).
 Ambil public key server dari `/etc/vanguard/server-wg.pub` di SERVER melalui jalur SSH tepercaya.
 Di CLIENT (gantikan placeholder dengan public key, bukan private key):
 
@@ -188,6 +204,7 @@ Di CLIENT (gantikan placeholder dengan public key, bukan private key):
 sudo /opt/vanguard/venv/bin/vanguard-client connect --server-key 'PUBLIC_KEY_SERVER'
 ```
 
+Jangan jalankan koneksi foreground bersamaan dengan service `vanguard-client`.
 Proses berjalan foreground, admission lebih dahulu lalu `wg-quick up`, dan memperbarui
 admission otomatis. Pada terminal lain, `ping -c 3 10.8.0.1` dan `sudo wg show wg0`
 untuk membuktikan handshake. Ctrl-C/SIGTERM menurunkan interface client. File wg0.conf

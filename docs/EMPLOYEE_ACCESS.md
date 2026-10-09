@@ -1,5 +1,8 @@
 # Akses karyawan — VanGuard 0.1.3
 
+Alur ini tetap berlaku pada 0.1.4. Panduan lengkap dengan contoh registrasi latihan,
+pengujian dan shutdown tersedia pada [tutorial penggunaan](TUTORIAL_PENGGUNAAN.md).
+
 Sesuai keputusan pengguna untuk proposal S-01, karyawan memakai akun VPN lokal
 yang terpisah dari akun administrator dashboard. Password yang benar hanya
 menghasilkan sesi karyawan. Untuk akses tunnel, sesi harus terikat pada perangkat

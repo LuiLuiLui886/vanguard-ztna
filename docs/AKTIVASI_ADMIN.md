@@ -2,6 +2,8 @@
 
 Panduan untuk lab pada laptop ini, diperbarui 8 Oktober 2026.
 
+Untuk urutan pemakaian seluruh sistem, lihat [tutorial lengkap](TUTORIAL_PENGGUNAAN.md).
+
 1. Buka file lokal
    `/home/lui/vanguard/state/deployment/aktivasi-admin.html` di Firefox.
    Halaman privat ini berisi QR TOTP, username, dan password yang bisa ditampilkan.
