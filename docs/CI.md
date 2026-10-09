@@ -76,3 +76,15 @@ Tambahan 14 tes memeriksa integritas pcap, scope cleanup dan statistik evidence.
 CI tidak menjalankan capture/tunnel/revoke pada VM; hasil live tercatat pada
 [laporan eksperimen](SECURITY_RESULTS_2026-10-09.md). Versi aplikasi tetap 0.1.3;
 arsip CI dikaitkan dengan commit ini, terpisah dari arsip lokal sebelum eksperimen.
+
+## Instrumentasi 0.1.4 — validasi 9 Oktober, rollout 10 Oktober
+
+[Run 37897878616](https://github.com/LuiLuiLui886/vanguard-ztna/actions/runs/37897878616)
+pada `c5b94af` **success**. Python 3.10: 100 PASS, 88,080 detik;
+Python 3.12: 100 PASS, 86,419 detik; nol failure/error/skip. Pemeriksaan source,
+dependensi, shell, build dan checksum PASS. Empat artefak diunduh ke
+`state/deployment/metrics-2026-10-10/ci-artifacts/`; checksum diperiksa ulang.
+
+Sepuluh tes tambahan mencakup korelasi/durasi penolakan, request concurrent,
+kerahasiaan telemetry, pengecualian throttle serta validitas agregasi sampel.
+Hasil live terpisah di [laporan MTTD/MTTR S-01](RESPONSE_METRICS_2026-10-10.md).

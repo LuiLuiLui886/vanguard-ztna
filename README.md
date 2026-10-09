@@ -51,6 +51,7 @@ dalam `deploy/`. Baca:
 - [Checkpoint untuk melanjutkan pekerjaan](docs/CHECKPOINT.md)
 - [Jurnal perubahan 8 Oktober 2026](docs/PROGRESS_2026-10-08.md)
 - [Jurnal perubahan 9 Oktober 2026](docs/PROGRESS_2026-10-09.md)
+- [Jurnal perubahan 10 Oktober 2026](docs/PROGRESS_2026-10-10.md)
 - [Aktivasi admin dan authenticator](docs/AKTIVASI_ADMIN.md)
 - [Urutan demo Tugas Akhir](docs/DEMO_TA.md)
 - [Pengujian otomatis dan artefak GitHub](docs/CI.md)
@@ -58,6 +59,9 @@ dalam `deploy/`. Baca:
 - [Kesesuaian implementasi dengan proposal](docs/PROPOSAL_ALIGNMENT.md)
 - [Protokol capture dan pencabutan berulang S-03/S-04](docs/SECURITY_EXPERIMENTS.md)
 - [Hasil eksperimen S-03/S-04](docs/SECURITY_RESULTS_2026-10-09.md)
+- [Definisi MTTD dan MTTR Respond untuk S-01](docs/RESPONSE_METRICS.md)
+- [Hasil MTTD/MTTR aplikasi pada 0.1.4](docs/RESPONSE_METRICS_2026-10-10.md)
+- [Rencana benchmark tiga konfigurasi](docs/BENCHMARK_PLAN.md)
 
 Uji lokal (tidak membutuhkan root atau mengubah jaringan host):
 

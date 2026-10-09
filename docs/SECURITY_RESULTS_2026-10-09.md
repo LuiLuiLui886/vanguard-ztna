@@ -69,8 +69,10 @@ SSH request revoke, termasuk SSH/polling. Kolom konfirmasi juga mencakup rangkai
 Cakupan adalah penghentian akses ICMP pada dua tunnel bersamaan di VM-CLIENT yang
 sama, dengan izin ICMP sementara khusus 10.8.0.3 melalui wg0. Belum membuktikan
 penutupan sesi TCP/aplikasi manufaktur atau performa dua mesin client fisik.
-**MTTD/MTTR belum diukur**: tidak ada timestamp deteksi terpisah atau eksperimen
-pemulihan layanan. Rata-rata di atas tidak diberi label MTTD/MTTR.
+**MTTD/MTTR tidak diukur pada dataset S-04 ini**; rata-rata di atas tidak diberi
+label MTTD/MTTR. Koreksi sesudah pembacaan ulang proposal: MTTR berarti Respond,
+bukan pemulihan layanan. Instrumentasi S-01 terpisah didefinisikan pada
+[RESPONSE_METRICS.md](RESPONSE_METRICS.md), tanpa mengubah angka historis di sini.
 
 ## Pilot gagal dan pemulihan
 

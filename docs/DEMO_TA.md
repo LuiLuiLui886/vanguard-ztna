@@ -75,6 +75,13 @@ capture 3/3 dan revoke ICMP 10/10 PASS. Jika perlu mengulang live, ikuti
 ICMP sementara yang dibersihkan otomatis. Angka waktu mencakup overhead kontrol,
 bukan MTTD/MTTR. Tidak perlu mencabut perangkat utama untuk demonstrasi.
 
+Versi 0.1.4 memiliki [hasil MTTD/MTTR aplikasi S-01](RESPONSE_METRICS_2026-10-10.md).
+Jelaskan bahwa MTTR berarti Respond, bukan pemulihan. Mean deteksi 69,649 ms dan
+respons setelah deteksi 19,383 ms adalah batas aplikasi yang didefinisikan sebelum
+tes; RTT jaringan disajikan terpisah. Jika perlu mengulang, gunakan
+`scripts/verify_response_metrics.py` sesuai [protokol](RESPONSE_METRICS.md),
+berurutan dengan uji lain yang memakai identitas sementara 10.8.0.3.
+
 Lease 300 detik dan reboot memutus akses sementara; bukti yang sudah tersedia bisa
 dipakai tanpa mengulangi eksperimen saat demo. Jangan menjalankan uji gangguan saat
 `health_lab.py` sedang mengamati stabilitas. Reboot workstation memerlukan jadwal

@@ -1,70 +1,58 @@
 # Lanjutkan proyek VanGuard
 
-> **Aktif sejak 14:03 WIB:** validasi instrumentasi 0.1.4 untuk MTTD/MTTR S-01.
-> MTTR dalam proposal berarti **Respond**, bukan recovery. Source belum dipasang;
-> status 0.1.3 di bawah masih baseline. Lihat jurnal dan [definisi](docs/RESPONSE_METRICS.md).
-
-> **Pembaruan 13:52 WIB:** S-03 3/3 dan S-04 ICMP 10/10 PASS; eksperimen serta
-> cleanup selesai. [Hasil per putaran](docs/SECURITY_RESULTS_2026-10-09.md).
-
-Status **9 Oktober 2026**: tahap **0.1.3 selesai dan terpasang pada lima VM**.
-Akun karyawan untuk VPN dan metadata dashboard sudah tersedia. Skenario S-01
-dengan kredensial karyawan valid pada perangkat attacker **PASS**: login akun
-berhasil, tetapi perangkat tanpa proof sah tidak mendapatkan peer VPN.
+Status **10 Oktober 2026: tahap 0.1.4 selesai**, terpasang pada lima VM.
+Sepuluh percobaan S-01 dengan akun karyawan valid dan proof perangkat salah
+ditolak tanpa peer VPN. Mean **MTTD aplikasi 69,649 ms**, **MTTR Respond aplikasi
+19,383 ms**; definisi tidak mencakup waktu sejak password bocor atau recovery.
+[Hasil per sampel](docs/RESPONSE_METRICS_2026-10-10.md).
 
 Baca `AGENTS.md`, `VANGUARD_CONTEXT.md`, [checkpoint](docs/CHECKPOINT.md) dan
-[jurnal terbaru](docs/PROGRESS_2026-10-09.md) sebelum mengubah apa pun.
+[jurnal terbaru](docs/PROGRESS_2026-10-10.md) sebelum perubahan.
 
 ## Hasil terakhir
 
-- **90 tes lokal, 90 guest, serta 90 pada masing-masing job CI Python 3.10/3.12 lulus.**
-- Paket/config/identitas diverifikasi; CA, key dan sertifikat client utama tetap.
-- S-01, disable akun, proof/binding/replay, pencabutan sertifikat dan cleanup lulus.
-- Firewall 40 pemeriksaan dan penolakan bypass LAN lulus.
-- S-03 capture 3/3 PASS. S-04 revoke ICMP 10/10 PASS, batas atas konfirmasi
-  7,351–12,737 detik termasuk SSH/polling; bukan MTTD/MTTR. Resource uji dibersihkan.
-- Health akhir 7/7 sampel selama 85,90 detik: renewal berjalan, nol removal,
-  layanan dan tunnel utama sehat. Tidak ada pengujian/rollout yang masih berjalan.
-- Source `0c56374` dipush ke [GitHub private](https://github.com/LuiLuiLui886/vanguard-ztna);
-  instrumentasi `f29ff67` dan
-  [CI run 37895229707](https://github.com/LuiLuiLui886/vanguard-ztna/actions/runs/37895229707) success.
-  Catatan akhir disimpan dalam commit dokumentasi setelahnya.
+- 100 tes lokal, 100 guest, serta 100 pada masing-masing CI Python 3.10/3.12 PASS.
+- Paket/config/CA/key/sertifikat utama cocok source dan backup; tidak enrollment ulang.
+- S-01 10/10, kontrol positif, identity/revocation dan cleanup PASS.
+- Firewall 40 pemeriksaan dan penolakan bypass LAN PASS.
+- Health 7/7 selama 84,18 detik: tiga deadline lease, nol removal; tunnel sehat.
+- Tidak ada rollout/eksperimen aktif. S-03 3/3 dan S-04 ICMP 10/10 tetap bukti
+  0.1.3; angka revoke SSH/polling bukan MTTD/MTTR dan tidak diulang penuh hari ini.
+- Source `c5b94af` dipush ke [GitHub private](https://github.com/LuiLuiLui886/vanguard-ztna);
+  [CI 37897878616](https://github.com/LuiLuiLui886/vanguard-ztna/actions/runs/37897878616)
+  success. Catatan akhir disimpan pada commit dokumentasi setelahnya.
 
-## Mulai sesi berikutnya
+## Langkah berikutnya
 
-Periksa domain yang ada dan jalankan preflight/health dengan direktori bukti baru;
-perintah lengkap ada pada checkpoint. Jangan membuat ulang lab atau enrollment.
-Lima node/alamat tetap: CA `.10`, SERVER `.20`, CLIENT `.30`, ADMIN `.40`, ATTACKER
-`.50`, subnet `192.168.100.0/24`; client tunnel `10.8.0.2`, server `10.8.0.1`.
+Periksa lima domain lama, jalankan preflight/health dengan direktori baru sesuai
+checkpoint. CA .10, SERVER .20, CLIENT .30, ADMIN .40, ATTACKER .50 tetap pada
+192.168.100.0/24; tunnel server 10.8.0.1 dan client 10.8.0.2. Jangan recreate lab.
 
-**Sesi karyawan berlaku delapan jam.** Jika sudah habis, login ulang pada VM-CLIENT
-lalu restart layanan sesuai [panduan akun](docs/EMPLOYEE_ACCESS.md). Akun lab
-`employee-lab` terikat ke `vm-client`; kredensial bootstrap ada dalam file privat
-`state/deployment/proposal-2026-10-09/employee-onboarding.json`. Jangan cetak atau
-unggah isinya. TOTP admin terpisah dari login karyawan.
+Sesi `employee-lab` untuk `vm-client` berakhir **10 Oktober 2026 08:52:10 WIB**.
+Jika expired, login ulang privat lalu restart client sesuai
+[panduan akun](docs/EMPLOYEE_ACCESS.md). Bootstrap kredensial ada di
+`state/deployment/proposal-2026-10-09/employee-onboarding.json`; jangan cetak/unggah.
+Sesi tidak diperpanjang oleh renewal atau boot. TOTP admin terpisah.
 
-Pekerjaan berikutnya: definisikan/instrumentasikan MTTD/MTTR (deteksi dan recovery
-terpisah), lalu siapkan benchmark tiga konfigurasi × 10 pengulangan. Penutupan
-sesi TCP/aplikasi belum tercakup hasil ICMP. Baseline
-WireGuard tanpa admission memerlukan keputusan eksplisit setelah rencana isolasi
-dan pemulihan tersedia. Gap Windows/lifecycle/notifikasi/resource ada di
-[matriks proposal](docs/PROPOSAL_ALIGNMENT.md). Seluruh TA belum dinyatakan selesai.
+Pekerjaan berikutnya: implementasi runner/cleanup dan pilot benchmark clear serta
+VanGuard sesuai [rencana tiga konfigurasi × 10](docs/BENCHMARK_PLAN.md).
+Benchmark belum dijalankan, iperf3 belum dipasang. Baseline WG tanpa admission
+memerlukan pengecualian eksplisit setelah runner siap ditinjau; jangan jalankan
+bypass. Gap TCP/aplikasi, Windows, lifecycle/notifikasi/provisioning/resource ada
+di [matriks proposal](docs/PROPOSAL_ALIGNMENT.md). Seluruh TA belum selesai.
 
-## Penyimpanan dan dokumentasi
+## Penyimpanan
 
-- Bukti rilis: `state/deployment/proposal-2026-10-09/`; eksperimen terbaru:
-  `state/deployment/security-2026-10-09/`. Bukti pilot gagal tetap dipertahankan.
-- Backup privat sebelum upgrade: `state/backups/before-0.1.3-2026-10-09/`.
-- Source/wheel/checksum: `dist/`; arsip terdahulu tidak ditimpa.
-- [Laporan aktif](docs/IMPLEMENTATION_REPORT.md), [panduan demo](docs/DEMO_TA.md),
-  [panduan aktivasi admin](docs/AKTIVASI_ADMIN.md).
-- Branch `main`, remote `origin`; CLI lokal `state/tooling/github/cli/usr/bin/gh`.
+- Bukti aktif: `state/deployment/metrics-2026-10-10/`; suite asli 9 Oktober pada
+  `state/deployment/metrics-2026-10-09/`. Bukti security/proposal lama dipertahankan.
+- Backup privat: `state/backups/before-0.1.4-2026-10-10/`, lima role.
+- Wheel/source/checksum: `dist/`; Git menyimpan catatan terbaru sesudah arsip dibuat.
+- [Laporan aktif](docs/IMPLEMENTATION_REPORT.md), [demo](docs/DEMO_TA.md),
+  [aktivasi admin](docs/AKTIVASI_ADMIN.md), [resume lama](docs/LANJUTKAN_PROYEK_2026-10-09.md).
+- Branch main, remote origin, CLI `state/tooling/github/cli/usr/bin/gh`.
 
-Catat rencana sebelum setiap kelompok perubahan dan hasil/validasi/sisa pekerjaan
-sesudahnya. Perbarui checkpoint serta file ini sebelum berhenti, lalu commit/push.
-State/database/private key/disk VM tetap lokal. Jangan mengembalikan index CA/CRL
-lama atau otomatis downgrade ke 0.1.2 yang belum mewajibkan akun karyawan.
-
-TOTP di HP/login pribadi belum dikonfirmasi; reboot workstation belum diuji.
-Autostart VM nonaktif. Bukti reboot/lease/stabilitas panjang versi lama disimpan
-terpisah; jangan menganggapnya sebagai hasil ulang 0.1.3.
+Catat rencana sebelum setiap kelompok perubahan, hasil validasi serta sisa langkah
+sesudahnya; perbarui checkpoint dan file ini sebelum berhenti, lalu commit/push.
+State/database/key/disk tetap lokal. Jangan memulihkan index CA/CRL lama atau
+downgrade otomatis. TOTP HP/login pribadi dan reboot workstation belum terverifikasi.
+Autostart VM nonaktif; penyebab VM mati saat resume belum diketahui.

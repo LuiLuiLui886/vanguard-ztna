@@ -59,10 +59,11 @@ Ini menguji akses ICMP, belum mengukur penutupan koneksi TCP/aplikasi manufaktur
 - Semua durasi memakai satu jam monotonic; timestamp UTC audit disimpan sebagai
   korelasi, tidak dikurangkan dengan jam VM lain. Sajikan tiap nilai, n, mean,
   median, min, max. Nilai bukan estimasi latensi deteksi daemon yang presisi.
-- Audit saat ini ditulis setelah peer dihapus. Tidak ada timestamp deteksi terpisah
-  atau metrik pemulihan layanan. **MTTD/MTTR tetap tidak diukur** (null), bukan
-  diganti dengan rata-rata batas atas. S-04 revoke terminal tidak memulihkan
-  sertifikat yang sama; definisi recovery perlu eksperimen terpisah.
+- Audit 0.1.3 ditulis setelah peer dihapus. Eksperimen S-04 ini tidak memiliki
+  timestamp deteksi/respons terpisah; **MTTD/MTTR pada dataset ini tetap null**.
+  Koreksi acuan proposal: MTTR berarti Respond, bukan recovery. Pengukuran S-01
+  terpisah pada 0.1.4 memakai [definisi aplikasi](RESPONSE_METRICS.md); jangan
+  mengganti label batas atas S-04 dengan metrik tersebut.
 
 ## Menjalankan dan memulihkan
 

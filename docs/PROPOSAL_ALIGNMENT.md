@@ -28,7 +28,7 @@ bukan pernyataan bahwa seluruh proposal telah selesai.
 | S-02 | Sertifikat revoked dipakai kembali | Sudah diuji pada fixture dan identitas lab sementara. Berbeda dengan replay challenge yang juga diuji. |
 | S-03 | Penyadapan lalu lintas tunnel | PASS 3/3: marker ada pada 20 paket kontrol wg0 per putaran, tidak ada pada 20 paket underlay eth0; nol kernel drop. Capture jalur client, bukan MITM attacker atau bukti kriptografi formal. [Hasil](SECURITY_RESULTS_2026-10-09.md). |
 | S-04 | Sesi terputus <60 detik sesudah revoke | PASS 10/10 untuk ICMP: CA-only revoke, peer hilang dengan audit, 25 probe tanpa reply, readmission 403. Batas atas termasuk SSH/konfirmasi 7,351–12,737 detik. Belum penutupan sesi TCP/aplikasi atau timestamp deteksi internal. [Hasil](SECURITY_RESULTS_2026-10-09.md). |
-| §1.2–1.3 | MTTD dan MTTR | Definisi awal/akhir per kejadian perlu ditetapkan sebelum pengukuran; jangan menyebut waktu polling sebagai nilai eksperimen. |
+| §1.2–1.3 | MTTD dan MTTR | Proposal menyebut MTTR **Respond** untuk akun valid pada perangkat asing. 0.1.4: 10 percobaan S-01 dengan proof key salah, mean MTTD aplikasi 69,649 ms dan MTTR Respond aplikasi 19,383 ms. Timestamp satu jam monotonic server; bukan onset kebocoran, RTT atau recovery. [Definisi](RESPONSE_METRICS.md). |
 
 ## Keputusan arsitektur yang harus diselaraskan
 
@@ -52,9 +52,10 @@ bahwa kelima node serta identitas utama tetap dipertahankan.
 
 1. Selesai: metadata dashboard, validasi dan kompatibilitas data lama (0.1.3).
 2. Selesai: akun karyawan, rollout lima VM dan bukti S-01 live (9 Oktober).
-3. Selesai: protokol/instrumentasi dan bukti S-03/S-04 untuk ICMP. MTTD/MTTR tetap
-   membutuhkan definisi kejadian dan timestamp deteksi/pemulihan terpisah.
-4. Siapkan eksperimen performa tiga konfigurasi × 10 pengulangan dan batas baseline.
+3. Selesai: S-03/S-04 untuk ICMP dan metrik deteksi/Respond aplikasi S-01 (0.1.4).
+   Cakupan SOC/kejadian kebocoran awal, recovery dan sesi TCP/aplikasi belum diukur.
+4. [Rencana benchmark](BENCHMARK_PLAN.md) sudah tersedia; runner/pilot/seri tiga
+   konfigurasi × 10 belum dilakukan. Pengecualian baseline WG belum diberikan.
 5. Lengkapi lifecycle/provisioning/notifikasi serta keputusan cakupan Windows dan
    kebijakan resource manufaktur. Jangan mengarang departemen/pemilik nyata.
 6. Rekonsiliasi setiap baris dengan hasil aktual, lalu susun evaluasi TA.

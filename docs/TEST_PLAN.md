@@ -74,3 +74,13 @@ pcap utuh, identitas/namespace sementara, timer cleanup, dan batas atas pengamat
 satu jam monotonic. [Hasil 9 Oktober](SECURITY_RESULTS_2026-10-09.md): capture 3/3
 dan pencabutan ICMP 10/10 PASS. Bukti tidak digeneralisasi ke MITM, sesi TCP atau
 MTTD/MTTR. Jangan jalankan eksperimen bersamaan dengan uji identity/S-01.
+
+## MTTD/MTTR S-01 pada 0.1.4
+
+Proposal memakai MTTR **Respond**, bukan recovery. Sepuluh percobaan proof key
+salah dengan akun valid diukur dari awal request Flask, timestamp deteksi,
+hingga JSON respons penolakan siap. RTT attacker terpisah. Definisi/pemulihan:
+[RESPONSE_METRICS.md](RESPONSE_METRICS.md); hasil aktual:
+[10 Oktober](RESPONSE_METRICS_2026-10-10.md). Telemetry tidak merekam body atau
+kredensial. Audit hilang, sampel kurang, rate limit atau durasi tidak konsisten
+tidak boleh dihitung sebagai percobaan berhasil.
