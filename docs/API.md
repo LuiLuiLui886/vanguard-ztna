@@ -4,6 +4,15 @@ Semua API menggunakan HTTPS dengan trust anchor `/etc/vanguard/root.crt` yang di
 melalui jalur tepercaya. Tidak ada mode `verify=False`. CA trust tidak diunduh tanpa verifikasi.
 Respons gagal berbentuk `{"error":"..."}`. Request JSON dibatasi 64 KiB.
 
+Sejak 0.1.4, challenge/verify mengembalikan `X-VanGuard-Request-ID` acak buatan
+server untuk korelasi audit. Nilai request header caller tidak dipakai ulang.
+Penolakan aplikasi 400/403 dapat menghasilkan audit `admission_timing` dengan
+`schema`, `request_id`, `endpoint`, `status`, `reason`, `detect_ns`, `respond_ns`,
+`total_ns`, `clock` dan `response_boundary`. Metrik memakai monotonic server;
+`total_ns = detect_ns + respond_ns`. Tidak ada password/token/body/nonce dalam
+event tersebut. Arti batas waktunya ada di [RESPONSE_METRICS.md](RESPONSE_METRICS.md).
+Event hanya dapat dibaca melalui endpoint audit manajemen yang sudah dilindungi.
+
 ## VM-CA — `https://192.168.100.10:8080`
 
 | Method | Path | Akses | Input/hasil |

@@ -34,3 +34,13 @@ accounts or expired sessions cause peer removal; renewals require fresh login
 after session expiration. No default employee or bypass for legacy devices.
 Upgrades must explicitly bind the existing client to a lab account before restart.
 The eight-hour session is an implementation choice, not a measured proposal result.
+
+Proposal metrics clarification — 9 October 2026:
+The proposal explicitly defines MTTR as Mean Time to Respond, not recovery/repair,
+and scopes MTTD/MTTR to stolen valid employee credentials on an untrusted device.
+Version 0.1.4 adds request-local monotonic denial timing and server-generated
+correlation IDs. Application detection/response boundaries are defined in
+docs/RESPONSE_METRICS.md; they are distinct from network RTT, prior S-04 revocation
+bounds, credential-theft onset and operational recovery. Timing records never
+include passwords, sessions, bodies, certificate PEM, proof signatures or nonces.
+This telemetry does not change any admission check or add an alternative peer path.

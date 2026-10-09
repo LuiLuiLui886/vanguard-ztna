@@ -148,4 +148,4 @@ def verify_proof(cert, signature, message):
             base64.b64decode(signature, validate=True), message, ec.ECDSA(hashes.SHA256())
         )
     except (ValueError, TypeError, InvalidSignature) as exc:
-        raise Rejected("Private-key proof rejected", 403) from exc
+        raise Rejected("Private-key proof rejected", 403, reason="proof_invalid") from exc

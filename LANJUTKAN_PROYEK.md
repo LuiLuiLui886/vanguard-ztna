@@ -1,5 +1,9 @@
 # Lanjutkan proyek VanGuard
 
+> **Aktif sejak 14:03 WIB:** validasi instrumentasi 0.1.4 untuk MTTD/MTTR S-01.
+> MTTR dalam proposal berarti **Respond**, bukan recovery. Source belum dipasang;
+> status 0.1.3 di bawah masih baseline. Lihat jurnal dan [definisi](docs/RESPONSE_METRICS.md).
+
 > **Pembaruan 13:52 WIB:** S-03 3/3 dan S-04 ICMP 10/10 PASS; eksperimen serta
 > cleanup selesai. [Hasil per putaran](docs/SECURITY_RESULTS_2026-10-09.md).
 

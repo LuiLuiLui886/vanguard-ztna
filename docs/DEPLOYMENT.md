@@ -265,3 +265,16 @@ Pada 24 September 2026, kelima VM Ubuntu 22.04 sudah berjalan di KVM/libvirt mel
 bridge `virbr-vg`. Layanan VanGuard sudah terpasang dan client utama berhasil admission,
 handshake, serta ping tunnel. Lihat [LAB_ACCESS.md](LAB_ACCESS.md) untuk akses VM/dashboard
 dan [IMPLEMENTATION_REPORT.md](IMPLEMENTATION_REPORT.md) untuk bukti serta batas pengujian.
+
+## Upgrade instrumentasi 0.1.4
+
+Versi 0.1.4 menambah audit timing penolakan dan header korelasi challenge/verify;
+tidak mengubah schema database, CA/key, binding akun atau kontrak body API.
+Hentikan layanan terkait untuk backup konsisten sebelum mengganti wheel, lalu
+nyalakan CA/server/admin dan client yang sudah memiliki sesi valid. Tidak perlu
+reenrollment atau membuat akun baru. Jika sesi delapan jam expired, lakukan login
+ulang sesuai panduan karyawan sebelum menganggap kegagalan sebagai regresi upgrade.
+
+Simpan paket 0.1.3 dan backup state privat. Pemulihan paket tidak boleh mengembalikan
+index CA/CRL lama. Pemeriksaan setelah pemasangan mencakup hash source/config/key,
+health/renewal, dan korelasi audit hasil penolakan pada server yang sebenarnya.

@@ -7,6 +7,7 @@ import re
 import secrets
 import sqlite3
 import subprocess
+import time
 from contextlib import contextmanager
 from pathlib import Path
 
@@ -17,6 +18,7 @@ from werkzeug.exceptions import HTTPException
 
 class Rejected(Exception):
     def __init__(self, message, status=400, reason=None):
+        self.detected_ns = time.monotonic_ns()
         super().__init__(message)
         self.status = status
         self.reason = reason

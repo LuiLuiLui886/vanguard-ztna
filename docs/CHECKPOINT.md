@@ -1,5 +1,11 @@
 # Checkpoint VanGuard — 9 Oktober 2026
 
+> **Pekerjaan aktif sejak 14:03 WIB:** instrumentasi 0.1.4 untuk MTTD dan
+> MTTR **Respond** pada S-01. Proposal dibaca ulang; interpretasi recovery pada
+> catatan sebelumnya dikoreksi. Source baru sedang divalidasi, belum rollout.
+> Baca [definisi metrik](RESPONSE_METRICS.md) dan jurnal terbaru. Rencana benchmark
+> tersedia di [BENCHMARK_PLAN.md](BENCHMARK_PLAN.md); baseline WG belum dijalankan.
+
 > **Pembaruan 13:52 WIB — eksperimen selesai:** S-03 3/3 PASS dan S-04 ICMP
 > 10/10 PASS. Batas atas konfirmasi 7,351–12,737 detik; bukan MTTD/MTTR.
 > Suite lokal/guest/dua job CI masing-masing 90 PASS. Cleanup dan health akhir

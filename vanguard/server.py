@@ -32,6 +32,7 @@ from .pki import (
     validate_fetched_crl,
     verify_proof,
 )
+from .telemetry import install_denial_timing
 
 
 class WireGuard:
@@ -403,6 +404,7 @@ def create_app(config=None):
     admission = config.get("ADMISSION") or from_environment()
     token = config.get("TOKEN") or required_secret("VANGUARD_SERVER_TOKEN")
     app.extensions["admission"] = admission
+    install_denial_timing(app, admission.audit)
     if not config.get("TESTING"):
         admission.reconcile(startup=True)
 
