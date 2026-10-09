@@ -21,13 +21,13 @@ bukan pernyataan bahwa seluruh proposal telah selesai.
 | §3.3.2 | Provisioning bundle dan notifikasi endpoint | Unduh sertifikat ada; paket konfigurasi dan notifikasi pemilik belum ada. Private key tetap dibuat/disimpan pada client sesuai arsitektur terbaru. |
 | §3.3.3 | Revocation aktif, log dan notifikasi | CA revoke + disable/daemon tersedia. Notifikasi pemilik dan pengukuran latensi berulang belum ada. |
 | §3.4 | Riwayat sertifikat per perangkat dan alasan pencabutan | CA menyimpan index; dashboard belum menyajikan riwayat renewal per perangkat atau alasan pencabutan. Binding sekarang immutable. |
-| §3.5.1, F-01–F-06 | Sah, asing, revoked, expired, revoke aktif, registrasi | Bukti fungsi dan lab tersedia. Expired terutama fixture; dua client aktif bersamaan belum dibuktikan sebagai dua tunnel nyata. |
+| §3.5.1, F-01–F-06 | Sah, asing, revoked, expired, revoke aktif, registrasi | Bukti fungsi dan lab tersedia. Expired terutama fixture. S-04 membuktikan dua tunnel pada VM-CLIENT yang sama dengan namespace sementara, belum dua mesin client independen. |
 | §3.5.2 | Tanpa VPN / WireGuard / VanGuard, masing-masing 10 kali | Belum dilakukan. Perlu protokol eksperimen, definisi baseline dan persetujuan pengecualian admission khusus baseline. |
 | §3.5.2 | Throughput, latency, jitter, CPU | Belum ada dataset komparatif. RTT perlu probe tersendiri; iperf3 UDP menyediakan jitter, bukan pengukuran latency lengkap. |
 | S-01 | Kredensial valid, perangkat asing | PASS pada VM-ATTACKER 9 Oktober: login akun karyawan valid berhasil, sertifikat tidak ada/binding salah/proof dengan key berbeda/replay ditolak tanpa peer baru. Kontrol positif perangkat sah, disable akun dan cleanup PASS. Bukti pada laporan 0.1.3; bukan jaminan pengikatan hardware. |
 | S-02 | Sertifikat revoked dipakai kembali | Sudah diuji pada fixture dan identitas lab sementara. Berbeda dengan replay challenge yang juga diuji. |
-| S-03 | Penyadapan lalu lintas tunnel | Belum ada packet capture terukur. Capture pada interface underlay, karena wg0 menampilkan paket sesudah dekripsi. Tidak membuktikan kekuatan kriptografi secara formal. |
-| S-04 | Sesi terputus <60 detik sesudah revoke | Peer dihapus dan audit tervalidasi; perlu timestamp request/deteksi/enforcement serta bukti penghentian trafik pada sesi uji berulang. |
+| S-03 | Penyadapan lalu lintas tunnel | PASS 3/3: marker ada pada 20 paket kontrol wg0 per putaran, tidak ada pada 20 paket underlay eth0; nol kernel drop. Capture jalur client, bukan MITM attacker atau bukti kriptografi formal. [Hasil](SECURITY_RESULTS_2026-10-09.md). |
+| S-04 | Sesi terputus <60 detik sesudah revoke | PASS 10/10 untuk ICMP: CA-only revoke, peer hilang dengan audit, 25 probe tanpa reply, readmission 403. Batas atas termasuk SSH/konfirmasi 7,351–12,737 detik. Belum penutupan sesi TCP/aplikasi atau timestamp deteksi internal. [Hasil](SECURITY_RESULTS_2026-10-09.md). |
 | §1.2–1.3 | MTTD dan MTTR | Definisi awal/akhir per kejadian perlu ditetapkan sebelum pengukuran; jangan menyebut waktu polling sebagai nilai eksperimen. |
 
 ## Keputusan arsitektur yang harus diselaraskan
@@ -52,7 +52,8 @@ bahwa kelima node serta identitas utama tetap dipertahankan.
 
 1. Selesai: metadata dashboard, validasi dan kompatibilitas data lama (0.1.3).
 2. Selesai: akun karyawan, rollout lima VM dan bukti S-01 live (9 Oktober).
-3. Siapkan protokol dan instrumentasi S-03/S-04 serta MTTD/MTTR; gunakan identitas uji.
+3. Selesai: protokol/instrumentasi dan bukti S-03/S-04 untuk ICMP. MTTD/MTTR tetap
+   membutuhkan definisi kejadian dan timestamp deteksi/pemulihan terpisah.
 4. Siapkan eksperimen performa tiga konfigurasi × 10 pengulangan dan batas baseline.
 5. Lengkapi lifecycle/provisioning/notifikasi serta keputusan cakupan Windows dan
    kebijakan resource manufaktur. Jangan mengarang departemen/pemilik nyata.

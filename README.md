@@ -25,10 +25,13 @@ sequenceDiagram
     A->>CA: POST /api/ca/issue
     CA-->>A: Sertifikat X.509
     A->>S: POST /api/devices (registry saja)
+    A->>S: Tautkan perangkat ke akun karyawan
     A-->>C: device.crt
-    C->>S: POST /api/challenge
+    C->>S: POST /api/employee/login
+    S-->>C: Sesi karyawan (8 jam)
+    C->>S: POST /api/challenge + sesi karyawan
     S-->>C: Nonce sekali pakai, TTL 60 detik
-    C->>S: POST /api/verify + signature X.509
+    C->>S: POST /api/verify + signature X.509 + sesi yang sama
     S->>CA: Ambil dan validasi CRL terkini
     S->>S: Enam pemeriksaan admission
     S->>S: wg set wg0 peer ... allowed-ips 10.8.0.2/32
@@ -47,11 +50,14 @@ dalam `deploy/`. Baca:
 - [Hasil verifikasi dan status deployment](docs/IMPLEMENTATION_REPORT.md)
 - [Checkpoint untuk melanjutkan pekerjaan](docs/CHECKPOINT.md)
 - [Jurnal perubahan 8 Oktober 2026](docs/PROGRESS_2026-10-08.md)
+- [Jurnal perubahan 9 Oktober 2026](docs/PROGRESS_2026-10-09.md)
 - [Aktivasi admin dan authenticator](docs/AKTIVASI_ADMIN.md)
 - [Urutan demo Tugas Akhir](docs/DEMO_TA.md)
 - [Pengujian otomatis dan artefak GitHub](docs/CI.md)
 - [Akun karyawan dan pengujian S-01](docs/EMPLOYEE_ACCESS.md)
 - [Kesesuaian implementasi dengan proposal](docs/PROPOSAL_ALIGNMENT.md)
+- [Protokol capture dan pencabutan berulang S-03/S-04](docs/SECURITY_EXPERIMENTS.md)
+- [Hasil eksperimen S-03/S-04](docs/SECURITY_RESULTS_2026-10-09.md)
 
 Uji lokal (tidak membutuhkan root atau mengubah jaringan host):
 

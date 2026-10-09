@@ -63,3 +63,16 @@ Empat artefak diunduh ke `state/deployment/proposal-2026-10-09/ci-artifacts/`;
 checksum kedua paket diperiksa ulang PASS. Hasil ini meliputi autentikasi akun
 karyawan, binding/sesi perangkat, metadata dashboard serta regresi sebelumnya.
 Hasil lab 0.1.3 dicatat terpisah pada [laporan implementasi](IMPLEMENTATION_REPORT.md).
+
+## Instrumentasi S-03/S-04 — 9 Oktober 2026
+
+[Run 37895229707](https://github.com/LuiLuiLui886/vanguard-ztna/actions/runs/37895229707)
+pada `f29ff67` **success**. Python 3.10: 90 PASS, 45,989 detik;
+Python 3.12: 90 PASS, 78,689 detik. Nol failure/error/skip. Build, Ruff, dependensi,
+shell dan checksum PASS. Empat artefak diunduh ke
+`state/deployment/security-2026-10-09/ci-artifacts/`; checksum paket diverifikasi.
+
+Tambahan 14 tes memeriksa integritas pcap, scope cleanup dan statistik evidence.
+CI tidak menjalankan capture/tunnel/revoke pada VM; hasil live tercatat pada
+[laporan eksperimen](SECURITY_RESULTS_2026-10-09.md). Versi aplikasi tetap 0.1.3;
+arsip CI dikaitkan dengan commit ini, terpisah dari arsip lokal sebelum eksperimen.

@@ -66,3 +66,11 @@ WireGuard atau firewall host.
 Pengujian jaringan harus dijalankan terpisah pada VM: TLS dengan SAN IP, firewall, deployment
 systemd, handshake kernel, reboot, dan pemutusan akses end-to-end. Hasil yang belum diuji
 harus diberi status **belum terverifikasi**, bukan lulus.
+
+## Eksperimen capture dan pencabutan berulang
+
+[Protokol S-03/S-04](SECURITY_EXPERIMENTS.md) mendefinisikan kontrol positif marker,
+pcap utuh, identitas/namespace sementara, timer cleanup, dan batas atas pengamatan
+satu jam monotonic. [Hasil 9 Oktober](SECURITY_RESULTS_2026-10-09.md): capture 3/3
+dan pencabutan ICMP 10/10 PASS. Bukti tidak digeneralisasi ke MITM, sesi TCP atau
+MTTD/MTTR. Jangan jalankan eksperimen bersamaan dengan uji identity/S-01.

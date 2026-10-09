@@ -69,6 +69,12 @@ Gunakan [laporan implementasi](IMPLEMENTATION_REPORT.md), hasil JUnit lokal/gues
 dan ringkasan JSON sesi. Sertakan hasil gagal/interupsi secara jujur bila terjadi.
 File kredensial, QR/seed TOTP, private key, backup state dan env bukan lampiran TA.
 
+Untuk S-03/S-04, gunakan [laporan hasil](SECURITY_RESULTS_2026-10-09.md) yang berisi
+capture 3/3 dan revoke ICMP 10/10 PASS. Jika perlu mengulang live, ikuti
+[protokol eksperimen](SECURITY_EXPERIMENTS.md); skrip memakai namespace dan izin
+ICMP sementara yang dibersihkan otomatis. Angka waktu mencakup overhead kontrol,
+bukan MTTD/MTTR. Tidak perlu mencabut perangkat utama untuk demonstrasi.
+
 Lease 300 detik dan reboot memutus akses sementara; bukti yang sudah tersedia bisa
 dipakai tanpa mengulangi eksperimen saat demo. Jangan menjalankan uji gangguan saat
 `health_lab.py` sedang mengamati stabilitas. Reboot workstation memerlukan jadwal

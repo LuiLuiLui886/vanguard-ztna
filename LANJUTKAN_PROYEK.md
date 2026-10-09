@@ -1,9 +1,7 @@
 # Lanjutkan proyek VanGuard
 
-> **Aktif 13:46 WIB:** S-03 3/3 PASS, suite lokal 90 PASS, pilot S-04 PASS;
-> seri S-04 10 pengulangan berjalan. Catatan tahap, kegagalan pilot dan pemulihan
-> ada di jurnal 9 Oktober serta `state/deployment/security-2026-10-09/`.
-> Jangan menyimpulkan seri S-04 selesai sebelum JSON menyatakan COMPLETE.
+> **Pembaruan 13:52 WIB:** S-03 3/3 dan S-04 ICMP 10/10 PASS; eksperimen serta
+> cleanup selesai. [Hasil per putaran](docs/SECURITY_RESULTS_2026-10-09.md).
 
 Status **9 Oktober 2026**: tahap **0.1.3 selesai dan terpasang pada lima VM**.
 Akun karyawan untuk VPN dan metadata dashboard sudah tersedia. Skenario S-01
@@ -15,14 +13,17 @@ Baca `AGENTS.md`, `VANGUARD_CONTEXT.md`, [checkpoint](docs/CHECKPOINT.md) dan
 
 ## Hasil terakhir
 
-- **76 tes lokal, 76 guest, serta 76 pada masing-masing job CI Python 3.10/3.12 lulus.**
+- **90 tes lokal, 90 guest, serta 90 pada masing-masing job CI Python 3.10/3.12 lulus.**
 - Paket/config/identitas diverifikasi; CA, key dan sertifikat client utama tetap.
 - S-01, disable akun, proof/binding/replay, pencabutan sertifikat dan cleanup lulus.
 - Firewall 40 pemeriksaan dan penolakan bypass LAN lulus.
-- Health akhir 7/7 sampel selama 83,59 detik: renewal berjalan, nol removal,
+- S-03 capture 3/3 PASS. S-04 revoke ICMP 10/10 PASS, batas atas konfirmasi
+  7,351–12,737 detik termasuk SSH/polling; bukan MTTD/MTTR. Resource uji dibersihkan.
+- Health akhir 7/7 sampel selama 85,90 detik: renewal berjalan, nol removal,
   layanan dan tunnel utama sehat. Tidak ada pengujian/rollout yang masih berjalan.
 - Source `0c56374` dipush ke [GitHub private](https://github.com/LuiLuiLui886/vanguard-ztna);
-  [CI run 37871996411](https://github.com/LuiLuiLui886/vanguard-ztna/actions/runs/37871996411) success.
+  instrumentasi `f29ff67` dan
+  [CI run 37895229707](https://github.com/LuiLuiLui886/vanguard-ztna/actions/runs/37895229707) success.
   Catatan akhir disimpan dalam commit dokumentasi setelahnya.
 
 ## Mulai sesi berikutnya
@@ -38,15 +39,17 @@ lalu restart layanan sesuai [panduan akun](docs/EMPLOYEE_ACCESS.md). Akun lab
 `state/deployment/proposal-2026-10-09/employee-onboarding.json`. Jangan cetak atau
 unggah isinya. TOTP admin terpisah dari login karyawan.
 
-Pekerjaan berikutnya: susun protokol/instrumentasi S-03 dan S-04, definisikan
-MTTD/MTTR, lalu siapkan benchmark tiga konfigurasi × 10 pengulangan. Baseline
+Pekerjaan berikutnya: definisikan/instrumentasikan MTTD/MTTR (deteksi dan recovery
+terpisah), lalu siapkan benchmark tiga konfigurasi × 10 pengulangan. Penutupan
+sesi TCP/aplikasi belum tercakup hasil ICMP. Baseline
 WireGuard tanpa admission memerlukan keputusan eksplisit setelah rencana isolasi
 dan pemulihan tersedia. Gap Windows/lifecycle/notifikasi/resource ada di
 [matriks proposal](docs/PROPOSAL_ALIGNMENT.md). Seluruh TA belum dinyatakan selesai.
 
 ## Penyimpanan dan dokumentasi
 
-- Bukti sesi: `state/deployment/proposal-2026-10-09/`.
+- Bukti rilis: `state/deployment/proposal-2026-10-09/`; eksperimen terbaru:
+  `state/deployment/security-2026-10-09/`. Bukti pilot gagal tetap dipertahankan.
 - Backup privat sebelum upgrade: `state/backups/before-0.1.3-2026-10-09/`.
 - Source/wheel/checksum: `dist/`; arsip terdahulu tidak ditimpa.
 - [Laporan aktif](docs/IMPLEMENTATION_REPORT.md), [panduan demo](docs/DEMO_TA.md),
