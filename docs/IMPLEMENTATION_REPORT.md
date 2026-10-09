@@ -1,114 +1,81 @@
-# Hasil implementasi VanGuard — 8 Oktober 2026
+# Hasil implementasi VanGuard — 9 Oktober 2026
 
-## Status versi 0.1.2
+**Versi 0.1.3 terpasang pada lima VM Ubuntu Server 22.04.** Akun karyawan,
+binding akun-perangkat dan metadata dashboard telah ditambahkan untuk penyelarasan
+proposal. Skenario S-01 dengan akun valid pada perangkat attacker lulus.
+Riwayat 0.1.2 dipertahankan pada [laporan 8 Oktober](IMPLEMENTATION_REPORT_2026-10-08.md).
 
-**Versi 0.1.2 sudah berjalan pada lima VM Ubuntu Server 22.04.** Source aplikasi,
-installer, layanan systemd, firewall, dashboard, pengujian dan panduan tersedia.
-Pada pemeriksaan sesudah rollout, client utama memiliki peer `10.8.0.2/32`,
-handshake WireGuard kernel dan ping tunnel berhasil. Hash semua berkas paket
-terpasang pada lima VM sesuai source lokal.
+## Perubahan dan perilaku
 
-Observasi stabilitas COMPLETE: 51/51 sampel PASS selama 681,95 detik. Seluruh
-layanan/firewall, peer dan ping sehat, nol removal sejak awal observasi, serta
-12 deadline lease berbeda membuktikan pembaruan admission berjalan.
-Bukti: `stability/health.json` dalam direktori sesi.
+Karyawan login melalui HTTPS dengan akun lokal yang terpisah dari administrator.
+Password di-hash scrypt; server menyimpan hash token sesi, sedangkan client menyimpan
+token pada file 0600 tanpa menyimpan password. Sesi berlaku delapan jam. Challenge
+dan verify memerlukan sesi yang sama, akun aktif dan binding perangkat yang sah.
+Lease tidak melewati kedaluwarsa sesi, sertifikat atau CRL. Disable akun menghapus
+peer terkait; sesi expired ditolak dan memerlukan login ulang.
 
-## Perbaikan sesi ini
+Sesi akun tetap harus disertai enam pemeriksaan perangkat: signature X.509,
+periode sertifikat, CRL aktual, serial tidak dicabut, proof-of-possession, dan
+binding public key WireGuard. Registrasi hanya menyimpan identitas; peer kernel
+ditambah sesudah admission. Tidak ada default akun atau bypass untuk perangkat lama.
+Client utama dimigrasikan secara eksplisit ke akun lab tanpa mengganti key/sertifikat.
 
-Audit removal sekarang mengandung alasan khusus serta waktu CRL/validator.
-Audit 72, 77 dan 84 pada 8 Oktober menunjukkan `crl_future`: CRL bertanda tangan
-sah mendahului waktu lokal sekitar 7–41 ms pada batas pergantian detik. CA dan
-server memakai NTP, tetapi tetap memiliki selisih/jitter puluhan milidetik.
+Dashboard menyediakan pembuatan/penonaktifan akun, pengikatan perangkat lama, serta
+nama perangkat, departemen, pemilik dan platform. Metadata dapat diedit tanpa
+mengubah identitas kriptografis. Metadata bukan attestation perangkat; data organisasi
+nyata tidak dibuat-buat. Binding akun immutable; reset password dan aktivasi ulang
+akun belum tersedia. Panduan pengguna: [EMPLOYEE_ACCESS.md](EMPLOYEE_ACCESS.md).
 
-Versi 0.1.2 menunggu sekali jika lastUpdate mendahului waktu lokal <=1 detik,
-lalu memeriksa ulang signature, issuer, periode CRL dan trust anchor pada waktu
-aktual. Tidak ada penerimaan CRL sebelum berlaku, penggunaan CRL expired, perubahan
-jam, atau perubahan timestamp issuer. Selisih lebih besar dan revalidasi gagal
-tetap menolak admission serta memutus peer melalui daemon. Challenge yang habis
-saat fetch/proof juga ditolak sebelum penambahan peer.
+## Bukti versi 0.1.3
 
-Pada 120 probe CRL nyata sesudah pemasangan, semua validasi lulus. Sebanyak 17
-penantian 8,7–99,7 ms terjadi; seluruh waktu penerimaan berada di antara lastUpdate
-dan nextUpdate. Audit historis ID 29 memiliki pesan umum sehingga penyebabnya
-secara individual tetap tidak bisa dibuktikan.
-
-Penyimpanan evidence dibuat atomik dengan fsync, status per tahap, dan larangan
-menimpa hasil lama pada run baru. Reboot mendukung `--resume`; identity mencatat
-nama/direktori/tahap/cleanup untuk recovery. Pengujian peer asing pada kernel tanpa
-admission dihapus dari skrip operasional; unit test adapter memori tetap tersedia.
-
-## Hasil yang sudah terverifikasi
-
-| Pemeriksaan | Hasil dan bukti |
+| Pemeriksaan | Hasil |
 |---|---|
-| Suite lokal Python 3.12 | 54 PASS, `docs/test-results.xml` |
-| GitHub CI Ubuntu 22.04 | 54 PASS Python 3.10 + 54 PASS Python 3.12; build/checksum PASS, [bukti CI](CI.md) |
-| Suite guest Ubuntu 22.04/Python 3.10 | 54 PASS, `docs/guest-test-results.xml` |
-| Kualitas source | Ruff, pip check dan sintaks shell PASS |
-| Paket terpasang | Lima VM versi 0.1.2, SHA-256 source cocok, `installed-manifest.json` |
-| Setelah rollout | Layanan, lease, allowed IP, peer dan ping PASS, `post-upgrade/health.json` |
-| Matriks firewall | 40 TCP allow/deny PASS, `operations-matrix.json` dan `firewall-matrix.json` |
-| Attacker | 401 tanpa token, 403 verify palsu, 400 challenge palsu; semuanya PASS |
-| Bypass LAN | Attacker dengan route langsung ke IP tunnel tetap tidak bisa ping |
-| Registrasi | Identitas sementara `10.8.0.3` terdaftar tanpa peer live |
-| Admission | Binding salah/proof salah/replay ditolak; proof sah menambah peer kernel |
-| Revocation | CA-only revoke menghapus peer, audit `certificate_revoked`, readmission ditolak |
-| Cleanup | Identitas sementara dicabut/disabled; client utama tetap terhubung |
-| Probe CRL | 120 PASS, 17 penantian sah, `crl-boundary-probes.json` |
-| Reboot lima guest | CA/server/client lulus sebelum upgrade; admin/attacker lulus setelah upgrade |
-| Lease nyata 300 detik | Sebelum upgrade, removal sekitar 3,75 detik setelah deadline dan recovery PASS |
-| Dashboard HTTPS | GET health/login PASS dengan verifikasi Root CA; form CSRF tersedia |
+| Suite lokal Python 3.12 | 76 PASS, 152,31 detik, [JUnit](test-results.xml) |
+| Suite guest Ubuntu 22.04/Python 3.10 | 76 PASS, 121,05 detik, [JUnit](guest-test-results.xml) |
+| CI Ubuntu 22.04 | 76 PASS Python 3.10 dan 76 PASS Python 3.12, [run 37871996411](https://github.com/LuiLuiLui886/vanguard-ztna/actions/runs/37871996411) |
+| Kualitas/build | Ruff, pip check, shell, wheel/source dan checksum PASS |
+| Rollout | Backup lima role, paket 0.1.3 dan startup layanan COMPLETE |
+| Integritas | 12 berkas paket setiap VM cocok source; config, CA/key dan identitas utama cocok backup |
+| S-01 negatif | Login attacker 200; tanpa cert 400; binding salah, proof key lain dan replay 403; tidak ada peer attacker |
+| S-01 kontrol positif | Sesi akun + proof perangkat sah menghasilkan peer kernel |
+| Disable akun | Peer dihapus, sesi lama ditolak, client utama tetap bisa ping |
+| Identity/S-02 | Registrasi tanpa peer; proof/binding/replay ditolak; CA-only revoke menghapus peer dengan audit certificate_revoked; readmission 403 |
+| Cleanup | Kedua identitas sementara dicabut/disabled dan akun disabled |
+| Firewall/attacker | 40 TCP allow/deny PASS, API negatif PASS, bypass route LAN ditolak |
 
-Bukti sesi terbaru berada di `state/deployment/resume-2026-10-08-2145/` kecuali
-lease/reboot pada `state/deployment/operations-{lease,reboot}.json`. Laporan identity
-memiliki nama `final-check-*.json` yang unik. Evidence mentah adalah data lokal privat;
-salin ringkasan nonrahasia yang diperlukan ke lampiran TA.
+Direktori bukti privat: `state/deployment/proposal-2026-10-09/`.
+Rollout: `rollout.json`; integritas: `installed-manifest.json`;
+S-01: `s01/employee-verification.json`; identity: `identity/final-check-*.json`;
+firewall: `firewall/operations-matrix.json`; observasi akhir: `after-upgrade/health.json`.
+Status dan durasi observasi final dicatat pada [checkpoint](CHECKPOINT.md).
 
-## Cakupan dan batas pengujian
+Empat artefak CI diunduh ke `ci-artifacts/`; checksum paket diperiksa ulang.
+Source implementasi ada pada commit `0c56374` di repository GitHub private.
+Commit catatan setelahnya hanya memperbarui dokumentasi/evidence. Arsip lokal
+`dist/vanguard-0.1.3.tar.gz` dibuat sebelum catatan akhir dan tidak ditimpa;
+Git adalah sumber dokumentasi terbaru. Wheel terpasang memiliki SHA-256
+`b84430b1b3ae53de3b3b758dbd66fe22935accf0d1f1c7fd87c45ec786716097`.
 
-Suite lokal/guest memakai OpenSSL nyata untuk CA dan fixture sertifikat/CRL.
-Kasus negatif mencakup issuer/signature/periode/serial revoked, CA certificate,
-serverAuth certificate, extension kritis asing, binding, proof, replay concurrent,
-challenge expired, TOTP/replay/CSRF, workflow parsial dan HTTPS socket nyata.
-Adapter WireGuard pada suite tersebut berada dalam memori. Bukti kernel berasal
-dari pengujian lima VM yang dicatat terpisah; 54 tes guest tidak berarti 54 tes
-kernel WireGuard.
+## Batas kesimpulan dan pekerjaan berikutnya
 
-Enam tes baru mencakup batas detik CRL, future jauh, jam tidak maju, CRL expired
-selama menunggu, signature salah, dan challenge habis selama fetch. Tidak ada
-pelonggaran validitas waktu sertifikat atau CRL.
+Suite memakai OpenSSL nyata, HTTPS dan database fixture; adapter WireGuard unit
+berada dalam memori. Bukti peer kernel berasal dari lab, bukan dari jumlah tes
+pytest. Identity sementara memakai `10.8.0.3` tanpa tunnel client kedua.
+Pengamatan disable akun 1,146 detik mencakup SSH dan hanya satu pengujian;
+angka ini bukan MTTD/MTTR ataupun pembuktian trafik S-04.
 
-Uji CA offline/pulih, stop daemon, API restart, serta shutdown client pernah lulus
-pada 24 September. Riwayat terperinci dipertahankan dalam
-[laporan September](IMPLEMENTATION_REPORT_2026-09-24.md). Skenario gangguan tersebut
-tidak seluruhnya diulang pada kernel setelah upgrade 0.1.2; regresi logika tetap
-tercakup suite terbaru. Reboot workstation belum diuji pada sesi ini.
+S-03 packet capture, S-04 penghentian trafik dengan timestamp berulang, MTTD/MTTR
+dan benchmark tiga konfigurasi × 10 pengulangan belum selesai. Windows, lifecycle
+sertifikat, provisioning/notifikasi dan pemetaan kebijakan resource masih tercatat
+di [matriks proposal](PROPOSAL_ALIGNMENT.md). Baseline WireGuard tanpa admission
+perlu rencana isolasi/pemulihan dan keputusan eksplisit atas pengecualian aturan lab.
 
-## Penyimpanan dan pemulihan pekerjaan
+Konfirmasi TOTP HP/login pribadi belum diterima. Reboot workstation belum diuji;
+hasil reboot/lease/stabilitas panjang sebelumnya adalah bukti versi terdahulu,
+bukan pengujian ulang 0.1.3. Masalah boot/checksum sore 8 Oktober tidak terulang,
+tetapi penyebab perubahan keadaan belum diketahui; bukti lama dipertahankan.
 
-- [Jurnal perubahan](PROGRESS_2026-10-08.md) mencatat rencana, hasil, temuan dan titik lanjut.
-- [Checkpoint](CHECKPOINT.md) dan [ringkasan lanjut](../LANJUTKAN_PROYEK.md) memuat status aktif.
-- Backup source/config/state sebelum rollout: `state/backups/2026-10-08-2154/`.
-- Rekaman rollout: `state/deployment/resume-2026-10-08-2145/rollout.json`.
-- Artefak lokal: `dist/vanguard-0.1.2.tar.gz`, wheel 0.1.2 dan `dist/SHA256SUMS`.
-  Hasil pembuatan/verifikasi dicatat pada jurnal. Catatan publikasi GitHub dapat
-  lebih baru daripada arsip source yang dipertahankan tanpa overwrite.
-
-Backup state berisi kredensial/key dan dilindungi permission privat. Arsip source
-harus mengecualikan state, database, env aktif, key dan halaman aktivasi. Backup
-aplikasi bukan snapshot disk VM atau salinan di perangkat lain. Rollback paket
-tidak boleh mengembalikan index CA/CRL lama yang membatalkan pencabutan.
-
-## Temuan yang belum ditutup
-
-- Sesi sore menemukan systemd segfault saat boot dan checksum image/tool berbeda.
-  Saat sesi malam, lima guest sudah sehat; checksum image cocok dengan build Ubuntu
-  asli dan `dpkg -V` untuk paket yang diperiksa bersih. Penyebab perubahan keadaan
-  belum diketahui. Uji model CPU tidak menyelesaikan masalah dan XML asli dipulihkan.
-- Audit ID 29 belum bisa dikaitkan secara pasti dengan penyebab CRL future terbaru.
-- Konfirmasi pemasangan TOTP di HP dan login pribadi operator masih ditunggu.
-- Stabilitas jangka panjang di luar jendela observasi tidak diklaim.
-
-Topologi lima node, alamat tunnel, UDP 51820, CA dan identitas utama dipertahankan.
-Source/kernel WireGuard tidak dimodifikasi. Panduan operasional ada di
-[DEPLOYMENT.md](DEPLOYMENT.md), [SECURITY.md](SECURITY.md) dan [DEMO_TA.md](DEMO_TA.md).
+Backup privat sebelum upgrade: `state/backups/before-0.1.3-2026-10-09/`.
+Jangan unggah state/secret atau mengembalikan index CA/CRL lama. Rollback ke 0.1.2
+menghilangkan enforcement akun karyawan; jangan dilakukan otomatis sebagai recovery.
+Topologi lima node dan WireGuard standar tetap dipertahankan.

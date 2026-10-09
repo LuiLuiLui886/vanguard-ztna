@@ -1,52 +1,39 @@
-# Checkpoint VanGuard — 8 Oktober 2026
+# Checkpoint VanGuard — 9 Oktober 2026
 
-> **Dilanjutkan 9 Oktober 2026, 08:41 WIB:** source 0.1.3 masih dalam pengerjaan,
-> belum di-rollout. Ada perubahan lokal akun karyawan dan metadata dashboard yang
-> belum commit. Status 0.1.2 di bawah adalah baseline terakhir yang terverifikasi.
-> Baca [jurnal 9 Oktober](PROGRESS_2026-10-09.md) untuk pekerjaan aktif.
-
-Pembaruan **23:12 WIB**. Versi 0.1.2 terpasang dan teruji; observasi selesai PASS.
-Arsip source/wheel/checksum selesai dan terverifikasi. Source serta dokumentasi
-sudah dipush ke GitHub **private**, branch `main`; detail di bawah.
+**Tahap 0.1.3 selesai:** akun karyawan dan metadata dashboard terpasang pada lima
+VM; S-01 live lulus. Source `0c56374` telah dipush ke
+[repository private](https://github.com/LuiLuiLui886/vanguard-ztna).
+Catatan akhir disimpan melalui commit dokumentasi setelahnya; cek `git log -1`
+dan kesamaan HEAD dengan `origin/main` sebelum memulai perubahan berikutnya.
 
 ## Keadaan terverifikasi
 
 | Bagian | Hasil |
 |---|---|
-| Lima VM | CA `.10`, SERVER `.20`, CLIENT `.30`, ADMIN `.40`, ATTACKER `.50` aktif |
-| Paket | 0.1.2 seluruh VM, hash berkas sesuai source |
-| Akses | SSH pinned host key dan sudo guest lulus |
-| Layanan | CA, server API, daemon, client, admin, firewall aktif |
-| Tunnel | Peer utama `10.8.0.2/32`, handshake kernel dan ping lulus |
-| Tes | 54 lokal + 54 Python 3.10 guest; Ruff/pip check/shell lulus |
-| Firewall | 40 TCP allow/deny, attacker API dan pencegahan bypass LAN lulus |
-| Identity | Registrasi tanpa peer; proof/binding/replay/revocation/cleanup lulus |
-| Waktu CRL | 120 probe nyata lulus, 17 penantian batas detik 9–100 ms |
-| Stabilitas | 51/51 sampel PASS selama 681,95 detik, nol removal, 12 deadline lease |
-| Reboot | Lima role PASS; dua role terakhir dilanjutkan dengan --resume |
-| Lease | Bukti 300 detik + recovery lulus pada sesi sebelumnya hari ini |
+| Lima VM Ubuntu 22.04 | CA `.10`, SERVER `.20`, CLIENT `.30`, ADMIN `.40`, ATTACKER `.50` aktif |
+| Paket | 0.1.3 semua VM; 12 berkas aplikasi per VM cocok source |
+| Identitas/config | Hash sesuai backup; CA/key, key/cert utama dan konfigurasi dipertahankan |
+| Akun VPN | `employee-lab` terikat ke `vm-client`; sesi delapan jam, enam pemeriksaan perangkat tetap wajib |
+| Tes | 76 lokal + 76 guest; CI Python 3.10/3.12 masing-masing 76 PASS |
+| S-01 | Login akun valid dari attacker berhasil; perangkat tanpa proof sah ditolak tanpa peer |
+| Disable akun | Peer sementara dihapus, sesi lama ditolak |
+| Identity/S-02 | Binding/proof/replay/CA revocation/readmission/cleanup PASS |
+| Firewall | 40 TCP allow/deny PASS, attacker API/bypass LAN PASS |
+| Health akhir | 7/7 PASS selama 83,59 detik, dua deadline lease, nol removal |
+| Tunnel utama | Peer `10.8.0.2/32`, handshake dan ping lulus |
+| Metadata dashboard | Nama/departemen/pemilik/platform; edit tidak mengubah identitas; data lama kompatibel |
 
-## Perbaikan dan batasnya
+CI: [run 37871996411](https://github.com/LuiLuiLui886/vanguard-ztna/actions/runs/37871996411).
+Ruff, pip check, shell, build/checksum dan checksum artefak unduhan PASS.
+Detail: [laporan implementasi](IMPLEMENTATION_REPORT.md),
+[jurnal 9 Oktober](PROGRESS_2026-10-09.md), [panduan akun](EMPLOYEE_ACCESS.md).
 
-Audit 72/77/84 mengungkap CRL beberapa milidetik di masa depan. Penanganan baru
-menunggu sekali <=1 detik sebelum mengulang validasi ketat, tanpa menerima CRL
-sebelum berlaku atau sesudah expired. TTL challenge dicek lagi setelah fetch/proof.
-Semua peer nyata tetap hanya ditambah sesudah admission enam pemeriksaan.
+## Melanjutkan sesi berikutnya
 
-Audit lama ID 29 tidak cukup rinci untuk diagnosis pasti. Masalah boot/checksum
-sore tidak terulang pada sesi malam; keadaan kini sehat tetapi penyebab perubahan
-tersebut tidak diketahui. CPU CA memakai konfigurasi asli, tidak ada disk/CA/key
-yang diganti. Kernel/source WireGuard tidak diubah.
-
-## Titik lanjut yang konkret
-
-1. Observasi `state/deployment/resume-2026-10-08-2145/stability/health.json` COMPLETE.
-2. Publikasi GitHub selesai; lanjutkan kebutuhan TA/demonstrasi melalui
-   [panduan demo](DEMO_TA.md). Jangan unggah state atau backup rahasia.
-3. TOTP di HP/login pribadi masih menunggu konfirmasi operator. Panduan:
-   [AKTIVASI_ADMIN.md](AKTIVASI_ADMIN.md). Reboot workstation belum diuji.
-
-Untuk pemeriksaan ulang tanpa mengganggu client:
+1. Baca `AGENTS.md`, `VANGUARD_CONTEXT.md`, checkpoint ini dan jurnal terbaru.
+2. Periksa lima domain yang ada. Jika mati, `bash scripts/open_dashboard.sh`
+   dapat menyalakannya. Jangan membuat ulang lab/CA/identitas utama.
+3. Jalankan preflight dan health dengan direktori hasil baru:
 
 ```bash
 .venv/bin/python scripts/ssh_preflight.py state/lab/inventory.json
@@ -54,42 +41,48 @@ Untuk pemeriksaan ulang tanpa mengganggu client:
   --state state/deployment/health-run-baru
 ```
 
-Gunakan direktori baru. Jangan jalankan ulang `create_lab.py` atau `verify_lab.py`
-(yang memerlukan client idle), dan jangan cabut identitas utama. Autostart VM tetap
-nonaktif; `bash scripts/open_dashboard.sh` menyalakan VM yang ada dan membuka
-dashboard. Jaringan libvirt autostart.
+4. Sesi akun tidak diperpanjang oleh renewal admission. Jika expired, login ulang
+   pada VM-CLIENT lalu restart `vanguard-client` sesuai panduan akun. Bootstrap
+   kredensial tersimpan privat pada direktori sesi; jangan cetak/commit isinya.
+5. Lanjutkan protokol/instrumentasi S-03 capture underlay dan S-04 penghentian
+   trafik dengan timestamp berulang pada identitas sementara; tetapkan definisi
+   MTTD/MTTR sebelum mengukur. Kemudian siapkan benchmark 3 konfigurasi × 10.
+6. Baseline WireGuard tanpa admission bertentangan dengan aturan peer saat ini:
+   siapkan rencana isolasi/backup/pemulihan untuk keputusan eksplisit, jangan
+   jalankan bypass. Gap lain ada di [matriks proposal](PROPOSAL_ALIGNMENT.md).
+7. Catat rencana sebelum kelompok perubahan dan hasil setelahnya, validasi,
+   commit/push ke private repo; perbarui checkpoint sebelum berhenti.
 
-## Lokasi penyimpanan
+Tidak ada rollout atau pengujian live yang masih berjalan pada akhir tahap ini.
+Jangan ulang `rollout.py`, enrollment utama atau pencabutan identitas utama.
+Jalankan `verify_employee.py` dan `verify_identity.py` berurutan karena keduanya
+memakai peer sementara `10.8.0.3`. Skrip tersebut tidak membuat tunnel kedua.
 
-- Artefak source/wheel: `dist/`, checksum `dist/SHA256SUMS` (lokal, diabaikan Git).
-- Bukti terbaru: `state/deployment/resume-2026-10-08-2145/`.
-- Backup sebelum rollout: `state/backups/2026-10-08-2154/`, mode privat.
-- Lease/reboot: `state/deployment/operations-{lease,reboot}.json`.
-- Kredensial/QR lokal: `state/deployment/`, lihat panduan aktivasi; jangan cetak isinya.
-- [Checkpoint September](CHECKPOINT_2026-09-24.md) dan
-  [laporan September](IMPLEMENTATION_REPORT_2026-09-24.md) menjadi arsip historis.
+## Bukti dan pemulihan
 
-Backup mencakup source dan state aplikasi, bukan snapshot disk VM atau backup
-di perangkat lain. Jangan memulihkan CA index/CRL lama untuk rollback paket.
+- Bukti aktif: `state/deployment/proposal-2026-10-09/`: `rollout.json`,
+  `installed-manifest.json`, `s01/`, `identity/`, `firewall/`, `after-upgrade/`,
+  `ci-artifacts/`, `local-final.xml`, `guest-final.xml`.
+- Backup lima role sebelum upgrade: `state/backups/before-0.1.3-2026-10-09/`.
+- Snapshot WIP: `state/backups/resume-2026-10-09-0841/source-wip.tar.gz`.
+- Kredensial lab: `state/deployment/proposal-2026-10-09/employee-onboarding.json`.
+- Artefak 0.1.3 di `dist/`; arsip immutable dibuat sebelum catatan akhir.
+- CLI GitHub lokal: `state/tooling/github/cli/usr/bin/gh`; branch `main`.
+- Riwayat 0.1.2: [laporan lama](IMPLEMENTATION_REPORT_2026-10-08.md),
+  [checkpoint lama](CHECKPOINT_2026-10-08.md) dan [jurnal lama](PROGRESS_2026-10-08.md).
 
-## Status penyimpanan Git
+Backup mengandung rahasia dan bukan snapshot disk atau backup di perangkat lain.
+Jangan unggah state/key/env atau memulihkan index CA/CRL lama. Downgrade ke 0.1.2
+meniadakan enforcement akun; jangan digunakan sebagai recovery otomatis.
 
-Repository **private**: [https://github.com/LuiLuiLui886/vanguard-ztna](https://github.com/LuiLuiLui886/vanguard-ztna), branch `main`, remote `origin`.
-Push pertama terverifikasi: `19cf0cb`; HEAD lokal/remote sama dan GitHub
-mengembalikan `isPrivate: true`. Catatan akhir dipush sebagai commit berikutnya.
-Commit implementasi: `242dffd`; backup Git sebelum publikasi tersedia di
-`state/backups/final-source-2026-10-08-225332/`. State, secret, database,
-private key dan disk VM tetap lokal. Jangan mengulang enrollment/deployment.
+## Belum terverifikasi / belum selesai
 
-## Progres CI (8 Oktober, 23:12 WIB)
-
-**COMPLETE/PASS** — [run 37806541495](https://github.com/LuiLuiLui886/vanguard-ztna/actions/runs/37806541495) pada commit `a254f1e`.
-Ubuntu 22.04/Python 3.10 dan 3.12 masing-masing 54 tes PASS, nol failure/error/skip.
-Ruff, pip check, sintaks shell, build wheel/source dan checksum PASS di kedua job.
-Artefak diunduh dan checksum diperiksa ulang; source memuat 65 berkas termasuk CI.
-Panduan: [CI.md](CI.md). Bukti lokal: `state/deployment/ci-2026-10-08/`.
-
-Kelima VM lulus preflight dan health ulang sebelum pekerjaan CI. Tidak ada
-perubahan kode aplikasi/layanan/topologi; versi lab tetap 0.1.2. Pekerjaan lanjut
-yang memerlukan operator: konfirmasi TOTP di HP/login pribadi dan jadwal uji
-reboot workstation. CI berikutnya berjalan otomatis pada push kode/PR.
+- TOTP HP dan login pribadi operator belum dikonfirmasi; lihat [aktivasi admin](AKTIVASI_ADMIN.md).
+- Reboot workstation belum diuji; autostart VM nonaktif, jaringan libvirt autostart.
+- S-03/S-04 kuantitatif, MTTD/MTTR, benchmark, Windows serta fitur lifecycle/
+  provisioning/notifikasi dan kebijakan resource belum lengkap.
+- Disable akun 1,146 detik termasuk SSH bukan pengukuran MTTD/MTTR atau S-04.
+- Hasil reboot, lease 300 detik dan stabilitas 681,95 detik adalah bukti versi
+  sebelumnya, tidak seluruhnya diulang pada 0.1.3.
+- Masalah boot/checksum sore 8 Oktober tidak terulang; penyebab perubahan keadaan
+  belum diketahui. Bukti asli dipertahankan. Kernel/source WireGuard tidak diubah.

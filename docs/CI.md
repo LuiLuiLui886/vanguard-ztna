@@ -51,3 +51,15 @@ paket diperiksa ulang; arsip source berisi 65 berkas, termasuk workflow, tanpa
 state/secret. JUnit CI ini terpisah dari hasil suite lokal/guest sebelumnya.
 Commit sesudah run yang hanya mencatat hasil memakai `[skip ci]`; tidak ada
 perubahan workflow/kode pada commit catatan tersebut.
+
+## Versi 0.1.3 — 9 Oktober 2026
+
+[Run 37871996411](https://github.com/LuiLuiLui886/vanguard-ztna/actions/runs/37871996411)
+pada commit `0c56374` selesai **success**. Python 3.10: **76 PASS** dalam
+83,127 detik; Python 3.12: **76 PASS** dalam 85,138 detik. Nol failure/error/skip.
+Ruff, dependensi, shell, build dan checksum lulus pada kedua job.
+
+Empat artefak diunduh ke `state/deployment/proposal-2026-10-09/ci-artifacts/`;
+checksum kedua paket diperiksa ulang PASS. Hasil ini meliputi autentikasi akun
+karyawan, binding/sesi perangkat, metadata dashboard serta regresi sebelumnya.
+Hasil lab 0.1.3 dicatat terpisah pada [laporan implementasi](IMPLEMENTATION_REPORT.md).

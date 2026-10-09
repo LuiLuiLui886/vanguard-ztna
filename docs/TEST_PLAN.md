@@ -9,6 +9,10 @@ ke laporan. `/healthz` saja tidak membuktikan admission atau koneksi tunnel.
 | Boot bersih | Start server dan daemon | Peer kosong |
 | Registrasi | Upload CSR/WG key melalui admin | Sertifikat dan binding ada, peer tetap kosong |
 | Admission sah | Client challenge + proof | ACCEPT, satu peer dengan 10.8.0.2/32 |
+| S-01 akun dicuri | Login akun karyawan valid dari attacker; tanpa sertifikat atau dengan sertifikat publik dan key berbeda | Login 200; admission ditolak; tidak ada peer attacker |
+| Sesi akun | Token hilang/salah, akun lain, token berbeda setelah challenge atau sesi expired saat CRL fetch | Ditolak sebelum peer ditambahkan |
+| Disable akun | Nonaktifkan akun yang memiliki peer aktif; coba sesi lama lagi | Peer hilang dan admission ditolak |
+| Legacy dan metadata | Perangkat lama tanpa binding akun; edit nama/departemen/pemilik/platform | Legacy gagal tertutup sampai binding/login; metadata tidak mengubah identitas |
 | Handshake | Client connect, ping 10.8.0.1 | latest handshake terisi, paket lewat tunnel |
 | Tanpa token | Attacker memanggil GET /api/devices | 401, registry tidak dibocorkan |
 | Sertifikat palsu | Attacker mengirim sertifikat tak tepercaya | Ditolak, tidak ada peer baru |
@@ -47,6 +51,12 @@ proses mati harus diperiksa, bukan dianggap selesai. `scripts/verify_identity.py
 menulis nama identitas, direktori, tahap aktif, hasil admission/revocation dan
 cleanup setelah setiap langkah; gunakan nama tersebut untuk memeriksa cleanup
 identitas sementara jika proses terputus. Identitas utama tidak boleh dicabut.
+
+`scripts/verify_employee.py` menjalankan S-01 dari VM-ATTACKER dengan akun dan
+identitas sementara. Kredensial hanya lewat stdin, tidak dicetak; private key
+perangkat tidak dikirim ke attacker. Jalankan terpisah dari `verify_identity.py`
+karena keduanya memakai peer sementara `10.8.0.3`. Pengamatan disable akun sekali
+yang mencakup waktu SSH bukan nilai MTTD/MTTR atau bukti trafik S-04 berulang.
 
 Unit/integration tests lokal mencakup komponen PKI, API Flask, workflow admin, concurrency
 challenge, dan lifecycle melalui adapter WireGuard. OpenSSL CA sungguhan menghasilkan
