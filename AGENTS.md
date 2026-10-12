@@ -20,6 +20,18 @@ step. Update `docs/CHECKPOINT.md` and `LANJUTKAN_PROYEK.md` before stopping. Mar
 interrupted/in-progress work explicitly; never infer success from an incomplete log.
 Keep secrets out of all progress documents. Preserve earlier evidence and backups.
 
+## Local credential documentation
+
+The user requires project usernames/passwords to be documented only on this
+computer. Maintain the private inventory at
+`/home/lui/VanGuard-Privat/KREDENSIAL_VANGUARD.md` and `kredensial.json`, outside
+the repository (directory 0700, files 0600). Update it when operational credentials
+change. Never commit credential values, TOTP seeds, tokens or private keys, even
+to the private GitHub repository. If a password is unavailable and only a hash
+remains, document that fact locally; do not invent it or reset it just to complete
+the inventory. Public progress records may reference the location and validation
+status only.
+
 ## Nodes
 
 - VM-CA:       192.168.100.10

@@ -1,6 +1,6 @@
 # Checkpoint VanGuard — 12 Oktober 2026
 
-**0.1.5 terpasang pada lima VM; finalisasi validasi/push berlangsung.**
+**Tahap 0.1.5 selesai, terpasang pada lima VM dan source dipush private.**
 132 tes lokal dan 132 guest PASS. Dashboard HTTPS live dan pilot clear/VanGuard
 n=1 per kondisi PASS. Jangan menyamakan status ini dengan seri benchmark lengkap
 atau seluruh proposal selesai. [Jurnal](PROGRESS_2026-10-12.md).
@@ -17,25 +17,34 @@ atau seluruh proposal selesai. [Jurnal](PROGRESS_2026-10-12.md).
   pada client/server, tanpa daemon permanen. Pilot gagal 10 Oktober dipertahankan.
 - Bukti aktif: `state/deployment/audit-2026-10-12/`.
   Backup: `state/backups/before-0.1.5-2026-10-12/`.
-- Sesi utama terakhir di `resume.json`; berlaku delapan jam sejak login,
+- Sesi utama terakhir di `resume.json` berakhir **12 Oktober 2026 21:39:08 WIB**;
   tidak diperpanjang oleh renewal atau boot. Periksa expiry aktual sebelum demo.
 - Kredensial lokal: `/home/lui/VanGuard-Privat/KREDENSIAL_VANGUARD.md` di luar repo,
   mode 0600; folder 0700. Password console lima VM disiapkan, SSH tetap memakai key.
   Password admin/VPN utama cocok hash aktual. Akun uji lama dicatat tanpa mengarang
   password yang hanya tersimpan sebagai hash.
 
-## Pemulihan dan pekerjaan yang sedang berlangsung
+## Pemulihan dan hasil akhir lab
 
 VM ditemukan mati lagi sesudah interupsi. Sesudah boot, identity gagal akibat
 counter CRL kosong dan client tertahan config tunnel sisa. Backup CA dibuat
 sebelum pemulihan counter secara monoton; jangan mengembalikan index/CRL lama.
-Lihat `shutdown-recovery.json` dan laporan identity gagal sebelum melanjutkan.
-Hasil yang RUNNING/FAIL belum boleh dianggap sukses.
+`shutdown-recovery.json` **COMPLETE**: signature CRL valid, nomor 11641 ke 11642,
+index/key/root/serial tetap dan seluruh revocation lama dipertahankan. Config
+client lama dibackup setelah interface dipastikan mati; tunnel utama pulih.
 
-Berikutnya: selesaikan recovery, identity ulang, firewall dan health, refresh
-inventaris akun lokal, verifikasi tidak ada secret masuk index, commit/push
-source dan pantau CI, lalu simpan hasil aktual pada handoff ini.
-Tidak menjalankan eksperimen .3 atau benchmark bersamaan.
+Identity ulang **COMPLETE/PASS**, termasuk proof/binding/replay, CA-only revoke
+dan cleanup. Firewall **40 pemeriksaan PASS**, API tanpa otorisasi dan bypass LAN
+ditolak. Health **7/7 PASS selama 82,75 detik**, dua deadline lease, nol removal.
+Tidak ada eksperimen aktif. Inventaris privat terbaru memuat satu admin, 22 akun
+karyawan (satu aktif) dan lima akun console; nilai rahasia tidak masuk Git.
+
+Source `8eeffaa` sudah dipush ke GitHub private.
+[CI 38226313875](https://github.com/LuiLuiLui886/vanguard-ztna/actions/runs/38226313875)
+success: masing-masing **132 PASS** Python 3.10/3.12, nol failure/error/skip.
+Build/checksum artefak unduhan PASS; catatan akhir masuk commit dokumentasi sesudahnya.
+Jangan menjalankan eksperimen .3 atau benchmark bersamaan. Backup CA sebelum repair
+berada pada direktori bukti audit.
 
 ## Sesi berikutnya
 
@@ -53,3 +62,5 @@ S-01 kuantitatif tetap bukti 0.1.4; S-03/S-04 ICMP tetap bukti 0.1.3, tidak diul
 penuh. [Laporan aktif](IMPLEMENTATION_REPORT.md), [tutorial](TUTORIAL_PENGGUNAAN.md),
 [checkpoint lama](CHECKPOINT_2026-10-10.md). Login HP pribadi dan console interaktif,
 reboot workstation, serta penyebab shutdown belum terverifikasi.
+Tindak lanjut operasional: ketahanan counter CA saat shutdown mendadak dan warning
+control socket Gunicorn pada sandbox service; API dan admission sudah lulus uji akhir.

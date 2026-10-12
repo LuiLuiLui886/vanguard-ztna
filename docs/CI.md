@@ -88,3 +88,17 @@ dependensi, shell, build dan checksum PASS. Empat artefak diunduh ke
 Sepuluh tes tambahan mencakup korelasi/durasi penolakan, request concurrent,
 kerahasiaan telemetry, pengecualian throttle serta validitas agregasi sampel.
 Hasil live terpisah di [laporan MTTD/MTTR S-01](RESPONSE_METRICS_2026-10-10.md).
+
+## Dashboard dan runner 0.1.5 — 12 Oktober 2026
+
+[Run 38226313875](https://github.com/LuiLuiLui886/vanguard-ztna/actions/runs/38226313875)
+pada source `8eeffaa` **success**. Python 3.10: **132 PASS**, 81,549 detik;
+Python 3.12: **132 PASS**, 97,714 detik; nol failure/error/skip. Ruff, dependensi,
+sintaks shell, build, checksum dan upload artefak lulus pada kedua job.
+
+Empat artefak diunduh ke `state/deployment/audit-2026-10-12/ci-artifacts/`.
+Checksum paket unduhan PASS; masing-masing arsip source memuat 111 berkas tanpa
+state/secrets. CI mencakup migrasi/audit/reason/bundle dashboard dan parser/cleanup
+runner benchmark, tetapi tidak mengeksekusi VM lab. Hasil live tersedia pada
+[laporan implementasi](IMPLEMENTATION_REPORT.md) dan [pilot](BENCHMARK_PILOT_2026-10-12.md).
+Commit catatan sesudahnya memakai `[skip ci]` karena hanya mengubah dokumentasi.

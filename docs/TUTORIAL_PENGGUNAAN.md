@@ -114,7 +114,9 @@ sudo /opt/vanguard/venv/bin/vanguard-client login --username employee-lab
 Masukkan password **karyawan**, bukan password admin. Karakter password tidak
 muncul saat diketik; ini normal. Jika belum mengetahui password lab, operator
 dapat melihatnya secara privat di file lokal laptop
-`state/deployment/proposal-2026-10-09/employee-onboarding.json` menggunakan editor.
+`/home/lui/VanGuard-Privat/KREDENSIAL_VANGUARD.md` menggunakan editor. Dokumen lokal
+ini juga memuat kredensial admin dan password console lima VM. Sumber bootstrap
+tetap `state/deployment/proposal-2026-10-09/employee-onboarding.json`.
 Jangan menaruh password pada argumen perintah, chat atau jurnal.
 
 Login sukses menampilkan username dan `expires_at`, bukan token. Selanjutnya:
