@@ -1,16 +1,16 @@
 # Lanjutkan proyek VanGuard
 
-**12 Oktober 2026: 0.1.6 live selesai, push final menunggu.** Dashboard terbaru
+**12 Oktober 2026: 0.1.6 live, push, dan CI selesai.** Dashboard terbaru
 terpasang pada VM-ADMIN; empat VM lain tetap 0.1.5. Tes admin terakhir 26 PASS;
 verifikasi HTTPS/TOTP final 4/4 PASS dan arsip 17 aktivitas terverifikasi.
-137 tes suite sebelumnya PASS; CI final perlu menguji tambahan pencatatan akses.
+CI final: 137/137 PASS pada Python 3.10 dan 3.12, tanpa error/failure/skip.
 Perbaikan sesuai audit proposal
 mencakup health dashboard, audit admin, alasan/waktu pencabutan, history/validity
 sertifikat dan bundle publik. 132 tes lokal + 132 guest PASS; UI HTTPS live dan
 pilot clear/VanGuard n=1 PASS. Identity, firewall dan health akhir PASS.
 Source 0.1.5 `8eeffaa` sudah dipush private; CI sebelumnya masing-masing 132 tes
-Python 3.10/3.12 lulus. Source awal 0.1.6 `a478111` sudah dipush dan CI lulus;
-tambahan pencatatan halaman dashboard/filter/arsip masih perlu push dan CI baru.
+Python 3.10/3.12 lulus. Source awal 0.1.6 `a478111` dan revisi final `49dd332`
+sudah dipush private; CI final lulus pada kedua versi Python.
 
 Baca AGENTS.md, VANGUARD_CONTEXT.md, [checkpoint](docs/CHECKPOINT.md) dan
 [jurnal 12 Oktober](docs/PROGRESS_2026-10-12.md) sebelum melanjutkan.
@@ -36,8 +36,8 @@ perlu login ulang saat expired.
 
 Identity ulang/cleanup PASS, firewall 40 pemeriksaan PASS, health 7/7 selama
 82,75 detik dengan nol removal. Inventaris kredensial lokal sudah diperbarui.
-Tahap 0.1.5 selesai. Untuk 0.1.6 tinggal finalisasi handoff, scan rahasia,
-push source dan cek CI 137 tes Python 3.10/3.12. Deployment admin live lulus.
+Tahap dashboard 0.1.6 selesai dan terdokumentasi. Berikutnya lanjutkan gap proposal
+serta isu operasional yang masih tercatat pada checkpoint.
 Setelah itu lanjutkan gap proposal: baseline WG membutuhkan pengecualian admission eksplisit,
 renewal sertifikat, notifikasi, Windows, resource policy dan bukti TCP/aplikasi.
 Jangan menjalankan eksperimen .3 bersamaan atau recreate topologi lima node.

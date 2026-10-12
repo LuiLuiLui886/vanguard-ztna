@@ -8,8 +8,9 @@ dengan checksum. Suite lokal **137 tes PASS** sebelum tambahan pencatatan akses;
 tes admin final **26 PASS** dan login/arsip/unduh HTTPS/TOTP **4/4 PASS**.
 Empat VM layanan lain tetap 0.1.5 karena perubahan ini hanya pada dashboard.
 Backup database/config admin ada di `state/backups/before-0.1.6-2026-10-12/`
-dan `state/backups/before-0.1.6-final-2026-10-12/`. Source awal telah dipush;
-tambahan final memerlukan push dan CI baru. Rincian:
+dan `state/backups/before-0.1.6-final-2026-10-12/`. Source final `49dd332`
+dipush ke repository private; CI Python 3.10/3.12 masing-masing 137/137 PASS.
+Rincian:
 [panduan 0.1.6](DASHBOARD_0.1.6.md) dan [jurnal](PROGRESS_2026-10-12.md).
 
 **Versi 0.1.5 terpasang pada lima VM Ubuntu 22.04.** Audit proposal menghasilkan
