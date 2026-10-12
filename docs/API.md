@@ -146,3 +146,13 @@ Antarmuka HTML; POST memakai form/multipart, cookie sesi, dan CSRF token.
 | GET | `/healthz` | Liveness proses |
 
 Semua route perangkat memerlukan login; form POST memerlukan field `csrf`.
+
+## Dashboard 0.1.5
+
+Endpoint berikut memerlukan sesi admin hasil password/TOTP; semua POST tetap
+memerlukan CSRF. `GET /devices/<id>/history` menampilkan masa berlaku/fingerprint,
+alasan/waktu workflow pencabutan serta 100 audit administrasi terbaru per identitas.
+`GET /devices/<id>/bundle` mengirim ZIP materi publik setelah pemeriksaan workflow,
+binding akun, validity dan CRL; tidak menambah peer. `POST /devices/<id>/revoke`
+sekarang mewajibkan field `reason` dari enum pada [panduan dashboard](DASHBOARD_0.1.5.md).
+Reason tidak ditambahkan ke kontrak CA API; reason CRL OpenSSL tetap sama.

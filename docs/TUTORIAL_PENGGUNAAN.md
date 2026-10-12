@@ -1,6 +1,6 @@
 # Tutorial penggunaan VanGuard dari awal sampai akhir
 
-Panduan untuk **VanGuard 0.1.4 pada lab yang sudah terpasang di laptop ini**.
+Panduan untuk **VanGuard 0.1.5 pada lab yang sudah terpasang di laptop ini**.
 Ikuti bagian 1–6 untuk pemakaian harian, bagian 7 untuk latihan registrasi,
 bagian 8 untuk pengujian, dan bagian 9 untuk menutup sesi. Solusi masalah ada
 di bagian 10. Panduan ini tidak menjalankan perubahan hanya dengan membacanya.
@@ -177,13 +177,17 @@ Jangan menjalankan health bersamaan dengan pencabutan atau shutdown.
 
 | Bagian/tombol | Cara memakai dan akibatnya |
 |---|---|
+| Kesehatan layanan | Lihat status HTTPS CA/server saat halaman dimuat; liveness tidak membuktikan tunnel aktif |
 | Akun karyawan | Isi username dan password awal minimal 12 karakter; klik **Buat akun karyawan** |
 | Registrasi perangkat | Unggah request JSON dari client, isi metadata, pilih akun, klik **Terbitkan sertifikat & daftarkan binding** |
 | Unduh sertifikat | Ambil sertifikat milik baris perangkat tersebut untuk dipasang ke client yang membuat request |
+| Unduh bundle onboarding | ZIP sertifikat/root publik, manifest dan petunjuk; tanpa private key/token, belum auto-import konfigurasi |
+| Riwayat perangkat | Lihat masa berlaku UTC/fingerprint, alasan pencabutan dan 100 aktivitas terbaru sejak 0.1.5 |
 | Edit data perangkat | Ubah nama/departemen/pemilik/platform, lalu **Simpan data perangkat**; identitas dan binding akun tetap |
 | Tautkan akun VPN | Hanya muncul untuk perangkat lama berstatus registered yang belum punya akun |
 | Ulangi workflow | Lanjutkan workflow yang belum selesai sesudah dependency pulih |
 | Audit terbaru | Lihat 25 peristiwa terbaru yang dapat dibaca dari server; muat ulang halaman untuk memperbarui |
+| Aktivitas administrasi | Lihat 25 aktivitas admin terbaru dengan aktor/waktu; bukti sebelum 0.1.5 tidak direkonstruksi |
 | Keluar | Mengakhiri sesi dashboard; tidak mematikan VPN karyawan |
 
 Registrasi belum mengaktifkan peer. Client harus login dan lolos enam pemeriksaan
@@ -308,7 +312,8 @@ tunnel utama; pengujian trafik pencabutan terpisah dijelaskan di bagian 8.
 ### 7e. Cabut identitas latihan dan tutup akunnya
 
 1. Di dashboard, pastikan baris yang dipilih adalah **tutorial-client-01**.
-2. Klik **Cabut akses & sertifikat**. Tunggu workflow `revoked` dan peer tidak aktif.
+2. Pilih alasan **Pembersihan pengujian**, lalu klik **Cabut akses & sertifikat**.
+   Tunggu workflow `revoked` dan peer tidak aktif.
 3. Jika tertulis `revoking`, pulihkan dependency yang gagal dan klik **Ulangi workflow**
    sampai selesai; jangan menganggap pencabutan selesai hanya karena tombol diklik.
 4. Di VM-CLIENT, ulangi perintah `admit` latihan. Permintaan harus ditolak. Pesan
@@ -483,5 +488,7 @@ perbarui `docs/CHECKPOINT.md` dan `LANJUTKAN_PROYEK.md` sebelum berhenti.
 Jangan mencatat password, token, QR/seed TOTP, private key, isi env atau backup
 privat ke dokumentasi/Git. Backup CA tidak boleh dipulihkan ke index/CRL lama
 yang mengaktifkan kembali sertifikat dicabut. Panduan ini diverifikasi terhadap
-source CLI/template dan dokumentasi 0.1.4; latihan manual serta shutdown di atas
+source CLI/template dan dokumentasi 0.1.5; latihan manual serta shutdown di atas
 tidak dijalankan saat penulisan tutorial.
+
+Penjelasan migrasi, audit dan batas bundle ada pada [panduan dashboard 0.1.5](DASHBOARD_0.1.5.md).

@@ -44,3 +44,12 @@ docs/RESPONSE_METRICS.md; they are distinct from network RTT, prior S-04 revocat
 bounds, credential-theft onset and operational recovery. Timing records never
 include passwords, sessions, bodies, certificate PEM, proof signatures or nonces.
 This telemetry does not change any admission check or add an alternative peer path.
+
+Proposal audit implementation — 12 October 2026:
+Version 0.1.5 adds dashboard dependency liveness, structured administrator audit,
+revocation reason/completion time, certificate validity and per-identity event history.
+The onboarding bundle contains public certificates, a binding manifest and instructions;
+never export/generate a device private key on the dashboard and never add a peer on download.
+Certificate validity display is not admission authorization. One certificate per immutable
+device identity remains; renewal, hardware attestation, Windows, owner notifications and
+per-resource policy are not claimed implemented by these dashboard improvements.

@@ -1,13 +1,18 @@
 # Penyelarasan VanGuard terhadap proposal
 
 Acuan: [proposal TA Louis Andreas](https://docs.google.com/document/d/1FWkmRWSUzfvPzLz1S2Bdxv2lCrgtB35IMzyWPZNX6BA/edit),
-dibaca 8 Oktober 2026. Pengguna menetapkan kesesuaian proposal sebagai tujuan
+dibaca ulang 12 Oktober 2026. Pengguna menetapkan kesesuaian proposal sebagai tujuan
 pekerjaan berikutnya. Status tabel ini adalah hasil audit implementasi dan bukti,
 bukan pernyataan bahwa seluruh proposal telah selesai.
 
+Audit per bagian dan contoh redaksi tersedia pada
+[saran revisi proposal](SARAN_REVISI_PROPOSAL_2026-10-12.md). Proposal Google Docs
+tidak ditimpa. Perubahan aplikasi 0.1.5 dan bukti terbaru dicatat pada
+[jurnal 12 Oktober](PROGRESS_2026-10-12.md); bukti 0.1.3/0.1.4 tetap historis.
+
 ## Matriks kebutuhan
 
-| Acuan | Kebutuhan | Status awal dan pekerjaan berikutnya |
+| Acuan | Kebutuhan | Status audit 12 Oktober dan pekerjaan berikutnya |
 |---|---|---|
 | §1.2–1.3, §3.1 | Client, server gateway, CA, dashboard; simulasi manufaktur | Empat komponen pada empat VM + VM attacker tersedia. Kolom departemen/pemilik tersedia sejak 0.1.3; data organisasi nyata belum diisi. |
 | §1.2 | WireGuard tanpa perubahan source/kernel | Sesuai. Admission HTTPS terpisah mendahului handshake standar. |
@@ -17,13 +22,13 @@ bukan pernyataan bahwa seluruh proposal telah selesai.
 | §3.2.1 | Client Python Linux dan Windows | Ubuntu 22.04 teruji. Windows belum diimplementasikan/divalidasi; jangan mengklaim portabilitas dari bahasa Python saja. |
 | §3.3.2 | Login admin 2FA | Ada, tes TOTP/CSRF/replay lulus; onboarding HP pribadi belum dikonfirmasi. |
 | §3.3.2 | Nama, departemen, pemilik, platform | Implementasi 0.1.3 terpasang; validasi/edit dan kompatibilitas data lama lulus suite lokal/guest/CI. Metadata bukan bukti kondisi/attestation perangkat. |
-| §3.3.2 | Health check CA, issuance, sinkronisasi, audit | Issuance/retry idempotent tersedia; pemeriksaan health eksplisit dan audit admin terstruktur masih perlu ditinjau. |
-| §3.3.2 | Provisioning bundle dan notifikasi endpoint | Unduh sertifikat ada; paket konfigurasi dan notifikasi pemilik belum ada. Private key tetap dibuat/disimpan pada client sesuai arsitektur terbaru. |
-| §3.3.3 | Revocation aktif, log dan notifikasi | CA revoke + disable/daemon tersedia. Notifikasi pemilik dan pengukuran latensi berulang belum ada. |
-| §3.4 | Riwayat sertifikat per perangkat dan alasan pencabutan | CA menyimpan index; dashboard belum menyajikan riwayat renewal per perangkat atau alasan pencabutan. Binding sekarang immutable. |
+| §3.3.2 | Health check CA, issuance, sinkronisasi, audit | 0.1.5: health CA sebelum issuance; status HTTPS CA/server terpisah, audit admin aktor/waktu/peristiwa, workflow retry idempotent. Liveness bukan jaminan CRL atau tunnel sah. |
+| §3.3.2 | Provisioning bundle dan notifikasi endpoint | 0.1.5: ZIP sertifikat/root publik, manifest binding dan petunjuk; bukan private key atau wg0.conf siap bypass. CLI belum auto-import manifest; notifikasi pemilik/endpoint belum tersedia. |
+| §3.3.3 | Revocation aktif, log dan notifikasi | CA revoke + disable/daemon, audit dan alasan bisnis tersedia. S-04 berulang 10/10 adalah bukti 0.1.3 untuk ICMP. Notifikasi pemilik dan pemutusan sesi TCP/aplikasi belum diuji. |
+| §3.4 | Riwayat sertifikat per perangkat dan alasan pencabutan | 0.1.5: periode/fingerprint sertifikat, riwayat aktivitas per identitas, alasan dan waktu workflow revoke selesai. Satu sertifikat per identitas; belum renewal atau histori 1:N. Audit lama tidak direkonstruksi; reason CRL tetap cessationOfOperation. |
 | §3.5.1, F-01–F-06 | Sah, asing, revoked, expired, revoke aktif, registrasi | Bukti fungsi dan lab tersedia. Expired terutama fixture. S-04 membuktikan dua tunnel pada VM-CLIENT yang sama dengan namespace sementara, belum dua mesin client independen. |
-| §3.5.2 | Tanpa VPN / WireGuard / VanGuard, masing-masing 10 kali | Belum dilakukan. Perlu protokol eksperimen, definisi baseline dan persetujuan pengecualian admission khusus baseline. |
-| §3.5.2 | Throughput, latency, jitter, CPU | Belum ada dataset komparatif. RTT perlu probe tersendiri; iperf3 UDP menyediakan jitter, bukan pengukuran latency lengkap. |
+| §3.5.2 | Tanpa VPN / WireGuard / VanGuard, masing-masing 10 kali | Runner dan cleanup tersedia; pilot pertama 10 Oktober FAIL pada parser UDP, cleanup PASS. [Pilot ulang clear/VanGuard 12 Oktober](BENCHMARK_PILOT_2026-10-12.md) PASS, n=1 per kondisi. Seri formal tiga × 10 belum dilakukan; pengecualian admission khusus baseline masih diperlukan. |
+| §3.5.2 | Throughput, latency, jitter, CPU | Runner memisahkan TCP goodput, RTT ping, UDP jitter/loss dan CPU server. Counter goodput UDP iperf 3.9 yang kosong dilabel tidak tersedia, bukan direkayasa. Belum ada dataset tiga kondisi lengkap. |
 | S-01 | Kredensial valid, perangkat asing | PASS pada VM-ATTACKER 9 Oktober: login akun karyawan valid berhasil, sertifikat tidak ada/binding salah/proof dengan key berbeda/replay ditolak tanpa peer baru. Kontrol positif perangkat sah, disable akun dan cleanup PASS. Bukti pada laporan 0.1.3; bukan jaminan pengikatan hardware. |
 | S-02 | Sertifikat revoked dipakai kembali | Sudah diuji pada fixture dan identitas lab sementara. Berbeda dengan replay challenge yang juga diuji. |
 | S-03 | Penyadapan lalu lintas tunnel | PASS 3/3: marker ada pada 20 paket kontrol wg0 per putaran, tidak ada pada 20 paket underlay eth0; nol kernel drop. Capture jalur client, bukan MITM attacker atau bukti kriptografi formal. [Hasil](SECURITY_RESULTS_2026-10-09.md). |
@@ -54,10 +59,11 @@ bahwa kelima node serta identitas utama tetap dipertahankan.
 2. Selesai: akun karyawan, rollout lima VM dan bukti S-01 live (9 Oktober).
 3. Selesai: S-03/S-04 untuk ICMP dan metrik deteksi/Respond aplikasi S-01 (0.1.4).
    Cakupan SOC/kejadian kebocoran awal, recovery dan sesi TCP/aplikasi belum diukur.
-4. [Rencana benchmark](BENCHMARK_PLAN.md) sudah tersedia; runner/pilot/seri tiga
-   konfigurasi × 10 belum dilakukan. Pengecualian baseline WG belum diberikan.
-5. Lengkapi lifecycle/provisioning/notifikasi serta keputusan cakupan Windows dan
-   kebijakan resource manufaktur. Jangan mengarang departemen/pemilik nyata.
+4. [Protokol dan runner benchmark](BENCHMARK_PLAN.md) tersedia; lengkapi pilot
+   sebelum seri tiga konfigurasi × 10. Pengecualian baseline WG belum diberikan.
+5. 0.1.5 memperbaiki health/audit/reason/validity/bundle publik; lanjutkan renewal
+   sertifikat, notifikasi pemilik serta keputusan cakupan Windows dan kebijakan
+   resource. Jangan mengarang departemen/pemilik nyata.
 6. Rekonsiliasi setiap baris dengan hasil aktual, lalu susun evaluasi TA.
 
 Klaim penurunan insiden, throughput tanpa overhead, autentikasi perangkat fisik

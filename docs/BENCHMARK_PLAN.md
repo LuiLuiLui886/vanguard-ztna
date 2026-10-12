@@ -1,12 +1,16 @@
-# Rencana benchmark proposal — belum dieksekusi
+# Protokol benchmark proposal
+
+Implementasi runner/pilot dimulai 10 Oktober 2026. Status hasil aktual ada di
+[checkpoint](CHECKPOINT.md) dan [jurnal](PROGRESS_2026-10-10.md); jangan menganggap
+tersedianya runner sebagai keberhasilan seri formal.
 
 Target §3.5.2: tanpa VPN, WireGuard standar tanpa validasi, dan VanGuard dengan
 validasi aktif; masing-masing sepuluh pengulangan. Ukur throughput TCP (Mbps),
 RTT ICMP (ms), jitter/loss UDP, serta utilisasi CPU **server**. iperf3 menghasilkan
 throughput/jitter dan statistik endpoint; RTT memakai ping terpisah. Rujukan:
 [manual resmi iperf3](https://software.es.net/iperf/invoking.html).
-Flag akhir harus diperiksa terhadap versi paket Ubuntu 22.04 yang benar-benar
-dipasang; iperf3 belum tersedia pada pemeriksaan 9 Oktober pukul 14:03.
+Flag diperiksa terhadap `iperf3 --help` dari paket Ubuntu 22.04 **iperf 3.9** yang
+dipasang pada client/server 10 Oktober. Tidak ada daemon iperf persisten.
 
 ## Konfigurasi yang diusulkan
 
@@ -40,9 +44,16 @@ versi, ukuran payload dan parameter yang sama.
    jitter dan loss dari receiver. Ini bukan uji kapasitas maksimum UDP.
 7. RTT: 30 echo-request berinterval 0,1 detik, payload 56 byte; simpan tiap summary
    dan loss. Label RTT, bukan latensi satu arah.
-8. CPU server: delta `/proc/stat` selama setiap transfer dengan jam monotonic;
-   tampilkan busy%, iowait%, steal% terpisah, tidak menjumlahkan guest dua kali.
-   Statistik CPU proses iperf3 saja tidak cukup untuk biaya kernel WireGuard.
+8. CPU server: delta `/proc/stat` pada envelope koneksi kontrol iperf dengan jam
+   monotonic server, termasuk warmup dan finalisasi. Poll `/proc/net/tcp` setiap
+   50 ms; awal memakai counter tepat sebelum koneksi pertama teramati, akhir
+   setelah server one-off keluar. Simpan durasi dan gap polling maksimum;
+   tolak window di luar 11,5–16 detik atau gap >0,5 detik. Window ini berbeda
+   dari 10 detik throughput; tidak mengurangkan timestamp dua node. Tampilkan
+   busy%, idle%, iowait%, steal% terpisah; guest sudah tercakup dalam user/nice.
+   Counter turun membuat sampel tidak valid, termasuk iowait yang dapat turun
+   menurut [dokumentasi kernel](https://docs.kernel.org/filesystems/proc.html).
+   Utilisasi mencakup seluruh VM server dan overhead sampler, bukan proses iperf saja.
 9. Simpan hasil mentah JSON/CSV, status per subtes, checksum dan semua kegagalan.
    Laporkan n/mean/median/sample SD/min/max. Analisis berpasangan antarblok;
    jangan menyimpulkan overhead nol hanya dari rata-rata yang mirip.
@@ -83,3 +94,45 @@ Sebelum pelaksanaan, siapkan runner dan cleanup untuk direview, validasi jalur c
 VanGuard yang tetap sesuai aturan, lalu minta keputusan khusus untuk peer uji WG
 standar dalam namespace/masa hidup di atas. Tanpa pengecualian, laporkan benchmark
 tiga kondisi sebagai belum lengkap, bukan mengganti label salah satu kondisi.
+
+## Runner dan pemulihan
+
+```bash
+.venv/bin/python scripts/verify_benchmark.py state/lab/inventory.json pilot \
+  --state state/deployment/benchmark-pilot-baru --modes clear vanguard
+```
+
+Default hanya clear/VanGuard, satu blok pilot dengan urutan seed `20261010`.
+`series` mensyaratkan ketiga kondisi dan sepuluh blok. WG standar ditolak tanpa
+`--wg-exception-reference` yang mencatat persetujuan eksplisit operator; menulis
+flag sendiri tidak memberikan otorisasi. Jalur tersebut belum boleh dieksekusi.
+
+Worker guest tersimpan privat dengan nama run unik. Hasil host `benchmark-results.json`
+dicatat setiap tahap; snapshot sebelum/sesudah, raw JSON iperf, counter CPU dan
+output ping disimpan terpisah. File guest masih tersedia pada `resources.directory`
+jika koneksi host terputus. `remote_tools` dan `watchdogs` merekam perintah cleanup:
+worker `cleanup-client`/`cleanup-server` memakai config `<remote_tools>/<comment>.json`.
+Timer admin memakai akun vanguard dan EnvironmentFile admin untuk mencabut identitas
+serta menonaktifkan akun sementara; file config/worker admin dimiliki vanguard.
+
+Timer 180 detik dipasang sebelum admission/rule. Unit iperf 45 detik, subprocess
+client 30 detik, renewal 120 detik, dan host menolak kondisi yang melewati 120 detik.
+Cleanup menghentikan unit sebelum menghapus namespace; namespace yang masih dipegang
+proses membuat cleanup FAIL, bukan dilaporkan bersih. Firewall stateless, route,
+daftar interface/namespace dibandingkan dengan snapshot; ping utama harus pulih.
+Lease awal dan renewal baru harus terbukti pada kondisi VanGuard. MTU tunnel uji
+ditetapkan 1420; clear memakai MTU underlay aktual yang direkam dalam snapshot.
+
+Jika interrupted, jangan menimpa direktori hasil atau mengulang saat `.3` masih
+reserved. Periksa hasil timer/JSON dan pulihkan resource run tersebut; jangan
+menghapus namespace/peer identitas lain. Pilot tidak digabung ke seri formal.
+
+## Kompatibilitas iperf 3.9
+
+Pilot pertama 10 Oktober gagal pada validasi UDP; cleanup PASS. Raw JSON receiver
+mencatat packets/jitter/loss, tetapi bytes dan bitrate bernilai nol setelah omit.
+Runner sejak 12 Oktober mempertahankan jitter/loss receiver dan menandai goodput
+UDP yang tidak tersedia sebagai `null` dengan alasan; tidak menghitungnya dari
+jumlah packet atau menggantinya dengan sender goodput. Throughput utama proposal
+tetap TCP receiver goodput dan tetap harus positif/konsisten. Simpan bukti gagal
+asli pada `state/deployment/benchmark-2026-10-10/pilot-1/`.

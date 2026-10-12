@@ -1,6 +1,9 @@
 {% extends 'base.html' %}{% block content %}
 <p class="eyebrow">ACCESS CONTROL</p><h1>Perangkat & admission</h1>
 <p>Registrasi menyiapkan identitas. Akses tunnel aktif setelah client lolos admission.</p>
+<section><h2>Kesehatan layanan</h2>
+{% for name, status in dependencies.items() %}<p><strong>{{ name }}</strong>: {{ status }}</p>{% endfor %}
+<small>Pemeriksaan HTTPS saat halaman dimuat. Status tersedia tidak menggantikan validasi sertifikat, CRL atau koneksi tunnel.</small></section>
 {% if error %}<p class="notice error">Status server tidak tersedia: {{ error }}. Status peer belum dapat dipastikan.</p>{% endif %}
 <section><h2>Akun karyawan</h2><p>Akun karyawan digunakan pada aplikasi client. Akses tetap memerlukan perangkat yang terdaftar.</p>
 <form method="post" action="/employees"><input type="hidden" name="csrf" value="{{ session.csrf }}">
@@ -24,9 +27,13 @@
 <small>Akun VPN: {{ device.employee_username or 'Belum ditautkan' }}</small>
 <small>Departemen: {{ device.metadata.get('department') or 'Belum diisi' }}</small>
 <small>Platform: {{ device.metadata.get('platform') or 'Belum diisi' }}</small></td>
-<td>{{ device.status }}{% if device.last_error %}<small class="error">{{ device.last_error }}</small>{% endif %}</td>
+<td>{{ device.status }}{% if device.validity %}<small>{{ device.validity.status }}</small><small>Berlaku sampai (UTC): {{ device.validity.not_after or 'Tidak diketahui' }}</small>{% endif %}
+{% if device.revocation_reason %}<small>Alasan: {{ revocation_reasons.get(device.revocation_reason, device.revocation_reason) }}</small>{% endif %}
+{% if device.last_error %}<small class="error">{{ device.last_error }}</small>{% endif %}</td>
 <td>{{ peer.tunnel_ip if peer else '—' }}</td><td>{{ ('Aktif' if peer.live else 'Tidak aktif') if peer else 'Tidak tersedia' }}</td>
 <td>{% if device.certificate %}<a href="/devices/{{ device.device_id }}/certificate">Unduh sertifikat</a>{% endif %}
+<p><a href="/devices/{{ device.device_id }}/history">Riwayat perangkat</a></p>
+{% if device.status == 'registered' and device.employee_username %}<p><a href="/devices/{{ device.device_id }}/bundle">Unduh bundle onboarding</a></p>{% endif %}
 {% if not device.employee_username and device.status == 'registered' %}<form action="/devices/{{ device.device_id }}/employee" method="post">
 <input type="hidden" name="csrf" value="{{ session.csrf }}"><label>Akun VPN<select name="username" required><option value="">Pilih akun</option>{% for employee in employees %}{% if employee.enabled %}<option value="{{ employee.username }}">{{ employee.username }}</option>{% endif %}{% endfor %}</select></label><button>Tautkan akun VPN</button></form>{% endif %}
 <details><summary>Edit data perangkat</summary><form action="/devices/{{ device.device_id }}/metadata" method="post">
@@ -37,8 +44,14 @@
 <label>Platform<input name="platform" maxlength="80" value="{{ device.metadata.get('platform', '') }}" required></label>
 <button>Simpan data perangkat</button></form></details>
 {% if device.status not in ['registered', 'revoked'] %}<form action="/devices/{{ device.device_id }}/retry" method="post"><input type="hidden" name="csrf" value="{{ session.csrf }}"><button>Ulangi workflow</button></form>{% endif %}
-{% if device.certificate and device.status != 'revoked' %}<form action="/devices/{{ device.device_id }}/revoke" method="post"><input type="hidden" name="csrf" value="{{ session.csrf }}"><button class="danger">Cabut akses & sertifikat</button></form>{% endif %}</td></tr>
+{% if device.certificate and device.status not in ['revoked', 'revoking'] %}<form action="/devices/{{ device.device_id }}/revoke" method="post"><input type="hidden" name="csrf" value="{{ session.csrf }}">
+<label>Alasan pencabutan<select name="reason" required><option value="">Pilih alasan</option>{% for value, label in revocation_reasons.items() %}<option value="{{ value }}">{{ label }}</option>{% endfor %}</select></label>
+<button class="danger">Cabut akses & sertifikat</button></form>{% endif %}</td></tr>
 {% else %}<tr><td colspan="5">Belum ada perangkat. Unggah request.json untuk memulai.</td></tr>{% endfor %}</tbody></table></div></section>
 <section><h2>Audit terbaru</h2><div class="table-scroll"><table><thead><tr><th>Waktu (Unix)</th><th>Peristiwa</th><th>Perangkat</th><th>Detail</th></tr></thead><tbody>
 {% for event in events %}<tr><td>{{ event.timestamp|int }}</td><td>{{ event.event }}</td><td>{{ event.device_id or '—' }}</td><td>{{ event.detail }}</td></tr>
-{% else %}<tr><td colspan="4">Belum ada peristiwa yang tersedia.</td></tr>{% endfor %}</tbody></table></div></section>{% endblock %}
+{% else %}<tr><td colspan="4">Belum ada peristiwa yang tersedia.</td></tr>{% endfor %}</tbody></table></div></section>
+<section><h2>Aktivitas administrasi</h2><p>25 aktivitas terbaru. Pencatatan tersedia sejak versi 0.1.5.</p>
+<div class="table-scroll"><table><thead><tr><th>Waktu (Unix)</th><th>Aktor</th><th>Peristiwa</th><th>Perangkat</th><th>Detail</th></tr></thead><tbody>
+{% for event in admin_events %}<tr><td>{{ event.timestamp|int }}</td><td>{{ event.actor }}</td><td>{{ event.event }}</td><td>{{ event.device_id or '—' }}</td><td>{{ event.detail }}</td></tr>
+{% else %}<tr><td colspan="5">Belum ada aktivitas tercatat.</td></tr>{% endfor %}</tbody></table></div></section>{% endblock %}

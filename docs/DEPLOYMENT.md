@@ -295,3 +295,11 @@ ulang sesuai panduan karyawan sebelum menganggap kegagalan sebagai regresi upgra
 Simpan paket 0.1.3 dan backup state privat. Pemulihan paket tidak boleh mengembalikan
 index CA/CRL lama. Pemeriksaan setelah pemasangan mencakup hash source/config/key,
 health/renewal, dan korelasi audit hasil penolakan pada server yang sebenarnya.
+
+## Upgrade dashboard 0.1.5
+
+Backup konsisten lima role sebelum mengganti wheel. Migrasi admin menambah tabel
+audit dan kolom alasan/waktu pencabutan, tanpa mengganti identitas atau mengarang
+histori sebelum upgrade. Tidak perlu reenrollment. Sesudah startup, periksa health
+dan bundle/history/revoke beralasan melalui identitas sementara seperti
+[panduan dashboard](DASHBOARD_0.1.5.md). Pertahankan CA index/CRL terbaru saat recovery.

@@ -3,11 +3,11 @@
 > **Pekerjaan aktif 9 Oktober:** selesaikan metadata dashboard dan akun karyawan
 > versi 0.1.3 sesuai keputusan S-01. Source lokal belum commit/deploy; jangan
 > menganggap semua hasil 0.1.2 berlaku pada perubahan baru.
-> Rencana dan titik interupsi: [jurnal terbaru](docs/PROGRESS_2026-10-09.md).
+> Rencana dan titik interupsi: [jurnal terbaru](PROGRESS_2026-10-09.md).
 
 Status diperbarui **8 Oktober 2026, 23:12 WIB**. Proyek: `/home/lui/vanguard`.
-Selalu baca `AGENTS.md`, `VANGUARD_CONTEXT.md`, [checkpoint](docs/CHECKPOINT.md),
-dan [jurnal terbaru](docs/PROGRESS_2026-10-08.md) sebelum mengubah sesuatu.
+Selalu baca `AGENTS.md`, `VANGUARD_CONTEXT.md`, [checkpoint](CHECKPOINT.md),
+dan [jurnal terbaru](PROGRESS_2026-10-08.md) sebelum mengubah sesuatu.
 
 ## Keadaan terbaru
 
@@ -60,15 +60,15 @@ backing image, CA, private key, atau identitas utama yang dibuat ulang.
 - Lease nyata 300 detik: `state/deployment/operations-lease.json`.
 - Reboot lengkap: `state/deployment/operations-reboot.json`.
 - Backup privat sebelum rollout: `state/backups/2026-10-08-2154/`.
-- Laporan: [IMPLEMENTATION_REPORT.md](docs/IMPLEMENTATION_REPORT.md).
-- Akses: [LAB_ACCESS.md](docs/LAB_ACCESS.md), [AKTIVASI_ADMIN.md](docs/AKTIVASI_ADMIN.md).
+- Laporan: [IMPLEMENTATION_REPORT.md](IMPLEMENTATION_REPORT.md).
+- Akses: [LAB_ACCESS.md](LAB_ACCESS.md), [AKTIVASI_ADMIN.md](AKTIVASI_ADMIN.md).
 
 Backup state berisi rahasia: jangan unggah ke laporan/arsip source. Jangan rollback
 index CA/CRL yang bisa menghidupkan sertifikat dicabut. Penyimpanan ini bukan snapshot
 disk VM. Autostart guest pada boot host tetap nonaktif; jaringan libvirt autostart.
 
 Langkah operator yang belum terkonfirmasi: TOTP di HP dan login dashboard. Reboot
-workstation belum diuji dalam sesi ini. Gunakan [panduan demo](docs/DEMO_TA.md).
+workstation belum diuji dalam sesi ini. Gunakan [panduan demo](DEMO_TA.md).
 
 ## Status penyimpanan Git
 
@@ -85,7 +85,7 @@ private key dan disk VM tetap lokal. Jangan mengulang enrollment/deployment.
 Ubuntu 22.04/Python 3.10 dan 3.12 masing-masing 54 tes PASS, nol failure/error/skip.
 Ruff, pip check, sintaks shell, build wheel/source dan checksum PASS di kedua job.
 Artefak diunduh dan checksum diperiksa ulang; source memuat 65 berkas termasuk CI.
-Panduan: [docs/CI.md](docs/CI.md). Bukti lokal: `state/deployment/ci-2026-10-08/`.
+Panduan: [docs/CI.md](CI.md). Bukti lokal: `state/deployment/ci-2026-10-08/`.
 
 Kelima VM lulus preflight dan health ulang sebelum pekerjaan CI. Tidak ada
 perubahan kode aplikasi/layanan/topologi; versi lab tetap 0.1.2. Pekerjaan lanjut

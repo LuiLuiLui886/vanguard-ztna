@@ -7,10 +7,11 @@ import os
 import secrets
 import sqlite3
 import time
-from datetime import timedelta
+import zipfile
+from datetime import datetime, timedelta, timezone
 
 import pyotp
-from flask import flash, redirect, render_template, request, send_file, session, url_for
+from flask import flash, g, redirect, render_template, request, send_file, session, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from .common import (
@@ -25,9 +26,29 @@ from .common import (
     tunnel_ip,
     wg_key,
 )
-from .pki import check_csr
+from .pki import check_csr, fingerprint, load_cert, validate_certificate, validate_fetched_crl
 
 DEVICE_METADATA = {"display_name": 100, "department": 80, "owner": 100, "platform": 80}
+REVOCATION_REASONS = {
+    'device_lost': 'Perangkat hilang', 'suspected_compromise': 'Dugaan kompromi',
+    'retired': 'Perangkat tidak digunakan lagi', 'access_change': 'Perubahan hak akses',
+    'test_cleanup': 'Pembersihan pengujian', 'operator_request': 'Permintaan operator',
+}
+
+
+def certificate_summary(pem):
+    if not pem:
+        return None
+    try:
+        cert = load_cert(pem)
+        at = datetime.now(timezone.utc)
+        status = ('Belum berlaku' if at < cert.not_valid_before_utc else
+                  'Kedaluwarsa' if at >= cert.not_valid_after_utc else 'Dalam masa berlaku')
+        return {'not_before': cert.not_valid_before_utc.isoformat(),
+                'not_after': cert.not_valid_after_utc.isoformat(), 'status': status,
+                'sha256': fingerprint(cert)}
+    except Rejected:
+        return {'status': 'Sertifikat tidak dapat dibaca'}
 
 
 def device_metadata(value):
@@ -66,7 +87,45 @@ class Dashboard:
                     device_id TEXT PRIMARY KEY, request TEXT NOT NULL, certificate TEXT,
                     serial TEXT, status TEXT NOT NULL, last_error TEXT
                 );
+                CREATE TABLE IF NOT EXISTS admin_audit (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT, timestamp REAL NOT NULL,
+                    actor TEXT NOT NULL, event TEXT NOT NULL, device_id TEXT, detail TEXT NOT NULL
+                );
             """)
+            db.execute('BEGIN IMMEDIATE')
+            columns = {r['name'] for r in db.execute('PRAGMA table_info(devices)')}
+            for name, kind in (('revocation_reason', 'TEXT'), ('revoked_at', 'REAL')):
+                if name not in columns:
+                    db.execute(f'ALTER TABLE devices ADD COLUMN {name} {kind}')
+
+    def audit(self, event, name=None, detail=None, actor='system', db=None):
+        values = (time.time(), actor, event, name, json.dumps(detail or {}, sort_keys=True))
+        statement = 'INSERT INTO admin_audit(timestamp,actor,event,device_id,detail) VALUES (?,?,?,?,?)'
+        if db is not None:
+            db.execute(statement, values)
+        else:
+            with database(self.db) as connection:
+                connection.execute(statement, values)
+
+    def history(self, name=None):
+        with database(self.db) as db:
+            query = 'SELECT * FROM admin_audit'
+            params = ()
+            if name is not None:
+                query += ' WHERE device_id=?'
+                params = (name,)
+            return [dict(r) for r in db.execute(query + ' ORDER BY id DESC LIMIT 100', params)]
+
+    def dependency_health(self):
+        results = {}
+        for name, remote in (('CA', self.ca), ('Server', self.server)):
+            try:
+                result = remote.call('GET', '/healthz')
+                results[name] = ('Tersedia' if isinstance(result, dict) and result.get('status') == 'ok'
+                                 else 'Tidak siap')
+            except Rejected:
+                results[name] = 'Tidak tersedia'
+        return results
 
     def login(self, username, password, code, source):
         at = time.time()
@@ -100,7 +159,7 @@ class Dashboard:
             db.execute("INSERT INTO sessions VALUES (?,?,?)", (token, username, at + 1800))
             return token
 
-    def register(self, body, metadata=None):
+    def register(self, body, metadata=None, actor='system'):
         if not isinstance(body, dict) or not all(
             isinstance(body.get(k), str) for k in ("device_id", "csr", "wg_public_key", "tunnel_ip")
         ):
@@ -123,13 +182,14 @@ class Dashboard:
                         "INSERT INTO devices(device_id,request,status) VALUES (?,?,'pending_issue')",
                         (name, json.dumps(body, sort_keys=True)),
                     )
+                    self.audit('registration_requested', name, actor=actor, db=db)
             except sqlite3.IntegrityError as exc:
                 raise Rejected(
                     "Device already exists; use retry on the existing workflow", 409
                 ) from exc
-            self._enroll(name)
+            self._enroll(name, actor)
 
-    def update_metadata(self, name, metadata):
+    def update_metadata(self, name, metadata, actor='system'):
         metadata = device_metadata(metadata)
         with locked(self.lock), database(self.db) as db:
             row = db.execute("SELECT request FROM devices WHERE device_id=?", (name,)).fetchone()
@@ -139,8 +199,9 @@ class Dashboard:
             body["metadata"] = metadata
             db.execute("UPDATE devices SET request=? WHERE device_id=?",
                        (json.dumps(body, sort_keys=True), name))
+            self.audit('metadata_updated', name, {'fields': sorted(metadata)}, actor, db)
 
-    def bind_employee(self, name, username):
+    def bind_employee(self, name, username, actor='system'):
         username = device_name(username)
         with locked(self.lock):
             row = self.device(name)
@@ -150,14 +211,16 @@ class Dashboard:
             with database(self.db) as db:
                 db.execute('UPDATE devices SET request=? WHERE device_id=?',
                            (json.dumps(body, sort_keys=True), name))
+                self.audit('employee_bound', name, {'username': username}, actor, db)
 
-    def retry(self, name):
+    def retry(self, name, actor='system'):
         with locked(self.lock):
             row = self.device(name)
+            self.audit('workflow_retry', name, {'status': row['status']}, actor)
             if row["status"] in ("revoking", "revoked"):
-                self._revoke(name)
+                self._revoke(name, actor)
             elif row["status"] != "registered":
-                self._enroll(name)
+                self._enroll(name, actor)
 
     def device(self, name):
         with database(self.db) as db:
@@ -166,11 +229,14 @@ class Dashboard:
                 raise Rejected("Unknown device", 404)
             return row
 
-    def _enroll(self, name):
+    def _enroll(self, name, actor='system'):
         row = self.device(name)
         body = json.loads(row["request"])
         try:
             if not row["certificate"]:
+                health = self.ca.call('GET', '/healthz')
+                if not isinstance(health, dict) or health.get('status') != 'ok':
+                    raise Rejected('CA health check failed', 503)
                 result = self.ca.call(
                     "POST", "/api/ca/issue", {"device_id": name, "csr": body["csr"]}
                 )
@@ -180,6 +246,7 @@ class Dashboard:
                         "WHERE device_id=?",
                         (result["certificate"], result["serial"], name),
                     )
+                    self.audit('certificate_issued', name, {'serial': result['serial']}, actor, db)
                 row = self.device(name)
             self.server.call(
                 "POST",
@@ -199,25 +266,37 @@ class Dashboard:
                     "UPDATE devices SET status='registered',last_error=NULL WHERE device_id=?",
                     (name,),
                 )
+                self.audit('registration_completed', name, {'serial': row['serial']}, actor, db)
         except Rejected as exc:
-            self.error(name, exc)
+            self.error(name, exc, actor)
             raise
 
-    def error(self, name, exc):
+    def error(self, name, exc, actor='system'):
         with database(self.db) as db:
             db.execute("UPDATE devices SET last_error=? WHERE device_id=?", (str(exc), name))
+            self.audit('workflow_failed', name, {'http_status': exc.status}, actor, db)
 
-    def revoke(self, name):
+    def revoke(self, name, reason='operator_request', actor='system'):
+        if reason not in REVOCATION_REASONS:
+            raise Rejected('Pilih alasan pencabutan yang valid')
         with locked(self.lock):
             row = self.device(name)
             if not row["certificate"]:
                 raise Rejected("No certificate recorded; resolve issuance before revocation")
-            with database(self.db) as db:
-                db.execute("UPDATE devices SET status='revoking' WHERE device_id=?", (name,))
-            self._revoke(name)
+            if row['status'] == 'revoked':
+                return
+            if row['status'] != 'revoking':
+                with database(self.db) as db:
+                    db.execute("UPDATE devices SET status='revoking',revocation_reason=? WHERE device_id=?",
+                               (reason, name))
+                    self.audit('revocation_requested', name, {'reason': reason, 'serial': row['serial']},
+                               actor, db)
+            self._revoke(name, actor)
 
-    def _revoke(self, name):
+    def _revoke(self, name, actor='system'):
         row = self.device(name)
+        if row['status'] == 'revoked':
+            return
         # Both operations are idempotent. Attempt CA revocation even if server is unreachable.
         failures = []
         for remote, path, body in (
@@ -231,12 +310,53 @@ class Dashboard:
                     failures.append(str(exc))
         if failures:
             exc = Rejected("; ".join(failures), 503)
-            self.error(name, exc)
+            self.error(name, exc, actor)
             raise exc
         with database(self.db) as db:
             db.execute(
-                "UPDATE devices SET status='revoked',last_error=NULL WHERE device_id=?", (name,)
+                "UPDATE devices SET status='revoked',revoked_at=?,last_error=NULL WHERE device_id=?",
+                (time.time(), name),
             )
+            self.audit('revocation_completed', name,
+                       {'serial': row['serial'], 'reason': row['revocation_reason']}, actor, db)
+
+    def bundle(self, name, actor='system'):
+        with locked(self.lock):
+            row = self.device(name)
+            body = json.loads(row['request'])
+            if row['status'] != 'registered' or not body.get('employee_username'):
+                raise Rejected('Bundle memerlukan registrasi dan binding akun yang selesai', 409)
+            root_pem = self.ca.call('GET', '/api/ca/certificate', raw=True)
+            root = load_cert(root_pem)
+            crl = validate_fetched_crl(root, self.ca.call('GET', '/api/ca/crl', raw=True))
+            validate_certificate(root, row['certificate'], crl, name)
+            manifest = {k: body[k] for k in ('device_id', 'wg_public_key', 'tunnel_ip', 'employee_username')}
+            manifest.update(schema=1, server='https://192.168.100.20:8081',
+                            wireguard_endpoint='192.168.100.20:51820',
+                            certificate_sha256=fingerprint(load_cert(row['certificate'])),
+                            root_sha256=fingerprint(root), admission_required=True)
+            instructions = (
+                'VanGuard onboarding bundle (Ubuntu 22.04)\n\n'
+                'Verify device_id, certificate SHA-256 and Root CA fingerprint with your administrator.\n'
+                'This bundle contains PUBLIC material only. Keep identity.key and wg.key on the original client.\n'
+                'Install device.crt in the SAME private identity directory that created request.json (mode 0600).\n'
+                'Use the trusted /etc/vanguard/root.crt; do not replace trust solely from an unverified download.\n'
+                'manifest.json documents the binding; the current CLI does not import it automatically.\n'
+                'Login: sudo /opt/vanguard/venv/bin/vanguard-client --directory IDENTITY_DIR login --username USERNAME\n'
+                'Use the employee username from manifest.json; enter the password interactively.\n'
+                'For the main 10.8.0.2 client, restart the configured vanguard-client service.\n'
+                'Other tunnel IPs require a separately managed lab interface; admit alone does not create a tunnel.\n'
+                'No static peer, private key, password or session token is included.\n'
+                'Registration/download never grants VPN access. All admission checks remain mandatory.\n'
+            )
+            buffer = io.BytesIO()
+            with zipfile.ZipFile(buffer, 'w', zipfile.ZIP_DEFLATED) as archive:
+                for path, value in {'device.crt': row['certificate'], 'root.crt': root_pem,
+                                    'manifest.json': json.dumps(manifest, indent=2),
+                                    'README.txt': instructions}.items():
+                    archive.writestr(path, value)
+            self.audit('bundle_downloaded', name, {'serial': row['serial']}, actor)
+            return buffer.getvalue()
 
 
 def create_app(config=None):
@@ -286,6 +406,7 @@ def create_app(config=None):
                 ).fetchone()
             if not row:
                 return redirect(url_for("login"))
+            g.admin_username = row['username']
             return func(*args, **kwargs)
 
         return wrapped
@@ -308,6 +429,7 @@ def create_app(config=None):
             session.clear()
             session.update(token=token, csrf=secrets.token_urlsafe(32))
             session.permanent = True
+            dashboard.audit('admin_login', actor=request.form['username'])
             return redirect(url_for("index"))
         return render_template("login.html")
 
@@ -316,6 +438,7 @@ def create_app(config=None):
     def logout():
         with database(dashboard.db) as db:
             db.execute("DELETE FROM sessions WHERE token=?", (session.get("token"),))
+            dashboard.audit('admin_logout', actor=g.admin_username, db=db)
         session.clear()
         return redirect(url_for("login"))
 
@@ -327,6 +450,7 @@ def create_app(config=None):
         for device in devices:
             device["metadata"] = json.loads(device["request"]).get("metadata", {})
             device['employee_username'] = json.loads(device['request']).get('employee_username')
+            device['validity'] = certificate_summary(device['certificate'])
         live, events, error, employees = {}, [], None, []
         try:
             live = {
@@ -338,7 +462,8 @@ def create_app(config=None):
             error = str(exc)
         return render_template(
             "dashboard.html", devices=devices, live=live, events=events, error=error,
-            employees=employees,
+            employees=employees, dependencies=dashboard.dependency_health(),
+            admin_events=dashboard.history()[:25], revocation_reasons=REVOCATION_REASONS,
         )
 
     @app.post("/devices")
@@ -355,7 +480,8 @@ def create_app(config=None):
             if not isinstance(body, dict):
                 raise Rejected("Invalid enrollment JSON")
             body['employee_username'] = device_name(request.form.get('employee_username'))
-            dashboard.register(body, {field: request.form.get(field) for field in DEVICE_METADATA})
+            dashboard.register(body, {field: request.form.get(field) for field in DEVICE_METADATA},
+                               actor=g.admin_username)
             flash("Sertifikat diterbitkan dan binding terdaftar. Client dapat memulai admission.")
         except Rejected as exc:
             flash(str(exc), "error")
@@ -369,6 +495,8 @@ def create_app(config=None):
                 'username': device_name(request.form.get('username')),
                 'password': request.form.get('password', ''),
             })
+            dashboard.audit('employee_created', detail={'username': request.form['username']},
+                            actor=g.admin_username)
             flash('Akun karyawan dibuat. Daftarkan perangkat untuk akun tersebut.')
         except Rejected as exc:
             flash(str(exc), 'error')
@@ -379,6 +507,7 @@ def create_app(config=None):
     def disable_employee(username):
         try:
             dashboard.server.call('POST', f'/api/employees/{device_name(username)}/disable', {})
+            dashboard.audit('employee_disabled', detail={'username': username}, actor=g.admin_username)
             flash('Akun karyawan dinonaktifkan dan akses perangkat dicabut.')
         except Rejected as exc:
             flash(str(exc), 'error')
@@ -391,20 +520,35 @@ def create_app(config=None):
         try:
             if action == "metadata":
                 dashboard.update_metadata(
-                    name, {field: request.form.get(field) for field in DEVICE_METADATA}
+                    name, {field: request.form.get(field) for field in DEVICE_METADATA}, g.admin_username
                 )
             elif action == 'employee':
-                dashboard.bind_employee(name, request.form.get('username'))
+                dashboard.bind_employee(name, request.form.get('username'), g.admin_username)
             elif action == "revoke":
-                dashboard.revoke(name)
+                dashboard.revoke(name, request.form.get('reason'), g.admin_username)
             elif action == "retry":
-                dashboard.retry(name)
+                dashboard.retry(name, g.admin_username)
             else:
                 raise Rejected("Unknown action", 404)
             flash("Operasi selesai.")
         except Rejected as exc:
             flash(str(exc), "error")
         return redirect(url_for("index"))
+
+    @app.get('/devices/<name>/history')
+    @login_required
+    def history(name):
+        row = dict(dashboard.device(device_name(name)))
+        return render_template('device_history.html', device=row,
+                               validity=certificate_summary(row['certificate']),
+                               events=dashboard.history(name), reasons=REVOCATION_REASONS)
+
+    @app.get('/devices/<name>/bundle')
+    @login_required
+    def bundle(name):
+        name = device_name(name)
+        return send_file(io.BytesIO(dashboard.bundle(name, g.admin_username)), as_attachment=True,
+                         download_name=name + '-onboarding.zip', mimetype='application/zip')
 
     @app.get("/devices/<name>/certificate")
     @login_required

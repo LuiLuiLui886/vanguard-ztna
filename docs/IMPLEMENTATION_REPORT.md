@@ -1,97 +1,75 @@
-# Hasil implementasi VanGuard — 10 Oktober 2026
+# Hasil implementasi VanGuard — 12 Oktober 2026
 
-**Versi 0.1.4 terpasang pada lima VM Ubuntu Server 22.04.** Instrumentasi penolakan
-admission dan sepuluh percobaan S-01 selesai: mean MTTD aplikasi **69,649 ms**,
-mean MTTR **Respond** aplikasi **19,383 ms**. Akun karyawan valid pada attacker
-berhasil login, tetapi proof perangkat salah ditolak tanpa peer VPN.
-[Hasil per sampel dan batas pengukuran](RESPONSE_METRICS_2026-10-10.md).
+**Versi 0.1.5 terpasang pada lima VM Ubuntu 22.04.** Audit proposal menghasilkan
+perbaikan dashboard dan [catatan revisi per bagian](SARAN_REVISI_PROPOSAL_2026-10-12.md).
+Proposal Google Docs tetap sebagai sumber yang dibaca; usulan redaksi disimpan di Git.
 
-## Perubahan dan perilaku
+## Perubahan sistem
 
-0.1.4 menambahkan jam monotonic per request dan correlation ID buatan server untuk
-penolakan challenge/verify. MTTD berlangsung dari awal penanganan Flask sampai
-penolakan terdeteksi; MTTR Respond dari deteksi sampai JSON penolakan siap, setelah
-audit kebijakan biasa tetapi sebelum penyimpanan telemetry/header/jaringan.
-Mean total server **89,032 ms** dan RTT attacker **119,313 ms** dicatat terpisah.
-Definisi ditetapkan sebelum eksperimen pada [protokol metrik](RESPONSE_METRICS.md).
+- Health HTTPS CA/server ditampilkan terpisah; CA diperiksa sebelum issuance.
+- Audit administrator menyimpan aktor dari sesi, waktu dan peristiwa. Migrasi
+  menambah tabel/kolom tanpa mengganti sertifikat atau merekonstruksi histori lama.
+- Pencabutan memiliki alasan bisnis, waktu selesai dan riwayat per identitas;
+  retry mempertahankan alasan pertama. Reason CRL tetap cessationOfOperation.
+- Masa berlaku/fingerprint sertifikat dan ZIP onboarding publik tersedia.
+  Bundle berisi sertifikat, root, manifest dan instruksi; key tetap pada client.
+- Runner pilot benchmark dan regresi parser UDP iperf3 3.9 ditambahkan.
 
-Event `admission_timing` hanya mencatat penolakan 400/403, bukan 429/503, login,
-management atau keberhasilan. Password, token, body, sertifikat, signature dan
-nonce tidak disimpan di event ini. ID kiriman caller tidak dipercaya. Runner
-menyimpan hasil bertahap, mencocokkan ID dengan audit terautentikasi, menguji
-kontrol positif perangkat sah dan membersihkan akun/identitas sementara.
+[Panduan dashboard](DASHBOARD_0.1.5.md) dan [tutorial lengkap](TUTORIAL_PENGGUNAAN.md)
+menjelaskan pemakaian. Enam pemeriksaan admission dan binding akun karyawan tetap
+wajib; registrasi/bundle tidak menambah peer. Topologi lima node dan WireGuard
+standar dipertahankan. Riwayat aktivitas belum menjadi renewal sertifikat 1:N.
 
-Akun karyawan tetap terpisah dari administrator, sesi delapan jam, binding akun
-immutable dan token server berupa hash. Semua enam pemeriksaan perangkat tetap
-wajib: signature X.509, validity, CRL aktual, serial revocation, proof-of-possession
-dan binding public key WireGuard. Registrasi hanya menyimpan identitas; peer
-ditambah setelah admission. Metadata dashboard tidak mengubah key/sertifikat.
-Topologi lima node dan kernel/source WireGuard dipertahankan.
-
-## Bukti versi 0.1.4
+## Bukti 0.1.5
 
 | Pemeriksaan | Hasil |
 |---|---|
-| Suite lokal Python 3.12 | 100 PASS, 107,875 detik; [JUnit](test-results.xml) |
-| Suite guest Ubuntu 22.04/Python 3.10 | 100 PASS, 168,907 detik; [JUnit](guest-test-results.xml) |
-| Tes target akhir | 10 PASS, 9,090 detik |
-| CI Python 3.10 / 3.12 | 100 / 100 PASS, 88,080 / 86,419 detik; nol failure/error/skip |
-| Kualitas/build | Ruff, pip check, shell, build/checksum dan checksum artefak unduhan PASS |
-| Rollout | Backup konsisten lima role, instalasi 0.1.4 dan startup COMPLETE |
-| Integritas | 13 berkas aplikasi setiap VM cocok source; config, CA/key dan identitas utama cocok backup |
-| S-01 terukur | Login valid 200; 10/10 proof_invalid 403 dengan ID unik; tidak ada peer attacker |
-| Kontrol positif / cleanup | Perangkat sah diterima, identitas sementara dicabut/disabled, akun disabled; main ping PASS |
-| Identity / S-02 | Registry-only, binding/proof/replay, CA-only revoke dan readmission ditolak PASS |
-| Firewall | 40 pemeriksaan TCP dan uji negatif API/attacker/bypass LAN PASS |
-| Health akhir | 7/7 PASS selama 84,18 detik; tiga deadline lease, nol removal selama observasi |
+| Suite lokal | 132 PASS, 183,97 detik; [JUnit](test-results.xml) |
+| Suite guest Ubuntu 22.04/Python 3.10 | 132 PASS, 255,11 detik; [JUnit](guest-test-results.xml) |
+| Suite target | 47 PASS, 47,95 detik |
+| Rollout | COMPLETE, backup konsisten lima role dan startup |
+| Integritas | 14 berkas aplikasi setiap VM cocok source; config/CA/key/identitas utama cocok backup saat rollout |
+| Dashboard HTTPS live | Login TOTP/CSRF, health, registry-only, bundle/history, admission, revoke beralasan/aktor, cleanup PASS |
+| Benchmark pilot | Clear/VanGuard n=1 masing-masing PASS, cleanup PASS; [hasil dan batas](BENCHMARK_PILOT_2026-10-12.md) |
+| CI / pemeriksaan sesudah resume | Sedang diselesaikan; lihat checkpoint dan jurnal aktual |
 
-Source aplikasi: `c5b94af`, sudah dipush ke repository private;
-[CI 37897878616](https://github.com/LuiLuiLui886/vanguard-ztna/actions/runs/37897878616)
-success. Perubahan dokumentasi setelahnya tidak mengubah source yang diuji.
-Wheel terpasang `vanguard_ztna-0.1.4-py3-none-any.whl`, SHA-256
-`14a64dce532894870cf4d5a6906f8e411bc7986b4f34905c53a057c0038b4c78`.
-Arsip `dist/vanguard-0.1.4.tar.gz` dibuat sebelum catatan akhir dan tidak ditimpa;
-Git menyimpan dokumentasi terbaru.
+Wheel terpasang SHA-256:
+`115b10881595d4208b881c76e3be880bdd76377f983e6528979eab9b6fabf548`.
+Arsip source lokal immutable dibuat sebelum runner UI/catatan akhir; Git memuat
+berkas terbaru. Bukti privat ada pada `state/deployment/audit-2026-10-12/`;
+backup sebelum rollout `state/backups/before-0.1.5-2026-10-12/`.
 
-## Bukti dan pemulihan
+## Pemulihan operasional dan akses lokal
 
-- Bukti privat sesi ini: `state/deployment/metrics-2026-10-10/`: `rollout.json`,
-  `installed-manifest.json`, `resume-login.json`, `s01-response/response-metrics.json`,
-  `identity/`, `before-upgrade/`, `final-health/`, `final-firewall/`, `ci-artifacts/`.
-- XML lokal/guest/tes target asli: `state/deployment/metrics-2026-10-09/`.
-- Backup sebelum upgrade: `state/backups/before-0.1.4-2026-10-10/`, lima role.
-  Backup mengandung rahasia; tetap lokal, bukan backup disk/perangkat terpisah.
-- Riwayat [0.1.3](IMPLEMENTATION_REPORT_2026-10-09.md),
-  [S-03/S-04](SECURITY_RESULTS_2026-10-09.md),
-  [0.1.2](IMPLEMENTATION_REPORT_2026-10-08.md) dipertahankan.
-  JUnit 90 tes diarsipkan sebagai `test-results-0.1.3-security.xml` dan
-  `guest-test-results-0.1.3-security.xml`; pilot gagal lama tidak dihapus.
-- Jangan memulihkan index CA/CRL lama. Rollback 0.1.3 kehilangan telemetry;
-  rollback 0.1.2 juga kehilangan enforcement akun dan bukan pemulihan otomatis.
+Sesudah interupsi, VM ditemukan mati. Saat boot, counter CRL CA kosong dan config
+tunnel client tertinggal. Backup dibuat sebelum pemulihan counter monoton dari
+CRL bertanda tangan/old; index revocation tidak dikembalikan. Bukti gagal dan
+pemulihan disimpan dalam direktori audit. Jangan memulihkan index CA/CRL lama.
 
-Kelima VM ditemukan mati saat resume; penyebab belum diketahui. Domain lama
-dinyalakan, sesi employee-lab yang expired diperbarui secara privat tanpa enrollment
-ulang, lalu health sebelum upgrade lulus. Sesi baru berakhir **10 Oktober 08:52:10
-WIB**. Renewal admission tidak memperpanjang sesi; lihat [panduan akun](EMPLOYEE_ACCESS.md).
+Sesuai permintaan pengguna, kredensial hanya ada pada komputer ini, di luar repo:
+`/home/lui/VanGuard-Privat/KREDENSIAL_VANGUARD.md`. Direktori 0700, file 0600.
+Lima akun console VM diberi password unik; SSH tetap memakai key. Password admin/
+VPN utama cocok hash aktual. Password akun uji yang tidak tersimpan ditandai
+tidak tersedia. Git hanya menyimpan catatan lokasi, tanpa nilai rahasia.
 
-## Batas kesimpulan dan pekerjaan berikutnya
+## Batas kesimpulan dan tindak lanjut proposal
 
-Angka S-01 mengukur respons aplikasi pada proof salah sesudah login akun valid;
-bukan waktu sejak password bocor, respons operator/SOC, recovery atau semua ancaman.
-Default-deny sudah menahan akses. Hasil sepuluh sampel bukan SLA atau pembuktian
-superioritas tanpa pembanding. Tes unit memakai adapter WireGuard memori; bukti
-peer kernel berasal dari uji live terpisah.
+S-01 10/10 serta MTTD aplikasi 69,649 ms/MTTR Respond 19,383 ms adalah bukti
+**0.1.4**, [hasil 10 Oktober](RESPONSE_METRICS_2026-10-10.md).
+S-03 3/3 dan S-04 ICMP 10/10 (batas atas 7,351–12,737 detik) adalah bukti
+**0.1.3**, [hasil 9 Oktober](SECURITY_RESULTS_2026-10-09.md).
+Seri tersebut tidak diulang penuh pada 0.1.5. MTTD/MTTR tidak mengukur onset
+kebocoran, recovery atau respons SOC; batas revoke termasuk SSH/polling.
 
-S-03 3/3 dan S-04 ICMP 10/10 adalah bukti **0.1.3**, tidak diulang penuh pada
-0.1.4. Batas konfirmasi revoke 7,351–12,737 detik termasuk SSH/polling bukan
-MTTD/MTTR. Capture bukan pembuktian MITM/kriptografi formal; sesi TCP/aplikasi
-belum diuji. Hasil reboot/lease/stabilitas versi lama tetap bukti historis.
+Pilot n=1 bukan evaluasi statistik tiga konfigurasi × 10. Baseline WG tanpa
+admission masih memerlukan pengecualian eksplisit. Windows, renewal/history 1:N,
+notifikasi pemilik, auto-import bundle, kebijakan resource/departemen dan
+pemutusan sesi TCP/aplikasi belum lengkap. Ketidaksesuaian arsitektur handshake,
+skenario S-01/S-02, definisi metrik dan penomoran referensi proposal dijelaskan pada
+[catatan revisi](SARAN_REVISI_PROPOSAL_2026-10-12.md).
 
-Berikutnya implementasikan runner/cleanup dan pilot benchmark clear serta VanGuard
-sesuai [rencana tiga kondisi × 10](BENCHMARK_PLAN.md). Benchmark belum dijalankan,
-iperf3 belum dipasang, dan baseline WG tanpa admission memerlukan pengecualian
-eksplisit setelah runner tersedia untuk review. Gap Windows, lifecycle sertifikat,
-provisioning/notifikasi dan kebijakan resource ada di [matriks proposal](PROPOSAL_ALIGNMENT.md).
-TOTP HP/login pribadi belum dikonfirmasi; reboot workstation belum diuji, autostart
-VM nonaktif. Seluruh TA belum dinyatakan selesai. [Checkpoint](CHECKPOINT.md)
-dan [jurnal](PROGRESS_2026-10-10.md) menjadi acuan melanjutkan.
+Seluruh TA belum dinyatakan selesai. TOTP HP pribadi, login console interaktif,
+reboot workstation dan penyebab shutdown belum terverifikasi. Gunicorn melaporkan
+control socket tidak dapat ditulis pada sandbox service; API tetap berjalan.
+[Checkpoint](CHECKPOINT.md), [jurnal](PROGRESS_2026-10-12.md), dan
+[arsip laporan 0.1.4](IMPLEMENTATION_REPORT_2026-10-10.md) menyimpan konteks lanjutan.
