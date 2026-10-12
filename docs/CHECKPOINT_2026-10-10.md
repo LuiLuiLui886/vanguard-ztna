@@ -16,7 +16,7 @@ success. Catatan akhir masuk commit dokumentasi setelahnya; periksa HEAD dan
 |---|---|
 | Lima VM Ubuntu 22.04 | CA .10, SERVER .20, CLIENT .30, ADMIN .40, ATTACKER .50 aktif; subnet 192.168.100.0/24 |
 | Paket / integritas | 0.1.4, 13 berkas per VM cocok source; config, CA/key dan identitas utama cocok backup |
-| Akun VPN | employee-lab terikat ke vm-client; sesi berakhir 10 Oktober 2026 08:52:10 WIB |
+| Akun VPN | USERNAME_LOKAL terikat ke vm-client; sesi berakhir 10 Oktober 2026 08:52:10 WIB |
 | Tes | 100 lokal + 100 guest; CI Python 3.10/3.12 masing-masing 100 PASS |
 | S-01 kuantitatif | Login valid 200; 10 proof_invalid 403; tanpa peer attacker; kontrol positif dan cleanup PASS |
 | Identity / S-02 | Registry-only, proof/binding/replay, CA-only revoke, readmission ditolak dan cleanup PASS |

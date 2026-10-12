@@ -45,8 +45,9 @@ Tidak ada eksperimen aktif. Inventaris privat terbaru memuat satu admin, 22 akun
 karyawan (satu aktif) dan lima akun console; nilai rahasia tidak masuk Git.
 
 Source 0.1.5 `8eeffaa` dipush private dan CI-nya masing-masing 132 PASS Python
-3.10/3.12. Perubahan 0.1.6 belum dipush; build/checksum sudah lulus dan CI 0.1.6
-menunggu commit source. Jangan jalankan eksperimen .3/benchmark bersamaan. Backup
+3.10/3.12. Source awal 0.1.6 `a478111` sudah dipush dan CI lulus. Revisi pencatatan
+akses dashboard/filter/arsip yang tercatat pada bagian status di bawah menunggu
+push final dan CI baru. Jangan jalankan eksperimen .3/benchmark bersamaan. Backup
 CA sebelum repair ada pada direktori bukti audit.
 
 ## Sesi berikutnya
@@ -67,8 +68,14 @@ penuh. [Laporan aktif](IMPLEMENTATION_REPORT.md), [tutorial](TUTORIAL_PENGGUNAAN
 reboot workstation, serta penyebab shutdown belum terverifikasi.
 Tindak lanjut operasional: ketahanan counter CA saat shutdown mendadak dan warning
 control socket Gunicorn pada sandbox service; API dan admission sudah lulus uji akhir.
-Sisa pekerjaan 0.1.6: finalisasi dokumen/scan rahasia, push private dan validasi CI
-137 tes pada Python 3.10/3.12. Deployment admin live telah lulus; tidak perlu rerollout.
+Status 0.1.6 diperbarui 12 Oktober: deployment dashboard VM-ADMIN final telah lulus.
+Tes admin setelah perubahan terakhir 26 PASS; verifikasi HTTPS/TOTP final 4/4 PASS.
+Wheel final terpasang dengan force-reinstall setelah ditemukan pip mempertahankan
+wheel versi sama. Backup kedua menjaga database yang sudah berisi arsip uji.
+Arsip final 17 baris, ZIP dan hash isi cocok, tanpa password/seed TOTP. Rincian
+dan bukti privat ada pada `docs/PROGRESS_2026-10-12.md`. Source/dokumen tambahan
+masih menunggu push final; setelahnya cek CI Python 3.10/3.12. Empat VM lain tetap
+0.1.5 dan tidak perlu di-rollout.
 
 ## Console operator — 12 Oktober 2026 16:11 WIB
 

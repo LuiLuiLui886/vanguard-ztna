@@ -30,7 +30,8 @@ keluar dari SSH dan kembali ke laptop.
 | Karyawan VPN | Aplikasi CLI di VM-CLIENT | Username dan password karyawan |
 | Perangkat | Diperiksa otomatis saat admission | Sertifikat, key perangkat dan binding yang sah |
 
-Akun lab karyawan saat ini adalah `employee-lab`, terikat ke perangkat `vm-client`.
+Username akun karyawan tersimpan di inventaris kredensial lokal dan terikat ke
+perangkat `vm-client`; ganti `USERNAME_LOKAL` pada contoh perintah dengan nilai itu.
 Alamat tunnel utama: client `10.8.0.2` → server `10.8.0.1`. Akses yang tersedia
 untuk demo adalah ping server melalui tunnel; ini bukan VPN internet umum atau
 bukti akses ke aplikasi manufaktur yang belum dipasang.
@@ -108,7 +109,7 @@ ssh -F ~/.ssh/vanguard_lab_config 192.168.100.30
 Prompt sekarang berada di `vm-client`. **Di VM-CLIENT:**
 
 ```bash
-sudo /opt/vanguard/venv/bin/vanguard-client login --username employee-lab
+sudo /opt/vanguard/venv/bin/vanguard-client login --username USERNAME_LOKAL
 ```
 
 Masukkan password **karyawan**, bukan password admin. Karakter password tidak
@@ -146,7 +147,7 @@ seperti contoh di atas.
 **Di browser**, muat ulang dashboard dan cari ID `vm-client`:
 
 - Workflow `registered`: pendaftaran identitas selesai.
-- Akun VPN `employee-lab`: binding akun yang digunakan.
+- Akun VPN `USERNAME_LOKAL`: binding akun yang digunakan.
 - Tunnel `10.8.0.2` dan Peer **Aktif**: peer terlihat pada server.
 
 **Di terminal laptop lain**, periksa server:
@@ -229,7 +230,7 @@ Dua tindakan berikut mengakhiri akses dan digunakan pada identitas latihan:
   identitas/key baru untuk enrollment berikutnya.
 
 Binding akun-perangkat tidak dapat diganti lewat edit metadata. Jangan mencabut
-`vm-client` atau menonaktifkan `employee-lab` untuk latihan.
+`vm-client` atau menonaktifkan `USERNAME_LOKAL` untuk latihan.
 
 ## 7. Latihan lengkap: akun baru → registrasi → admission → pencabutan
 

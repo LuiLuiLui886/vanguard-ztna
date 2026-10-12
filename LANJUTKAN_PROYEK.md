@@ -1,14 +1,16 @@
 # Lanjutkan proyek VanGuard
 
-**12 Oktober 2026: 0.1.6 sedang difinalkan.** Dashboard terbaru terpasang pada
-VM-ADMIN; empat VM lain tetap 0.1.5. Login/filter/arsip/unduh HTTPS live PASS;
-137 tes lokal PASS. Perubahan source belum dipush. Perbaikan sesuai audit proposal
+**12 Oktober 2026: 0.1.6 live selesai, push final menunggu.** Dashboard terbaru
+terpasang pada VM-ADMIN; empat VM lain tetap 0.1.5. Tes admin terakhir 26 PASS;
+verifikasi HTTPS/TOTP final 4/4 PASS dan arsip 17 aktivitas terverifikasi.
+137 tes suite sebelumnya PASS; CI final perlu menguji tambahan pencatatan akses.
+Perbaikan sesuai audit proposal
 mencakup health dashboard, audit admin, alasan/waktu pencabutan, history/validity
 sertifikat dan bundle publik. 132 tes lokal + 132 guest PASS; UI HTTPS live dan
 pilot clear/VanGuard n=1 PASS. Identity, firewall dan health akhir PASS.
 Source 0.1.5 `8eeffaa` sudah dipush private; CI sebelumnya masing-masing 132 tes
-Python 3.10/3.12 lulus. Perubahan dashboard 0.1.6 belum dipush; tunggu CI setelah
-push source.
+Python 3.10/3.12 lulus. Source awal 0.1.6 `a478111` sudah dipush dan CI lulus;
+tambahan pencatatan halaman dashboard/filter/arsip masih perlu push dan CI baru.
 
 Baca AGENTS.md, VANGUARD_CONTEXT.md, [checkpoint](docs/CHECKPOINT.md) dan
 [jurnal 12 Oktober](docs/PROGRESS_2026-10-12.md) sebelum melanjutkan.
@@ -34,7 +36,7 @@ perlu login ulang saat expired.
 
 Identity ulang/cleanup PASS, firewall 40 pemeriksaan PASS, health 7/7 selama
 82,75 detik dengan nol removal. Inventaris kredensial lokal sudah diperbarui.
-Tahap 0.1.5 selesai. Untuk 0.1.6 tinggal selesaikan handoff, scan rahasia,
+Tahap 0.1.5 selesai. Untuk 0.1.6 tinggal finalisasi handoff, scan rahasia,
 push source dan cek CI 137 tes Python 3.10/3.12. Deployment admin live lulus.
 Setelah itu lanjutkan gap proposal: baseline WG membutuhkan pengecualian admission eksplisit,
 renewal sertifikat, notifikasi, Windows, resource policy dan bukti TCP/aplikasi.
@@ -53,6 +55,6 @@ terverifikasi dan lima jendela terminal sudah dibuka untuk pengguna. Password ti
 diubah. Sesi console sengaja dibiarkan aktif; Ctrl+] melepaskan console tanpa
 mematikan VM. Bukti ada pada `state/deployment/console-login-2026-10-12/`.
 
-Dashboard 0.1.6 menyimpan snapshot arsip admin pada VM-ADMIN dan salinan uji lokal
-privat `state/deployment/activity-0.1.6/live/admin-activity.zip` mode 0600. Backup
-admin pra-upgrade ada pada `state/backups/before-0.1.6-2026-10-12/`.
+Dashboard 0.1.6 menyimpan snapshot arsip admin pada VM-ADMIN dan salinan final lokal
+privat `state/deployment/activity-0.1.6/final-check/admin-activity.zip` mode 0600.
+Backup pra-upgrade dan backup final tersedia pada `state/backups/`.

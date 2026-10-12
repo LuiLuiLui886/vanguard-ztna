@@ -34,7 +34,7 @@ Periksa lima domain lama, jalankan preflight/health dengan direktori baru sesuai
 checkpoint. CA .10, SERVER .20, CLIENT .30, ADMIN .40, ATTACKER .50 tetap pada
 192.168.100.0/24; tunnel server 10.8.0.1 dan client 10.8.0.2. Jangan recreate lab.
 
-Sesi `employee-lab` untuk `vm-client` berakhir **10 Oktober 2026 08:52:10 WIB**.
+Sesi `USERNAME_LOKAL` untuk `vm-client` berakhir **10 Oktober 2026 08:52:10 WIB**.
 Jika expired, login ulang privat lalu restart client sesuai
 [panduan akun](EMPLOYEE_ACCESS.md). Bootstrap kredensial ada di
 `state/deployment/proposal-2026-10-09/employee-onboarding.json`; jangan cetak/unggah.

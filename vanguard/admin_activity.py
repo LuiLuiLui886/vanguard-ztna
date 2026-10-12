@@ -34,6 +34,9 @@ EVENTS = {
     'bundle_downloaded': ('Bundle diunduh', 'Bundle onboarding publik disiapkan untuk diunduh.'),
     'certificate_downloaded': ('Sertifikat diunduh', 'Sertifikat publik disiapkan untuk diunduh.'),
     'history_viewed': ('Riwayat perangkat dibuka', 'Administrator membuka riwayat identitas perangkat.'),
+    'dashboard_viewed': ('Dashboard dibuka', 'Administrator membuka ringkasan perangkat dan layanan.'),
+    'activity_searched': ('Aktivitas ditelusuri', 'Administrator menelusuri catatan aktivitas.'),
+    'archives_viewed': ('Daftar arsip dibuka', 'Administrator membuka daftar arsip aktivitas tersimpan.'),
     'operation_failed': ('Tindakan tidak selesai', 'Permintaan administrator ditolak atau gagal. Perubahan lintas layanan mungkin belum selesai; periksa status perangkat.'),
     'audit_archive_created': ('Arsip aktivitas dibuat', 'Salinan aktivitas disimpan sebagai arsip. Catatan sumber tetap dipertahankan.'),
     'audit_archive_downloaded': ('Arsip aktivitas diunduh', 'Integritas arsip diperiksa dan berkas disiapkan untuk diunduh.'),
@@ -91,6 +94,17 @@ def present(row):
     if isinstance(fields, list):
         names = [FIELDS[f] for f in fields if isinstance(f, str) and f in FIELDS]
         extras.append('Bagian yang disimpan: ' + (', '.join(names) or 'tidak ada perubahan') + '.')
+    filters = detail.get('filters')
+    if isinstance(filters, dict):
+        for key, label in (('start', 'Tanggal mulai'), ('end', 'Tanggal akhir'),
+                           ('actor', 'Pelaku dicari'), ('device', 'Perangkat dicari')):
+            value = filters.get(key)
+            if isinstance(value, str) and value:
+                extras.append(f'{label}: {value[:100]}.')
+        selected_event = filters.get('event')
+        if isinstance(selected_event, str) and selected_event:
+            extras.append('Jenis tindakan: ' + EVENTS.get(selected_event,
+                                                           ('Aktivitas lain', ''))[0] + '.')
     for key, label in (('http_status', 'Kode respons'), ('row_count', 'Jumlah catatan')):
         if type(detail.get(key)) is int:
             extras.append(f'{label}: {detail[key]}.')

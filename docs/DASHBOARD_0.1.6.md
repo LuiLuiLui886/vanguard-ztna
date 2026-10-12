@@ -68,11 +68,13 @@ tetapi tidak menghapus arsip melalui UI. Terapkan backup berkala dan simpan hasi
 ekspor di lokasi privat jika dibutuhkan sebagai bukti jangka panjang.
 
 UI dashboard mewajibkan login password/TOTP dan token CSRF. Endpoint memakai sesi
-yang sama dengan dashboard; tidak ada API publik untuk mengekspor log. Akses ke
-halaman/filter tertentu tidak dicatat setiap reload, agar melihat daftar tidak
-membuat catatan baru tanpa batas; pembukaan halaman riwayat perangkat dan semua
-unduhan arsip/sertifikat/bundle dicatat.
+yang sama dengan dashboard; tidak ada API publik untuk mengekspor log. Pembukaan
+dashboard, pencarian/filter, daftar arsip, riwayat perangkat dan unduhan dicatat
+dengan waktu tersendiri, termasuk saat halaman di-refresh.
 
+Log admin juga mencatat pembukaan dashboard, pencarian/filternya, dan pembukaan
+daftar arsip agar penelusuran audit turut terlihat. Refresh menghasilkan peristiwa
+baru dengan waktu masing-masing. Filter tersimpan sebagai kriteria pencarian.
 Log admin mencatat tindakan dashboard. Peristiwa admission/peer otomatis berasal
 dari tabel audit server yang berbeda; bagian dashboard server menyajikan ringkasan
 Indonesia. Keduanya tidak satu transaksi lintas VM. Detail event server yang tidak

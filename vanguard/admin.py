@@ -465,6 +465,7 @@ def create_app(config=None):
     @app.get("/")
     @login_required
     def index():
+        dashboard.audit('dashboard_viewed', actor=g.admin_username)
         with database(dashboard.db) as db:
             devices = [dict(row) for row in db.execute("SELECT * FROM devices ORDER BY device_id")]
         for device in devices:
@@ -602,13 +603,17 @@ def create_app(config=None):
     @login_required
     def activity():
         result = archives.history(request.args, request.args.get('page', '1'))
+        filters = {key: value for key, value in result['filters'].items() if value}
+        dashboard.audit('activity_searched', detail={'filters': filters}, actor=g.admin_username)
+        result = archives.history(request.args, request.args.get('page', '1'))
         return render_template('activity.html', **result, event_types=ACTIVITY_EVENTS)
 
     @app.get('/activity/archives')
     @login_required
     def archive_list():
-        return render_template('activity_archives.html', **archives.listing(request.args.get('page', '1')),
-                               event_types=ACTIVITY_EVENTS)
+        dashboard.audit('archives_viewed', actor=g.admin_username)
+        result = archives.listing(request.args.get('page', '1'))
+        return render_template('activity_archives.html', **result, event_types=ACTIVITY_EVENTS)
 
     @app.post('/activity/archives')
     @login_required

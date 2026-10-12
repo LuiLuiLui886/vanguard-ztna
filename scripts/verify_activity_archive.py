@@ -78,6 +78,7 @@ def main():
                                                          'actor': credentials['username']}, timeout=15)
         assert result.status_code == 200 and 'Waktu WIB' in result.text
         assert 'Masuk dashboard' in result.text
+        assert 'Aktivitas ditelusuri' in result.text
         record('Activity filter returns today in WIB and readable admin action')
 
         form = parse(result)
@@ -108,6 +109,7 @@ def main():
             assert credentials['password'].encode() not in payload
             assert credentials['totp_secret'].encode() not in payload
             assert any(row['title'] == 'Masuk dashboard' for row in rows)
+            assert any(row['title'] == 'Aktivitas ditelusuri' for row in rows)
         temp = archive_path.with_name('.' + archive_path.name + '.tmp')
         temp.write_bytes(payload)
         temp.chmod(0o600)

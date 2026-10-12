@@ -59,15 +59,16 @@ class Deployment:
             code += f"shutil.chown(p,user={owner!r},group={owner!r}); "
         self.ssh(role, "sudo python3 -c " + shlex.quote(code), data)
 
-    def employee_access(self, username='employee-lab', name='vm-client',
+    def employee_access(self, username=None, name='vm-client',
                         directory='/var/lib/vanguard/client'):
         """Bootstrap an explicit lab employee; retain credentials only in private state."""
         path = self.state / 'employee-onboarding.json'
         if path.exists():
             credentials = json.loads(path.read_text())
-            if credentials['username'] != username:
+            if username is not None and credentials['username'] != username:
                 raise RuntimeError('Employee onboarding belongs to a different username')
         else:
+            username = username or 'employee-' + secrets.token_hex(4)
             credentials = {'username': username, 'password': secrets.token_urlsafe(24)}
             save_json(path, credentials)
         code = """import json,sys

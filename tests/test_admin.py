@@ -426,7 +426,8 @@ def test_activity_archive_http_access_csrf_download_and_integrity(dashboard):
     assert client.get('/activity/archives', base_url='https://localhost').status_code == 302
     assert client.post('/activity/archives', base_url='https://localhost').status_code == 403
     assert login(client, secret).status_code == 302
-    assert client.get('/activity', base_url='https://localhost').status_code == 200
+    activity_page = client.get('/activity', base_url='https://localhost')
+    assert activity_page.status_code == 200 and b'Aktivitas ditelusuri' in activity_page.data
     assert client.get('/activity/archives', base_url='https://localhost').status_code == 200
     with client.session_transaction() as state:
         token = state['csrf']
@@ -437,6 +438,10 @@ def test_activity_archive_http_access_csrf_download_and_integrity(dashboard):
     assert response.status_code == 302
     with database(dash.db) as db:
         archive_id = db.execute('SELECT archive_id FROM admin_archives').fetchone()[0]
+    payload = ActivityArchive(dash).download(archive_id, 'admin')[0]
+    with zipfile.ZipFile(io.BytesIO(payload)) as bundle:
+        events = json.loads(bundle.read('aktivitas.json'))
+    assert any(event['title'] == 'Aktivitas ditelusuri' for event in events)
     response = client.get(f'/activity/archives/{archive_id}/download', base_url='https://localhost')
     assert response.status_code == 200
     assert response.headers['X-Archive-SHA256']

@@ -41,7 +41,7 @@ Lima node/alamat tetap: CA `.10`, SERVER `.20`, CLIENT `.30`, ADMIN `.40`, ATTAC
 
 **Sesi karyawan berlaku delapan jam.** Jika sudah habis, login ulang pada VM-CLIENT
 lalu restart layanan sesuai [panduan akun](EMPLOYEE_ACCESS.md). Akun lab
-`employee-lab` terikat ke `vm-client`; kredensial bootstrap ada dalam file privat
+`USERNAME_LOKAL` terikat ke `vm-client`; kredensial bootstrap ada dalam file privat
 `state/deployment/proposal-2026-10-09/employee-onboarding.json`. Jangan cetak atau
 unggah isinya. TOTP admin terpisah dari login karyawan.
 

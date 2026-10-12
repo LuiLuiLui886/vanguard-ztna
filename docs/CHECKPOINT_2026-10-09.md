@@ -26,7 +26,7 @@ dan kesamaan HEAD dengan `origin/main` sebelum memulai perubahan berikutnya.
 | Lima VM Ubuntu 22.04 | CA `.10`, SERVER `.20`, CLIENT `.30`, ADMIN `.40`, ATTACKER `.50` aktif |
 | Paket | 0.1.3 semua VM; 12 berkas aplikasi per VM cocok source |
 | Identitas/config | Hash sesuai backup; CA/key, key/cert utama dan konfigurasi dipertahankan |
-| Akun VPN | `employee-lab` terikat ke `vm-client`; sesi delapan jam, enam pemeriksaan perangkat tetap wajib |
+| Akun VPN | `USERNAME_LOKAL` terikat ke `vm-client`; sesi delapan jam, enam pemeriksaan perangkat tetap wajib |
 | Tes | 90 lokal + 90 guest; CI Python 3.10/3.12 masing-masing 90 PASS |
 | S-01 | Login akun valid dari attacker berhasil; perangkat tanpa proof sah ditolak tanpa peer |
 | Disable akun | Peer sementara dihapus, sesi lama ditolak |

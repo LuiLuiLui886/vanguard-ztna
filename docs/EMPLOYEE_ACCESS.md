@@ -28,12 +28,12 @@ memiliki tombol aktivasi ulang pada versi ini.
 ## Karyawan pada VM-CLIENT
 
 ```bash
-sudo /opt/vanguard/venv/bin/vanguard-client login --username employee-lab
+sudo /opt/vanguard/venv/bin/vanguard-client login --username USERNAME_LOKAL
 sudo systemctl restart vanguard-client
 ping -c 3 10.8.0.1
 ```
 
-Nama `employee-lab` hanya akun yang disiapkan eksplisit untuk migrasi lab ini;
+Ganti `USERNAME_LOKAL` dengan nama akun pada inventaris kredensial lokal;
 gunakan akun yang diberikan administrator pada pemasangan lain. CLI meminta
 password tanpa menampilkannya atau menaruhnya dalam argumen proses.
 

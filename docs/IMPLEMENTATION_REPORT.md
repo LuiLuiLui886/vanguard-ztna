@@ -4,10 +4,12 @@
 
 VM-ADMIN kini menjalankan dashboard 0.1.6: waktu WIB, keterangan tindakan
 berbahasa Indonesia, filter dan pagination, serta arsip snapshot CSV/JSON/manifest
-dengan checksum. **137 tes lokal PASS**; login/arsip/unduh HTTPS live PASS.
+dengan checksum. Suite lokal **137 tes PASS** sebelum tambahan pencatatan akses;
+tes admin final **26 PASS** dan login/arsip/unduh HTTPS/TOTP **4/4 PASS**.
 Empat VM layanan lain tetap 0.1.5 karena perubahan ini hanya pada dashboard.
-Backup database/config admin: `state/backups/before-0.1.6-2026-10-12/`.
-Sumber dan dokumentasi 0.1.6 belum dipush; CI menunggu commit. Rincian:
+Backup database/config admin ada di `state/backups/before-0.1.6-2026-10-12/`
+dan `state/backups/before-0.1.6-final-2026-10-12/`. Source awal telah dipush;
+tambahan final memerlukan push dan CI baru. Rincian:
 [panduan 0.1.6](DASHBOARD_0.1.6.md) dan [jurnal](PROGRESS_2026-10-12.md).
 
 **Versi 0.1.5 terpasang pada lima VM Ubuntu 22.04.** Audit proposal menghasilkan

@@ -72,7 +72,7 @@ Git menyimpan dokumentasi terbaru.
   rollback 0.1.2 juga kehilangan enforcement akun dan bukan pemulihan otomatis.
 
 Kelima VM ditemukan mati saat resume; penyebab belum diketahui. Domain lama
-dinyalakan, sesi employee-lab yang expired diperbarui secara privat tanpa enrollment
+dinyalakan, sesi USERNAME_LOKAL yang expired diperbarui secara privat tanpa enrollment
 ulang, lalu health sebelum upgrade lulus. Sesi baru berakhir **10 Oktober 08:52:10
 WIB**. Renewal admission tidak memperpanjang sesi; lihat [panduan akun](EMPLOYEE_ACCESS.md).
 
