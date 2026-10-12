@@ -156,3 +156,19 @@ alasan/waktu workflow pencabutan serta 100 audit administrasi terbaru per identi
 binding akun, validity dan CRL; tidak menambah peer. `POST /devices/<id>/revoke`
 sekarang mewajibkan field `reason` dari enum pada [panduan dashboard](DASHBOARD_0.1.5.md).
 Reason tidak ditambahkan ke kontrak CA API; reason CRL OpenSSL tetap sama.
+
+## Dashboard 0.1.6 — halaman audit terautentikasi
+
+Route HTML memakai sesi password/TOTP dan pemeriksaan CSRF untuk POST:
+
+| Method | Path | Fungsi |
+|---|---|---|
+| GET | `/activity` | Filter tanggal WIB, aktor, ID perangkat dan peristiwa; 50 catatan per halaman |
+| POST | `/activity/archives` | Buat snapshot seluruh hasil filter. Field `csrf` wajib |
+| GET | `/activity/archives` | Daftar arsip snapshot beserta waktu, pelaku, jumlah, filter dan checksum |
+| GET | `/activity/archives/<id>/download` | Validasi checksum dan unduh ZIP; hash SHA-256 ada pada header respons |
+
+Rentang tanggal pada filter bersifat inklusif menurut hari WIB. Field CSV/JSON
+dibatasi pada detail aman yang dikenal UI; kode event lama yang belum dikenal
+ditampilkan dengan keterangan umum. Batas arsip 10.000 catatan dan 8 MiB data
+sebelum kompresi. Pembuatan/unduhan arsip dicatat pada audit dashboard.

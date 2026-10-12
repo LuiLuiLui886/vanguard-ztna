@@ -10,6 +10,7 @@ from conftest import LocalRemote
 from werkzeug.security import generate_password_hash
 
 from vanguard.admin import Dashboard, create_app
+from vanguard.admin_activity import ActivityArchive, filters_from, local_time, present
 from vanguard.ca import create_app as ca_app
 from vanguard.common import Rejected, database
 
@@ -335,7 +336,7 @@ def test_bundle_is_public_only_and_does_not_admit(lab, dashboard):
         assert (lab['directory'] / 'wg.key').read_bytes().strip() not in contents
     assert not lab['wg'].additions
     page = client.get('/devices/vm-client/history', base_url='https://localhost')
-    assert page.status_code == 200 and b'bundle_downloaded' in page.data
+    assert page.status_code == 200 and b'Bundle diunduh' in page.data
     assert b'Akhir berlaku' in page.data
     assert secret not in json.dumps(dash.history())
 
@@ -365,3 +366,91 @@ def test_upgrade_preserves_legacy_identity_and_does_not_invent_history(lab, tmp_
     assert dash.history() == []
     again = Dashboard(path, None, None)
     assert dict(again.device('vm-client')) == dict(row)
+
+
+def test_activity_time_wib_and_readable_whitelisted_details(dashboard):
+    dash, _, _ = dashboard
+    dash.audit('revocation_requested', 'vm-client',
+               {'reason': 'device_lost', 'password': 'must never display'}, 'admin')
+    row = present(dash.history('vm-client')[0])
+    assert row['title'] == 'Pencabutan diminta'
+    assert 'Perangkat hilang' in row['description']
+    assert 'must never display' not in json.dumps(row)
+    assert 'password' not in json.dumps(row)
+    assert local_time(0) == '01/01/1970 07:00:00 WIB'
+
+
+def test_activity_filters_use_inclusive_wib_dates_and_exact_admin(dashboard):
+    dash, _, _ = dashboard
+    dash.audit('admin_login', actor='admin')
+    filters, where, params = filters_from({'start': '2026-10-12', 'end': '2026-10-12',
+                                           'actor': 'admin', 'event': 'admin_login'})
+    assert filters['actor'] == 'admin'
+    assert 'timestamp >= ?' in where and 'timestamp < ?' in where
+    assert params[0] < params[1] and len(params) == 4
+    with pytest.raises(Rejected):
+        filters_from({'start': '2026-13-01'})
+    with pytest.raises(Rejected):
+        filters_from({'start': '2026-10-13', 'end': '2026-10-12'})
+    filters, where, params = filters_from({'actor': "' OR 1=1 --"})
+    assert "' OR 1=1 --" in params and 'actor = ?' in where
+
+
+def test_activity_page_and_archive_are_persistent_filter_complete_and_checksummed(dashboard):
+    dash, client, secret = dashboard
+    assert login(client, secret).status_code == 302
+    for n in range(57):
+        dash.audit('metadata_updated', f'device-{n % 2}', {'fields': ['owner']}, 'admin')
+    archive = ActivityArchive(dash)
+    page = archive.history({}, 2)
+    assert page['total'] == 58  # Includes the authenticated admin login.
+    assert len(page['events']) == 8
+    archive_id = archive.create({'device': 'device-1'}, 'admin')
+    row = archive.listing()['archives'][0]
+    assert row['archive_id'] == archive_id and row['row_count'] == 28
+    payload, digest = archive.download(archive_id, 'admin')
+    assert __import__('hashlib').sha256(payload).hexdigest() == digest == row['sha256']
+    with zipfile.ZipFile(io.BytesIO(payload)) as bundle:
+        manifest = json.loads(bundle.read('manifest.json'))
+        assert manifest['row_count'] == 28 and manifest['created_by'] == 'admin'
+        assert 'activity.csv' not in bundle.namelist()
+        csv_content = bundle.read('aktivitas.csv').decode('utf-8-sig')
+        assert 'Waktu WIB' in csv_content and 'Data perangkat diperbarui' in csv_content
+        assert 'must never' not in csv_content
+    assert len(dash.history()) == 60  # Source events plus archive create/download audits.
+
+
+def test_activity_archive_http_access_csrf_download_and_integrity(dashboard):
+    dash, client, secret = dashboard
+    assert client.get('/activity', base_url='https://localhost').status_code == 302
+    assert client.get('/activity/archives', base_url='https://localhost').status_code == 302
+    assert client.post('/activity/archives', base_url='https://localhost').status_code == 403
+    assert login(client, secret).status_code == 302
+    assert client.get('/activity', base_url='https://localhost').status_code == 200
+    assert client.get('/activity/archives', base_url='https://localhost').status_code == 200
+    with client.session_transaction() as state:
+        token = state['csrf']
+    for action in ('admin_login', 'admin_login'):
+        dash.audit(action, actor='admin')
+    response = client.post('/activity/archives', base_url='https://localhost',
+                           data={'csrf': token, 'actor': 'admin'})
+    assert response.status_code == 302
+    with database(dash.db) as db:
+        archive_id = db.execute('SELECT archive_id FROM admin_archives').fetchone()[0]
+    response = client.get(f'/activity/archives/{archive_id}/download', base_url='https://localhost')
+    assert response.status_code == 200
+    assert response.headers['X-Archive-SHA256']
+    with database(dash.db) as db:
+        db.execute('UPDATE admin_archives SET payload=? WHERE archive_id=?', (b'corrupt', archive_id))
+    response = client.get(f'/activity/archives/{archive_id}/download', base_url='https://localhost')
+    assert response.status_code == 409
+    assert any(e['event'] == 'operation_failed' for e in dash.history())
+
+
+def test_csv_archive_neutralizes_formula_cells(dashboard):
+    dash, _, _ = dashboard
+    dash.audit('metadata_updated', 'device-1', {'fields': ['owner']}, '=2+3')
+    archive_id = ActivityArchive(dash).create({}, 'admin')
+    payload, _ = ActivityArchive(dash).download(archive_id, 'admin')
+    with zipfile.ZipFile(io.BytesIO(payload)) as bundle:
+        assert "'=2+3" in bundle.read('aktivitas.csv').decode('utf-8-sig')

@@ -53,3 +53,11 @@ never export/generate a device private key on the dashboard and never add a peer
 Certificate validity display is not admission authorization. One certificate per immutable
 device identity remains; renewal, hardware attestation, Windows, owner notifications and
 per-resource policy are not claimed implemented by these dashboard improvements.
+
+Administrator activity records — 12 October 2026:
+Version 0.1.6 displays audit timestamps in Asia/Jakarta WIB to seconds while
+retaining Unix UTC source timestamps. Admin event labels/details are presented in
+Indonesian; filtered activity is paginated and can be saved as a non-destructive
+snapshot ZIP in the admin database. The ZIP includes CSV/JSON/manifest, SHA-256
+integrity checks and no credential fields. Archives are protected by the dashboard
+session and are not an immutable external ledger or resistant to VM root edits.

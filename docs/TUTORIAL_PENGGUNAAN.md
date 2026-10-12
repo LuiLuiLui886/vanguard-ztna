@@ -1,6 +1,6 @@
 # Tutorial penggunaan VanGuard dari awal sampai akhir
 
-Panduan untuk **VanGuard 0.1.5 pada lab yang sudah terpasang di laptop ini**.
+Panduan untuk **VanGuard 0.1.6 pada lab yang sudah terpasang di laptop ini**.
 Ikuti bagian 1–6 untuk pemakaian harian, bagian 7 untuk latihan registrasi,
 bagian 8 untuk pengujian, dan bagian 9 untuk menutup sesi. Solusi masalah ada
 di bagian 10. Panduan ini tidak menjalankan perubahan hanya dengan membacanya.
@@ -184,17 +184,40 @@ Jangan menjalankan health bersamaan dengan pencabutan atau shutdown.
 | Registrasi perangkat | Unggah request JSON dari client, isi metadata, pilih akun, klik **Terbitkan sertifikat & daftarkan binding** |
 | Unduh sertifikat | Ambil sertifikat milik baris perangkat tersebut untuk dipasang ke client yang membuat request |
 | Unduh bundle onboarding | ZIP sertifikat/root publik, manifest dan petunjuk; tanpa private key/token, belum auto-import konfigurasi |
-| Riwayat perangkat | Lihat masa berlaku UTC/fingerprint, alasan pencabutan dan 100 aktivitas terbaru sejak 0.1.5 |
+| Riwayat perangkat | Lihat masa berlaku UTC/fingerprint, alasan pencabutan dan aktivitas dengan waktu WIB |
 | Edit data perangkat | Ubah nama/departemen/pemilik/platform, lalu **Simpan data perangkat**; identitas dan binding akun tetap |
 | Tautkan akun VPN | Hanya muncul untuk perangkat lama berstatus registered yang belum punya akun |
 | Ulangi workflow | Lanjutkan workflow yang belum selesai sesudah dependency pulih |
-| Audit terbaru | Lihat 25 peristiwa terbaru yang dapat dibaca dari server; muat ulang halaman untuk memperbarui |
-| Aktivitas administrasi | Lihat 25 aktivitas admin terbaru dengan aktor/waktu; bukti sebelum 0.1.5 tidak direkonstruksi |
+| Aktivitas keamanan server | Lihat peristiwa VPN otomatis dengan waktu WIB dan keterangan bahasa Indonesia |
+| Aktivitas administrasi | Buka **Aktivitas admin**, pilih tanggal WIB, pelaku, perangkat atau jenis tindakan; telusuri 50 per halaman |
+| Arsip aktivitas | Klik **Simpan arsip aktivitas** untuk semua hasil filter; **Arsip** menampilkan dan mengunduh snapshot CSV/JSON/manifest |
 | Keluar | Mengakhiri sesi dashboard; tidak mematikan VPN karyawan |
 
 Registrasi belum mengaktifkan peer. Client harus login dan lolos enam pemeriksaan
 perangkat saat admission. Jika tertulis **Status server tidak tersedia** atau
 Peer **Tidak tersedia**, keadaan peer belum dapat dipastikan; periksa server.
+
+### Cari dan arsipkan aktivitas admin
+
+1. Klik **Aktivitas admin** di navigasi setelah masuk dashboard.
+2. Pilih tanggal mulai/akhir menurut WIB; tanggal akhir mencakup satu hari penuh.
+   Isi nama admin, ID perangkat, atau jenis tindakan bila diperlukan.
+3. Klik **Tampilkan** untuk meninjau hasil. Urutan mengikuti ID saat tindakan
+   dicatat; satu proses dapat menampilkan beberapa tahap seperti diminta, gagal,
+   lalu selesai.
+4. Klik **Simpan arsip aktivitas**. Arsip mengambil seluruh hasil filter, bukan
+   hanya 50 catatan pada halaman itu. Batas satu arsip 10.000 catatan; perkecil
+   rentang/filter jika jumlahnya melebihi batas.
+5. Klik **Arsip** lalu **Unduh arsip ZIP**. Berkas berisi CSV untuk Excel/LibreOffice,
+   JSON terstruktur, manifest pembuat/waktu/filter/jumlah, petunjuk, dan SHA-256.
+   Bandingkan checksum ZIP di halaman arsip dengan header `X-Archive-SHA256`.
+6. Simpan hasil di folder privat komputer. Arsip dan log sumber tetap berada di
+   server admin; backup konsisten database admin untuk menjaga salinan arsip.
+
+Waktu pada layar dan CSV adalah WIB hingga detik; arsip turut menyimpan timestamp
+Unix/UTC. Detail menggunakan bahasa Indonesia. Catatan sebelum versi 0.1.5 tidak
+direkonstruksi. Arsip bersifat snapshot, bukan tanda tangan digital atau bukti
+tahan perubahan oleh root; jangan membagikan hasilnya ke repository publik.
 
 Dua tindakan berikut mengakhiri akses dan digunakan pada identitas latihan:
 

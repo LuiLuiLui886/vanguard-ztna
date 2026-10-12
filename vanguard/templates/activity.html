@@ -1,0 +1,23 @@
+{% extends 'base.html' %}{% block content %}
+<p class="eyebrow">CATATAN ADMINISTRATOR</p><h1>Aktivitas admin</h1>
+<p>Telusuri siapa yang melakukan tindakan, kapan dilakukan, dan hasil prosesnya. Seluruh waktu ditampilkan dalam WIB (UTC+7).</p>
+<p><a href="{{ url_for('archive_list') }}">Buka arsip tersimpan</a> · <a href="/">Kembali ke dashboard</a></p>
+<section><h2>Cari aktivitas</h2><form method="get" class="filter-grid">
+<label>Tanggal mulai (WIB)<input type="date" name="start" value="{{ filters.start }}"></label>
+<label>Tanggal akhir (WIB)<input type="date" name="end" value="{{ filters.end }}"></label>
+<label>Nama admin / pelaku<input name="actor" maxlength="100" value="{{ filters.actor }}" placeholder="Nama akun lengkap"></label>
+<label>ID perangkat<input name="device" maxlength="100" value="{{ filters.device }}" placeholder="ID lengkap"></label>
+<label>Jenis tindakan<select name="event"><option value="">Semua tindakan</option>{% for code, info in event_types.items() %}<option value="{{ code }}" {% if filters.event == code %}selected{% endif %}>{{ info[0] }}</option>{% endfor %}</select></label>
+<div class="filter-actions"><button class="primary">Tampilkan</button> <a href="{{ url_for('activity') }}">Reset filter</a></div>
+</form><small>Tanggal akhir mencakup sampai akhir hari WIB. Nama pelaku dan ID perangkat dicocokkan persis. Pelaku “system” berarti proses internal, bukan sesi admin.</small></section>
+<section><h2>Hasil pencarian</h2><p>{{ total }} aktivitas · Halaman {{ page }} dari {{ pages }} · 50 catatan per halaman.</p>
+<div class="table-scroll"><table><thead><tr><th>ID / Waktu WIB</th><th>Pelaku</th><th>Tindakan</th><th>Perangkat</th><th>Keterangan</th></tr></thead><tbody>
+{% for event in events %}<tr><td><small>#{{ event.id }}</small><time>{{ event.time_wib }}</time></td><td>{{ event.actor }}</td><td>{{ event.title }}</td><td>{{ event.device_id or '—' }}</td><td>{{ event.description }}</td></tr>
+{% else %}<tr><td colspan="5">Tidak ada aktivitas yang sesuai dengan filter.</td></tr>{% endfor %}
+</tbody></table></div>
+<nav class="pagination" aria-label="Halaman aktivitas">{% if page > 1 %}<a href="{{ url_for('activity', page=page-1, **filters) }}">← Sebelumnya</a>{% endif %}{% if page < pages %}<a href="{{ url_for('activity', page=page+1, **filters) }}">Berikutnya →</a>{% endif %}</nav>
+<p>Satu tindakan dapat tercatat dalam beberapa tahap, misalnya permintaan pencabutan dan penyelesaiannya. Catatan sebelum pencatatan versi 0.1.5 tidak dibuat ulang.</p></section>
+<section><h2>Arsipkan hasil pencarian</h2><p>Simpan seluruh aktivitas yang cocok dengan filter saat ini sebagai arsip, termasuk halaman lain. Catatan sumber tetap tersedia. Maksimal 10.000 catatan per arsip; persempit filter untuk jumlah yang lebih besar.</p>
+<form method="post" action="{{ url_for('archive_create') }}"><input type="hidden" name="csrf" value="{{ session.csrf }}">{% for key, value in filters.items() %}<input type="hidden" name="{{ key }}" value="{{ value }}">{% endfor %}<button class="primary" {% if total == 0 %}disabled{% endif %}>Simpan arsip aktivitas</button></form>
+<small>Arsip mengambil data saat tombol ditekan. Aktivitas baru setelah halaman dimuat bisa ikut tercatat. Unduhan memuat CSV yang mudah dibaca, JSON, dan manifest pemeriksaan integritas.</small></section>
+{% endblock %}

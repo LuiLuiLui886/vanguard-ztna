@@ -1,0 +1,17 @@
+{% extends 'base.html' %}{% block content %}
+<p class="eyebrow">DOKUMENTASI ADMINISTRATOR</p><h1>Arsip aktivitas</h1>
+<p><a href="{{ url_for('activity') }}">Cari aktivitas dan buat arsip</a> · <a href="/">Kembali ke dashboard</a></p>
+<p>Arsip menyimpan salinan tetap dari hasil filter pada waktu pembuatannya. Arsip dan log sumber tetap tersimpan di server meskipun sesi admin berakhir.</p>
+<section><h2>Arsip tersimpan</h2><p>{{ total }} arsip · Halaman {{ page }} dari {{ pages }}</p>
+{% for archive in archives %}<article class="archive-card"><h3>{{ archive.archive_id }}</h3>
+<p>Dibuat {{ archive.created_at|wib }} oleh <strong>{{ archive.actor }}</strong>.</p>
+<p>{{ archive.row_count }} catatan · Rentang ID {{ archive.first_event_id }}–{{ archive.last_event_id }}</p>
+<p>Periode WIB: {{ archive.filters.start or 'Sejak awal pencatatan' }} sampai {{ archive.filters.end or 'Saat arsip dibuat' }}.<br>
+Pelaku: {{ archive.filters.actor or 'Semua' }} · Perangkat: {{ archive.filters.device or 'Semua' }} · Jenis: {% if archive.filters.event %}{{ event_types[archive.filters.event][0] }}{% else %}Semua{% endif %}</p>
+<details><summary>Checksum SHA-256 untuk pemeriksaan berkas</summary><code class="digest">{{ archive.sha256 }}</code><p>Checksum mendeteksi perubahan berkas; bukan tanda tangan digital.</p></details>
+<p><a href="{{ url_for('archive_download', archive_id=archive.archive_id) }}">Unduh arsip ZIP</a></p></article>
+{% else %}<p>Belum ada arsip. Pilih filter pada halaman aktivitas, lalu klik Simpan arsip aktivitas.</p>{% endfor %}
+<nav class="pagination" aria-label="Halaman arsip">{% if page > 1 %}<a href="{{ url_for('archive_list', page=page-1) }}">← Sebelumnya</a>{% endif %}{% if page < pages %}<a href="{{ url_for('archive_list', page=page+1) }}">Berikutnya →</a>{% endif %}</nav></section>
+<section><h2>Menyimpan dokumentasi</h2><p>Ekstrak ZIP dan buka aktivitas.csv dengan Excel atau LibreOffice. aktivitas.json menyimpan data terstruktur; manifest.json memuat pembuat, waktu, filter, jumlah catatan, dan checksum berkas.</p>
+<p>Simpan unduhan di lokasi privat pada komputer ini. Arsip berisi identitas dan aktivitas administrator, sehingga tidak diunggah ke GitHub. Backup database admin tetap diperlukan agar arsip terlindungi jika VM rusak.</p></section>
+{% endblock %}

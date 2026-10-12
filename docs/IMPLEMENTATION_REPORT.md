@@ -1,5 +1,15 @@
 # Hasil implementasi VanGuard — 12 Oktober 2026
 
+## Pembaruan terbaru — dashboard aktivitas 0.1.6
+
+VM-ADMIN kini menjalankan dashboard 0.1.6: waktu WIB, keterangan tindakan
+berbahasa Indonesia, filter dan pagination, serta arsip snapshot CSV/JSON/manifest
+dengan checksum. **137 tes lokal PASS**; login/arsip/unduh HTTPS live PASS.
+Empat VM layanan lain tetap 0.1.5 karena perubahan ini hanya pada dashboard.
+Backup database/config admin: `state/backups/before-0.1.6-2026-10-12/`.
+Sumber dan dokumentasi 0.1.6 belum dipush; CI menunggu commit. Rincian:
+[panduan 0.1.6](DASHBOARD_0.1.6.md) dan [jurnal](PROGRESS_2026-10-12.md).
+
 **Versi 0.1.5 terpasang pada lima VM Ubuntu 22.04.** Audit proposal menghasilkan
 perbaikan dashboard dan [catatan revisi per bagian](SARAN_REVISI_PROPOSAL_2026-10-12.md).
 Proposal Google Docs tetap sebagai sumber yang dibaca; usulan redaksi disimpan di Git.

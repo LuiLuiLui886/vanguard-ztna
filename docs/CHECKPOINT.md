@@ -1,9 +1,8 @@
 # Checkpoint VanGuard — 12 Oktober 2026
 
-**Tahap 0.1.5 selesai, terpasang pada lima VM dan source dipush private.**
-132 tes lokal dan 132 guest PASS. Dashboard HTTPS live dan pilot clear/VanGuard
-n=1 per kondisi PASS. Jangan menyamakan status ini dengan seri benchmark lengkap
-atau seluruh proposal selesai. [Jurnal](PROGRESS_2026-10-12.md).
+**Tahap 0.1.6 sedang difinalkan.** Dashboard terbaru sudah terpasang pada VM-ADMIN;
+empat VM lain tetap 0.1.5. Admin 0.1.6 live archive lulus. Perubahan source belum
+dipush. Tahap 0.1.5: 132 tes lokal/guest PASS; [jurnal](PROGRESS_2026-10-12.md).
 
 ## Keadaan dan bukti
 
@@ -13,6 +12,12 @@ atau seluruh proposal selesai. [Jurnal](PROGRESS_2026-10-12.md).
   config/CA/key/identitas utama cocok backup. Tidak reenrollment utama.
 - Dashboard baru: health, audit admin, alasan/waktu revoke, validity/history,
   bundle publik. [Panduan](DASHBOARD_0.1.5.md).
+- VM-ADMIN: 0.1.6 mencatat tindakan dengan waktu WIB, uraian Indonesia, filter
+  50/halaman dan arsip CSV/JSON/manifest. [Panduan](DASHBOARD_0.1.6.md).
+- 137 tes lokal PASS; HTTPS/TOTP archive workflow live PASS. Bukti dan ZIP 0600:
+  `state/deployment/activity-0.1.6/live/`.
+- Backup konsisten admin sebelum migrasi:
+  `state/backups/before-0.1.6-2026-10-12/`.
 - [Pilot benchmark](BENCHMARK_PILOT_2026-10-12.md) selesai n=1; iperf3 3.9 tersedia
   pada client/server, tanpa daemon permanen. Pilot gagal 10 Oktober dipertahankan.
 - Bukti aktif: `state/deployment/audit-2026-10-12/`.
@@ -39,12 +44,10 @@ ditolak. Health **7/7 PASS selama 82,75 detik**, dua deadline lease, nol removal
 Tidak ada eksperimen aktif. Inventaris privat terbaru memuat satu admin, 22 akun
 karyawan (satu aktif) dan lima akun console; nilai rahasia tidak masuk Git.
 
-Source `8eeffaa` sudah dipush ke GitHub private.
-[CI 38226313875](https://github.com/LuiLuiLui886/vanguard-ztna/actions/runs/38226313875)
-success: masing-masing **132 PASS** Python 3.10/3.12, nol failure/error/skip.
-Build/checksum artefak unduhan PASS; catatan akhir masuk commit dokumentasi sesudahnya.
-Jangan menjalankan eksperimen .3 atau benchmark bersamaan. Backup CA sebelum repair
-berada pada direktori bukti audit.
+Source 0.1.5 `8eeffaa` dipush private dan CI-nya masing-masing 132 PASS Python
+3.10/3.12. Perubahan 0.1.6 belum dipush; build/checksum sudah lulus dan CI 0.1.6
+menunggu commit source. Jangan jalankan eksperimen .3/benchmark bersamaan. Backup
+CA sebelum repair ada pada direktori bukti audit.
 
 ## Sesi berikutnya
 
@@ -64,6 +67,8 @@ penuh. [Laporan aktif](IMPLEMENTATION_REPORT.md), [tutorial](TUTORIAL_PENGGUNAAN
 reboot workstation, serta penyebab shutdown belum terverifikasi.
 Tindak lanjut operasional: ketahanan counter CA saat shutdown mendadak dan warning
 control socket Gunicorn pada sandbox service; API dan admission sudah lulus uji akhir.
+Sisa pekerjaan 0.1.6: finalisasi dokumen/scan rahasia, push private dan validasi CI
+137 tes pada Python 3.10/3.12. Deployment admin live telah lulus; tidak perlu rerollout.
 
 ## Console operator — 12 Oktober 2026 16:11 WIB
 

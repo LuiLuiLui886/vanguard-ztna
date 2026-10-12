@@ -1,19 +1,22 @@
 # Lanjutkan proyek VanGuard
 
-**12 Oktober 2026: 0.1.5 terpasang pada lima VM.** Perbaikan sesuai audit proposal
+**12 Oktober 2026: 0.1.6 sedang difinalkan.** Dashboard terbaru terpasang pada
+VM-ADMIN; empat VM lain tetap 0.1.5. Login/filter/arsip/unduh HTTPS live PASS;
+137 tes lokal PASS. Perubahan source belum dipush. Perbaikan sesuai audit proposal
 mencakup health dashboard, audit admin, alasan/waktu pencabutan, history/validity
 sertifikat dan bundle publik. 132 tes lokal + 132 guest PASS; UI HTTPS live dan
 pilot clear/VanGuard n=1 PASS. Identity, firewall dan health akhir PASS.
-Source `8eeffaa` sudah dipush private;
-[CI 38226313875](https://github.com/LuiLuiLui886/vanguard-ztna/actions/runs/38226313875)
-success, masing-masing 132 tes Python 3.10/3.12 lulus.
+Source 0.1.5 `8eeffaa` sudah dipush private; CI sebelumnya masing-masing 132 tes
+Python 3.10/3.12 lulus. Perubahan dashboard 0.1.6 belum dipush; tunggu CI setelah
+push source.
 
 Baca AGENTS.md, VANGUARD_CONTEXT.md, [checkpoint](docs/CHECKPOINT.md) dan
 [jurnal 12 Oktober](docs/PROGRESS_2026-10-12.md) sebelum melanjutkan.
 
 - [Catatan revisi proposal per bagian](docs/SARAN_REVISI_PROPOSAL_2026-10-12.md)
   memuat konflik arsitektur, contoh redaksi, metrik dan perbaikan daftar pustaka.
-- [Tutorial dari awal sampai akhir](docs/TUTORIAL_PENGGUNAAN.md) dan
+- [Tutorial dari awal sampai akhir](docs/TUTORIAL_PENGGUNAAN.md),
+  [aktivitas dan arsip 0.1.6](docs/DASHBOARD_0.1.6.md), serta
   [fitur dashboard 0.1.5](docs/DASHBOARD_0.1.5.md).
 - [Hasil pilot dan batas kesimpulan](docs/BENCHMARK_PILOT_2026-10-12.md);
   seri formal tiga konfigurasi × 10 belum dijalankan.
@@ -31,8 +34,9 @@ perlu login ulang saat expired.
 
 Identity ulang/cleanup PASS, firewall 40 pemeriksaan PASS, health 7/7 selama
 82,75 detik dengan nol removal. Inventaris kredensial lokal sudah diperbarui.
-Tahap ini selesai; hasil CI dan catatan akhir disimpan pada Git. Berikutnya
-lanjutkan gap proposal: baseline WG membutuhkan pengecualian admission eksplisit,
+Tahap 0.1.5 selesai. Untuk 0.1.6 tinggal selesaikan handoff, scan rahasia,
+push source dan cek CI 137 tes Python 3.10/3.12. Deployment admin live lulus.
+Setelah itu lanjutkan gap proposal: baseline WG membutuhkan pengecualian admission eksplisit,
 renewal sertifikat, notifikasi, Windows, resource policy dan bukti TCP/aplikasi.
 Jangan menjalankan eksperimen .3 bersamaan atau recreate topologi lima node.
 
@@ -48,3 +52,7 @@ warning control socket Gunicorn; lihat checkpoint untuk bukti pemulihan.
 terverifikasi dan lima jendela terminal sudah dibuka untuk pengguna. Password tidak
 diubah. Sesi console sengaja dibiarkan aktif; Ctrl+] melepaskan console tanpa
 mematikan VM. Bukti ada pada `state/deployment/console-login-2026-10-12/`.
+
+Dashboard 0.1.6 menyimpan snapshot arsip admin pada VM-ADMIN dan salinan uji lokal
+privat `state/deployment/activity-0.1.6/live/admin-activity.zip` mode 0600. Backup
+admin pra-upgrade ada pada `state/backups/before-0.1.6-2026-10-12/`.

@@ -48,10 +48,10 @@
 <label>Alasan pencabutan<select name="reason" required><option value="">Pilih alasan</option>{% for value, label in revocation_reasons.items() %}<option value="{{ value }}">{{ label }}</option>{% endfor %}</select></label>
 <button class="danger">Cabut akses & sertifikat</button></form>{% endif %}</td></tr>
 {% else %}<tr><td colspan="5">Belum ada perangkat. Unggah request.json untuk memulai.</td></tr>{% endfor %}</tbody></table></div></section>
-<section><h2>Audit terbaru</h2><div class="table-scroll"><table><thead><tr><th>Waktu (Unix)</th><th>Peristiwa</th><th>Perangkat</th><th>Detail</th></tr></thead><tbody>
-{% for event in events %}<tr><td>{{ event.timestamp|int }}</td><td>{{ event.event }}</td><td>{{ event.device_id or '—' }}</td><td>{{ event.detail }}</td></tr>
+<section><h2>Aktivitas keamanan server</h2><p>Peristiwa otomatis pada layanan VPN; terpisah dari tindakan administrator.</p><div class="table-scroll"><table><thead><tr><th>Waktu WIB</th><th>Perangkat</th><th>Keterangan</th></tr></thead><tbody>
+{% for event in events %}<tr><td>{{ event.timestamp|wib }}</td><td>{{ event.device_id or '—' }}</td><td>{{ event|server_description }}</td></tr>
 {% else %}<tr><td colspan="4">Belum ada peristiwa yang tersedia.</td></tr>{% endfor %}</tbody></table></div></section>
-<section><h2>Aktivitas administrasi</h2><p>25 aktivitas terbaru. Pencatatan tersedia sejak versi 0.1.5.</p>
-<div class="table-scroll"><table><thead><tr><th>Waktu (Unix)</th><th>Aktor</th><th>Peristiwa</th><th>Perangkat</th><th>Detail</th></tr></thead><tbody>
-{% for event in admin_events %}<tr><td>{{ event.timestamp|int }}</td><td>{{ event.actor }}</td><td>{{ event.event }}</td><td>{{ event.device_id or '—' }}</td><td>{{ event.detail }}</td></tr>
+<section><h2>Aktivitas administrasi</h2><p>25 aktivitas terbaru. <a href="/activity">Lihat seluruh aktivitas, cari tanggal, dan buat arsip</a>.</p>
+<div class="table-scroll"><table><thead><tr><th>Waktu WIB</th><th>Pelaku</th><th>Tindakan</th><th>Perangkat</th><th>Keterangan</th></tr></thead><tbody>
+{% for raw in admin_events %}{% set event = raw|activity %}<tr><td>{{ event.time_wib }}</td><td>{{ event.actor }}</td><td>{{ event.title }}</td><td>{{ event.device_id or '—' }}</td><td>{{ event.description }}</td></tr>
 {% else %}<tr><td colspan="5">Belum ada aktivitas tercatat.</td></tr>{% endfor %}</tbody></table></div></section>{% endblock %}

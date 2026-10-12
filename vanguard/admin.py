@@ -14,6 +14,8 @@ import pyotp
 from flask import flash, g, redirect, render_template, request, send_file, session, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 
+from .admin_activity import EVENTS as ACTIVITY_EVENTS
+from .admin_activity import ActivityArchive, local_time, present, server_description
 from .common import (
     Rejected,
     Remote,
@@ -196,10 +198,12 @@ class Dashboard:
             if not row:
                 raise Rejected("Unknown device", 404)
             body = json.loads(row["request"])
+            before = body.get('metadata', {})
             body["metadata"] = metadata
             db.execute("UPDATE devices SET request=? WHERE device_id=?",
                        (json.dumps(body, sort_keys=True), name))
-            self.audit('metadata_updated', name, {'fields': sorted(metadata)}, actor, db)
+            changed = sorted(field for field in metadata if before.get(field) != metadata[field])
+            self.audit('metadata_updated', name, {'fields': changed}, actor, db)
 
     def bind_employee(self, name, username, actor='system'):
         username = device_name(username)
@@ -386,6 +390,16 @@ def create_app(config=None):
             ),
         )
     app.extensions["dashboard"] = dashboard
+    archives = ActivityArchive(dashboard)
+    app.extensions['activity_archive'] = archives
+    app.jinja_env.filters['wib'] = local_time
+    app.jinja_env.filters['activity'] = present
+    app.jinja_env.filters['server_description'] = server_description
+
+    def failed(action, exc, name=None):
+        dashboard.audit('operation_failed', name,
+                        {'action': action, 'http_status': getattr(exc, 'upstream_status', exc.status)},
+                        actor=g.admin_username)
 
     @app.before_request
     def csrf_check():
@@ -394,6 +408,12 @@ def create_app(config=None):
         if request.method == "POST" and not secrets.compare_digest(
             request.form.get("csrf", "").encode(), session["csrf"].encode()
         ):
+            with database(dashboard.db) as db:
+                user = db.execute('SELECT username FROM sessions WHERE token=? AND expires>?',
+                                  (session.get('token', ''), time.time())).fetchone()
+                if user:
+                    dashboard.audit('security_rejected', detail={'http_status': 403},
+                                    actor=user['username'], db=db)
             raise Rejected("CSRF check failed", 403)
 
     def login_required(func):
@@ -484,6 +504,7 @@ def create_app(config=None):
                                actor=g.admin_username)
             flash("Sertifikat diterbitkan dan binding terdaftar. Client dapat memulai admission.")
         except Rejected as exc:
+            failed('registration', exc)
             flash(str(exc), "error")
         return redirect(url_for("index"))
 
@@ -499,6 +520,7 @@ def create_app(config=None):
                             actor=g.admin_username)
             flash('Akun karyawan dibuat. Daftarkan perangkat untuk akun tersebut.')
         except Rejected as exc:
+            failed('employee_create', exc)
             flash(str(exc), 'error')
         return redirect(url_for('index'))
 
@@ -510,6 +532,7 @@ def create_app(config=None):
             dashboard.audit('employee_disabled', detail={'username': username}, actor=g.admin_username)
             flash('Akun karyawan dinonaktifkan dan akses perangkat dicabut.')
         except Rejected as exc:
+            failed('employee_disable', exc)
             flash(str(exc), 'error')
         return redirect(url_for('index'))
 
@@ -532,6 +555,7 @@ def create_app(config=None):
                 raise Rejected("Unknown action", 404)
             flash("Operasi selesai.")
         except Rejected as exc:
+            failed(action if action in ('metadata', 'employee', 'revoke', 'retry') else 'unknown', exc, name)
             flash(str(exc), "error")
         return redirect(url_for("index"))
 
@@ -539,6 +563,7 @@ def create_app(config=None):
     @login_required
     def history(name):
         row = dict(dashboard.device(device_name(name)))
+        dashboard.audit('history_viewed', name, actor=g.admin_username)
         return render_template('device_history.html', device=row,
                                validity=certificate_summary(row['certificate']),
                                events=dashboard.history(name), reasons=REVOCATION_REASONS)
@@ -547,21 +572,69 @@ def create_app(config=None):
     @login_required
     def bundle(name):
         name = device_name(name)
-        return send_file(io.BytesIO(dashboard.bundle(name, g.admin_username)), as_attachment=True,
-                         download_name=name + '-onboarding.zip', mimetype='application/zip')
+        try:
+            return send_file(io.BytesIO(dashboard.bundle(name, g.admin_username)), as_attachment=True,
+                             download_name=name + '-onboarding.zip', mimetype='application/zip')
+        except Rejected as exc:
+            failed('bundle', exc, name)
+            raise
 
     @app.get("/devices/<name>/certificate")
     @login_required
     def certificate(name):
-        row = dashboard.device(device_name(name))
-        if not row["certificate"]:
-            raise Rejected("Certificate not issued", 404)
+        name = device_name(name)
+        try:
+            row = dashboard.device(name)
+            if not row["certificate"]:
+                raise Rejected("Certificate not issued", 404)
+        except Rejected as exc:
+            failed('certificate', exc, name)
+            raise
+        dashboard.audit('certificate_downloaded', name, {'serial': row['serial']}, g.admin_username)
         return send_file(
             io.BytesIO(row["certificate"].encode()),
             as_attachment=True,
             download_name=name + ".crt",
             mimetype="application/x-pem-file",
         )
+
+    @app.get('/activity')
+    @login_required
+    def activity():
+        result = archives.history(request.args, request.args.get('page', '1'))
+        return render_template('activity.html', **result, event_types=ACTIVITY_EVENTS)
+
+    @app.get('/activity/archives')
+    @login_required
+    def archive_list():
+        return render_template('activity_archives.html', **archives.listing(request.args.get('page', '1')),
+                               event_types=ACTIVITY_EVENTS)
+
+    @app.post('/activity/archives')
+    @login_required
+    def archive_create():
+        try:
+            archive_id = archives.create(request.form, g.admin_username)
+            flash('Arsip ' + archive_id + ' berhasil disimpan. Catatan sumber tetap tersedia.')
+            return redirect(url_for('archive_list'))
+        except Rejected as exc:
+            failed('archive_create', exc)
+            flash(str(exc), 'error')
+            return redirect(url_for('activity'))
+
+    @app.get('/activity/archives/<archive_id>/download')
+    @login_required
+    def archive_download(archive_id):
+        try:
+            payload, digest = archives.download(archive_id, g.admin_username)
+        except Rejected as exc:
+            failed('archive_download', exc)
+            raise
+        response = send_file(io.BytesIO(payload), as_attachment=True,
+                             download_name='vanguard-aktivitas-' + archive_id + '.zip',
+                             mimetype='application/zip')
+        response.headers['X-Archive-SHA256'] = digest
+        return response
 
     return app
 

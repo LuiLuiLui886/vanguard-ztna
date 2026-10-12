@@ -303,3 +303,19 @@ audit dan kolom alasan/waktu pencabutan, tanpa mengganti identitas atau mengaran
 histori sebelum upgrade. Tidak perlu reenrollment. Sesudah startup, periksa health
 dan bundle/history/revoke beralasan melalui identitas sementara seperti
 [panduan dashboard](DASHBOARD_0.1.5.md). Pertahankan CA index/CRL terbaru saat recovery.
+
+## Upgrade aktivitas administrator 0.1.6
+
+Versi ini memperluas skema audit dan menambah tabel snapshot arsip pada `admin.db`;
+schema baru dibuat aditif, log lama dipertahankan. Sebelum update, hentikan service
+dashboard lalu buat backup database admin dengan [prosedur backup dashboard](#upgrade-dashboard-015)
+atau backup konsisten lima role. Pasang wheel 0.1.6 dan mulai kembali dashboard;
+tidak perlu mengubah CA, client, key, atau binding.
+
+Sesudah startup, login admin dan periksa **Aktivitas admin**, filter WIB, pagination,
+pembuatan arsip, daftar arsip dan unduhan. Cocokkan checksum SHA-256. File download
+ZIP harus disimpan privat di workstation; jangan di GitHub. Arsip sumber tidak
+dihapus saat export. Backup rutin tetap diperlukan karena arsip disimpan dalam
+database admin VM. Upgrade tidak membuat catatan tindakan yang terjadi sebelum
+audit 0.1.5 diaktifkan dan tidak memberi perlindungan terhadap administrator root
+yang memodifikasi database secara langsung.
