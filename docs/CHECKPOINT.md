@@ -60,7 +60,16 @@ berada pada direktori bukti audit.
 
 S-01 kuantitatif tetap bukti 0.1.4; S-03/S-04 ICMP tetap bukti 0.1.3, tidak diulang
 penuh. [Laporan aktif](IMPLEMENTATION_REPORT.md), [tutorial](TUTORIAL_PENGGUNAAN.md),
-[checkpoint lama](CHECKPOINT_2026-10-10.md). Login HP pribadi dan console interaktif,
+[checkpoint lama](CHECKPOINT_2026-10-10.md). Login HP pribadi,
 reboot workstation, serta penyebab shutdown belum terverifikasi.
 Tindak lanjut operasional: ketahanan counter CA saat shutdown mendadak dan warning
 control socket Gunicorn pada sandbox service; API dan admission sudah lulus uji akhir.
+
+## Console operator — 12 Oktober 2026 16:11 WIB
+
+Lima VM running dan login password console sudah terverifikasi pada `/dev/ttyS0`.
+Lima jendela GNOME Terminal terbuka, masing-masing tersambung ke VM-CA, VM-SERVER,
+VM-CLIENT, VM-ADMIN dan VM-ATTACKER; sesi shell sengaja dibiarkan untuk pengguna.
+Bukti privat `state/deployment/console-login-2026-10-12/`; password tetap hanya di
+inventaris lokal. Ctrl+] melepaskan console tanpa shutdown. Tidak ada reboot atau
+perubahan konfigurasi aplikasi pada langkah ini.

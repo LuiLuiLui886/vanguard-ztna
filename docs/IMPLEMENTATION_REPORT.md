@@ -79,7 +79,8 @@ pemutusan sesi TCP/aplikasi belum lengkap. Ketidaksesuaian arsitektur handshake,
 skenario S-01/S-02, definisi metrik dan penomoran referensi proposal dijelaskan pada
 [catatan revisi](SARAN_REVISI_PROPOSAL_2026-10-12.md).
 
-Seluruh TA belum dinyatakan selesai. TOTP HP pribadi, login console interaktif,
+Login console password lima VM terverifikasi pada 12 Oktober 2026; jendela console
+dibuka untuk operator. Seluruh TA belum dinyatakan selesai. TOTP HP pribadi,
 reboot workstation dan penyebab shutdown belum terverifikasi. Hardening ketahanan
 file counter CA terhadap shutdown mendadak masih perlu ditindaklanjuti. Gunicorn
 melaporkan control socket tidak dapat ditulis pada sandbox service; API tetap berjalan.

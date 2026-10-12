@@ -39,7 +39,12 @@ Jangan menjalankan eksperimen .3 bersamaan atau recreate topologi lima node.
 GitHub: [repository private](https://github.com/LuiLuiLui886/vanguard-ztna),
 branch main; CLI `state/tooling/github/cli/usr/bin/gh`.
 [Laporan aktif](docs/IMPLEMENTATION_REPORT.md), [arsip resume](docs/LANJUTKAN_PROYEK_2026-10-10.md).
-TOTP HP pribadi, console interaktif dan reboot workstation belum terverifikasi.
+TOTP HP pribadi dan reboot workstation belum terverifikasi.
 Seluruh TA belum selesai. Update checkpoint/resume sebelum berhenti.
 Tindak lanjut operasional: ketahanan counter CA terhadap shutdown mendadak dan
 warning control socket Gunicorn; lihat checkpoint untuk bukti pemulihan.
+
+12 Oktober 2026 16:11 WIB: kelima VM running; login password console pada ttyS0
+terverifikasi dan lima jendela terminal sudah dibuka untuk pengguna. Password tidak
+diubah. Sesi console sengaja dibiarkan aktif; Ctrl+] melepaskan console tanpa
+mematikan VM. Bukti ada pada `state/deployment/console-login-2026-10-12/`.
