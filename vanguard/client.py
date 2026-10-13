@@ -2,6 +2,7 @@ import argparse
 import base64
 import getpass
 import json
+import math
 import os
 import signal
 import tempfile
@@ -13,11 +14,21 @@ from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import ec, x25519
 from cryptography.x509.oid import NameOID
 
-from .common import Rejected, Remote, device_name, private_dir, run, wg_key, write_private
+from .common import (
+    Rejected,
+    Remote,
+    device_name,
+    private_dir,
+    run,
+    tunnel_ip,
+    wg_key,
+    write_private,
+)
 from .pki import fingerprint, load_cert, proof_message
 
 
-def initialize(directory, name):
+def initialize(directory, name, address='10.8.0.2'):
+    address = tunnel_ip(address)
     directory = private_dir(directory)
     device_name(name)
     if any(directory.iterdir()):
@@ -55,7 +66,7 @@ def initialize(directory, name):
                 "device_id": name,
                 "csr": csr.public_bytes(serialization.Encoding.PEM).decode(),
                 "wg_public_key": wg_public,
-                "tunnel_ip": "10.8.0.2",
+                "tunnel_ip": address,
             },
             indent=2,
         ),
@@ -118,57 +129,96 @@ def login_employee(directory, remote, username, password):
     directory = private_dir(directory)
     result = remote.call('POST', '/api/employee/login', {'username': username, 'password': password})
     target = directory / 'employee-session.json'
-    with tempfile.NamedTemporaryFile(mode='w', dir=directory, delete=False) as out:
-        temporary = Path(out.name)
-        try:
+    temporary = None
+    try:
+        with tempfile.NamedTemporaryFile(mode='w', dir=directory, delete=False) as out:
+            temporary = Path(out.name)
             json.dump(result, out)
             out.flush()
             os.fsync(out.fileno())
-            temporary.replace(target)
-        finally:
+        # Windows cannot rename an open NamedTemporaryFile.
+        temporary.replace(target)
+    finally:
+        if temporary is not None:
             temporary.unlink(missing_ok=True)
     return {'username': result['username'], 'expires_at': result['expires_at']}
 
 
-def connect(directory, remote, server_key):
-    directory = Path(directory).resolve()
+class LinuxTunnel:
+    name = 'wg0'
+
+    def preflight(self):
+        pass
+
+    def up(self, config):
+        run(['wg-quick', 'up', str(config)])
+
+    def down(self, config):
+        run(['wg-quick', 'down', str(config)])
+
+
+def tunnel_backend():
+    if os.name == 'nt':
+        from .windows import WindowsTunnel
+        return WindowsTunnel()
+    return LinuxTunnel()
+
+
+def check_admission(result, address):
+    if not isinstance(result, dict):
+        raise Rejected('Unexpected admission response')
+    lease = result.get('lease_until')
+    if (result.get('decision') != 'ACCEPT' or result.get('tunnel_ip') != address
+            or type(lease) not in (int, float) or not math.isfinite(lease)
+            or lease <= time.time()):
+        raise Rejected('Unexpected or expired admission response')
+    return result
+
+
+def connect(directory, remote, server_key, backend=None):
+    directory = private_dir(directory)
     wg_key(server_key)
-    config = directory / "wg0.conf"
-    # Only this process owns wg0; refuse to overwrite another configuration.
+    address = tunnel_ip(json.loads((directory / 'request.json').read_text())['tunnel_ip'])
+    backend = backend or tunnel_backend()
+    config = directory / (backend.name + '.conf')
+    # Only this process owns the tunnel; refuse to overwrite another configuration.
     if config.exists():
-        raise Rejected("wg0.conf exists; ensure old tunnel is down before removing it")
-    admitted = admit(directory, remote)
-    if admitted["decision"] != "ACCEPT" or admitted["tunnel_ip"] != "10.8.0.2":
-        raise Rejected("Unexpected admission response")
+        raise Rejected('Tunnel config exists; ensure old tunnel is down before removing it')
+    backend.preflight()
+    admitted = check_admission(admit(directory, remote), address)
     write_private(
         config,
-        f"[Interface]\nAddress = 10.8.0.2/24\n"
+        f"[Interface]\nAddress = {address}/32\n"
         f"PrivateKey = {(directory / 'wg.key').read_text().strip()}\n\n"
         f"[Peer]\nPublicKey = {server_key}\nEndpoint = 192.168.100.20:51820\n"
         "AllowedIPs = 10.8.0.1/32\nPersistentKeepalive = 25\n",
     )
-    started = False
     try:
-        run(["wg-quick", "up", str(config)])
-        started = True
-        print("Admitted; wg0 up. Renewing admission until stopped.", flush=True)
+        backend.up(config)
+        print('Admitted; tunnel up. Renewing admission until stopped.', flush=True)
         while True:
             time.sleep(max(1, min(60, (admitted["lease_until"] - time.time()) / 2)))
-            admitted = admit(directory, remote)
+            admitted = check_admission(admit(directory, remote), address)
     finally:
-        if started:
-            run(["wg-quick", "down", str(config)])
+        # Also clean up a partially successful install. Keep config if cleanup fails
+        # so the next invocation refuses rather than taking ownership blindly.
+        backend.down(config)
         config.unlink(missing_ok=True)
 
 
 def main():
     parser = argparse.ArgumentParser(description="VanGuard client")
-    parser.add_argument("--directory", default="/var/lib/vanguard/client")
+    default_directory = (str(Path(os.environ.get('ProgramData', r'C:\ProgramData'))
+                             / 'VanGuard' / 'client') if os.name == 'nt'
+                         else '/var/lib/vanguard/client')
+    parser.add_argument("--directory", default=default_directory)
     parser.add_argument("--server", default="https://192.168.100.20:8081")
-    parser.add_argument("--trust", default="/etc/vanguard/root.crt")
+    parser.add_argument("--trust", default=(str(Path(default_directory) / 'root.crt')
+                                            if os.name == 'nt' else '/etc/vanguard/root.crt'))
     sub = parser.add_subparsers(dest="command", required=True)
     init = sub.add_parser("init")
     init.add_argument("--device-id", default="vm-client")
+    init.add_argument('--tunnel-ip', default='10.8.0.2')
     sub.add_parser("admit")
     login = sub.add_parser('login')
     login.add_argument('--username', required=True)
@@ -178,7 +228,7 @@ def main():
     os.umask(0o077)
     try:
         if args.command == "init":
-            print(initialize(args.directory, args.device_id))
+            print(initialize(args.directory, args.device_id, args.tunnel_ip))
         else:
             remote = Remote(args.server, args.trust)
             if args.command == 'login':

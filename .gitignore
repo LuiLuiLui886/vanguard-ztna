@@ -21,4 +21,6 @@ secrets/
 *.sqlite*
 *.qcow2
 *.img
+*.iso
+*.iso.part
 .ruff_cache/

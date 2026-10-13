@@ -14,6 +14,34 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  windows-client:
+    name: Native Windows client helpers / Python 3.12
+    runs-on: windows-2022
+    timeout-minutes: 15
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+      - name: Install client and tests
+        run: python -m pip install -c deploy/constraints.txt '.[test]'
+      - name: Check native client helpers and ACLs
+        run: |
+          python -m pip check
+          python -m vanguard.client --help
+          python -m pytest -q tests/test_client_platform.py --junitxml=build/reports/windows-client.xml
+      - name: Save client report
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: junit-windows-client
+          path: build/reports/windows-client.xml
+          if-no-files-found: warn
+          retention-days: 14
   test:
     name: Python ${{ matrix.python }} / Ubuntu 22.04
     runs-on: ubuntu-22.04

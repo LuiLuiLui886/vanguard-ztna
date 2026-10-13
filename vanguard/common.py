@@ -1,5 +1,4 @@
 import base64
-import fcntl
 import functools
 import ipaddress
 import os
@@ -32,13 +31,21 @@ def required_secret(name):
 
 
 def private_dir(path):
+    if os.name == 'nt':
+        from .windows import check_private_path
+        check_private_path(path)
     path = Path(path).resolve()
     path.mkdir(parents=True, exist_ok=True, mode=0o700)
+    if os.name == 'nt':
+        from .windows import protect_directory
+        protect_directory(path)
     return path
 
 
 def write_private(path, data):
     path = Path(path)
+    if os.name == 'nt':
+        private_dir(path.parent)
     fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
     with os.fdopen(fd, "wb") as out:
         out.write(data.encode() if isinstance(data, str) else data)
@@ -54,6 +61,11 @@ def run(args, **kwargs):
 
 @contextmanager
 def locked(path):
+    # CA/server locking is Linux-only; importing the client on Windows must work.
+    if os.name == 'nt':
+        raise Rejected('CA/server processes require Linux')
+    import fcntl
+
     with open(path, "a", encoding="utf-8") as handle:
         os.chmod(path, 0o600)
         fcntl.flock(handle, fcntl.LOCK_EX)

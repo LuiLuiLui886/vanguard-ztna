@@ -1,8 +1,16 @@
-# Checkpoint VanGuard — 12 Oktober 2026
+# Checkpoint VanGuard — 13 Oktober 2026
 
-**Tahap 0.1.6 sedang difinalkan.** Dashboard terbaru sudah terpasang pada VM-ADMIN;
-empat VM lain tetap 0.1.5. Admin 0.1.6 live archive lulus. Perubahan source belum
-dipush. Tahap 0.1.5: 132 tes lokal/guest PASS; [jurnal](PROGRESS_2026-10-12.md).
+**Windows tambahan sedang disiapkan; OS belum terpasang.** Pengguna mengotorisasi
+satu client Windows di samping kelima Ubuntu (enam node). VM-CLIENT-WINDOWS telah
+terdefinisi dengan disk 80 GiB, RAM 4 GiB, 2 vCPU, Secure Boot/TPM 2.0; LAN .60,
+tunnel .4 direncanakan. Semua enam VM saat pemeriksaan masih shut off. ISO resmi
+masih diunduh. [Jurnal 13 Oktober](PROGRESS_2026-10-13.md) dan
+[panduan Windows](WINDOWS_CLIENT.md). Source 0.1.7 masih dalam pengujian; belum
+rollout atau enrollment Windows. Jangan recreate domain/disk yang sudah dibuat.
+
+Tahap 0.1.6 sebelumnya selesai dan dipush (`49dd332`, dokumentasi `aa291f1`), CI
+137 PASS Python 3.10/3.12. VM-ADMIN terakhir 0.1.6; empat Ubuntu lain 0.1.5.
+Catatan running 12 Oktober di bawah merupakan bukti historis, bukan status hari ini.
 
 ## Keadaan dan bukti
 

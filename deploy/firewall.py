@@ -16,7 +16,7 @@ from pathlib import Path
 ADDRESSES = {"ca": 10, "server": 20, "client": 30, "admin": 40, "attacker": 50}
 
 
-def rules(role, management):
+def rules(role, management, windows_client=False):
     management = str(ipaddress.IPv4Address(management))
     own = f"192.168.100.{ADDRESSES[role]}"
     lines = [
@@ -43,12 +43,14 @@ def rules(role, management):
             "tcp dport 8080 counter accept"
         )
     elif role == "server":
+        extra = ', 192.168.100.60' if windows_client else ''
+        clients = '{ 10.8.0.2, 10.8.0.4 }' if windows_client else '10.8.0.2'
         lines.extend([
-            f"  ip saddr {{ 192.168.100.30, 192.168.100.40, 192.168.100.50 }} "
+            f"  ip saddr {{ 192.168.100.30, 192.168.100.40, 192.168.100.50{extra} }} "
             f"ip daddr {own} tcp dport 8081 counter accept",
-            f"  ip saddr {{ 192.168.100.30, 192.168.100.50 }} ip daddr {own} "
+            f"  ip saddr {{ 192.168.100.30, 192.168.100.50{extra} }} ip daddr {own} "
             "udp dport 51820 counter accept",
-            '  iifname "wg0" ip saddr 10.8.0.2 ip daddr 10.8.0.1 '
+            f'  iifname "wg0" ip saddr {clients} ip daddr 10.8.0.1 '
             "icmp type echo-request counter accept",
         ])
     elif role == "admin":
@@ -67,8 +69,10 @@ def main():
     parser.add_argument("role", choices=ADDRESSES)
     parser.add_argument("--management-ip", required=True)
     parser.add_argument("--print-only", action="store_true")
+    parser.add_argument('--windows-client', action='store_true',
+                        help='Allow additional Windows client .60 / tunnel .4 on server')
     args = parser.parse_args()
-    content = rules(args.role, args.management_ip)
+    content = rules(args.role, args.management_ip, args.windows_client)
     if args.print_only:
         print(content, end="")
         return

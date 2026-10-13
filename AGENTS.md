@@ -2,13 +2,14 @@
 
 Project: Sistem VanGuard
 Purpose: Tugas Akhir implementasi Zero Trust Network Access
-Platform: Ubuntu Server 22.04
+Platform: Ubuntu Server 22.04 services; additional Windows client in preparation
 
 Before making any change:
 1. Read `VANGUARD_CONTEXT.md`.
 2. Treat the latest architecture decisions in that file as source of truth.
 3. Do not modify WireGuard kernel/source code.
-4. Preserve the five-node lab topology.
+4. Preserve all five original Ubuntu nodes. User clarification on 13 October 2026
+   authorizes one additional Windows client (six nodes total), not a replacement.
 5. Read `LANJUTKAN_PROYEK.md` and `docs/CHECKPOINT.md` for the latest operational status.
 
 ## Required progress recording
@@ -39,10 +40,12 @@ status only.
 - VM-CLIENT:   192.168.100.30
 - VM-ADMIN:    192.168.100.40
 - VM-ATTACKER: 192.168.100.50
+- VM-CLIENT-WINDOWS: 192.168.100.60 (additional client; installation in progress)
 
 WireGuard:
 - Server tunnel: 10.8.0.1/24
 - Client tunnel: 10.8.0.2/24
+- Windows client tunnel: 10.8.0.4/32; reserve 10.8.0.3 for temporary experiments
 - UDP: 51820
 
 ## Security architecture

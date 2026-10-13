@@ -61,3 +61,11 @@ Indonesian; filtered activity is paginated and can be saved as a non-destructive
 snapshot ZIP in the admin database. The ZIP includes CSV/JSON/manifest, SHA-256
 integrity checks and no credential fields. Archives are protected by the dashboard
 session and are not an immutable external ledger or resistant to VM root edits.
+
+User topology clarification — 13 October 2026:
+Add one Windows CLIENT alongside all five existing Ubuntu VMs; do not replace
+VM-CLIENT. Target VM-CLIENT-WINDOWS uses LAN 192.168.100.60 and a separate identity
+vm-client-windows with tunnel 10.8.0.4. The temporary experiment address 10.8.0.3
+remains reserved. This explicitly extends the original topology to six nodes.
+Windows installation and native client validation are in progress, not yet proven.
+Both clients require employee binding and all six device admission checks.
