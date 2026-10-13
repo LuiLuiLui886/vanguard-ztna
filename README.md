@@ -11,8 +11,12 @@ Aturan utama tetap berada di [AGENTS.md](AGENTS.md) dan [VANGUARD_CONTEXT.md](VA
 | CLIENT | 192.168.100.30 | CLI Python, X.509 P-256 + pasangan kunci WireGuard X25519 independen |
 | ADMIN | 192.168.100.40 | Dashboard Flask/Jinja2, SQLite, password + TOTP, HTTPS :5000 |
 | ATTACKER | 192.168.100.50 | Skrip pengujian negatif terbatas pada lab |
+| CLIENT-WINDOWS | 192.168.100.60 | VM tambahan disiapkan; OS/tunnel live masih menunggu instalasi dan validasi |
 
 Server tunnel `10.8.0.1/24`; client `10.8.0.2/24`. Source/kernel WireGuard tidak diubah.
+Client Windows tambahan direncanakan memakai `10.8.0.4/32`; kelima Ubuntu tetap
+dipertahankan. [Status/panduan Windows](docs/WINDOWS_CLIENT.md) membedakan tes
+helper native dari pengujian tunnel guest yang masih harus dilakukan.
 
 ```mermaid
 sequenceDiagram

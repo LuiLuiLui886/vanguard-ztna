@@ -13,7 +13,7 @@ TOP_LEVEL = (
     "AGENTS.md", "VANGUARD_CONTEXT.md", "LANJUTKAN_PROYEK.md", "README.md", "pyproject.toml", ".gitignore",
 )
 DIRECTORIES = ("vanguard", "tests", "scripts", "deploy", "docs")
-SUFFIXES = {".py", ".md", ".html", ".css", ".xml", ".sh", ".txt", ".example", ".service"}
+SUFFIXES = {".py", ".md", ".html", ".css", ".xml", ".sh", ".ps1", ".txt", ".example", ".service"}
 
 
 def main():

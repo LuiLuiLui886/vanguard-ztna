@@ -43,6 +43,24 @@ Catat edisi/build, sumber, ukuran dan checksum ISO. File `.part` belum dapat dip
 Persyaratan resmi: [Windows 11 VM](https://learn.microsoft.com/en-us/windows/whats-new/windows-11-requirements).
 Setup awal Windows dan penerimaan lisensi harus diselesaikan sebelum klaim live.
 
+Seed privat dapat disiapkan dengan `scripts/prepare_windows_seed.py --output
+state/deployment/windows-2026-10-13/private-seed`. Seed ini berisi jawaban setup
+untuk memformat **disk Windows baru saja**, akun console dan password acak, serta
+bootstrap LAN/SSH. Username/password dicatat pada kedua inventaris privat dengan
+status PREPARED_NOT_INSTALLED. Jangan memakai seed untuk disk yang sudah berisi
+data atau mengunggahnya. Autologon hanya untuk bootstrap; sesudahnya dinonaktifkan.
+SSH guest memakai public key host dan dibatasi sumber 192.168.100.1; password SSH
+dinonaktifkan. Akun console berbeda dari akun VPN yang akan dibuat saat enrollment.
+
+`scripts/start_windows_install.py --evidence state/deployment/windows-2026-10-13
+--media state/media/windows` memeriksa ukuran/hash lokal media lengkap, kelima
+Ubuntu shut off, definisi kelima domain tidak berubah, disk baru masih kosong,
+dan RAM/swap host cukup. Setelah itu media diunggah ke volume libvirt privat,
+dipasang pada VM baru dan installer dimulai. Marker mencegah pengulangan format
+otomatis. Status INSTALLING_GUEST_VALIDATION_PENDING belum berarti setup selesai.
+Sesudah setup, keluarkan kedua CDROM, verifikasi login dan hapus salinan unattended
+di guest yang masih menyimpan password; simpan seed/backup host secara privat.
+
 ## Instalasi aplikasi di Windows
 
 1. Pasang Python 3.12 atau lebih baru dari [python.org](https://www.python.org/downloads/windows/)
