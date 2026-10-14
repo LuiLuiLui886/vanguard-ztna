@@ -61,6 +61,28 @@ otomatis. Status INSTALLING_GUEST_VALIDATION_PENDING belum berarti setup selesai
 Sesudah setup, keluarkan kedua CDROM, verifikasi login dan hapus salinan unattended
 di guest yang masih menyimpan password; simpan seed/backup host secara privat.
 
+## Melanjutkan setelah instalasi terputus
+
+Jangan menyamakan laporan `INSTALLER_STARTED` dengan OS siap pakai. Periksa
+console dan disk lebih dahulu. Pada 14 Oktober ditemukan partisi EFI kosong dan
+penyalinan image kemarin terhenti 90%; mengulang seed awal akan memformat disk.
+
+1. Pastikan hanya disk Windows tambahan yang ditangani. Kelima definisi Ubuntu
+   harus tetap cocok backup awal. Simpan backup disk Windows saat guest mati.
+2. Keluarkan seed awal sebelum boot ISO resmi ke WinPE. Periksa partisi dengan
+   DiskPart dan log `C:\$WINDOWS.~BT\Sources\Panther`; huruf drive harus diverifikasi.
+   Salin log sebelum mencoba pemulihan. Jangan menganggap bootloader saja rusak.
+3. Untuk kasus ini, recovery seed dibuat privat dari jawaban awal dengan seluruh
+   `DiskConfiguration` dihapus. Target tetap disk0/partisi3 yang telah diverifikasi.
+   Seed asli, backup disk dan kredensial dipertahankan. Recovery tidak generik:
+   jangan menjalankannya pada disk lain atau instalasi Windows yang telah selesai.
+4. Pantau sampai Windows boot dan laporan bootstrap sukses, kemudian uji akses
+   SSH, Secure Boot, TPM, alamat, aplikasi, admission dan cleanup secara terpisah.
+   Catat tahap yang benar-benar terbukti; jangan mengulang setup saat masih berjalan.
+
+Bukti pemulihan hari ini: [jurnal](PROGRESS_2026-10-14.md). Petunjuk diagnosis:
+[log Windows Setup](https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/deployment-troubleshooting-and-log-files?view=windows-11).
+
 ## Instalasi aplikasi di Windows
 
 1. Pasang Python 3.12 atau lebih baru dari [python.org](https://www.python.org/downloads/windows/)

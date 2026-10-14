@@ -1,13 +1,19 @@
 # Lanjutkan proyek VanGuard
 
-**13 Oktober 2026 — IN PROGRESS: client Windows tambahan.** Lima Ubuntu tetap
-utuh; VM-CLIENT-WINDOWS telah didefinisikan (4 GiB, 2 vCPU, 80 GiB, UEFI/TPM),
-tetapi OS belum terpasang. Rencana LAN .60/tunnel .4; .3 tetap untuk eksperimen.
-ISO resmi masih diunduh dalam segmen resumable di `state/media/windows/`.
-Seluruh VM saat pemeriksaan shut off. Source client 0.1.7, helper ACL/tunnel Windows
-dan tes disiapkan; pengujian guest nyata/enrollment/firewall live belum dilakukan.
-Baca [jurnal hari ini](docs/PROGRESS_2026-10-13.md) dan
-[panduan Windows](docs/WINDOWS_CLIENT.md); lanjutkan domain yang ada, jangan buat ulang.
+**14 Oktober 2026 — IN PROGRESS: pemulihan instalasi client Windows tambahan.**
+Lima Ubuntu tetap utuh dan shut off selama instalasi (RAM host terbatas).
+ISO resmi selesai, SHA256 cocok hash penerbit. Instalasi kemarin terputus saat
+image apply 90%; disk tidak bootable, bukan OS siap pakai. Backup disk sudah dibuat
+sebelum recovery. Setup berjalan kembali memakai partisi yang ada, dengan seed
+pemulihan tanpa wipe/format. Jangan jalankan ulang script first-install atau seed awal.
+
+VM-CLIENT-WINDOWS: 4 GiB, 2 vCPU, 80 GiB, UEFI Secure Boot/TPM, VNC localhost.
+LAN .60/tunnel .4 masih rencana sampai dibuktikan guest. Source 0.1.7 `3467802`
+sudah di GitHub private, CI Linux masing-masing 160 PASS + 1 SKIP dan Windows
+20 PASS; VPN guest/enrollment/firewall live belum dilakukan. Baca
+[jurnal 14 Oktober](docs/PROGRESS_2026-10-14.md),
+[checkpoint](docs/CHECKPOINT.md) dan [panduan Windows](docs/WINDOWS_CLIENT.md).
+Bukti privat: `state/deployment/windows-2026-10-14/`.
 
 **12 Oktober 2026: 0.1.6 live, push, dan CI selesai.** Dashboard terbaru
 terpasang pada VM-ADMIN; empat VM lain tetap 0.1.5. Tes admin terakhir 26 PASS;

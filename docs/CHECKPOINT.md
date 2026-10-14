@@ -1,12 +1,25 @@
-# Checkpoint VanGuard — 13 Oktober 2026
+# Checkpoint VanGuard — 14 Oktober 2026
 
-**Windows tambahan sedang disiapkan; OS belum terpasang.** Pengguna mengotorisasi
-satu client Windows di samping kelima Ubuntu (enam node). VM-CLIENT-WINDOWS telah
-terdefinisi dengan disk 80 GiB, RAM 4 GiB, 2 vCPU, Secure Boot/TPM 2.0; LAN .60,
-tunnel .4 direncanakan. Semua enam VM saat pemeriksaan masih shut off. ISO resmi
-masih diunduh. [Jurnal 13 Oktober](PROGRESS_2026-10-13.md) dan
-[panduan Windows](WINDOWS_CLIENT.md). Source 0.1.7 masih dalam pengujian; belum
-rollout atau enrollment Windows. Jangan recreate domain/disk yang sudah dibuat.
+**IN PROGRESS: pemulihan instalasi Windows tambahan.** Seluruh lima Ubuntu
+utuh dan shut off selama setup. VM keenam running: 4 GiB, 2 vCPU, 80 GiB,
+UEFI Secure Boot/TPM2, VNC localhost. Rencana LAN .60/tunnel .4 tetap.
+
+- ISO selesai dan SHA256 cocok hash Microsoft EN-US. Instalasi 13 Oktober
+  terputus pada image apply 90%; EFI kosong, C:\Windows belum ada.
+- Backup disk sebelum recovery: volume libvirt
+  `vanguard-windows-before-recovery-20261014.qcow2`. Jangan hapus bukti/backup.
+- Setup diulang pada partisi disk0/3 yang ada, menggunakan seed privat
+  `vanguard-windows-recovery-auto-20261014.iso` **tanpa DiskConfiguration**.
+  Seed awal yang memformat disk telah dikeluarkan. Jangan memakai ulang seed
+  awal, recreate disk/domain, atau mengulang first-install script.
+- Setup masih berlangsung; OS/login/SSH/VPN **belum dinyatakan berhasil**.
+  Periksa console, lalu laporan guest `C:\ProgramData\VanGuard\windows-setup.json`.
+  Setelah bootstrap, keluarkan media seed; kredensial hanya inventaris lokal.
+- Source 0.1.7 `3467802` dipush private. CI `38366413893` sukses: Linux3.10/3.12
+  masing-masing160 PASS +1 SKIP; Windows20 PASS. Belum bukti tunnel guest nyata.
+- Bukti privat `state/deployment/windows-2026-10-14/`, log guest lama disalin ke
+  `C:\VG-Recovery-20261014`. [Jurnal](PROGRESS_2026-10-14.md),
+  [panduan Windows](WINDOWS_CLIENT.md). Autostart tetap mati.
 
 Tahap 0.1.6 sebelumnya selesai dan dipush (`49dd332`, dokumentasi `aa291f1`), CI
 137 PASS Python 3.10/3.12. VM-ADMIN terakhir 0.1.6; empat Ubuntu lain 0.1.5.
