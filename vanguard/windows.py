@@ -4,6 +4,7 @@ import ctypes
 import os
 import stat
 import subprocess
+import time
 from pathlib import Path
 
 from .common import Rejected, run
@@ -72,3 +73,17 @@ class WindowsTunnel:
 
     def down(self, config):
         run([self.executable, '/uninstalltunnelservice', self.name])
+        # Windows service deletion can finish after wireguard.exe exits. Keep the
+        # config until absence is confirmed, so another process cannot take over.
+        deadline = time.monotonic() + 15
+        while True:
+            result = subprocess.run(['sc.exe', 'query', 'WireGuardTunnel$' + self.name],
+                                    capture_output=True, timeout=3)
+            if result.returncode == 1060:
+                return
+            # 1072 means the service is still marked for deletion.
+            if result.returncode not in (0, 1072):
+                raise Rejected('Cannot confirm tunnel service removal; inspect before retrying')
+            if time.monotonic() >= deadline:
+                raise Rejected('Tunnel service removal timed out; inspect before retrying')
+            time.sleep(0.1)

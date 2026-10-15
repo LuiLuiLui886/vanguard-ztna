@@ -1,8 +1,8 @@
-# Client Windows tambahan — persiapan 0.1.7
+# Client Windows tambahan — validasi awal 0.1.8
 
 Permintaan 13 Oktober 2026 menambahkan client Windows di samping lima VM Ubuntu.
 VM-CLIENT lama tidak diganti. Status instalasi terbaru ada di
-[checkpoint](CHECKPOINT.md) dan [jurnal](PROGRESS_2026-10-13.md).
+[checkpoint](CHECKPOINT.md) dan [jurnal](PROGRESS_2026-10-15.md).
 Kode client lintas platform belum berarti tunnel Windows sudah terbukti hidup.
 
 | Node | LAN | Tunnel | Peran |
@@ -13,6 +13,56 @@ Kode client lintas platform belum berarti tunnel Windows sudah terbukti hidup.
 CA, server, dashboard dan attacker tetap pada alamat/peran semula. Alamat tunnel
 10.8.0.3 tetap untuk eksperimen, bukan Windows. Kedua client membuat key X.509
 dan WireGuard masing-masing; key/certificate Ubuntu tidak disalin ke Windows.
+
+## Hasil aktual 15 Oktober 2026
+
+Windows terpasang dan console/password serta SSH key-only terverifikasi.
+Build OS 26300, Secure Boot/TPM aktif; Python3.13.16, WireGuard1.1.1 dan client0.1.8.
+23 tes native Windows lulus. Enrollment lewat dashboard HTTPS/TOTP menghasilkan
+sertifikat dan binding akun karyawan terpisah, tanpa live peer. Login saja juga
+belum menambah peer; sesi invalid dan proof invalid ditolak.
+
+Admission, handshake WireGuard, ping server, admission ulang dan cleanup lulus.
+Ubuntu `.2` serta Windows `.4` diuji bersamaan dengan dua handshake dan ping.
+Sesudah cleanup Windows, Ubuntu tetap berfungsi. Pada 0.1.7 ditemukan race saat
+service Windows dihapus asinkron; 0.1.8 menunggu konfirmasi service1060 sebelum
+menghapus config. Jika gagal/timeout15detik, config dipertahankan untuk inspeksi.
+
+Pengujian ini belum membuktikan revocation Windows, renewal otomatis jangka
+panjang atau pemulihan reboot ketika tunnel aktif. Cleanup diuji menggunakan
+interupsi terkontrol dalam runner integrasi; jangan mengklaim semua input console
+Ctrl+C atau kegagalan jaringan sudah diuji. Tunnel Windows ditutup setelah tes.
+
+Instalasi OpenSSH bawaan terhenti setelah interupsi. Guest menggunakan MSI resmi
+Win32-OpenSSH10.0.0.0p2-Preview; SHA256 dan Authenticode Microsoft diverifikasi.
+Fingerprint ED25519 dibandingkan dengan console sebelum koneksi SSH pertama.
+Firewall hanya menerima host192.168.100.1, password SSH dimatikan. Panduan resmi:
+[Microsoft MSI/ZIP OpenSSH](https://learn.microsoft.com/en-us/troubleshoot/windows-server/system-management-components/upgrade-in-box-openssh-to-latest-openssh-release).
+Paket GitHub dipelihara manual; jangan menyebutnya capability bawaan Windows.
+Script fallback dan manifest tetap pada direktori bukti privat. Kedua media CD
+sudah dikeluarkan; jangan menjalankan ulang seed instalasi OS.
+
+## Memakai Windows yang sudah terpasang
+
+1. Nyalakan CA, SERVER, ADMIN dan VM-CLIENT-WINDOWS yang ada. Buka VM melalui
+   `virt-viewer --connect qemu:///system VM-CLIENT-WINDOWS`.
+2. Login menggunakan bagian VM-CLIENT-WINDOWS pada inventaris privat komputer
+   host. Akun console berbeda dari akun karyawan VPN Windows.
+3. Buka PowerShell **Run as administrator**. Gunakan virtualenv yang terpasang:
+
+```powershell
+$py = 'C:\ProgramData\VanGuard\venv\Scripts\python.exe'
+& $py -m vanguard.client login --username USERNAME_KARYAWAN_WINDOWS
+& $py -m vanguard.client connect --server-key PUBLIC_KEY_SERVER
+```
+
+Username karyawan tersedia di inventaris privat; password dimasukkan pada prompt
+tersembunyi. Public key server diambil dari `/etc/vanguard/server-wg.pub` pada
+VM-SERVER melalui koneksi yang terverifikasi. Sertifikat/root/key Windows sudah
+ada pada `C:\ProgramData\VanGuard\client`; **jangan ulangi init atau enrollment**.
+Biarkan terminal connect aktif. Dari terminal lain jalankan `ping 10.8.0.1`.
+Hentikan connect dengan Ctrl+C, lalu pastikan service khusus dan config hilang.
+Jika config tertinggal, inspeksi service terlebih dahulu; jangan hapus key.
 
 ## VM dan kebutuhan host
 
@@ -90,7 +140,7 @@ Bukti pemulihan hari ini: [jurnal](PROGRESS_2026-10-14.md). Petunjuk diagnosis:
    Periksa tanda tangan installer. Jalankan PowerShell sebagai Administrator.
 2. Atur LAN `192.168.100.60/24`, gateway/DNS `192.168.100.1`, dan sinkronkan jam.
    Jangan mematikan firewall Windows. Akses administrasi guest dibatasi host.
-3. Pasang wheel VanGuard 0.1.7 yang sudah lulus CI pada virtualenv Python lokal.
+3. Pasang wheel VanGuard 0.1.8 yang sudah lulus CI pada virtualenv Python lokal.
    Dependensi Windows memakai pywin32; Gunicorn hanya untuk Linux.
 4. Jalankan client sebagai Administrator. Default direktori adalah
    `C:\ProgramData\VanGuard\client`, dengan ACL SYSTEM/Administrators.

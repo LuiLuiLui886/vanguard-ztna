@@ -1,5 +1,36 @@
 # Lanjutkan proyek VanGuard
 
+**15 Oktober 2026 — client Windows tambahan berhasil diuji langsung.**
+
+- Enam domain tetap ada; lima definisi Ubuntu sama dengan backup awal.
+- Windows 11 Enterprise Evaluation build 26300, Secure Boot/TPM aktif,
+  LAN `192.168.100.60`, tunnel `10.8.0.4`. Login console dan SSH key-only PASS;
+  SSH hanya dari host `.1`. Kedua CD sudah dikeluarkan; seed/backup privat tetap.
+- Windows memakai client **0.1.8**, Python 3.13.16 dan WireGuard 1.1.1.
+  23 tes native Windows PASS. Cleanup menunggu service benar-benar terhapus;
+  timeout/error mempertahankan config untuk inspeksi. Ubuntu tidak di-upgrade.
+- Akun karyawan Windows terpisah, enrollment lewat admin HTTPS/TOTP dan root CA
+  bundle terverifikasi. Registrasi/login tidak menambah peer. Sesi invalid serta
+  proof invalid ditolak. Admission sah, handshake, ping dan admission ulang PASS.
+- Dua client Ubuntu `.2` dan Windows `.4` aktif bersamaan: dua handshake/ping PASS.
+  Cleanup Windows PASS; Ubuntu tetap bisa ping. Ini bukti integrasi awal, bukan
+  seluruh skenario keamanan atau benchmark formal Windows.
+- OpenSSH bawaan terinterupsi; fallback resmi Microsoft Win32-OpenSSH MSI
+  `10.0.0.0p2-Preview` berhasil, hash/tanda tangan terverifikasi. Paket GitHub ini
+  perlu pemeliharaan manual; rincian pada panduan Windows.
+- Windows, CA, SERVER, ADMIN dan CLIENT running saat pemeriksaan; ATTACKER mati.
+  Tunnel Windows sudah ditutup setelah tes; jalankan `connect` untuk pemakaian.
+  Autologon dinonaktifkan. Password/username hanya inventaris privat host.
+- Bukti privat: `state/deployment/windows-2026-10-15/`; backup pra-enrollment:
+  `state/backups/before-windows-enrollment-20261015/`. Jangan rollback CA index/CRL.
+
+Berikutnya: uji pencabutan menggunakan identitas disposable, renewal otomatis
+jangka panjang dan reboot Windows, lalu gap proposal/benchmark yang masih terbuka.
+Baca [jurnal 15 Oktober](docs/PROGRESS_2026-10-15.md) dan
+[panduan Windows](docs/WINDOWS_CLIENT.md). Status push/CI dicatat setelah selesai.
+
+## Catatan historis
+
 **14 Oktober 2026 — IN PROGRESS: pemulihan instalasi client Windows tambahan.**
 Lima Ubuntu tetap utuh dan shut off selama instalasi (RAM host terbatas).
 ISO resmi selesai, SHA256 cocok hash penerbit. Instalasi kemarin terputus saat

@@ -19,7 +19,7 @@ tidak ditimpa. Perubahan aplikasi 0.1.5 dan bukti terbaru dicatat pada
 | §1.2, §3.2.3 | Single-tier private CA, tanpa IdP/SSO eksternal | Sesuai: OpenSSL CA internal. Aplikasi TOTP bukan IdP/SSO. |
 | §1.2, §3.3.1 | X.509 terikat public key WireGuard | Sesuai, ditambah proof-of-possession dan challenge sekali pakai. |
 | §1.2–1.3 | PEP/IEP, default-deny, mikrosegmentasi | Firewall dan admission tersedia. Perlu pemetaan kebijakan/resource dan bukti isolasi skenario manufaktur; jangan mengklaim segmentasi aplikasi/departemen dari firewall host saja. |
-| §3.2.1 | Client Python Linux dan Windows | Ubuntu 22.04 teruji. Pembaruan 13 Oktober: VM Windows tambahan terdefinisi; helper native/ACL Windows lulus CI 20 tes. Instalasi OS dan admission/handshake/revoke di guest belum terverifikasi; lihat WINDOWS_CLIENT.md. |
+| §3.2.1 | Client Python Linux dan Windows | Ubuntu 22.04 teruji. 15 Oktober: Windows tambahan terpasang; 23 tes native lulus, enrollment tanpa peer, login/sesi invalid/PoP invalid, admission, handshake, ping, admission ulang, cleanup dan coexistence dengan Ubuntu terverifikasi. Revocation Windows, renewal otomatis jangka panjang dan reboot saat tunnel aktif masih belum diuji; lihat WINDOWS_CLIENT.md. |
 | §3.3.2 | Login admin 2FA | Ada, tes TOTP/CSRF/replay lulus; onboarding HP pribadi belum dikonfirmasi. |
 | §3.3.2 | Nama, departemen, pemilik, platform | Implementasi 0.1.3 terpasang; validasi/edit dan kompatibilitas data lama lulus suite lokal/guest/CI. Metadata bukan bukti kondisi/attestation perangkat. |
 | §3.3.2 | Health check CA, issuance, sinkronisasi, audit | 0.1.5: health CA sebelum issuance; status HTTPS CA/server terpisah, audit admin aktor/waktu/peristiwa, workflow retry idempotent. Liveness bukan jaminan CRL atau tunnel sah. |

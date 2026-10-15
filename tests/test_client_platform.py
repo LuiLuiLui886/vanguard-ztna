@@ -2,6 +2,7 @@ import base64
 import json
 import os
 import time
+from types import SimpleNamespace
 
 import pytest
 
@@ -127,6 +128,7 @@ def test_windows_tunnel_uses_demand_start_and_native_cleanup(tmp_path, monkeypat
     from vanguard import windows
     calls = []
     monkeypatch.setattr(windows, 'run', lambda args: calls.append(args))
+    monkeypatch.setattr(windows.subprocess, 'run', lambda *a, **k: SimpleNamespace(returncode=1060))
     backend = WindowsTunnel()
     config = tmp_path / 'vanguard-client.conf'
     backend.up(config)
@@ -148,3 +150,36 @@ def test_native_windows_private_acl(tmp_path):
         sids = {win32security.ConvertSidToStringSid(acl.GetAce(i)[2])
                 for i in range(acl.GetAceCount())}
         assert sids == {'S-1-5-18', 'S-1-5-32-544'}
+
+
+def test_windows_cleanup_waits_for_service_deletion(tmp_path, monkeypatch):
+    from vanguard import windows
+    results = iter([0, 1072, 1060])
+    waits = []
+    monkeypatch.setattr(windows, 'run', lambda args: None)
+    monkeypatch.setattr(windows.subprocess, 'run',
+                        lambda *a, **k: SimpleNamespace(returncode=next(results)))
+    monkeypatch.setattr(windows.time, 'sleep', waits.append)
+    WindowsTunnel().down(tmp_path / 'vanguard-client.conf')
+    assert len(waits) == 2
+
+
+@pytest.mark.parametrize('result', [0, 5])
+def test_windows_cleanup_failure_preserves_config(tmp_path, monkeypatch, result):
+    from vanguard import windows
+    directory = setup_client(tmp_path)
+    backend = WindowsTunnel()
+    monkeypatch.setattr(backend, 'preflight', lambda: None)
+    monkeypatch.setattr(backend, 'up', lambda config: None)
+    monkeypatch.setattr(client, 'admit', lambda *a: accepted())
+    def stop(*args):
+        raise KeyboardInterrupt()
+    monkeypatch.setattr(client.time, 'sleep', stop)
+    monkeypatch.setattr(windows, 'run', lambda args: None)
+    monkeypatch.setattr(windows.subprocess, 'run',
+                        lambda *a, **k: SimpleNamespace(returncode=result))
+    ticks = iter([0, 16])
+    monkeypatch.setattr(windows.time, 'monotonic', lambda: next(ticks))
+    with pytest.raises(Rejected, match='removal'):
+        client.connect(directory, None, SERVER_KEY, backend)
+    assert (directory / 'vanguard-client.conf').exists()

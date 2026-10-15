@@ -10,6 +10,18 @@ function Save-Report {
     $report | ConvertTo-Json | Set-Content -Encoding UTF8 (Join-Path $root 'windows-setup.json')
 }
 Save-Report
+function Clear-SetupSecrets {
+    $logon = 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon'
+    Set-ItemProperty $logon AutoAdminLogon '0'
+    Remove-ItemProperty $logon DefaultPassword -ErrorAction SilentlyContinue
+    Remove-ItemProperty $logon AutoLogonCount -ErrorAction SilentlyContinue
+    foreach ($path in @('C:\Windows\Panther\unattend.xml', 'C:\Windows\Panther\Unattend\unattend.xml', 'C:\Windows\System32\Sysprep\unattend.xml')) {
+        if (Test-Path $path) { Remove-Item $path -Force }
+    }
+}
+# First logon has already authenticated; do not retain setup secrets during slow
+# capability installation or after an unexpected interruption.
+Clear-SetupSecrets
 try {
     $nic = @(Get-NetAdapter | Where-Object { $_.MacAddress -eq '52-54-00-76-00-3C' })
     if ($nic.Count -ne 1) { throw 'Expected the Windows lab network adapter' }
@@ -64,11 +76,5 @@ Subsystem sftp sftp-server.exe
     Save-Report
     throw
 } finally {
-    $logon = 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon'
-    Set-ItemProperty $logon AutoAdminLogon '0'
-    Remove-ItemProperty $logon DefaultPassword -ErrorAction SilentlyContinue
-    Remove-ItemProperty $logon AutoLogonCount -ErrorAction SilentlyContinue
-    foreach ($path in @('C:\Windows\Panther\unattend.xml', 'C:\Windows\Panther\Unattend\unattend.xml', 'C:\Windows\System32\Sysprep\unattend.xml')) {
-        if (Test-Path $path) { Remove-Item $path -Force }
-    }
+    Clear-SetupSecrets
 }

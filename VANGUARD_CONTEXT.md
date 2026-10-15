@@ -69,3 +69,11 @@ vm-client-windows with tunnel 10.8.0.4. The temporary experiment address 10.8.0.
 remains reserved. This explicitly extends the original topology to six nodes.
 Windows installation and native client validation are in progress, not yet proven.
 Both clients require employee binding and all six device admission checks.
+
+Operational evidence — 15 October 2026:
+The additional Windows client is installed and enrolled with its own employee
+account and independent keys. Native admission, handshake, ICMP, fresh admission
+and controlled cleanup passed; Ubuntu .2 and Windows .4 worked simultaneously.
+Version 0.1.8 waits for Windows service deletion before deleting tunnel config;
+failed confirmation preserves config. All five Ubuntu domain definitions remain
+unchanged. Windows revocation and active-tunnel reboot are still unverified.
