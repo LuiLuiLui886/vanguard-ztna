@@ -13,9 +13,10 @@ tetap IN_PROGRESS. Counter CA pernah dipulihkan, durability belum diperbaiki.
 Password Windows tersedia pada kartu lokal
 `/home/lui/VanGuard-Privat/AKSES_WINDOWS_TERBARU.txt`; akun/password tidak diubah.
 Kredensial tetap di luar Git. Kartu/inventaris0600 dan folder0700.
-Modul/HTML tervalidasi dan disimpan dalam commit lokal. GitHub17 Oktober
-terdeteksi public; push modul ditunda, visibility tidak diubah. Referensi
-repository private di catatan historis tidak menggambarkan status sekarang.
+Modul/HTML tervalidasi sudah dipush ke main: commit modul d162980 tercakup pada
+remote e9104a4 yang telah dicocokkan. Pengguna meminta push setelah informasi
+visibility public disampaikan; visibility tidak diubah. Referensi repository
+private di catatan historis tidak menggambarkan status sekarang.
 Berikutnya jalankan sesi pengguna mengikuti modul serta periksa health saat boot.
 Lihat [checkpoint](docs/CHECKPOINT.md) dan [jurnal17 Oktober](docs/PROGRESS_2026-10-17.md).
 

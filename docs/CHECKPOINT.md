@@ -20,9 +20,9 @@ admin dan karyawan, dari instalasi hingga penggunaan/arsip/shutdown.
   dibuat dari inventaris lokal tanpa reset. Login terakhir terverifikasi15 Oktober.
   Folder0700, inventaris/kartu0600; nilai rahasia tidak masuk modul atau Git.
 - Modul tervalidasi:15bab,22blok Bash,26tautan HTML,10tabel; scan rahasia/ruff PASS.
-  Dokumentasi di-commit lokal. GitHub17 Oktober terdeteksi public (isPrivate=false);
-  push ditunda sampai tujuan publikasi sesuai preferensi pengguna. Catatan private
-  pada riwayat di bawah bukan status visibility saat ini.
+  Modul commit d162980 sudah dipush; remote main e9104a4 terverifikasi.
+  Pengguna meminta push setelah informasi repository public disampaikan.
+  Visibility tetap public; catatan private pada riwayat bukan status saat ini.
 - Langkah berikutnya: gunakan modul untuk sesi pengguna, periksa health dan sesi
   akun saat boot; lanjutkan durability CA, lease expiry, revocation Windows dan
   reboot tunnel aktif dengan bukti baru. Jangan ulangi init/enrollment utama.
