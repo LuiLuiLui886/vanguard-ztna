@@ -15,7 +15,8 @@ masa berlaku dan troubleshooting dengan lokasi eksekusi/hasil setiap langkah.
   git diff --check PASS. Tidak ada pemeriksaan visual/PDF baru.
 - Tidak mengubah aplikasi, CA produksi, trust, key, akun atau VM. Transfer SSH,
   restart layanan dan backup pada panduan tidak dijalankan di lab pada tugas ini.
-- Perubahan siap dipush setelah commit; hasil publikasi dicatat di jurnal.
+- Panduan/modul sudah dipush pada commit 7e54bb5; SHA remote main cocok.
+  Hasil publikasi dicatat di jurnal. CI commit dokumentasi belum dinyatakan lulus.
   Gap operasional sebelumnya tetap terbuka; langkah berikutnya sesi pengguna
   mengikuti modul, lalu pengujian Windows/durability CA sesuai daftar di bawah.
 

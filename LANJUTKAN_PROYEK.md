@@ -8,7 +8,8 @@ hingga backup dan troubleshooting. Uji CA sementara di host PASS, termasuk
 signing TLS/perangkat dan penolakan sertifikat setelah revoke. Struktur kedua
 dokumen, sintaks contoh Bash, tautan dan scan rahasia PASS. Bukti di
 state/documentation/2026-10-17/. Tidak mengubah CA/VM produksi.
-Perubahan siap dipush setelah commit; lihat jurnal untuk hasil publikasinya.
+Panduan/modul sudah dipush pada commit 7e54bb5; remote main terverifikasi cocok.
+CI commit dokumentasi belum dinyatakan lulus; lihat jurnal untuk hasil publikasi.
 Pekerjaan operasional berikutnya tetap mengikuti checkpoint di bawah.
 
 **17 Oktober2026 — modul penggunaan lengkap.** Tugas terbaru: audit checkpoint,
