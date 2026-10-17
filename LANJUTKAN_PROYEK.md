@@ -1,5 +1,16 @@
 # Lanjutkan proyek VanGuard
 
+**17 Oktober 2026 — seluruh materi sudah menjadi satu modul.**
+Gunakan [modul utama](docs/MODUL_PENGGUNAAN_VANGUARD.md) atau
+[satu HTML siap baca/cetak](docs/MODUL_PENGGUNAAN_VANGUARD.html).
+Materi CA/PKI lengkap sekarang berada di bab 5.3 (13 subbagian), dilanjutkan
+instalasi, administrasi dan pemakaian Ubuntu/Windows dalam dokumen yang sama.
+Alamat panduan CA lama hanya menunjuk ke modul agar tautan historis tetap hidup.
+Validasi kelengkapan, Bash, tautan/fragment, rahasia dan renderer PASS; bukti di
+state/documentation/2026-10-17/unified-module-validation.json. Tidak ada perubahan
+VM atau CA. Siap commit/push; hasil publikasi dicatat di jurnal.
+Langkah berikutnya praktik memakai modul dan lanjutkan gap operasional checkpoint.
+
 **17 Oktober 2026 — rincian CA/PKI selesai disusun dan divalidasi.**
 Bab 5.3 modul sekarang menjelaskan generate CA dan tahapan terkait. Baca
 [panduan CA/PKI lengkap](docs/PANDUAN_CA_PKI.md) atau

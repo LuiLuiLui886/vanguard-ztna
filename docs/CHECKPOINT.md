@@ -1,5 +1,22 @@
 # Checkpoint VanGuard — 17 Oktober 2026
 
+## Terbaru: satu modul lengkap termasuk CA/PKI
+
+Sesuai permintaan pengguna, seluruh panduan CA telah digabung ke bab 5.3
+[modul utama](MODUL_PENGGUNAAN_VANGUARD.md), tersedia sebagai
+[satu HTML siap baca/cetak](MODUL_PENGGUNAAN_VANGUARD.html).
+Ada 13 subbagian CA dengan daftar isi HTML yang dapat diklik. Alamat panduan
+lama menjadi penunjuk ke modul; riwayat materi tetap ada dalam Git.
+
+- Validasi PASS: 15 bab, 39 blok Bash, 55 tautan HTML, 15 tabel; seluruh 22 blok
+  contoh dari panduan CA lama tetap ada. ID/tujuan fragment HTML valid, scan
+  rahasia/permission privat, Ruff renderer dan git diff --check PASS.
+- Bukti: state/documentation/2026-10-17/unified-module-validation.json.
+  Ini penggabungan dokumentasi; tidak menjalankan contoh pada VM atau mengubah CA.
+  Bukti kriptografi terisolasi sebelumnya tetap berlaku sebagai bukti historis.
+- Siap commit/push; hasil publikasi dicatat di jurnal. Berikutnya gunakan modul
+  tunggal untuk praktik; gap operasional Windows/durability CA tetap terbuka.
+
 ## Terbaru: penjelasan generate CA secara rinci
 
 Bab 5.3 modul diperluas dan ditautkan ke [panduan CA/PKI](PANDUAN_CA_PKI.md)
