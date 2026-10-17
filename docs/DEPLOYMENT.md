@@ -53,6 +53,9 @@ tunnel. Jangan menambahkan peer statis sebagai langkah registrasi.
 
 ## 3. Buat CA dan sertifikat HTTPS
 
+Untuk penjelasan setiap parameter, transfer melalui host, hasil verifikasi,
+sertifikat perangkat, CRL dan backup, baca [panduan CA/PKI](PANDUAN_CA_PKI.md).
+
 Di VM-CA:
 
 ```bash

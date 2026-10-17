@@ -229,6 +229,53 @@ Installer belum memulai layanan atau menerapkan firewall. Paket berada pada
 
 ### 5.3 Buat CA, trust dan sertifikat HTTPS
 
+Bagian ini sudah mencakup generate CA. Untuk petunjuk lebih rinci per perintah,
+contoh transfer CSR/sertifikat melalui HOST, pemeriksaan CRL, backup dan diagnosis,
+baca [panduan CA/PKI lengkap](PANDUAN_CA_PKI.md) atau
+[versi HTML panduan CA](PANDUAN_CA_PKI.html).
+
+#### 5.3.1 Apa yang dibuat dan mengapa diperlukan
+
+CA (Certificate Authority) adalah penerbit sertifikat yang dipercaya lab.
+Sertifikat memuat identitas, public key, masa berlaku dan signature penerbit.
+Private key digunakan untuk menandatangani atau membuktikan kepemilikan identitas;
+sertifikat publik tidak berisi private key.
+
+| Artefak | Fungsi | Lokasi utama |
+|---|---|---|
+| Root private key | Menandatangani sertifikat/CRL | CA: /var/lib/vanguard/ca/private/root.key |
+| Root certificate | Trust anchor untuk memverifikasi penerbit | CA: root.crt; salinan publik di layanan/client |
+| HTTPS key + certificate | Membuktikan identitas API CA/server/dashboard | /etc/vanguard/tls.key dan tls.crt pada guest layanan |
+| Device key + certificate | Signature proof perangkat saat admission | identity.key dan device.crt pada client |
+| WireGuard keypair | Identitas terpisah untuk tunnel WireGuard | wg.key pada client; public key terikat di registry |
+| CRL | Daftar serial sertifikat yang dicabut | CA: /var/lib/vanguard/ca/crl.pem |
+
+Alur sertifikat HTTPS: **guest layanan membuat key dan CSR → CA menandatangani
+CSR → sertifikat kembali ke guest → guest menjalankan HTTPS**. CSR adalah
+permintaan berisi public key dan identitas, bukan private key.
+Alur perangkat berbeda: **client membuat request.json → admin mendaftarkan →
+CA menerbitkan device certificate → server menyimpan binding**. Penerbitan
+sertifikat belum menjadi admission atau handshake VPN.
+
+Parameter dari source 0.1.8: root RSA 3072/SHA256 berlaku3650 hari; HTTPS berlaku
+365 hari dengan SAN IP dan serverAuth; perangkat P-256/clientAuth berlaku30 hari;
+CRL memiliki jendela1 jam dan dibuat baru pada setiap pengambilan melalui API.
+Masa berlaku dihitung sejak penerbitan, bukan diperbarui dengan restart VM.
+Root memiliki CA:true/pathlen:0; implementasi ini tidak memakai intermediate CA.
+
+#### 5.3.2 Pastikan ini CA baru, lalu jalankan init
+
+Pada VM-CA, periksa dahulu:
+
+```bash
+sudo ls -la /var/lib/vanguard/ca
+timedatectl status
+```
+
+Jika sudah ada openssl.cnf, root.crt, private/root.key atau state CA lain,
+jangan ulangi init atau menghapus berkas untuk memaksanya berhasil. Gunakan
+bagian verifikasi pada panduan CA. Pada lab yang ada sekarang, CA sudah dibuat.
+
 **VM-CA baru**:
 
 ```bash
@@ -237,8 +284,40 @@ sudo install -m 0644 /var/lib/vanguard/ca/root.crt /etc/vanguard/root.crt
 openssl x509 -in /etc/vanguard/root.crt -noout -fingerprint -sha256
 ```
 
+Perintah pertama membuat struktur CA, root key/certificate dan CRL awal.
+Target keluaran: `CA initialized: /var/lib/vanguard/ca/root.crt`.
+Perintah kedua menempatkan sertifikat root publik di path trust standar.
+Perintah ketiga menghasilkan fingerprint SHA256 yang perlu dicocokkan pada
+setiap salinan. `CA already initialized; refusing to overwrite` adalah
+perlindungan identitas lama, bukan instruksi menghapus CA.
+
+Di balik init, aplikasi menjalankan OpenSSL dan menyiapkan index.txt, serial,
+crlnumber, newcerts serta konfigurasi penerbitan. Membuat file root.crt saja
+dengan perintah OpenSSL generik belum menghasilkan CA VanGuard yang lengkap.
+Key root tidak memakai passphrase dalam implementasi layanan ini, sehingga
+mode 0600, direktori 0700, akses VM dan backup privat harus dijaga.
+
+#### 5.3.3 Verifikasi root dan sebarkan trust publik
+
+Di VM-CA:
+
+```bash
+openssl x509 -in /etc/vanguard/root.crt -noout -subject -issuer -dates
+openssl x509 -in /etc/vanguard/root.crt -noout -ext basicConstraints,keyUsage
+openssl verify -check_ss_sig -CAfile /etc/vanguard/root.crt /etc/vanguard/root.crt
+sudo stat -c '%a %U:%G %n' /var/lib/vanguard/ca/private/root.key
+```
+
+Target: issuer/subject VanGuard Root CA, CA:TRUE/pathlen:0, penggunaan
+Certificate Sign/CRL Sign, verifikasi OK, key root 0600 milik akun CA.
+Mempercayai file root yang baru diterima tetap membutuhkan pembandingan
+fingerprint melalui sumber tepercaya; self-signature OK saja tidak membuktikan
+bahwa file tersebut berasal dari CA lab Anda.
+
 Catat fingerprint. Salin hanya root.crt ke `/etc/vanguard/root.crt` pada Ubuntu
 lain dan cocokkan fingerprint. Root private key tetap di CA.
+
+#### 5.3.4 Buat key/CSR HTTPS pada tiap guest layanan
 
 Pada **masing-masing VM-CA, VM-SERVER, VM-ADMIN**, buat key HTTPS lokal:
 
@@ -249,6 +328,16 @@ sudo openssl req -new -newkey rsa:3072 -nodes \
 sudo chown root:vanguard /etc/vanguard/tls.key
 sudo chmod 0640 /etc/vanguard/tls.key
 ```
+
+Jalankan hanya jika tls.key belum ada. `-newkey rsa:3072` membuat key baru,
+`-nodes` menghasilkan key tanpa enkripsi passphrase, `-keyout` menunjuk key
+rahasia, `-out` menunjuk CSR publik, dan `-subj` menentukan Common Name.
+Kesamaan CN contoh pada tiga layanan tidak berarti key-nya sama; setiap guest
+membuat key independen. Identitas alamat HTTPS ditentukan SAN IP saat signing.
+Hak root:vanguard 0640 membuat service dapat membaca key tanpa membukanya untuk
+seluruh pengguna guest.
+
+#### 5.3.5 Tandatangani CSR pada CA dan pasang hasilnya
 
 Transfer CSR ke CA melalui SSH, dengan nama `ca.csr`, `server.csr`, `admin.csr`
 di `/var/lib/vanguard/ca/requests/`; direktori/CSR harus dapat dibaca akun
@@ -267,7 +356,7 @@ sudo -u vanguard /opt/vanguard/venv/bin/vanguard-ca sign-tls \
 ```
 
 Kembalikan sertifikat yang sesuai ke `/etc/vanguard/tls.crt` pada masing-masing
-guest dengan mode0644. Pada setiap guest layanan, jalankan:
+guest dengan mode 0644. Pada setiap guest layanan, jalankan:
 
 ```bash
 openssl verify -CAfile /etc/vanguard/root.crt /etc/vanguard/tls.crt
@@ -275,6 +364,38 @@ openssl verify -CAfile /etc/vanguard/root.crt /etc/vanguard/tls.crt
 
 Target `OK`. Key HTTPS service tidak ditransfer ke CA. Simpan salinan root publik
 di host untuk trust browser dan pemeriksaan HTTPS.
+
+Periksa juga tujuan dan alamat sertifikat. Contoh **VM-SERVER**:
+
+```bash
+openssl x509 -in /etc/vanguard/tls.crt -noout -ext subjectAltName,extendedKeyUsage
+openssl verify -purpose sslserver -verify_ip 192.168.100.20 \
+  -CAfile /etc/vanguard/root.crt /etc/vanguard/tls.crt
+```
+
+Target SAN IP .20, TLS Web Server Authentication dan OK. Untuk CA gunakan .10,
+untuk ADMIN .40. Sertifikat layanan tidak dipakai sebagai sertifikat perangkat;
+validator perangkat mengharuskan clientAuth/P-256, bukan serverAuth.
+Lanjutkan pengisian token di bab 5.4 sebelum menyalakan layanan pada bab 5.5.
+
+#### 5.3.6 Sertifikat perangkat, CRL dan pencabutan
+
+Sertifikat perangkat dibuat melalui workflow bab 6, bukan `sign-tls`.
+CA memeriksa signature CSR, public key P-256 dan CN yang cocok device ID.
+Dashboard meminta issuance ke CA, mendaftarkan sertifikat/public key WireGuard/
+alamat tunnel pada server, lalu mengikat akun karyawan. Client harus login dan
+menjalani challenge/proof sebelum server memasang peer.
+
+Saat admin mencabut perangkat, workflow menonaktifkan akses dan meminta CA
+mencabut serial sertifikat. CA memperbarui index dan menandatangani CRL baru.
+Jangan mengedit CRL/serial manual untuk mencabut perangkat; gunakan dashboard
+dan tunggu status `revoked`. Panduan CA menjelaskan pemeriksaan signature,
+lastUpdate/nextUpdate serta verifikasi sertifikat memakai `-crl_check`.
+
+Renewal admission tidak memperpanjang sertifikat30 hari. Jika sertifikat habis
+atau dicabut, belum tersedia renewal sertifikat otomatis pada sistem ini;
+operator perlu workflow identitas baru yang terkontrol. Jangan membuat CA baru
+untuk mengatasi satu sertifikat client yang expired.
 
 ### 5.4 Konfigurasi token dan akun admin awal
 

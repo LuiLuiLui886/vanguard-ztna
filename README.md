@@ -3,6 +3,9 @@
 [Modul lengkap teknisi, admin dan pengguna](docs/MODUL_PENGGUNAAN_VANGUARD.md)
 tersedia juga sebagai [HTML siap dibaca/dicetak](docs/MODUL_PENGGUNAAN_VANGUARD.html).
 Modul mencakup pemasangan awal serta pemakaian Ubuntu dan Windows pada lab terpasang.
+Materi generate root CA, CSR, sertifikat HTTPS/perangkat, CRL dan backup dijelaskan
+bertahap pada [panduan CA/PKI](docs/PANDUAN_CA_PKI.md)
+([HTML siap cetak](docs/PANDUAN_CA_PKI.html)).
 
 Implementasi lab Tugas Akhir Zero Trust Network Access untuk **Ubuntu Server 22.04**.
 Admission sertifikat dilakukan **sebelum** server menambahkan peer WireGuard.

@@ -1,5 +1,24 @@
 # Checkpoint VanGuard — 17 Oktober 2026
 
+## Terbaru: penjelasan generate CA secara rinci
+
+Bab 5.3 modul diperluas dan ditautkan ke [panduan CA/PKI](PANDUAN_CA_PKI.md)
+serta [HTML siap cetak](PANDUAN_CA_PKI.html). Panduan 13 bagian menjelaskan
+root/key, CSR, signing HTTPS, trust, issuance perangkat, CRL/revoke, backup,
+masa berlaku dan troubleshooting dengan lokasi eksekusi/hasil setiap langkah.
+
+- Uji CA sementara di host PASS: parameter root, penolakan init ulang, CSR/TLS,
+  IP salah ditolak, profil perangkat/cache retry, CRL satu jam dan pencabutan
+  menghasilkan error 23. Bukti privat: state/documentation/2026-10-17/ca-guide-validation.json.
+- Struktur modul PASS: 15 bab, 25 blok Bash, 28 tautan, 11 tabel. Panduan CA:
+  13 bagian, 21 blok Bash, 15 tautan, 5 tabel. Scan rahasia, Ruff renderer dan
+  git diff --check PASS. Tidak ada pemeriksaan visual/PDF baru.
+- Tidak mengubah aplikasi, CA produksi, trust, key, akun atau VM. Transfer SSH,
+  restart layanan dan backup pada panduan tidak dijalankan di lab pada tugas ini.
+- Perubahan siap dipush setelah commit; hasil publikasi dicatat di jurnal.
+  Gap operasional sebelumnya tetap terbuka; langkah berikutnya sesi pengguna
+  mengikuti modul, lalu pengujian Windows/durability CA sesuai daftar di bawah.
+
 ## Terbaru: modul penggunaan dan audit bukti
 
 Tugas terbaru pengguna adalah modul lengkap dan akses password Windows.

@@ -1,5 +1,16 @@
 # Lanjutkan proyek VanGuard
 
+**17 Oktober 2026 — rincian CA/PKI selesai disusun dan divalidasi.**
+Bab 5.3 modul sekarang menjelaskan generate CA dan tahapan terkait. Baca
+[panduan CA/PKI lengkap](docs/PANDUAN_CA_PKI.md) atau
+[HTML siap cetak](docs/PANDUAN_CA_PKI.html), mencakup 13 bagian dari konsep
+hingga backup dan troubleshooting. Uji CA sementara di host PASS, termasuk
+signing TLS/perangkat dan penolakan sertifikat setelah revoke. Struktur kedua
+dokumen, sintaks contoh Bash, tautan dan scan rahasia PASS. Bukti di
+state/documentation/2026-10-17/. Tidak mengubah CA/VM produksi.
+Perubahan siap dipush setelah commit; lihat jurnal untuk hasil publikasinya.
+Pekerjaan operasional berikutnya tetap mengikuti checkpoint di bawah.
+
 **17 Oktober2026 — modul penggunaan lengkap.** Tugas terbaru: audit checkpoint,
 modul teknisi/admin/karyawan, dan akses password console Windows. Baca
 [modul lengkap](docs/MODUL_PENGGUNAAN_VANGUARD.md) atau
