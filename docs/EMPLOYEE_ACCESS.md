@@ -44,7 +44,9 @@ client. Selama belum login kembali, daemon server menghapus peer dan client gaga
 mendapat akses. Boot workstation tidak otomatis memperbarui login karyawan.
 
 Penggantian sesi saat client aktif berlaku pada renewal admission berikutnya.
-Reset password mandiri, notifikasi pemilik, integrasi Windows, dan SSO belum ada.
+Reset password mandiri, notifikasi pemilik dan SSO belum ada. Client Windows
+tambahan telah diuji15 Oktober; gunakan [modul bab8](MODUL_PENGGUNAAN_VANGUARD.md)
+untuk login dan koneksi Windows dengan akun VPN terpisah.
 Secret akun lab pada saat bootstrap disimpan privat di direktori state rollout
 sebagai `employee-onboarding.json`; jangan memasukkannya ke Git/lampiran TA.
 

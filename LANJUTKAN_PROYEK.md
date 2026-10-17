@@ -1,5 +1,31 @@
 # Lanjutkan proyek VanGuard
 
+**17 Oktober2026 — modul penggunaan lengkap.** Tugas terbaru: audit checkpoint,
+modul teknisi/admin/karyawan, dan akses password console Windows. Baca
+[modul lengkap](docs/MODUL_PENGGUNAAN_VANGUARD.md) atau
+[HTML siap cetak](docs/MODUL_PENGGUNAAN_VANGUARD.html).
+
+Keenam VM ditemukan shut off; tugas ini tidak menjalankan deployment atau tes
+live ulang. Bukti15 Oktober menunjukkan satu renewal otomatis Windows PASS
+(61,83detik), cleanup PASS dan CI78ff14e SUCCESS. Bukti lease expiry terakhir
+tetap IN_PROGRESS. Counter CA pernah dipulihkan, durability belum diperbaiki.
+
+Password Windows tersedia pada kartu lokal
+`/home/lui/VanGuard-Privat/AKSES_WINDOWS_TERBARU.txt`; akun/password tidak diubah.
+Kredensial tetap di luar Git. Kartu/inventaris0600 dan folder0700.
+Modul/HTML tervalidasi dan disimpan dalam commit lokal. GitHub17 Oktober
+terdeteksi public; push modul ditunda, visibility tidak diubah. Referensi
+repository private di catatan historis tidak menggambarkan status sekarang.
+Berikutnya jalankan sesi pengguna mengikuti modul serta periksa health saat boot.
+Lihat [checkpoint](docs/CHECKPOINT.md) dan [jurnal17 Oktober](docs/PROGRESS_2026-10-17.md).
+
+## Riwayat handoff15 Oktober
+
+**Status operasional terbaru 15 Oktober 13:38 WIB:** host sempat reboot;
+enam VM ditemukan mati. CA, SERVER dan Windows sedang dinyalakan bertahap.
+Hasil integrasi di bawah adalah bukti sebelum reboot. Uji lease-expiry/renewal
+otomatis terinterupsi, belum dinyatakan lulus. CI78ff14e sudah SUCCESS.
+
 **15 Oktober 2026 — client Windows tambahan berhasil diuji langsung.**
 
 - Enam domain tetap ada; lima definisi Ubuntu sama dengan backup awal.

@@ -1,0 +1,961 @@
+<!doctype html>
+<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Modul lengkap penggunaan Sistem VanGuard</title><style>
+body { font: 16px/1.65 system-ui,sans-serif; color:#172536; background:#eef2f6;
+       margin:0; padding:2rem; }
+main { max-width:980px; margin:auto; padding:3rem; background:white; }
+h1,h2,h3 { line-height:1.25; color:#12465a; }
+h1 { font-size:2.2rem; } h2 { margin-top:2.8rem; border-bottom:2px solid #dae5e9;
+                            padding-bottom:.5rem; }
+a { color:#075b83; } table { width:100%; border-collapse:collapse; margin:1rem 0; }
+th,td { border:1px solid #ccd7dd; padding:.5rem; text-align:left; vertical-align:top; }
+th { background:#edf5f6; } pre { background:#f1f5f7; padding:1rem;
+                             white-space:pre-wrap; overflow-wrap:anywhere; }
+code { font-size:.9em; } blockquote { border-left:4px solid #1c7088; margin-left:0;
+                                    padding-left:1rem; }
+.print-note { border:1px solid #c7dbe4; padding:1rem; background:#f3f8fa; }
+@page { size:A4; margin:18mm; }
+@media print {
+ body { background:white; padding:0; font-size:10pt; }
+ main { padding:0; max-width:none; }
+ h2,h3 { break-after:avoid; } h2 { margin-top:1.8rem; }
+ pre,tr { break-inside:avoid; } thead { display:table-header-group; }
+ a { color:inherit; } .print-note { display:none; }
+}
+</style></head><body><main><p class="print-note">Modul dapat dibaca tanpa internet. Untuk PDF, tekan Ctrl+P, pilih Simpan sebagai PDF, ukuran A4. Tautan dokumen pendukung memerlukan folder docs dari repository yang sama.</p><h1>Modul lengkap penggunaan Sistem VanGuard</h1><nav aria-label="Daftar isi"><h2>Daftar isi</h2><ol><li><a href="#bab-1">1. Tujuan, hasil belajar, dan jalur membaca</a></li><li><a href="#bab-2">2. Mengenal sistem dan identitas</a></li><li><a href="#bab-3">3. Topologi, perangkat lunak, dan batas lab</a></li><li><a href="#bab-4">4. Memulai lab yang sudah terpasang</a></li><li><a href="#bab-5">5. Pemasangan awal — khusus lingkungan baru</a></li><li><a href="#bab-6">6. Admin: menyiapkan akun dan perangkat</a></li><li><a href="#bab-7">7. Karyawan Ubuntu: login dan memakai VPN</a></li><li><a href="#bab-8">8. Karyawan Windows: dari login desktop sampai disconnect</a></li><li><a href="#bab-9">9. Memastikan sistem sudah dapat digunakan</a></li><li><a href="#bab-10">10. Admin: aktivitas, arsip, dan penghentian akses</a></li><li><a href="#bab-11">11. Praktikum dan penilaian</a></li><li><a href="#bab-12">12. Mengakhiri sesi dan mematikan lab</a></li><li><a href="#bab-13">13. Pemecahan masalah</a></li><li><a href="#bab-14">14. Bukti yang tersedia dan pekerjaan berikutnya</a></li><li><a href="#bab-15">15. Lembar kerja dan serah terima</a></li></ol></nav>
+<p>Edisi 17 Oktober 2026 · Panduan teknisi, administrator, dan karyawan</p>
+<p>Modul ini menjelaskan persiapan, pemasangan, pendaftaran pengguna/perangkat,
+pemakaian VPN Ubuntu dan Windows, audit, pengujian, serta penghentian sistem.
+Contoh mengikuti lab VanGuard di komputer ini. Gunakan versi HTML dengan nama
+yang sama untuk membaca di browser atau mencetak ke PDF ukuran A4.</p>
+<h2 id="bab-1">1. Tujuan, hasil belajar, dan jalur membaca</h2>
+<p>Setelah mengikuti modul, peserta mampu:</p>
+<ol>
+<li>Menjelaskan perbedaan akun sistem operasi, admin dashboard, dan karyawan VPN.</li>
+<li>Memeriksa kesiapan VM, waktu, layanan HTTPS, dan sertifikat kepercayaan.</li>
+<li>Membuat akun karyawan dan mendaftarkan identitas perangkat melalui dashboard.</li>
+<li>Menggunakan VPN dari Ubuntu atau Windows serta membuktikan koneksinya.</li>
+<li>Menelusuri waktu/tindakan admin, membuat arsip, dan memeriksa integritasnya.</li>
+<li>Menutup sesi, menangani kendala, dan mencatat bukti tanpa membocorkan rahasia.</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Kondisi pembaca</th>
+<th>Urutan yang dikerjakan</th>
+<th>Hasil akhir</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Karyawan pada lab terpasang</td>
+<td>Bab 2–4, bab 7 atau8, bab 9 dan12</td>
+<td>Login, tunnel, ping, lalu disconnect</td>
+</tr>
+<tr>
+<td>Admin dashboard</td>
+<td>Bab 2–6, bab 9–13</td>
+<td>Akun dan perangkat dikelola, aktivitas diarsipkan</td>
+</tr>
+<tr>
+<td>Teknisi instalasi baru</td>
+<td>Seluruh bab; bab 5 hanya untuk lingkungan kosong</td>
+<td>Infrastruktur dan aplikasi siap diserahterimakan</td>
+</tr>
+<tr>
+<td>Pembimbing/penguji</td>
+<td>Bab 2–3, bab 9–11 dan14</td>
+<td>Memahami bukti serta batas hasil yang dapat diklaim</td>
+</tr>
+</tbody>
+</table>
+<p>Perintah berlabel <strong>HOST</strong> dijalankan pada laptop Ubuntu, <strong>VM-…</strong> di guest yang
+bersangkutan, dan <strong>WINDOWS ADMIN</strong> pada PowerShell yang dijalankan sebagai
+Administrator. Ganti placeholder huruf kapital dengan nilai milik lab Anda.
+Jangan mengetik placeholder sebagai kredensial sungguhan.</p>
+<p>Lab ini sudah terpasang. Untuk pemakaian harian, <strong>lewati bab 5 dan langkah init
+perangkat utama</strong>. Instalasi ulang CA atau penggantian key bukan cara login.</p>
+<h2 id="bab-2">2. Mengenal sistem dan identitas</h2>
+<p>VanGuard mengizinkan perangkat menjadi peer WireGuard setelah akun karyawan
+terautentikasi dan identitas perangkat lolos pemeriksaan. Sistem tidak mengubah
+kernel atau protokol WireGuard.</p>
+<p>Urutan kerja:</p>
+<pre><code class="language-text">Client membuat key sendiri → request publik → admin menerbitkan sertifikat/binding
+Karyawan login → sesi akun → challenge → proof ditandatangani key perangkat
+Server memeriksa sertifikat/CRL/proof/binding → ACCEPT → peer WireGuard aktif
+Client membentuk tunnel → handshake → akses yang diizinkan → admission berkala
+</code></pre>
+<p>Enam pemeriksaan perangkat: signature X.509 terhadap Root CA, masa berlaku
+sertifikat, CRL terkini, serial tidak dicabut, bukti kepemilikan private key
+X.509, dan kecocokan sertifikat dengan public key WireGuard pada registry.
+Password karyawan yang benar tidak menggantikan pemeriksaan tersebut.</p>
+<table>
+<thead>
+<tr>
+<th>Jenis identitas</th>
+<th>Dipakai untuk</th>
+<th>Penyimpanan/penanggung jawab</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Akun OS/console</td>
+<td>Masuk Ubuntu atau Windows</td>
+<td>Operator; inventaris privat host</td>
+</tr>
+<tr>
+<td>Admin dashboard</td>
+<td>Mengelola akun, sertifikat dan audit</td>
+<td>Password + TOTP admin</td>
+</tr>
+<tr>
+<td>Karyawan VPN</td>
+<td>Meminta sesi akses VPN</td>
+<td>Password karyawan dari admin</td>
+</tr>
+<tr>
+<td>Identitas perangkat</td>
+<td>Membuktikan perangkat memiliki key yang terdaftar</td>
+<td>Private key tetap di client</td>
+</tr>
+<tr>
+<td>Token antarlayanan</td>
+<td>Otorisasi API administrasi CA/server</td>
+<td>Berkas env privat layanan</td>
+</tr>
+</tbody>
+</table>
+<p>TOTP admin berasal dari aplikasi authenticator yang telah didaftarkan. Dashboard
+memverifikasi kode enam digit; tidak menyediakan tombol untuk menampilkan kode
+login berjalan. Karyawan VPN tidak memakai TOTP admin untuk login.</p>
+<p>Sesi karyawan berlaku delapan jam pada implementasi ini. Admission berkala
+memperbarui lease perangkat, tetapi tidak memperpanjang sesi karyawan. Ketika
+sesi habis, karyawan harus login lagi. Private key, token sesi, seed TOTP, dan
+password bukan lampiran laporan.</p>
+<h2 id="bab-3">3. Topologi, perangkat lunak, dan batas lab</h2>
+<table>
+<thead>
+<tr>
+<th>VM</th>
+<th>LAN</th>
+<th>Tunnel</th>
+<th>Fungsi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>VM-CA</td>
+<td>192.168.100.10</td>
+<td>—</td>
+<td>OpenSSL private CA; HTTPS 8080</td>
+</tr>
+<tr>
+<td>VM-SERVER</td>
+<td>192.168.100.20</td>
+<td>10.8.0.1</td>
+<td>Validasi, daemon, registry; HTTPS 8081 dan UDP 51820</td>
+</tr>
+<tr>
+<td>VM-CLIENT</td>
+<td>192.168.100.30</td>
+<td>10.8.0.2</td>
+<td>Client Ubuntu 22.04</td>
+</tr>
+<tr>
+<td>VM-ADMIN</td>
+<td>192.168.100.40</td>
+<td>—</td>
+<td>Flask/Jinja2, SQLite, dashboard HTTPS 5000</td>
+</tr>
+<tr>
+<td>VM-ATTACKER</td>
+<td>192.168.100.50</td>
+<td>—</td>
+<td>Simulasi negatif yang diotorisasi dalam lab</td>
+</tr>
+<tr>
+<td>VM-CLIENT-WINDOWS</td>
+<td>192.168.100.60</td>
+<td>10.8.0.4</td>
+<td>Client Windows tambahan</td>
+</tr>
+</tbody>
+</table>
+<p>Jaringan libvirt <code>vanguard</code> menggunakan gateway host <code>192.168.100.1</code>.
+Alamat <code>10.8.0.3</code> dicadangkan untuk eksperimen terpisah. Kelima Ubuntu tetap ada;
+Windows adalah node keenam. Client memakai pasangan key masing-masing.</p>
+<p>Host memakai KVM/libvirt, <code>virsh</code>, Virtual Machine Manager, SSH dan browser.
+Windows memakai UEFI Secure Boot, TPM2, 4 GiB RAM, 2 vCPU dan disk sparse80 GiB.
+RAM host yang tercatat sekitar 7,5 GiB; menyalakan seluruh node menambah beban.
+Periksa <code>free -h</code> sebelum sesi dan hindari menjalankan pekerjaan berat bersamaan.
+Status <code>running</code> pada libvirt belum membuktikan OS selesai boot atau VPN aktif.</p>
+<p>Versi yang terakhir dibuktikan pada15 Oktober: dashboard Ubuntu 0.1.6, komponen
+Ubuntu lain0.1.5, client Windows 0.1.8; Windows build26300, Python 3.13.16,
+WireGuard 1.1.1. Versi source terbaru tidak otomatis mengganti paket semua VM.</p>
+<p>Layanan terlindungi yang telah dibuktikan adalah <strong>ICMP/ping ke 10.8.0.1</strong>.
+Modul ini tidak menjanjikan internet lewat VPN, akses ERP/web/file server,
+kebijakan per departemen, SSO, atau pembuktian TCP yang belum diimplementasikan.</p>
+<h2 id="bab-4">4. Memulai lab yang sudah terpasang</h2>
+<h3>4.1 Nyalakan dan periksa VM — HOST</h3>
+<pre><code class="language-bash">cd /home/lui/vanguard
+virsh -c qemu:///system list --all
+free -h
+virsh -c qemu:///system net-info vanguard
+</code></pre>
+<p>Jika jaringan <code>vanguard</code> tidak aktif, jalankan <code>virsh -c qemu:///system net-start vanguard</code>. Nyalakan VM berstatus <strong>shut off</strong> sesuai kebutuhan, berurutan:</p>
+<pre><code class="language-bash">virsh -c qemu:///system start VM-CA
+virsh -c qemu:///system start VM-SERVER
+virsh -c qemu:///system start VM-ADMIN
+virsh -c qemu:///system start VM-CLIENT
+virsh -c qemu:///system start VM-CLIENT-WINDOWS
+virsh -c qemu:///system start VM-ATTACKER
+</code></pre>
+<p>Jangan ulangi <code>start</code> pada VM yang sudah running. Attacker diperlukan saat
+latihan keamanan. <code>scripts/open_dashboard.sh</code> yang tersedia saat modul ditulis
+menyalakan lima Ubuntu; Windows tetap perlu dinyalakan terpisah.</p>
+<p>Untuk melihat console:</p>
+<pre><code class="language-bash">virt-manager --connect qemu:///system
+virt-viewer --connect qemu:///system VM-CLIENT-WINDOWS
+</code></pre>
+<p>Password console Windows terakhir ada pada kartu lokal
+<code>/home/lui/VanGuard-Privat/AKSES_WINDOWS_TERBARU.txt</code>. Inventaris lengkap berada
+di folder privat yang sama. Password console berbeda dari password VPN Windows.</p>
+<h3>4.2 Verifikasi layanan — HOST, lalu guest yang dipilih</h3>
+<pre><code class="language-bash">.venv/bin/python scripts/ssh_preflight.py state/lab/inventory.json
+ssh -F ~/.ssh/vanguard_lab_config 192.168.100.10
+</code></pre>
+<p>Preflight lama memeriksa lima Ubuntu, <strong>tidak mencakup Windows</strong>. Perintah SSH
+menempatkan terminal pada VM-CA. Periksa, kemudian <code>exit</code> untuk kembali ke host:</p>
+<pre><code class="language-bash">sudo systemctl is-active vanguard-ca
+timedatectl status
+exit
+</code></pre>
+<p>Pada VM-SERVER melalui SSH <code>.20</code>, jalankan:</p>
+<pre><code class="language-bash">sudo systemctl is-active vanguard-server vanguard-daemon wg-quick@wg0
+sudo wg show wg0
+timedatectl status
+</code></pre>
+<p>Pada VM-ADMIN melalui SSH <code>.40</code>, jalankan:</p>
+<pre><code class="language-bash">sudo systemctl is-active vanguard-admin
+timedatectl status
+</code></pre>
+<p>Target: semua unit di atas <code>active</code>, waktu benar, dashboard dapat dibuka melalui
+<strong>https://192.168.100.40:5000</strong>. Di HOST, pemeriksaan TLS:</p>
+<pre><code class="language-bash">curl --fail --cacert state/deployment/root.crt \
+  https://192.168.100.40:5000/healthz
+</code></pre>
+<p>Browser harus mempercayai root CA lab yang fingerprint-nya sudah diverifikasi.
+Impor <code>state/deployment/root.crt</code> ke Authorities/CA browser bila diperlukan.
+Jangan menyelesaikan masalah sertifikat dengan menonaktifkan pemeriksaan TLS.</p>
+<h2 id="bab-5">5. Pemasangan awal — khusus lingkungan baru</h2>
+<p>Bab ini adalah pekerjaan teknisi. Jangan menjalankannya pada lab terpasang.
+Panduan detail referensi: <a href="DEPLOYMENT.md">deployment Ubuntu</a> dan
+<a href="WINDOWS_CLIENT.md">penyiapan Windows</a>. Ikuti urutan berikut; tiap tahap memiliki
+hasil yang harus dipenuhi sebelum lanjut.</p>
+<h3>5.1 Siapkan host, enam guest, source dan SSH</h3>
+<ol>
+<li>Siapkan host Linux dengan virtualisasi KVM, libvirt, virt-manager/virt-viewer,
+akses administrator dan penyimpanan untuk seluruh disk/backup.</li>
+<li>Buat jaringan NAT libvirt <code>vanguard</code>, subnet192.168.100.0/24, gateway.1.
+Pastikan subnet tidak bertabrakan dengan jaringan host lain.</li>
+<li>Pasang lima Ubuntu Server22.04 dengan nama/IP pada bab 3. Atur IPv4 statis,
+gateway/DNS.1, hostname, waktu, serta akun operator dan OpenSSH.</li>
+<li>Siapkan satu Windows 11 tambahan dengan spesifikasi bab 3 dan IP.60. Pakai
+media resmi yang telah diverifikasi; selesaikan instalasi serta akun lokal.
+Jangan memakai ulang seed pemformatan pada disk berisi data.</li>
+<li>Salin source yang telah diverifikasi ke direktori kerja pada setiap Ubuntu.
+Jangan ikut menyalin <code>state/</code>, <code>.venv/</code>, <code>.git/</code>, atau inventaris rahasia.</li>
+<li>Siapkan key SSH host, cocokkan fingerprint guest melalui console, lalu catat
+host key. Salin <code>deploy/inventory.example.json</code> ke lokasi privat dan sesuaikan
+user/host/port/konfigurasi SSH lima Ubuntu. Password tidak dimasukkan inventory ini.</li>
+<li>Jalankan <code>python3 scripts/ssh_preflight.py /path/to/inventory.json</code>. Target
+kelima role <code>ok: true</code>, Ubuntu 22.04 dan kemampuan sudo sesuai deployment.</li>
+</ol>
+<p>Skrip <code>create_lab.py</code> serta <code>create_windows_client.py</code> adalah alat provisioning;
+baca <code>--help</code> dan batasannya sebelum dipakai. Inventaris lima role yang digunakan
+<code>deploy_lab.py</code> tidak boleh ditambah role Windows lalu dianggap otomatis didukung.</p>
+<h3>5.2 Pasang aplikasi Ubuntu pada role yang benar</h3>
+<p>Di root source <strong>guest masing-masing</strong>, jalankan hanya perintah yang cocok:</p>
+<table>
+<thead>
+<tr>
+<th>Guest</th>
+<th>Perintah</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>VM-CA</td>
+<td><code>sudo bash deploy/install.sh ca</code></td>
+</tr>
+<tr>
+<td>VM-SERVER</td>
+<td><code>sudo bash deploy/install.sh server</code></td>
+</tr>
+<tr>
+<td>VM-CLIENT</td>
+<td><code>sudo bash deploy/install.sh client</code></td>
+</tr>
+<tr>
+<td>VM-ADMIN</td>
+<td><code>sudo bash deploy/install.sh admin</code></td>
+</tr>
+<tr>
+<td>VM-ATTACKER</td>
+<td><code>sudo bash deploy/install.sh attacker</code></td>
+</tr>
+</tbody>
+</table>
+<p>Installer memeriksa OS dan IP, memasang Python/aplikasi serta unit systemd.
+Installer belum memulai layanan atau menerapkan firewall. Paket berada pada
+<code>/opt/vanguard/venv</code>, state pada <code>/var/lib/vanguard</code>, konfigurasi pada
+<code>/etc/vanguard</code>. Server mendapat key WireGuard dan config tanpa peer statis.</p>
+<h3>5.3 Buat CA, trust dan sertifikat HTTPS</h3>
+<p><strong>VM-CA baru</strong>:</p>
+<pre><code class="language-bash">sudo -u vanguard /opt/vanguard/venv/bin/vanguard-ca init
+sudo install -m 0644 /var/lib/vanguard/ca/root.crt /etc/vanguard/root.crt
+openssl x509 -in /etc/vanguard/root.crt -noout -fingerprint -sha256
+</code></pre>
+<p>Catat fingerprint. Salin hanya root.crt ke <code>/etc/vanguard/root.crt</code> pada Ubuntu
+lain dan cocokkan fingerprint. Root private key tetap di CA.</p>
+<p>Pada <strong>masing-masing VM-CA, VM-SERVER, VM-ADMIN</strong>, buat key HTTPS lokal:</p>
+<pre><code class="language-bash">sudo openssl req -new -newkey rsa:3072 -nodes \
+  -keyout /etc/vanguard/tls.key -out /etc/vanguard/tls.csr \
+  -subj '/CN=VanGuard Service'
+sudo chown root:vanguard /etc/vanguard/tls.key
+sudo chmod 0640 /etc/vanguard/tls.key
+</code></pre>
+<p>Transfer CSR ke CA melalui SSH, dengan nama <code>ca.csr</code>, <code>server.csr</code>, <code>admin.csr</code>
+di <code>/var/lib/vanguard/ca/requests/</code>; direktori/CSR harus dapat dibaca akun
+service <code>vanguard</code>. Pada <strong>VM-CA</strong>, tandatangani sesuai IP:</p>
+<pre><code class="language-bash">sudo -u vanguard /opt/vanguard/venv/bin/vanguard-ca sign-tls \
+  --csr /var/lib/vanguard/ca/requests/ca.csr --ip 192.168.100.10 \
+  --out /var/lib/vanguard/ca/requests/ca.crt
+sudo -u vanguard /opt/vanguard/venv/bin/vanguard-ca sign-tls \
+  --csr /var/lib/vanguard/ca/requests/server.csr --ip 192.168.100.20 \
+  --out /var/lib/vanguard/ca/requests/server.crt
+sudo -u vanguard /opt/vanguard/venv/bin/vanguard-ca sign-tls \
+  --csr /var/lib/vanguard/ca/requests/admin.csr --ip 192.168.100.40 \
+  --out /var/lib/vanguard/ca/requests/admin.crt
+</code></pre>
+<p>Kembalikan sertifikat yang sesuai ke <code>/etc/vanguard/tls.crt</code> pada masing-masing
+guest dengan mode0644. Pada setiap guest layanan, jalankan:</p>
+<pre><code class="language-bash">openssl verify -CAfile /etc/vanguard/root.crt /etc/vanguard/tls.crt
+</code></pre>
+<p>Target <code>OK</code>. Key HTTPS service tidak ditransfer ke CA. Simpan salinan root publik
+di host untuk trust browser dan pemeriksaan HTTPS.</p>
+<h3>5.4 Konfigurasi token dan akun admin awal</h3>
+<p>Buat tiga nilai acak independen dengan <code>openssl rand -hex 32</code> dalam terminal
+privat. Isi template env menggunakan <code>sudoedit</code>; jangan menaruh nilai literal
+di command history atau dokumen. Catat lokasi dan nilai hanya pada inventaris
+privat operator.</p>
+<table>
+<thead>
+<tr>
+<th>Variabel</th>
+<th>Lokasi yang menerima nilai sama</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>VANGUARD_CA_TOKEN</td>
+<td>ca.env di CA dan admin.env di ADMIN</td>
+</tr>
+<tr>
+<td>VANGUARD_SERVER_TOKEN</td>
+<td>server.env di SERVER dan admin.env di ADMIN</td>
+</tr>
+<tr>
+<td>VANGUARD_SESSION_SECRET</td>
+<td>admin.env di ADMIN; nilai ketiga yang independen</td>
+</tr>
+</tbody>
+</table>
+<p>Semua file berada pada <code>/etc/vanguard/</code>, owner root:root, mode0600.
+Pastikan URL CA/server dan path sertifikat pada template sesuai topologi.
+Pada <strong>VM-ADMIN baru</strong>, buat satu admin melalui prompt:</p>
+<pre><code class="language-bash">sudo -u vanguard /opt/vanguard/venv/bin/vanguard-admin --username NAMA_ADMIN_BARU
+</code></pre>
+<p>Password minimal 12 karakter, diketik dua kali. Daftarkan URI TOTP yang ditampilkan
+di terminal privat ke authenticator dan konfirmasi kode. Jangan membuat ulang
+akun admin utama hanya karena sesi login habis.</p>
+<h3>5.5 Firewall dan layanan</h3>
+<p>Jalur yang perlu diizinkan: CA8080 dari SERVER/ADMIN; SERVER8081 dari kedua
+client, ADMIN dan ATTACKER; UDP 51820 dari kedua client dan ATTACKER; ADMIN5000
+dari host. SSH guest hanya dari manajemen. ICMP10.8.0.1 dari.2/.4 harus masuk
+lewat <code>wg0</code>; trafik ke alamat tunnel yang datang langsung dari LAN ditolak.</p>
+<p>Pasang <code>nftables</code> pada Ubuntu yang akan diberi aturan. Salin <code>deploy/firewall.py</code>
+ke <code>/opt/vanguard/firewall.py</code> pada guest. Di guest masing-masing jalankan
+<code>sudo python3 /opt/vanguard/firewall.py ROLE --management-ip 192.168.100.1</code>,
+dengan ROLE <code>ca</code>, <code>server</code>, <code>client</code>, <code>admin</code>, atau <code>attacker</code>. Khusus SERVER:</p>
+<pre><code class="language-bash">sudo python3 /opt/vanguard/firewall.py server \
+  --management-ip 192.168.100.1 --windows-client
+</code></pre>
+<p>Simpan ruleset sebelum perubahan. Skrip memasang timer rollback120 detik.
+<strong>Buka koneksi SSH baru</strong> dan periksa <code>sudo systemctl is-active vanguard-firewall</code>;
+baru hentikan <code>vanguard-firewall-rollback.timer</code> pada guest itu. Jika SSH gagal,
+gunakan console dan periksa rollback; jangan menandai firewall siap.</p>
+<p>Mulai layanan sesuai guest:</p>
+<pre><code class="language-bash"># VM-CA
+sudo systemctl enable --now vanguard-ca
+# VM-SERVER
+sudo systemctl enable wg-quick@wg0 vanguard-daemon vanguard-server
+sudo systemctl start vanguard-server
+sudo wg show wg0 peers
+# VM-ADMIN
+sudo systemctl enable --now vanguard-admin
+</code></pre>
+<p>Pada instalasi baru, daftar peer harus kosong sebelum admission client. Setelah
+HTTPS sehat, lanjutkan bab 6. Jangan menambahkan peer manual untuk mempercepat demo.</p>
+<h3>5.6 Pasang aplikasi Windows baru</h3>
+<ol>
+<li>Pasang Python 3.12 atau lebih baru dan WireGuard for Windows dari penerbit resmi;
+periksa signature installer. Jangan menonaktifkan Windows Firewall.</li>
+<li>Atur NIC ke 192.168.100.60/24, gateway/DNS.1, waktu Jakarta. Pastikan koneksi
+HTTPS ke server tersedia dan sertifikat root cocok fingerprint operator.</li>
+<li>Build wheel source di HOST dengan
+<code>.venv/bin/python -m pip wheel --no-deps --wheel-dir dist .</code>, lalu transfer
+wheel0.1.8 dan <code>deploy/constraints.txt</code> ke folder staging privat guest.</li>
+<li>Pada PowerShell Administrator, buat virtualenv; sesuaikan path Python dan wheel:</li>
+</ol>
+<pre><code class="language-powershell">&amp; 'C:\Program Files\Python313\python.exe' -m venv C:\ProgramData\VanGuard\venv
+$py = 'C:\ProgramData\VanGuard\venv\Scripts\python.exe'
+&amp; $py -m pip install -c C:\VG-Staging\constraints.txt C:\VG-Staging\vanguard_ztna-0.1.8-py3-none-any.whl
+&amp; $py -m pip check
+&amp; $py -m vanguard.client --help
+</code></pre>
+<p>Python313 adalah lokasi instalasi yang dibuktikan pada guest ini; ganti bila
+berbeda. Instalasi pip di atas membutuhkan akses dependensi, atau wheelhouse
+terverifikasi yang disiapkan teknisi. Paket0.1.8 membutuhkan pywin32 di Windows.
+Jika installer memakai autologon/unattend, teknisi harus membersihkan secret
+setup dan mengeluarkan media seed sesudah selesai. Lanjut bab 6 untuk perangkat
+yang belum diinisialisasi. SSH Windows opsional untuk pemeliharaan; pemakaian
+normal bisa melalui console, dengan hak Administrator untuk mengelola tunnel.</p>
+<h2 id="bab-6">6. Admin: menyiapkan akun dan perangkat</h2>
+<h3>6.1 Login dashboard</h3>
+<ol>
+<li>Di browser HOST buka <code>https://192.168.100.40:5000</code> dengan trust CA yang benar.</li>
+<li>Masukkan username/password <strong>admin dashboard</strong> dan kode TOTP dari authenticator.</li>
+<li>Klik <strong>Masuk</strong>. Halaman <strong>Perangkat &amp; admission</strong> harus terbuka.</li>
+<li>Periksa <strong>Kesehatan layanan</strong>: CA dan Server tersedia.</li>
+</ol>
+<p>Di lab terpasang, informasi aktivasi privat berada di
+<code>state/deployment/aktivasi-admin.html</code>. QR/seed hanya untuk pemilik akun.
+TOTP memakai waktu, SHA-1, enam digit,30 detik. Kode yang sudah dipakai tidak bisa
+dipakai untuk login kedua; tunggu kode berikutnya. Setelah lima kegagalan,
+tunggu lima menit. Sesi dashboard sekitar 30 menit.</p>
+<h3>6.2 Buat akun karyawan</h3>
+<p>Pada <strong>Akun karyawan</strong>, isi username unik dan password awal minimal 12 karakter,
+lalu klik <strong>Buat akun karyawan</strong>. Serahkan kredensial melalui kanal privat dan
+catat pada inventaris lokal operator. Akun Ubuntu dan Windows lab sudah ada;
+gunakan akun yang terikat pada perangkat masing-masing. Belum ada fitur reset
+password mandiri atau aktivasi ulang akun yang dinonaktifkan.</p>
+<h3>6.3 Buat request hanya pada client baru</h3>
+<p><strong>Ubuntu baru</strong>, pada VM-CLIENT:</p>
+<pre><code class="language-bash">sudo /opt/vanguard/venv/bin/vanguard-client init --device-id vm-client
+</code></pre>
+<p>Hasilnya <code>/var/lib/vanguard/client/request.json</code>. Default alamat Ubuntu.2.
+Pada <strong>Windows baru</strong>, PowerShell Administrator:</p>
+<pre><code class="language-powershell">$py = 'C:\ProgramData\VanGuard\venv\Scripts\python.exe'
+&amp; $py -m vanguard.client init --device-id vm-client-windows --tunnel-ip 10.8.0.4
+</code></pre>
+<p>Hasilnya <code>C:\ProgramData\VanGuard\client\request.json</code>. Direktori identitas
+dilindungi ACL SYSTEM/Administrators. <code>identity.key</code> dan <code>wg.key</code> tetap di guest.
+Salin <strong>request.json saja</strong> ke host operator melalui transfer tepercaya.
+Pada guest yang sudah terdaftar jangan mengulang init atau mengganti request.</p>
+<h3>6.4 Daftar, unduh dan pasang sertifikat</h3>
+<ol>
+<li>Pada <strong>Registrasi perangkat</strong>, pilih request JSON yang sesuai.</li>
+<li>Isi <strong>Nama perangkat</strong>, <strong>Departemen</strong>, <strong>Pemilik</strong>, dan <strong>Platform</strong>.</li>
+<li>Pilih akun karyawan yang benar. Binding akun-perangkat tidak dapat diganti
+hanya dengan mengedit metadata; periksa pilihan sebelum mengirim.</li>
+<li>Klik <strong>Terbitkan sertifikat &amp; daftarkan binding</strong>.</li>
+<li>Pastikan workflow <code>registered</code>. Peer perangkat baru harus belum aktif.</li>
+<li>Klik <strong>Unduh bundle onboarding</strong> atau <strong>Unduh sertifikat</strong> pada baris tersebut.
+Bundle berisi device.crt, root.crt, manifest dan petunjuk; tidak berisi key.</li>
+<li>Cocokkan device ID, public key/binding pada manifest dan fingerprint root
+dengan referensi operator sebelum mengimpor. Pasang hanya pada client pembuat CSR.</li>
+</ol>
+<p>Pada Ubuntu, salin sertifikat ke staging guest, kemudian:</p>
+<pre><code class="language-bash">sudo install -m 0600 /PATH/STAGING/device.crt /var/lib/vanguard/client/device.crt
+</code></pre>
+<p>Trust Ubuntu di <code>/etc/vanguard/root.crt</code> sudah disiapkan pada instalasi layanan.
+Pada PowerShell Administrator Windows, setelah bundle publik diekstrak ke staging:</p>
+<pre><code class="language-powershell">Copy-Item C:\VG-Staging\device.crt C:\ProgramData\VanGuard\client\device.crt
+Copy-Item C:\VG-Staging\root.crt C:\ProgramData\VanGuard\client\root.crt
+</code></pre>
+<p>Jika file tujuan sudah ada, teknisi membandingkan identitasnya dahulu; jangan
+menimpa sertifikat utama dengan hasil latihan. Client memeriksa kesesuaian
+sertifikat dengan key lokal saat admission. Registrasi dan unduhan bundle
+belum mengaktifkan tunnel. Workflow tertahan dilanjutkan dengan <strong>Ulangi workflow</strong>
+setelah dependency pulih, bukan mengirim registrasi duplikat.</p>
+<h2 id="bab-7">7. Karyawan Ubuntu: login dan memakai VPN</h2>
+<p>Prasyarat: perangkat sudah registered, sertifikat/root terpasang, akun terikat
+dan aktif. Di HOST masuk ke VM-CLIENT:</p>
+<pre><code class="language-bash">ssh -F ~/.ssh/vanguard_lab_config 192.168.100.30
+</code></pre>
+<p>Di VM-CLIENT masukkan username karyawan dari inventaris privat:</p>
+<pre><code class="language-bash">sudo /opt/vanguard/venv/bin/vanguard-client login --username USERNAME_KARYAWAN_UBUNTU
+sudo systemctl restart vanguard-client
+sudo systemctl status vanguard-client --no-pager
+ping -c 3 -W 2 10.8.0.1
+sudo wg show wg0
+</code></pre>
+<p>Password diminta tersembunyi. Login menghasilkan masa kedaluwarsa; client
+menyimpan token privat, bukan password. Target: ping berhasil, handshake ada,
+dan dashboard menunjukkan peer perangkat aktif. Jika delapan jam habis,
+login kembali dan restart service. Logout dashboard tidak mengakhiri VPN ini.</p>
+<p>Untuk instalasi Ubuntu baru, service membutuhkan <code>/etc/vanguard/client.env</code>
+dengan <code>VANGUARD_SERVER_WG_PUBLIC_KEY</code> berisi public key dari
+<code>/etc/vanguard/server-wg.pub</code> pada SERVER. Teknisi memasangnya root:root0600
+melalui editor lalu <code>sudo systemctl enable vanguard-client</code>. Installer saja
+belum mengisi nilai ini. Jangan memakai private key server.</p>
+<p>Alternatif foreground untuk teknisi: stop service terlebih dahulu, kemudian
+jalankan <code>sudo /opt/vanguard/venv/bin/vanguard-client connect --server-key 'PUBLIC_KEY_SERVER'</code>. Jangan menjalankan service dan foreground bersamaan.</p>
+<h2 id="bab-8">8. Karyawan Windows: dari login desktop sampai disconnect</h2>
+<ol>
+<li>Buka console <strong>VM-CLIENT-WINDOWS</strong> melalui virt-viewer/virt-manager.</li>
+<li>Masuk memakai <strong>username/password console Windows</strong> pada kartu lokal host.</li>
+<li>Buka Start, cari PowerShell, pilih <strong>Run as administrator</strong>, setujui UAC.</li>
+<li>Pastikan server, CA dan jaringan siap. Lab Windows sudah memiliki sertifikat
+dan key; tidak perlu init atau pendaftaran ulang.</li>
+<li>Jalankan:</li>
+</ol>
+<pre><code class="language-powershell">$py = 'C:\ProgramData\VanGuard\venv\Scripts\python.exe'
+&amp; $py -m vanguard.client login --username USERNAME_KARYAWAN_WINDOWS
+&amp; $py -m vanguard.client connect --server-key 'PUBLIC_KEY_SERVER'
+</code></pre>
+<p>Username/password langkah5 adalah <strong>akun VPN Windows</strong>, berbeda dari akun
+desktop langkah2. Public key server diperoleh operator melalui SSH terverifikasi
+ke SERVER, dengan <code>sudo cat /etc/vanguard/server-wg.pub</code>. Ini nilai publik yang
+boleh diberikan kepada karyawan; bukan isi <code>/etc/wireguard/wg0.conf</code>.</p>
+<p>Target terminal: <code>Admitted; tunnel up. Renewing admission until stopped.</code>
+Biarkan terminal ini berjalan. Pada PowerShell Administrator kedua:</p>
+<pre><code class="language-powershell">ping -n 3 10.8.0.1
+&amp; 'C:\Program Files\WireGuard\wg.exe' show vanguard-client
+sc.exe qc 'WireGuardTunnel$vanguard-client'
+</code></pre>
+<p>Target: balasan ping, latest handshake, dan start type <code>DEMAND_START</code>.
+Pada dashboard cari <code>vm-client-windows</code> dengan tunnel.4 dan peer aktif.
+Jangan menambah tunnel manual lewat GUI WireGuard untuk melewati admission.</p>
+<p>Untuk selesai, tekan <strong>Ctrl+C di terminal connect</strong>, lalu periksa:</p>
+<pre><code class="language-powershell">sc.exe query 'WireGuardTunnel$vanguard-client'
+Test-Path C:\ProgramData\VanGuard\client\vanguard-client.conf
+</code></pre>
+<p>Setelah cleanup selesai, query service menghasilkan1060/tidak ditemukan dan
+Test-Path <code>False</code>. Versi 0.1.8 menunggu penghapusan service hingga 15 detik; bila
+tidak bisa memastikan cleanup, config dipertahankan agar bisa diperiksa.
+Private key dan sertifikat tetap disimpan untuk koneksi berikutnya.</p>
+<p>Windows tidak otomatis menyalakan tunnel ketika reboot. Buka PowerShell admin
+dan jalankan connect lagi; login ulang jika sesi sudah expired. Satu siklus
+renewal otomatis sudah dibuktikan, bukan uji kestabilan berjam-jam.</p>
+<h2 id="bab-9">9. Memastikan sistem sudah dapat digunakan</h2>
+<p>Gunakan daftar penerimaan berikut. Isi hasil aktual dan tanggal, bukan menyalin
+PASS dari hasil historis.</p>
+<table>
+<thead>
+<tr>
+<th>Pemeriksaan</th>
+<th>Bukti yang dicatat</th>
+<th>Kriteria lulus</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mesin tersedia</td>
+<td>Daftar VM dan tanggal</td>
+<td>VM yang dipakai running dan selesai boot</td>
+</tr>
+<tr>
+<td>Kepercayaan HTTPS</td>
+<td>Fingerprint publik dan health</td>
+<td>Root cocok; tidak menonaktifkan TLS</td>
+</tr>
+<tr>
+<td>Admin</td>
+<td>Login TOTP, halaman dashboard</td>
+<td>Masuk dengan kode yang sah; CA/Server tersedia</td>
+</tr>
+<tr>
+<td>Registry baru</td>
+<td>Baris perangkat + peer server</td>
+<td>Registered, key baru belum menjadi peer</td>
+</tr>
+<tr>
+<td>Login karyawan</td>
+<td>Hasil login tanpa token</td>
+<td>Sesi sah; login saja belum membuka peer</td>
+</tr>
+<tr>
+<td>Admission/tunnel</td>
+<td>Output connect + wg show</td>
+<td>ACCEPT, alamat benar, handshake ada</td>
+</tr>
+<tr>
+<td>Akses user</td>
+<td>Hasil ping10.8.0.1</td>
+<td>Balasan melalui tunnel</td>
+</tr>
+<tr>
+<td>Dua client</td>
+<td>Dua handshake dan allowed IP</td>
+<td>Ubuntu.2 dan Windows.4 tidak bertabrakan</td>
+</tr>
+<tr>
+<td>Selesai sesi</td>
+<td>Service/interface/config client</td>
+<td>Tunnel berhenti dan config sementara dibersihkan</td>
+</tr>
+<tr>
+<td>Audit admin</td>
+<td>Waktu WIB, pelaku, tindakan</td>
+<td>Catatan sesuai tindakan yang dilakukan</td>
+</tr>
+<tr>
+<td>Arsip</td>
+<td>ZIP + checksum</td>
+<td>Dapat dibuka dan cocok hash</td>
+</tr>
+</tbody>
+</table>
+<p>Di SERVER gunakan <code>sudo wg show wg0</code> atau <code>sudo wg show wg0 peers</code>.
+<strong>Jangan gunakan format dump untuk laporan</strong>, karena dapat memuat private key.
+Peer server bisa bertahan hingga lease habis sesudah client berhenti; ini
+berbeda dari service tunnel lokal yang sudah dibersihkan. Pencabutan/disable
+menjalankan penghapusan peer sesuai workflow server.</p>
+<p>Runner <code>scripts/health_lab.py</code> bergantung pada client Ubuntu utama yang aktif;
+bukan tes Windows. Bila diperlukan oleh teknisi di HOST:</p>
+<pre><code class="language-bash">module_run=&quot;state/deployment/module-$(date +%Y%m%d-%H%M%S)&quot;
+.venv/bin/python scripts/health_lab.py state/lab/inventory.json \
+  --state &quot;$module_run/health&quot; --samples 3 --interval 10
+</code></pre>
+<p>Gunakan direktori baru per run. Jika hanya Windows yang aktif, periksa melalui
+bab 8 dan SERVER; jangan mengartikan health runner Ubuntu gagal sebagai bukti
+tunnel Windows gagal.</p>
+<h2 id="bab-10">10. Admin: aktivitas, arsip, dan penghentian akses</h2>
+<h3>10.1 Mencari tindakan berdasarkan waktu</h3>
+<ol>
+<li>Klik <strong>Aktivitas admin</strong>.</li>
+<li>Pilih tanggal mulai/akhir dalam WIB, lalu filter pelaku, ID perangkat atau
+jenis tindakan. Tanggal akhir mencakup satu hari penuh.</li>
+<li>Klik <strong>Tampilkan</strong>. Telusuri halaman berikutnya bila lebih dari50 baris.</li>
+<li>Periksa jam-menit-detik, pelaku, tindakan dan keterangan Indonesia.</li>
+</ol>
+<p>Satu tindakan dapat memiliki tahap diminta, gagal, retry dan selesai.
+<strong>Aktivitas keamanan server</strong> berasal dari proses VPN otomatis; jangan menyamakan
+aktor otomatis dengan admin yang sedang login. Waktu sumber disimpan Unix/UTC,
+sedangkan tampilan dan CSV menggunakan WIB.</p>
+<h3>10.2 Menyimpan arsip yang dapat diverifikasi</h3>
+<ol>
+<li>Setelah filter sesuai, klik <strong>Simpan arsip aktivitas</strong>.</li>
+<li>Snapshot memuat seluruh hasil filter, bukan hanya halaman yang sedang tampil.
+Batasnya10.000 catatan dan8 MiB sebelum ZIP; persempit filter jika melewati batas.</li>
+<li>Buka <strong>Arsip</strong>, periksa pembuat, waktu, jumlah dan filter; unduh ZIP.</li>
+<li>ZIP berisi <code>aktivitas.csv</code>, <code>aktivitas.json</code>, <code>manifest.json</code>, <code>PETUNJUK.txt</code>.</li>
+<li>Di HOST jalankan <code>sha256sum /PATH/ARSIP.zip</code> dan cocokkan dengan checksum
+di dashboard. Manifest mencatat checksum CSV/JSON untuk verifikasi isi.</li>
+<li>Simpan ZIP di folder privat operator dan catat path pada lembar praktikum.</li>
+</ol>
+<p>Arsip tidak menghapus log asal. Arsip tersimpan dalam database VM-ADMIN, sehingga
+backup database tetap diperlukan. Checksum bukan tanda tangan digital dan tidak
+menjamin ketahanan terhadap root VM yang dapat mengubah database.</p>
+<h3>10.3 Mencabut akses</h3>
+<p>Pada perangkat yang memang hendak dihentikan, pilih alasan dan klik
+<strong>Cabut akses &amp; sertifikat</strong>. Tunggu status <code>revoked</code>, periksa peer hilang dan
+admission ulang ditolak. Status <code>revoking</code> belum berarti proses selesai;
+pulihkan dependency lalu pilih <strong>Ulangi workflow</strong>.</p>
+<p><strong>Nonaktifkan akun karyawan</strong> membatalkan sesi dan menghapus peer terkait,
+tetapi tidak otomatis mencabut sertifikat. Identitas yang dicabut memerlukan
+device ID dan key baru untuk pemakaian berikutnya; bukan edit metadata.
+Gunakan identitas disposable untuk latihan, bukan <code>vm-client</code> atau
+<code>vm-client-windows</code> yang sedang dipakai.</p>
+<h2 id="bab-11">11. Praktikum dan penilaian</h2>
+<p>Praktikum dilakukan pada lab yang diotorisasi. Alokasi waktu berikut hanya
+perkiraan untuk sesi pembelajaran, bukan hasil benchmark.</p>
+<table>
+<thead>
+<tr>
+<th>Praktikum</th>
+<th>Waktu</th>
+<th>Tugas dan keluaran</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A: orientasi</td>
+<td>20 menit</td>
+<td>Gambar enam node dan jelaskan tiga jenis akun</td>
+</tr>
+<tr>
+<td>B: kesiapan</td>
+<td>20 menit</td>
+<td>Periksa VM, waktu, trust dan health; catat kendala</td>
+</tr>
+<tr>
+<td>C: pemakaian</td>
+<td>30 menit</td>
+<td>Login client yang dipilih, handshake/ping, disconnect</td>
+</tr>
+<tr>
+<td>D: administrator</td>
+<td>25 menit</td>
+<td>Login TOTP, cari aktivitas WIB, buat/cek arsip</td>
+</tr>
+<tr>
+<td>E: enrollment latihan</td>
+<td>45 menit</td>
+<td>Identitas disposable → registered → admission → revoke → cleanup</td>
+</tr>
+</tbody>
+</table>
+<p>Praktikum E memakai prosedur terpisah pada
+<a href="TUTORIAL_PENGGUNAAN.md">tutorial bab 7</a>. Prosedur tersebut mengikuti client
+Ubuntu 0.1.5 yang terpasang dan memakai alamat eksperimen.3. Pastikan tidak ada
+eksperimen lain aktif. Latihan <code>admit</code> tidak membuktikan trafik; pengujian ping
+tetap dilakukan pada client utama. Jangan menyalin key ke attacker.</p>
+<p>Contoh penilaian: kesiapan20 poin, penjelasan akun/admission20, koneksi dan
+disconnect30, audit/arsip20, pencatatan aman10. Lulus minimal 80/100 dan tidak
+memasukkan kredensial/private key pada bukti. Rubrik ini usulan pembelajaran.</p>
+<p>Pertanyaan evaluasi:</p>
+<ol>
+<li>Mengapa password karyawan yang benar belum cukup untuk mendapatkan tunnel?</li>
+<li>Apa perbedaan <code>registered</code>, peer aktif, handshake dan ping berhasil?</li>
+<li>Mengapa login karyawan harus diulang meskipun renewal perangkat berjalan?</li>
+<li>Apa perbedaan disable akun, revoke sertifikat dan logout dashboard?</li>
+<li>Mengapa checksum arsip belum membuktikan bahwa root VM tidak mengubah isinya?</li>
+</ol>
+<p>Jawaban inti: akun dan perangkat diperiksa terpisah; registry bukan akses;
+lease dibatasi sesi login; tindakan penghentian memiliki sasaran berbeda;
+checksum tidak memiliki penandatangan independen.</p>
+<h2 id="bab-12">12. Mengakhiri sesi dan mematikan lab</h2>
+<ol>
+<li>Karyawan Windows: Ctrl+C pada connect dan periksa cleanup sesuai bab 8.</li>
+<li>Karyawan Ubuntu: <code>sudo systemctl stop vanguard-client</code>; pastikan <code>wg0</code>
+tidak aktif pada client. Perintah ini tidak mematikan interface server.</li>
+<li>Admin: simpan arsip bila perlu, kemudian klik <strong>Keluar</strong>.</li>
+<li>Jika seluruh lab hendak dimatikan, dari HOST kirim shutdown normal:</li>
+</ol>
+<pre><code class="language-bash">virsh -c qemu:///system shutdown VM-CLIENT-WINDOWS
+virsh -c qemu:///system shutdown VM-CLIENT
+virsh -c qemu:///system shutdown VM-ATTACKER
+virsh -c qemu:///system shutdown VM-ADMIN
+virsh -c qemu:///system shutdown VM-SERVER
+virsh -c qemu:///system shutdown VM-CA
+virsh -c qemu:///system list --all
+</code></pre>
+<p>Kirim hanya pada VM running. Tunggu seluruh target <code>shut off</code> sebelum mematikan
+host. Respons shutdown sukses berarti permintaan terkirim, bukan guest pasti
+sudah mati. Jika Windows tidak merespons ACPI, gunakan Start → Power → Shut down
+di console. Hindari force-off saat CA menulis state.</p>
+<p>Backup oleh teknisi: hentikan layanan penulis terkait atau gunakan backup SQLite
+konsisten, lalu simpan konfigurasi <code>/etc/vanguard</code>, state <code>/var/lib/vanguard</code>,
+WireGuard <code>/etc/wireguard</code> dan versi paket sebelumnya di lokasi privat. Backup
+CA berisi key sensitif; batasi akses. Pemulihan tidak boleh mengembalikan index/CRL
+lama sehingga sertifikat tercabut menjadi berlaku kembali. Catat tanggal,
+hash backup, layanan yang dihentikan/dimulai, dan pemeriksaan setelah pemulihan.</p>
+<h2 id="bab-13">13. Pemecahan masalah</h2>
+<table>
+<thead>
+<tr>
+<th>Gejala</th>
+<th>Pemeriksaan dan langkah berikutnya</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>VM running tetapi SSH gagal</td>
+<td>Tunggu boot; periksa NIC/IP dan console; jangan hapus known_hosts sembarangan</td>
+</tr>
+<tr>
+<td>Windows meminta password</td>
+<td>Gunakan akun console pada kartu lokal; autologon sengaja dinonaktifkan</td>
+</tr>
+<tr>
+<td>Dashboard tidak terbuka</td>
+<td>Periksa VM-ADMIN, service, port 5000 dari host dan root CA; gunakan HTTPS</td>
+</tr>
+<tr>
+<td>TOTP ditolak</td>
+<td>Periksa waktu HP/VM, gunakan kode baru, tunggu lockout bila tercapai</td>
+</tr>
+<tr>
+<td>CA/Server tidak tersedia</td>
+<td>Periksa service, waktu, HTTPS antarlayanan dan log unit; jangan menganggap peer pasti mati/aktif</td>
+</tr>
+<tr>
+<td>Login karyawan gagal</td>
+<td>Pastikan memakai akun VPN yang tepat, akun aktif, password benar; bukan akun console/admin</td>
+</tr>
+<tr>
+<td>Session expired</td>
+<td>Login karyawan ulang kemudian restart/connect; renewal tidak memperpanjang delapan jam</td>
+</tr>
+<tr>
+<td>Certificate/key mismatch</td>
+<td>Cocokkan device ID dan sertifikat dengan CSR asli; jangan menyalin key client lain</td>
+</tr>
+<tr>
+<td>Tunnel config exists</td>
+<td>Pastikan proses lama berhenti, inspect interface/service; simpan config sebelum pemulihan oleh teknisi</td>
+</tr>
+<tr>
+<td>Windows meminta elevation</td>
+<td>Buka PowerShell Run as administrator; hak akun saja belum selalu membuat terminal elevated</td>
+</tr>
+<tr>
+<td>Windows cleanup timeout</td>
+<td>Inspect service WireGuard khusus; config sengaja dipertahankan; jangan hapus semua direktori client</td>
+</tr>
+<tr>
+<td>Handshake/ping gagal</td>
+<td>Periksa peer, UDP 51820, endpoint, alamat.2/.4, firewall wg0 dan trust; jangan tambah peer manual</td>
+</tr>
+<tr>
+<td>registered tetapi peer tidak aktif</td>
+<td>Login dan jalankan connect; registrasi saja memang belum membuka akses</td>
+</tr>
+<tr>
+<td>revoking belum selesai</td>
+<td>Periksa CA/server kemudian retry workflow pada identitas yang sama</td>
+</tr>
+<tr>
+<td>Arsip melebihi batas</td>
+<td>Perkecil tanggal/filter, lalu buat beberapa snapshot</td>
+</tr>
+<tr>
+<td>Host reboot mendadak</td>
+<td>Periksa state/log aktual sebelum resume; log IN_PROGRESS bukan PASS</td>
+</tr>
+<tr>
+<td>CRL counter kosong setelah shutdown</td>
+<td>Hentikan perubahan CA, backup, eskalasi ke teknisi; jangan init CA atau rollback index</td>
+</tr>
+</tbody>
+</table>
+<p>Untuk diagnosis layanan Ubuntu, gunakan <code>sudo journalctl -u NAMA_UNIT -n 50 --no-pager</code>. Tinjau hasil secara privat sebelum menyalin ke laporan. Pemulihan
+counter CA15 Oktober menjaga signature, monotonic counter dan seluruh revocation;
+ini tindakan teknisi berdasarkan bukti, bukan perintah rutin pengguna.</p>
+<h2 id="bab-14">14. Bukti yang tersedia dan pekerjaan berikutnya</h2>
+<table>
+<thead>
+<tr>
+<th>Bukti historis</th>
+<th>Status yang dapat diklaim</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Source0.1.8 commit 78ff14e, CI 38692866340</td>
+<td>Linux3.10/3.12 masing-masing163 PASS +1 SKIP; Windows 23 PASS</td>
+</tr>
+<tr>
+<td>Guest Windows 15 Oktober</td>
+<td>Login console/SSH, enrollment tanpa peer, sesi/proof invalid ditolak, admission, handshake, ping dan cleanup PASS</td>
+</tr>
+<tr>
+<td>Dua client 15 Oktober</td>
+<td>Ubuntu.2 dan Windows.4 aktif bersamaan, dua handshake dan ping PASS</td>
+</tr>
+<tr>
+<td>Renewal otomatis Windows</td>
+<td>Satu siklus normal sekitar 61,83 detik dan cleanup PASS; bukan soak test</td>
+</tr>
+<tr>
+<td>Boot sesudah host restart</td>
+<td>SSH pulih; tunnel idle tidak otomatis aktif; bukan uji reboot saat tunnel aktif</td>
+</tr>
+<tr>
+<td>Penghapusan peer setelah lease habis</td>
+<td>Bukti terakhir IN_PROGRESS; belum dinyatakan PASS</td>
+</tr>
+<tr>
+<td>Revocation Windows, reboot saat tunnel aktif</td>
+<td>Belum diverifikasi</td>
+</tr>
+<tr>
+<td>Benchmark formal tiga konfigurasi ×10</td>
+<td>Belum selesai; jangan memakai pilot n=1 sebagai hasil statistik</td>
+</tr>
+<tr>
+<td>Pemeriksaan17 Oktober</td>
+<td>Enam VM shut off; dokumen disusun dari source/bukti, bukan uji live ulang</td>
+</tr>
+</tbody>
+</table>
+<p>Untuk proposal, uraikan enam node dan dua platform client secara eksplisit.
+Pisahkan hasil admission, handshake dan trafik. S-01 menggunakan kredensial
+<strong>karyawan</strong> yang dicuri pada perangkat tidak dipercaya. MTTD/MTTR aplikasi
+mengikuti definisi yang terdokumentasi; MTTR berarti <strong>Mean Time to Respond</strong>.
+Pemakaian sistem oleh user berarti akses lab yang diizinkan, bukan otomatis
+memenuhi semua target penelitian. Lihat <a href="PROPOSAL_ALIGNMENT.md">matriks proposal</a>
+dan <a href="SARAN_REVISI_PROPOSAL_2026-10-12.md">catatan revisi proposal</a>.</p>
+<h2 id="bab-15">15. Lembar kerja dan serah terima</h2>
+<p>Salin tabel ini ke catatan praktikum. Jangan mengisi password/token/private key.</p>
+<table>
+<thead>
+<tr>
+<th>Isian</th>
+<th>Hasil peserta</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tanggal/jam WIB dan operator</td>
+<td>…</td>
+</tr>
+<tr>
+<td>Versi/modul/commit yang digunakan</td>
+<td>…</td>
+</tr>
+<tr>
+<td>VM/client dan device ID</td>
+<td>…</td>
+</tr>
+<tr>
+<td>Status layanan dan waktu</td>
+<td>…</td>
+</tr>
+<tr>
+<td>Login admin/karyawan berhasil atau kendala</td>
+<td>…</td>
+</tr>
+<tr>
+<td>Status registry sebelum admission</td>
+<td>…</td>
+</tr>
+<tr>
+<td>Handshake, alamat tunnel dan hasil ping</td>
+<td>…</td>
+</tr>
+<tr>
+<td>Penghentian tunnel dan hasil cleanup</td>
+<td>…</td>
+</tr>
+<tr>
+<td>Filter audit, nama arsip dan checksum</td>
+<td>…</td>
+</tr>
+<tr>
+<td>Lokasi bukti privat</td>
+<td>…</td>
+</tr>
+<tr>
+<td>Masalah tersisa, status terakhir, langkah berikutnya</td>
+<td>…</td>
+</tr>
+</tbody>
+</table>
+<p>Serah terima selesai bila pengguna dapat login, memakai tunnel sesuai haknya,
+memverifikasi akses, dan menutup koneksi; admin dapat menelusuri/menyimpan audit;
+teknisi memiliki backup serta catatan kendala. Kredensial diserahkan terpisah
+melalui inventaris lokal, dengan folder0700 dan file0600.</p>
+<p>Dokumen pendukung: <a href="CHECKPOINT.md">checkpoint</a>, <a href="WINDOWS_CLIENT.md">panduan Windows</a>,
+<a href="DASHBOARD_0.1.6.md">aktivitas admin</a>, <a href="EMPLOYEE_ACCESS.md">akses karyawan</a>,
+<a href="DEPLOYMENT.md">deployment</a>, <a href="RESPONSE_METRICS.md">definisi metrik</a>.</p>
+<p>Untuk menghasilkan ulang HTML di HOST, renderer memakai paket <code>markdown-it-py</code>
+yang sudah tersedia pada Python sistem di komputer ini:</p>
+<pre><code class="language-bash">python3 scripts/render_module.py docs/MODUL_PENGGUNAAN_VANGUARD.md \
+  docs/MODUL_PENGGUNAAN_VANGUARD.html
+</code></pre>
+<p>HTML tidak memuat script, font eksternal atau kredensial. Buka di browser dan
+pilih Ctrl+P → Simpan sebagai PDF → A4 untuk salinan cetak.</p>
+</main></body></html>

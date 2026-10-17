@@ -1,5 +1,11 @@
 # Tutorial penggunaan VanGuard dari awal sampai akhir
 
+**Pembaruan17 Oktober:** untuk modul terpadu enam node, pemasangan baru dan
+pemakaian user Ubuntu/Windows, gunakan [modul lengkap](MODUL_PENGGUNAAN_VANGUARD.md)
+atau [versi HTML cetak](MODUL_PENGGUNAAN_VANGUARD.html). Tutorial di bawah tetap
+menjelaskan alur Ubuntu dan dashboard0.1.6; script pembuka lab hanya mencakup
+lima Ubuntu, sehingga Windows dinyalakan terpisah.
+
 Panduan untuk **VanGuard 0.1.6 pada lab yang sudah terpasang di laptop ini**.
 Ikuti bagian 1–6 untuk pemakaian harian, bagian 7 untuk latihan registrasi,
 bagian 8 untuk pengujian, dan bagian 9 untuk menutup sesi. Solusi masalah ada

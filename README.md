@@ -1,5 +1,9 @@
 # Sistem VanGuard
 
+[Modul lengkap teknisi, admin dan pengguna](docs/MODUL_PENGGUNAAN_VANGUARD.md)
+tersedia juga sebagai [HTML siap dibaca/dicetak](docs/MODUL_PENGGUNAAN_VANGUARD.html).
+Modul mencakup pemasangan awal serta pemakaian Ubuntu dan Windows pada lab terpasang.
+
 Implementasi lab Tugas Akhir Zero Trust Network Access untuk **Ubuntu Server 22.04**.
 Admission sertifikat dilakukan **sebelum** server menambahkan peer WireGuard.
 Aturan utama tetap berada di [AGENTS.md](AGENTS.md) dan [VANGUARD_CONTEXT.md](VANGUARD_CONTEXT.md).
@@ -11,12 +15,12 @@ Aturan utama tetap berada di [AGENTS.md](AGENTS.md) dan [VANGUARD_CONTEXT.md](VA
 | CLIENT | 192.168.100.30 | CLI Python, X.509 P-256 + pasangan kunci WireGuard X25519 independen |
 | ADMIN | 192.168.100.40 | Dashboard Flask/Jinja2, SQLite, password + TOTP, HTTPS :5000 |
 | ATTACKER | 192.168.100.50 | Skrip pengujian negatif terbatas pada lab |
-| CLIENT-WINDOWS | 192.168.100.60 | VM tambahan disiapkan; OS/tunnel live masih menunggu instalasi dan validasi |
+| CLIENT-WINDOWS | 192.168.100.60 | Windows tambahan; enrollment, admission, handshake, ping dan cleanup teruji |
 
 Server tunnel `10.8.0.1/24`; client `10.8.0.2/24`. Source/kernel WireGuard tidak diubah.
-Client Windows tambahan direncanakan memakai `10.8.0.4/32`; kelima Ubuntu tetap
+Client Windows tambahan memakai `10.8.0.4/32`; kelima Ubuntu tetap
 dipertahankan. [Status/panduan Windows](docs/WINDOWS_CLIENT.md) membedakan tes
-helper native dari pengujian tunnel guest yang masih harus dilakukan.
+helper native, bukti tunnel guest15 Oktober, dan skenario yang masih belum diuji.
 
 ```mermaid
 sequenceDiagram

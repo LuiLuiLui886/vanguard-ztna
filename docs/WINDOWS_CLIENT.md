@@ -1,5 +1,11 @@
 # Client Windows tambahan — validasi awal 0.1.8
 
+Modul terpadu teknisi/admin/karyawan tersedia pada
+[modul lengkap](MODUL_PENGGUNAAN_VANGUARD.md) dan
+[HTML siap cetak](MODUL_PENGGUNAAN_VANGUARD.html). Audit bukti17 Oktober menemukan
+satu siklus renewal otomatis PASS (sekitar61,83detik) dan cleanup PASS.
+Pengamatan lease expiry terakhir masih IN_PROGRESS, belum dapat dinyatakan lulus.
+
 Permintaan 13 Oktober 2026 menambahkan client Windows di samping lima VM Ubuntu.
 VM-CLIENT lama tidak diganti. Status instalasi terbaru ada di
 [checkpoint](CHECKPOINT.md) dan [jurnal](PROGRESS_2026-10-15.md).

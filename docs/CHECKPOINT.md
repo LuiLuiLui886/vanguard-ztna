@@ -1,4 +1,42 @@
-# Checkpoint VanGuard — 15 Oktober 2026
+# Checkpoint VanGuard — 17 Oktober 2026
+
+## Terbaru: modul penggunaan dan audit bukti
+
+Tugas terbaru pengguna adalah modul lengkap dan akses password Windows.
+[Modul Markdown](MODUL_PENGGUNAAN_VANGUARD.md) dan
+[HTML siap baca/cetak](MODUL_PENGGUNAAN_VANGUARD.html) memuat15bab untuk teknisi,
+admin dan karyawan, dari instalasi hingga penggunaan/arsip/shutdown.
+
+- Pemeriksaan17 Oktober: keenam VM shut off. Tidak ada boot/deployment atau
+  pengujian VPN live ulang pada tugas dokumentasi ini.
+- Bukti15 Oktober: automatic-renewal.log PASS, dua admission berjarak61,83detik
+  dengan cleanup. Ini satu siklus, bukan soak test. lease-expiry-after-renewal.json
+  tetap IN_PROGRESS; penghapusan peer setelah expiry belum terbukti.
+- CA pernah dipulihkan13457→13458, signature/revocation/index/key terjaga.
+  Pemulihan tidak membuktikan masalah durability counter telah diperbaiki.
+- CI78ff14e/run38692866340 SUCCESS: Linux3.10/3.12 masing-masing163 PASS+1 SKIP;
+  Windows23 PASS. Bukti tersimpan di state/deployment/windows-2026-10-15/.
+- Kartu console Windows: /home/lui/VanGuard-Privat/AKSES_WINDOWS_TERBARU.txt,
+  dibuat dari inventaris lokal tanpa reset. Login terakhir terverifikasi15 Oktober.
+  Folder0700, inventaris/kartu0600; nilai rahasia tidak masuk modul atau Git.
+- Modul tervalidasi:15bab,22blok Bash,26tautan HTML,10tabel; scan rahasia/ruff PASS.
+  Dokumentasi di-commit lokal. GitHub17 Oktober terdeteksi public (isPrivate=false);
+  push ditunda sampai tujuan publikasi sesuai preferensi pengguna. Catatan private
+  pada riwayat di bawah bukan status visibility saat ini.
+- Langkah berikutnya: gunakan modul untuk sesi pengguna, periksa health dan sesi
+  akun saat boot; lanjutkan durability CA, lease expiry, revocation Windows dan
+  reboot tunnel aktif dengan bukti baru. Jangan ulangi init/enrollment utama.
+
+Catatan15 Oktober di bawah adalah riwayat. Hasil yang lebih baru pada paragraf
+di atas menggantikan status renewal yang sebelumnya masih terinterupsi.
+Lihat [jurnal17 Oktober](PROGRESS_2026-10-17.md) untuk validasi/push dokumentasi.
+
+## Riwayat checkpoint15 Oktober
+
+**Status operasional terbaru 15 Oktober 13:38 WIB:** host sempat reboot;
+enam VM ditemukan mati. CA, SERVER dan Windows sedang dinyalakan bertahap.
+Hasil integrasi di bawah adalah bukti sebelum reboot. Uji lease-expiry/renewal
+otomatis terinterupsi, belum dinyatakan lulus. CI78ff14e sudah SUCCESS.
 
 **15 Oktober 2026 — client Windows tambahan berhasil diuji langsung.**
 
