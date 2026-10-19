@@ -6,11 +6,14 @@ import ipaddress
 import os
 import re
 import tempfile
+from contextlib import contextmanager
 from pathlib import Path
 
+from cryptography import x509
 from cryptography.hazmat.primitives import serialization
 from flask import Response
 
+from .ca_storage import Publication, sync_dir
 from .common import (
     Rejected,
     bearer,
@@ -35,7 +38,79 @@ class Authority:
     def openssl(self, *args):
         return run(["openssl", "ca", "-batch", "-config", str(self.config), *args])
 
+    def check_state(self):
+        """Check relationships, never reconstruct counters or restore .old files."""
+        try:
+            root = load_cert((self.path / 'root.crt').read_bytes())
+            key = serialization.load_pem_private_key(
+                (self.path / 'private/root.key').read_bytes(), None)
+            if key.public_key().public_numbers() != root.public_key().public_numbers():
+                raise ValueError()
+            counters = {}
+            for name in ('serial', 'crlnumber'):
+                value = (self.path / name).read_text().strip()
+                if not re.fullmatch('[0-9A-Fa-f]+', value):
+                    raise ValueError()
+                counters[name] = int(value, 16)
+            indexed, revoked = set(), set()
+            for line in (self.path / 'index.txt').read_text().splitlines():
+                status, _, _, serial, _, _ = line.split('\t')
+                number = int(serial, 16)
+                if status not in ('V', 'R', 'E') or number in indexed:
+                    raise ValueError()
+                cert = load_cert((self.path / 'newcerts' / (serial + '.pem')).read_bytes())
+                cert.verify_directly_issued_by(root)
+                if cert.serial_number != number or counters['serial'] <= number:
+                    raise ValueError()
+                indexed.add(number)
+                if status == 'R':
+                    revoked.add(number)
+            for path in (self.path / 'newcerts').glob('*.pem'):
+                if load_cert(path.read_bytes()).serial_number not in indexed:
+                    raise ValueError()
+            crl = x509.load_pem_x509_crl((self.path / 'crl.pem').read_bytes())
+            if (not crl.is_signature_valid(root.public_key()) or crl.issuer != root.subject
+                    or {entry.serial_number for entry in crl} != revoked
+                    or counters['crlnumber'] <= crl.extensions.get_extension_for_class(
+                        x509.CRLNumber).value.crl_number):
+                raise ValueError()
+            for directory in ('issued', 'tls-issued'):
+                for path in (self.path / directory).glob('*.crt'):
+                    cert = load_cert(path.read_bytes())
+                    cert.verify_directly_issued_by(root)
+                    if cert.serial_number not in indexed:
+                        raise ValueError()
+        except Exception as exc:
+            raise Rejected('CA state inconsistent; preserve evidence and inspect', 503) from exc
+
+    @contextmanager
+    def transaction(self, initialize=False):
+        with locked(self.lock):
+            publication = Publication(self.path)
+            publication.recover()
+            if initialize:
+                if any(p.name not in ('ca.lock', '.transaction') for p in self.path.iterdir()):
+                    raise Rejected('CA already initialized; refusing to overwrite')
+            else:
+                self.check_state()
+            work = Authority(publication.prepare())
+            if work.config.exists():
+                content = work.config.read_text()
+                expected = f'dir = {self.path}\n'
+                if expected not in content:
+                    raise Rejected('CA configuration needs operator inspection', 503)
+                work.config.write_text(content.replace(expected, f'dir = {work.path}\n', 1))
+            yield work
+            work.check_state()
+            work.config.write_text(work.config.read_text().replace(
+                f'dir = {work.path}\n', f'dir = {self.path}\n', 1))
+            publication.seal()
+
     def initialize(self):
+        with self.transaction(initialize=True) as work:
+            work._initialize()
+
+    def _initialize(self):
         with locked(self.lock):
             if self.config.exists():
                 raise Rejected("CA already initialized; refusing to overwrite")
@@ -113,11 +188,15 @@ authorityKeyIdentifier = keyid:always
         return (self.path / "crl.pem").read_bytes()
 
     def crl(self):
-        with locked(self.lock):
+        with self.transaction() as work:
             # Freshly issued, signed CRL on every fetch; no stale-cache admission fallback.
-            return self._crl()
+            return work._crl()
 
     def issue(self, name, pem):
+        with self.transaction() as work:
+            return work._issue(name, pem)
+
+    def _issue(self, name, pem):
         device_name(name)
         parsed = check_csr(pem, name)
         request_hash = hashlib.sha256(parsed.public_bytes(serialization.Encoding.DER)).hexdigest()
@@ -125,6 +204,9 @@ authorityKeyIdentifier = keyid:always
             issued = private_dir(self.path / "issued") / (request_hash + ".crt")
             if issued.exists():
                 certificate = load_cert(issued.read_bytes())
+                if (certificate.subject != parsed.subject or certificate.public_key().public_numbers()
+                        != parsed.public_key().public_numbers()):
+                    raise Rejected('CA issuance cache inconsistent; preserve evidence and inspect', 503)
                 return {
                     "certificate": issued.read_text(),
                     "serial": format(certificate.serial_number, "X"),
@@ -140,6 +222,10 @@ authorityKeyIdentifier = keyid:always
             }
 
     def revoke(self, serial):
+        with self.transaction() as work:
+            return work._revoke(serial)
+
+    def _revoke(self, serial):
         if not re.fullmatch(r"[0-9A-Fa-f]{1,40}", serial):
             raise Rejected("Invalid serial")
         serial = format(int(serial, 16), "X")
@@ -160,6 +246,25 @@ authorityKeyIdentifier = keyid:always
         return {"serial": serial, "revoked": True}
 
     def sign_tls(self, csr_path, ip, output):
+        output = Path(output).resolve()
+        if output.exists():
+            raise Rejected('Output already exists')
+        # Cache signed TLS output in the same commit as index/serial. Retrying
+        # after publication but before export cannot issue a second certificate.
+        digest = hashlib.sha256(Path(csr_path).read_bytes() + ip.encode()).hexdigest()
+        with self.transaction() as work:
+            signed = private_dir(work.path / 'tls-issued') / (digest + '.crt')
+            if not signed.exists():
+                work._sign_tls(csr_path, ip, signed)
+            data = signed.read_bytes()
+        with tempfile.NamedTemporaryFile(dir=output.parent) as stream:
+            stream.write(data)
+            stream.flush()
+            os.fsync(stream.fileno())
+            os.link(stream.name, output)  # atomic, exclusive, never overwrite
+            sync_dir(output.parent)
+
+    def _sign_tls(self, csr_path, ip, output):
         ip = str(ipaddress.IPv4Address(ip))
         if ip not in {"192.168.100.10", "192.168.100.20", "192.168.100.40"}:
             raise Rejected("TLS certificate must belong to a VanGuard service VM")
@@ -200,9 +305,11 @@ def create_app(config=None):
 
     @app.get("/api/ca/certificate")
     def certificate():
-        return Response(
-            (authority.path / "root.crt").read_bytes(), mimetype="application/x-pem-file"
-        )
+        with locked(authority.lock):
+            Publication(authority.path).recover()
+            return Response(
+                (authority.path / "root.crt").read_bytes(), mimetype="application/x-pem-file"
+            )
 
     @app.get("/api/ca/crl")
     def crl():
