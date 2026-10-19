@@ -229,3 +229,44 @@ WireGuard memakai stub. Satu failure awal PermissionError pada lock telah
 diperbaiki. Ini tidak memasang paket baru pada identitas utama atau membuktikan
 revocation/reboot tunnel Windows. Pengguna melaporkan boot/desktop lambat;
 diagnosis terukur berjalan sesuai checkpoint. Tidak ada reset credential.
+
+## Perbaikan respons Windows — 19 Oktober2026
+
+VM yang sama sekarang memakai `hypervclock`, `vpindex`, `synic` dan `stimer`.
+Sebelumnya hanya relaxed/vapic/spinlocks dengan HPET off. Clock Hyper-V
+mengurangi overhead pembacaan waktu; synthetic timer menghindari fallback timer
+emulasi yang mahal. Dependensinya mengikuti [dokumentasi resmi QEMU](https://www.qemu.org/docs/master/system/i386/hyperv.html).
+Ini perubahan XML virtualisasi, bukan perubahan kernel/WireGuard atau instalasi
+ulang Windows. UUID,disk,MAC,TPM/UEFI,4GiB RAM dan2vCPU tetap sama.
+
+| Pengukuran aktual | Sebelum | Sesudah |
+|---|---|---|
+| Satu juta time.perf_counter(), tiga pengulangan | 2,6316–3,1764 detik | 0,04508–0,05138 detik |
+| Start domain hingga perintah SSH berhasil, satu sampel | 50,12 detik (Hiberboot) | 27,49 detik (boot penuh) |
+| Native helper/ACL setelah perubahan | — | 28 PASS/2 SKIP khusus POSIX |
+
+Microbenchmark membuktikan overhead timestamp turun. Sampel startup memakai
+jenis boot berbeda dan belum diulang, sehingga bukan bukti persentase percepatan
+boot yang umum. Respons desktop setelah login masih perlu observasi pengguna.
+Event boot sebelumnya juga mencatat aktivitas Defender dan waktu tunggu login;
+Defender,Secure Boot,TPM dan kebijakan password tidak dinonaktifkan.
+
+Backup XML asal dan candidate, hash lima node Ubuntu serta hash identitas
+Windows berada privat di state/hardening/2026-10-19/windows-boot-2255/.
+Hash identitas sebelum/sesudah cocok; Secure Boot/TPM tetap aktif. VM Windows
+dibiarkan running dengan viewer tersedia; lima Ubuntu tetap shut off pada akhir
+pengujian. Paket utama Windows masih0.1.8; helper0.1.9 diuji dari staging.
+
+Jika konfigurasi timer perlu dibatalkan: simpan pekerjaan guest, pastikan tunnel
+sudah berhenti, lakukan shutdown normal dan verifikasi domain shut off. Gunakan
+`virsh -c qemu:///system define PATH_BACKUP_DOMAIN_BEFORE_XML --validate`, lalu
+start domain yang sama. Gunakan backup milik VM ini; jangan restore disk,
+TPM/NVRAM,identity,CA atau menjalankan ulang script first-install.
+Template scripts/create_windows_client.py sekarang mencakup timer yang sama
+untuk provisioning baru. Script tersebut tetap menolak VM existing.
+
+Saat membuka Windows, beri waktu OS/service siap dan tunggu layar login
+merespons sebelum mengetik. Readiness SSH tidak otomatis berarti desktop atau
+VPN siap. Host hanya7,5GiB RAM dan backing disk guest berada pada perangkatUSB;
+jalankan VM yang diperlukan secara bertahap, hindari pengujian I/O berat
+bersamaan. Pengukuran ini tidak mengubah atau menghapus lima Ubuntu.

@@ -14,6 +14,11 @@ def test_windows_vm_is_separate_secure_and_host_local():
     assert tree.find('./devices/interface/mac').get('address') == '52:54:00:76:00:3c'
     assert tree.find('./devices/graphics/listen').get('address') == '127.0.0.1'
     assert len(tree.findall("./devices/disk[@device='disk']")) == 1
+    # Synthetic timers require all three dependencies; partial enablement
+    # can fail VM startup or leave Windows on expensive emulated timers.
+    for feature in ('stimer', 'vpindex', 'synic'):
+        assert tree.find('./features/hyperv/' + feature).get('state') == 'on'
+    assert tree.find("./clock/timer[@name='hypervclock']").get('present') == 'yes'
 
 
 def test_private_seed_escapes_values_and_targets_only_new_disk():

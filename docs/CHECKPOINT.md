@@ -1,33 +1,40 @@
 # Checkpoint VanGuard — 19 Oktober 2026
 
-## Aktif: hardening 0.1.9 dan diagnosis Windows lambat
+## Aktif: kandidat0.1.9 teruji dan timer Windows diperbaiki
 
-Branch `hardening/2026-10-18-resilience`, dari c454c0c. CA commit b922f03;
-source kandidat selesai diuji, belum di-rollout ke layanan utama. Baca
-[audit dan resolusi](AUDIT_HARDENING_2026-10-18.md),
-[perilaku/backup/rollout](HARDENING_0.1.9.md) serta
-[jurnal19 Oktober](PROGRESS_2026-10-19.md). Modul gabungan memuat tambahan15.1.
+Branch [hardening/2026-10-18-resilience](https://github.com/LuiLuiLui886/vanguard-ztna/tree/hardening/2026-10-18-resilience).
+CA b922f03, lifecycle/features65c486e dan dokumentasi84f4a81 sudah dipush;
+SHA remote84f4a81 terverifikasi. Main tetap c454c0c. Perubahan timer/dokumentasi
+lanjutan dicatat di [jurnal19 Oktober](PROGRESS_2026-10-19.md).
+Kandidat aplikasi belum di-rollout ke CA/server/admin/client utama.
 
-- Baseline18 Oktober:163 PASS/1 SKIP; regresi kandidat kemarin198 PASS/1 SKIP.
-- Full Linux19 Oktober:199 PASS/1 SKIP,663,47detik. Suite dimulai sebelum
-  koreksi lock; regresi client final tersendiri29 PASS/1 SKIP. Jangan menjumlahkan
-  suite yang overlap. Semua log/XML pada state/hardening/2026-10-19/.
-- Windows native staging final:28 PASS/2 SKIP (khusus POSIX),0,84detik.
-  ACL/lock Windows native lulus; perintah tunnel memakai stub. Sebelumnya ada
-  satu failure PermissionError lock, diperbaiki dan log gagal dipertahankan.
-- TCP/nftables namespace VM-ATTACKER PASS: deny LAN/port lain, grant, TCP aktif
-  terputus setelah grant dihapus/expired. wg0 berupa veth. Watchdog transient
-  systemd:Result=watchdog, stop hook terkonfirmasi. Bukan unit/tunnel produksi.
-- Build wheel0.1.9 final,23berkas cocok source, CLI,pip check,Ruff,Bash dan
-  validasi modul/scan rahasia PASS. Source/pengujian akan dipush pada branch.
-- Pengguna mengonfirmasi Windows sempat terbuka tetapi lambat; meminta perbaikan.
-  Resume22:55 WIB menemukan host baru reboot, keenam VM shut off. XML disimpan;
-  hanya Windows dinyalakan untuk baseline waktu boot/SSH dan diagnosis resource.
-  Status diagnosis IN_PROGRESS, bukti di windows-boot-2255/. Tidak reset password.
-- Rollout utama, Windows VPN revoke/reboot aktif, integrasi seluruh layanan dan
-  power-loss disk tetap BELUM_TERUJI. Hasil native bukan pengganti matriks VPN.
-- Berikutnya: selesaikan diagnosis/fix Windows berbasis bukti, commit/push branch,
-  CI dan dokumentasi hasil. Rollout utama mengikuti backup/panduan kandidat.
+- Baseline Linux18 Oktober163 PASS/1 SKIP. Full19 Oktober199 PASS/1 SKIP,
+  663,47detik; suite dimulai sebelum tiga tes lock ditambahkan. Client final
+  tersendiri29 PASS/1 SKIP. Suite overlap tidak dijumlahkan.
+- Windows native final28 PASS/2 SKIP khusus POSIX; sesudah timer berubah,
+  ulangi28 PASS/2 SKIP (0,68detik). ACL/locking native, command tunnel memakai stub.
+- Provision XML2 PASS; Ruff,pip check,Bash,build wheel/23berkas cocok source,
+  CLI dan validasi modul/scan rahasia PASS. Bukti state/hardening/2026-10-19/.
+- TCP/nftables namespace VM-ATTACKER PASS untuk LAN/port deny dan TCP aktif
+  revoke/expiry; wg0 berupa veth. Watchdog transient systemd dan stop hook PASS.
+  Ini bukti18 Oktober, bukan pengujian ulang VPN atau unit produksi.
+- Windows yang sama memakai hypervclock/vpindex/synic/stimer. Microbenchmark
+  sejuta pembacaan waktu turun2,63–3,18detik ke0,045–0,051detik. SSH sesudah
+  boot penuh27,49detik; satu sampel, bukan jaminan waktu desktop umum.
+  Secure Boot/TPM dan hash identitas PASS. XML lima Ubuntu sama. Backup XML,
+  hasil sebelum/sesudah dan recovery pada [panduan Windows](WINDOWS_CLIENT.md).
+- Akhir pemeriksaan: Windows running dengan viewer; lima Ubuntu shut off.
+  Password tidak di-reset; credential/bukti privat tetap hanya di host.
+  Paket Windows utama masih0.1.8; kandidat0.1.9 diuji di staging.
+- CI [39282458976](https://github.com/LuiLuiLui886/vanguard-ztna/actions/runs/39282458976)
+  untuk84f4a81 masih queued pada pemeriksaan terakhir; belum dinyatakan PASS.
+- BELUM_TERUJI: rollout0.1.9 utama, Windows VPN revoke/reboot tunnel aktif,
+  seluruh matriks lifecycle guest, power-loss disk dan benchmark boot berulang.
+  Selanjutnya periksa CI, ikuti [backup/rollout](HARDENING_0.1.9.md) dan gunakan
+  identitas disposable untuk matriks VM. Jangan rollback CA/index/CRL.
+
+Baca [audit/resolusi](AUDIT_HARDENING_2026-10-18.md). Modul gabungan bagian15.1/15.2
+memuat fitur kandidat dan pemakaian Windows setelah perbaikan.
 
 ## Terbaru: satu modul lengkap termasuk CA/PKI
 

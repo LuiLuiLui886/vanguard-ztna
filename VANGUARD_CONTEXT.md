@@ -91,3 +91,13 @@ An opt-in explicit resource policy gates internal-demo 10.8.0.1 TCP8082 before
 established-flow acceptance; an empty policy denies access. This does not change
 WireGuard or relax six-check admission/employee sessions. Deployment and native
 versus mock evidence must follow docs/CHECKPOINT.md and docs/HARDENING_0.1.9.md.
+
+Windows VM optimization — 19 October 2026:
+The existing Windows domain now exposes hypervclock plus vpindex/synic/stimer.
+Only clock/Hyper-V XML fields changed after a normal shutdown and XML backup;
+UUID, disk, MAC, TPM/UEFI, RAM/vCPU, identities and all five Ubuntu definitions
+are preserved. Native timing measurements improved; one subsequent full boot
+reached authenticated SSH in27.49 seconds. This is not a general desktop/boot
+performance guarantee or a VPN active-reboot test. Secure Boot/TPM and identity
+hashes passed, and28 helper tests passed (2 POSIX-only skips) after the change.
+The installed client remains0.1.8;0.1.9 was tested from isolated staging.

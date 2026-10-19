@@ -1261,3 +1261,16 @@ Aplikasi uji internal TCP8082 memerlukan kebijakan eksplisit yang dipasang tekni
 pendaftaran perangkat saja tidak memberi grant. Rincian backup, rollout, recovery
 CA tanpa rollback index/CRL dan matriks pengujian ada pada
 [panduan hardening 0.1.9](HARDENING_0.1.9.md).
+
+### 15.2 Windows lambat terbuka
+
+Konfigurasi VM Windows diperbaiki19 Oktober dengan clock/timer Hyper-V.
+Secure Boot,TPM dan file identitas tetap terverifikasi. Pada pengukuran tunggal
+sesudah perubahan, SSH siap27,49detik; ini bukan jaminan waktu desktop/VPN.
+Tunggu tampilan login merespons sebelum memasukkan password. Jangan mengulang
+instalasi atau reset password hanya karena layar belum merespons.
+
+Pengujian clock native menunjukkan perbaikan, tetapi waktu tunggu login,
+aktivitas startup dan beban disk/RAM host juga berpengaruh. Lima Ubuntu tetap
+ada; nyalakan hanya layanan yang diperlukan secara bertahap. Rincian bukti,
+keterbatasan dan pemulihan XML ada di [panduan Windows](WINDOWS_CLIENT.md).

@@ -75,3 +75,13 @@ menghasilkan exception mentah. Perbaikan menggunakan fstat.st_size tanpa membaca
 byte terkunci dan menangani kegagalan inisialisasi sebagai Rejected. Kriteria
 selesai: tes competing/release pada Windows native dan Linux lulus; hasil akhir
 dicatat pada checkpoint. Bukti gagal disimpan sebagai first-windows-native.log.
+
+WIN-PERF-01 — **Risiko desain/P2, perbaikan terukur**: template
+scripts/create_windows_client.domain_xml dan XML guest tidak menyediakan
+hypervclock/vpindex/synic/stimer. Satu juta pembacaan perf_counter membutuhkan
+2,63–3,18detik sebelum perubahan,0,045–0,051detik sesudahnya (tiga pengulangan).
+Dampak: overhead timer Windows. Konfigurasi minimal beserta dependensinya sudah
+diterapkan setelah backup/shutdown normal. Boot/SSH, Secure Boot/TPM dan
+hash identitas PASS; native28 PASS/2 SKIP; lima definisi Ubuntu sama. Kriteria
+keamanan/boot tercapai; persentase percepatan desktop/boot umum tetap belum
+terbukti karena hanya satu sampel startup per konfigurasi dan tipe boot berbeda.

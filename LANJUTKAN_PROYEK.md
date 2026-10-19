@@ -1,17 +1,23 @@
 # Lanjutkan proyek VanGuard
 
-**19 Oktober2026 — hardening0.1.9 teruji; diagnosis Windows IN_PROGRESS.**
-Branch `hardening/2026-10-18-resilience`, main tetap c454c0c. CA commit b922f03.
-Linux lengkap199 PASS/1 SKIP; client final29 PASS/1 SKIP; Windows native final
-28 PASS/2 SKIP. Suite saling overlap; command tunnel pada native memakai stub.
-Wheel/modul/scan lulus. Belum deployment kandidat ke layanan utama.
-Pengguna meminta Windows yang lambat diperbaiki. Host baru reboot22:55WIB;
-enam VM mati. Hanya Windows dinyalakan untuk pengukuran boot/resource, XML
-semua node disimpan. Baca [checkpoint](docs/CHECKPOINT.md),
-[audit](docs/AUDIT_HARDENING_2026-10-18.md), [rollout](docs/HARDENING_0.1.9.md)
-dan [jurnal aktif](docs/PROGRESS_2026-10-19.md). Berikutnya perbaiki penyebab
-Windows yang terbukti, lalu publikasi branch/CI dan handoff. Seluruh credential,
-key, identitas utama dan sejarah pencabutan tetap dipertahankan.
+**19 Oktober2026 — hardening kandidat teruji; Windows timer diperbaiki.**
+Source0.1.9 dan modul sudah dipush ke branch `hardening/2026-10-18-resilience`
+(baseline publikasi84f4a81); main tetap c454c0c. CA/lifecycle/logout/readiness/
+resource/audit belum di-rollout ke layanan utama. Linux lengkap199 PASS/1 SKIP,
+client final29 PASS/1 SKIP, Windows native28 PASS/2 SKIP. Jangan jumlahkan suite
+yang overlap; perintah tunnel pada native memakai stub.
+
+VM Windows yang sama sudah memakai clock/timer Hyper-V. Microbenchmark waktu
+turun2,63–3,18detik ke0,045–0,051detik per sejuta panggilan; boot penuh hingga
+SSH27,49detik pada satu sampel. Secure Boot,TPM,hash identitas dan kelima XML
+Ubuntu terjaga. Windows running/viewer tersedia; lima Ubuntu shut off. Paket
+utama Windows masih0.1.8;0.1.9 hanya staging. Password tidak diubah.
+
+CI39282458976 terakhir queued, bukan PASS. Langkah berikutnya periksa hasil CI,
+lalu rollout dengan backup dan matriks VPN guest termasuk expiry/revoke/reboot.
+Baca [checkpoint](docs/CHECKPOINT.md), [audit](docs/AUDIT_HARDENING_2026-10-18.md),
+[rollout](docs/HARDENING_0.1.9.md), [Windows](docs/WINDOWS_CLIENT.md) dan
+[jurnal aktif](docs/PROGRESS_2026-10-19.md). Bukti privat:state/hardening/2026-10-19/.
 
 **17 Oktober 2026 — seluruh materi sudah menjadi satu modul.**
 Gunakan [modul utama](docs/MODUL_PENGGUNAAN_VANGUARD.md) atau
