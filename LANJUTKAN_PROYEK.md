@@ -1,5 +1,18 @@
 # Lanjutkan proyek VanGuard
 
+**19 Oktober2026 — hardening0.1.9 teruji; diagnosis Windows IN_PROGRESS.**
+Branch `hardening/2026-10-18-resilience`, main tetap c454c0c. CA commit b922f03.
+Linux lengkap199 PASS/1 SKIP; client final29 PASS/1 SKIP; Windows native final
+28 PASS/2 SKIP. Suite saling overlap; command tunnel pada native memakai stub.
+Wheel/modul/scan lulus. Belum deployment kandidat ke layanan utama.
+Pengguna meminta Windows yang lambat diperbaiki. Host baru reboot22:55WIB;
+enam VM mati. Hanya Windows dinyalakan untuk pengukuran boot/resource, XML
+semua node disimpan. Baca [checkpoint](docs/CHECKPOINT.md),
+[audit](docs/AUDIT_HARDENING_2026-10-18.md), [rollout](docs/HARDENING_0.1.9.md)
+dan [jurnal aktif](docs/PROGRESS_2026-10-19.md). Berikutnya perbaiki penyebab
+Windows yang terbukti, lalu publikasi branch/CI dan handoff. Seluruh credential,
+key, identitas utama dan sejarah pencabutan tetap dipertahankan.
+
 **17 Oktober 2026 — seluruh materi sudah menjadi satu modul.**
 Gunakan [modul utama](docs/MODUL_PENGGUNAAN_VANGUARD.md) atau
 [satu HTML siap baca/cetak](docs/MODUL_PENGGUNAAN_VANGUARD.html).

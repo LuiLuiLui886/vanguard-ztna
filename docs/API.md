@@ -4,6 +4,37 @@ Semua API menggunakan HTTPS dengan trust anchor `/etc/vanguard/root.crt` yang di
 melalui jalur tepercaya. Tidak ada mode `verify=False`. CA trust tidak diunduh tanpa verifikasi.
 Respons gagal berbentuk `{"error":"..."}`. Request JSON dibatasi 64 KiB.
 
+## Tambahan kandidat 0.1.9
+
+Deployment mengikuti [checkpoint](CHECKPOINT.md); endpoint berikut tersedia
+pada source kandidat, bukan klaim semua VM sudah diperbarui.
+
+| Method | Path | Akses dan hasil |
+|---|---|---|
+| GET | `/readyz` | Publik pada CA/server/admin; 200 ready atau 503 not_ready, dependency ready/not_ready/unknown, probe maksimal 6 detik |
+| POST | `/api/employee/logout` | Server; JSON employee_session wajib. Mencabut satu token, challenge dan lease terkait; revoked dan peer_removal_confirmed true hanya setelah berhasil |
+| GET | `/api/operations` | Server bearer management; ukuran DB/audit/disk dan sampel pertumbuhan, tidak mengembalikan isi credential |
+| GET | `/operations` | Dashboard sesi admin; status penyimpanan admin/server |
+| POST | `/devices/<id>/replace` | Dashboard sesi admin + CSRF + upload enrollment; identitas lama wajib revoked, ID/key baru dari client, akun dan IP diwariskan |
+
+Logout memakai lock yang sama dengan verify. Retry token tercabut bersifat
+idempotent melalui hash tombstone; token asing ditolak 403. Invalidasi token
+di-commit sebelum penghapusan peer; kegagalan kernel menghasilkan 503 dan perlu
+retry. Lease yang sudah diambil alih sesi lain tidak dihapus oleh retry sesi lama.
+Token expired dipertahankan sebagai record invalid agar logout masih dapat
+memastikan penghapusan akses. Token/hash tidak dikembalikan pada audit.
+
+`GET /api/devices` menambahkan registered, lease_valid, peer_present,
+last_handshake (Unix; nol belum pernah), rx_bytes/tx_bytes kumulatif dan observed_at.
+`live` adalah alias kompatibilitas peer_present, dapat null bila pemeriksaan
+gagal. Lease_valid memeriksa sesi dan binding selain expiry/enabled. Byte
+kumulatif bukan laju transfer dan tidak membuktikan aktivitas aplikasi saat ini.
+
+Readiness membaca CRL yang sudah ada; tidak memanggil endpoint penerbit CRL,
+menerbitkan sertifikat atau menambah peer. `/healthz` tetap liveness sederhana.
+Client Remote kini hanya menampilkan kode HTTP untuk error upstream, sehingga
+body upstream tidak tersalin ke log/UI.
+
 Sejak 0.1.4, challenge/verify mengembalikan `X-VanGuard-Request-ID` acak buatan
 server untuk korelasi audit. Nilai request header caller tidak dipakai ulang.
 Penolakan aplikasi 400/403 dapat menghasilkan audit `admission_timing` dengan

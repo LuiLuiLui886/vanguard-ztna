@@ -1224,3 +1224,40 @@ python3 scripts/render_module.py docs/MODUL_PENGGUNAAN_VANGUARD.md \
 
 HTML tidak memuat script, font eksternal atau kredensial. Buka di browser dan
 pilih Ctrl+P → Simpan sebagai PDF → A4 untuk salinan cetak.
+
+### 15.1 Tambahan kandidat 0.1.9: logout, status dan penggantian identitas
+
+Bagian ini berlaku setelah teknisi memasang **kandidat 0.1.9** dari branch
+`hardening/2026-10-18-resilience` dan memvalidasi rollout. Jangan menganggap VM
+sudah diperbarui hanya karena modul ini tersedia. Periksa [checkpoint](CHECKPOINT.md).
+
+Karyawan dapat menjalankan `vanguard-client logout` pada Ubuntu, atau
+`python -m vanguard.client logout` pada Windows dengan virtualenv dan direktori
+identitas yang sama seperti login. Keberhasilan berarti server mengonfirmasi
+pencabutan token yang dipakai beserta challenge dan akses terkait. Sesi lain
+tetap berlaku. Hentikan proses connect dengan Ctrl+C untuk cleanup lokal segera.
+Jika server tidak terjangkau, pesan menyatakan pencabutan **belum terkonfirmasi**;
+token lokal dipertahankan agar bisa retry. Jangan mengartikan penutupan terminal
+atau hilangnya file lokal sebagai konfirmasi logout server.
+
+Admin membaca status registry, lease, peer, handshake dan byte RX/TX secara
+terpisah. “Peer terpasang” belum membuktikan handshake atau akses aplikasi.
+“Tidak diketahui” berarti pemeriksaan gagal. Timestamp handshake memakai WIB;
+byte transfer adalah total, bukan kecepatan saat ini. `/healthz` menunjukkan
+proses hidup, sedangkan `/readyz` memeriksa dependensi tanpa menerbitkan
+sertifikat/CRL atau menambah peer.
+
+Peringatan sertifikat muncul tujuh hari sebelum habis. Renewal koneksi hanya
+memperbarui lease, bukan sertifikat. Untuk penggantian, admin mencabut identitas
+lama sampai status `revoked`. Karyawan membuat ID dan kedua key baru di folder
+baru, tetap memakai IP tunnel miliknya. Admin mengunggah request baru melalui
+form penggantian di riwayat perangkat. Akun/IP diwariskan; binding dan bukti
+identitas lama tetap tersimpan. Unduh bundle baru dan lakukan admission seperti
+biasa. Jangan menimpa direktori/key lama sebelum prosedur pemulihan selesai.
+
+Halaman **Penyimpanan operasional** (`/operations`) memperlihatkan ukuran database,
+jumlah audit, pertumbuhan dan ruang disk. Tidak ada penghapusan histori otomatis.
+Aplikasi uji internal TCP8082 memerlukan kebijakan eksplisit yang dipasang teknisi;
+pendaftaran perangkat saja tidak memberi grant. Rincian backup, rollout, recovery
+CA tanpa rollback index/CRL dan matriks pengujian ada pada
+[panduan hardening 0.1.9](HARDENING_0.1.9.md).

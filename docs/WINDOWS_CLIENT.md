@@ -1,5 +1,12 @@
 # Client Windows tambahan — validasi awal 0.1.8
 
+Kandidat 0.1.9: [hardening dan rollout](HARDENING_0.1.9.md) menambahkan logout,
+lock proses dan guard ownership saat cleanup. Gunakan `python -m vanguard.client
+logout` setelah paket yang mendukungnya dipasang. Kegagalan kontak server
+mempertahankan token untuk retry; config dipertahankan bila service belum pasti
+berhenti atau ownership tidak diketahui. Bukti native terbaru dicatat pada
+[checkpoint](CHECKPOINT.md); bagian berikut adalah riwayat 0.1.8.
+
 Modul terpadu teknisi/admin/karyawan tersedia pada
 [modul lengkap](MODUL_PENGGUNAAN_VANGUARD.md) dan
 [HTML siap cetak](MODUL_PENGGUNAAN_VANGUARD.html). Audit bukti17 Oktober menemukan
@@ -213,3 +220,12 @@ CI Windows hanya menguji helper client, file/sesi dan ACL native; backend comman
 diuji dengan stub. CI itu tidak membuktikan handshake atau admission di VM lab.
 Runner benchmark/security/health lama masih menargetkan lima Ubuntu; jangan
 menghitungnya sebagai bukti Windows atau menjalankannya lewat SSH Linux pada .60.
+
+## Validasi kandidat19 Oktober2026
+
+Source0.1.9 diuji pada folder staging terpisah di VM Windows:28 PASS/2 SKIP
+(khusus POSIX),0,84detik. ACL dan competing lock native lulus; command service
+WireGuard memakai stub. Satu failure awal PermissionError pada lock telah
+diperbaiki. Ini tidak memasang paket baru pada identitas utama atau membuktikan
+revocation/reboot tunnel Windows. Pengguna melaporkan boot/desktop lambat;
+diagnosis terukur berjalan sesuai checkpoint. Tidak ada reset credential.

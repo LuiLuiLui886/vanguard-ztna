@@ -1,4 +1,33 @@
-# Checkpoint VanGuard — 17 Oktober 2026
+# Checkpoint VanGuard — 19 Oktober 2026
+
+## Aktif: hardening 0.1.9 dan diagnosis Windows lambat
+
+Branch `hardening/2026-10-18-resilience`, dari c454c0c. CA commit b922f03;
+source kandidat selesai diuji, belum di-rollout ke layanan utama. Baca
+[audit dan resolusi](AUDIT_HARDENING_2026-10-18.md),
+[perilaku/backup/rollout](HARDENING_0.1.9.md) serta
+[jurnal19 Oktober](PROGRESS_2026-10-19.md). Modul gabungan memuat tambahan15.1.
+
+- Baseline18 Oktober:163 PASS/1 SKIP; regresi kandidat kemarin198 PASS/1 SKIP.
+- Full Linux19 Oktober:199 PASS/1 SKIP,663,47detik. Suite dimulai sebelum
+  koreksi lock; regresi client final tersendiri29 PASS/1 SKIP. Jangan menjumlahkan
+  suite yang overlap. Semua log/XML pada state/hardening/2026-10-19/.
+- Windows native staging final:28 PASS/2 SKIP (khusus POSIX),0,84detik.
+  ACL/lock Windows native lulus; perintah tunnel memakai stub. Sebelumnya ada
+  satu failure PermissionError lock, diperbaiki dan log gagal dipertahankan.
+- TCP/nftables namespace VM-ATTACKER PASS: deny LAN/port lain, grant, TCP aktif
+  terputus setelah grant dihapus/expired. wg0 berupa veth. Watchdog transient
+  systemd:Result=watchdog, stop hook terkonfirmasi. Bukan unit/tunnel produksi.
+- Build wheel0.1.9 final,23berkas cocok source, CLI,pip check,Ruff,Bash dan
+  validasi modul/scan rahasia PASS. Source/pengujian akan dipush pada branch.
+- Pengguna mengonfirmasi Windows sempat terbuka tetapi lambat; meminta perbaikan.
+  Resume22:55 WIB menemukan host baru reboot, keenam VM shut off. XML disimpan;
+  hanya Windows dinyalakan untuk baseline waktu boot/SSH dan diagnosis resource.
+  Status diagnosis IN_PROGRESS, bukti di windows-boot-2255/. Tidak reset password.
+- Rollout utama, Windows VPN revoke/reboot aktif, integrasi seluruh layanan dan
+  power-loss disk tetap BELUM_TERUJI. Hasil native bukan pengganti matriks VPN.
+- Berikutnya: selesaikan diagnosis/fix Windows berbasis bukti, commit/push branch,
+  CI dan dokumentasi hasil. Rollout utama mengikuti backup/panduan kandidat.
 
 ## Terbaru: satu modul lengkap termasuk CA/PKI
 

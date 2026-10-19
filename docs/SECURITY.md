@@ -3,6 +3,10 @@
 Dokumen ini memperinci aturan dalam VANGUARD_CONTEXT.md dan AGENTS.md. Tidak mengganti
 topologi atau mengubah implementasi kernel WireGuard.
 
+Kandidat branch 0.1.9 menambahkan perilaku pada [catatan hardening](HARDENING_0.1.9.md).
+Status pengujian/deployment ada di checkpoint; source tidak otomatis berarti VM
+sudah memakai versi tersebut.
+
 ## Admission
 
 1. Root CA dipasang out-of-band dan dipakai untuk memverifikasi signature issuer langsung.
@@ -46,10 +50,11 @@ jika server gagal dihubungi. Kegagalan parsial ditampilkan sebagai `revoking` da
 Penanganan batas detik CRL dapat menambah waktu tunggu maksimal satu detik per fetch.
 
 Unit systemd daemon menurunkan wg0 saat daemon berhenti; admission API bergantung pada
-daemon dan wg0. API mati saja tetap dibatasi oleh daemon dan lease. Ini perlu diuji di VM:
-pengujian lokal tidak menjalankan systemd atau WireGuard kernel. Jika daemon hang (bukan exit)
-atau seluruh supervisor/host gagal, enforcement userspace bisa terlambat. Tidak ada klaim
-jaminan real-time atau mitigasi administrator root yang sudah menguasai VM-SERVER.
+daemon dan wg0. Kandidat 0.1.9 memakai watchdog 90 detik dengan notifikasi hanya
+setelah reconcile selesai, sehingga hang tanpa heartbeat ditangani supervisor.
+Tes transient membuktikan watchdog/stop hook, belum seluruh unit produksi.
+API mati saja tetap dibatasi daemon dan lease. Tidak ada jaminan real-time ketika
+supervisor/host gagal atau perlindungan dari administrator root yang menguasai server.
 
 WireGuard `SaveConfig` tidak digunakan: peer runtime tidak dipersistenkan ke wg0.conf.
 Server memiliki interface tanpa blok `[Peer]` saat boot. Perubahan manual oleh root berada
@@ -65,10 +70,12 @@ admission menolaknya sebagai identitas perangkat. CA root key hanya berada di VM
 CA menggunakan OpenSSL `ca`, index.txt, serial, crlnumber, serta lock bersama untuk issue,
 revoke, dan CRL. CA API memerlukan token berbeda dari token registry server. Token acak
 minimal 32 karakter, environment file mode 0600, tanpa default fallback.
-CSR yang sama di-retry menggunakan hasil tersimpan. Crash tepat setelah OpenSSL menandatangani
-tetapi sebelum file hasil tersimpan dapat meninggalkan sertifikat tambahan pada index CA;
-sertifikat itu belum memiliki binding dan tidak dapat admission. Perlu pemeriksaan/revoke
-manual berdasarkan index CA setelah crash semacam itu.
+CSR sama menggunakan cache hasil. Kandidat 0.1.9 mengatasi interupsi antara signing
+dan cache dengan staging, manifest commit durable, dan roll-forward seluruh state.
+Operasi berikutnya menyelesaikan commit sebelum mutasi baru. Staging tanpa commit
+dipertahankan sebagai bukti; state rusak tanpa manifest ditolak. Tidak ada restore
+index/CRL lama atau tebakan counter. SIGKILL sudah diuji pada CA sementara;
+power-loss disk dan rollout CA produksi tetap memerlukan bukti terpisah.
 
 TLS client memverifikasi chain dan IP terhadap Root CA. Implementasi Requests tidak menerapkan
 CRL untuk **sertifikat HTTPS service**; revoke admission berlaku pada sertifikat perangkat.

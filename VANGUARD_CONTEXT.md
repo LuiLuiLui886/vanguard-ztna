@@ -77,3 +77,17 @@ and controlled cleanup passed; Ubuntu .2 and Windows .4 worked simultaneously.
 Version 0.1.8 waits for Windows service deletion before deleting tunnel config;
 failed confirmation preserves config. All five Ubuntu domain definitions remain
 unchanged. Windows revocation and active-tunnel reboot are still unverified.
+
+Source candidate decision — 19 October 2026 (0.1.9, not a VM rollout):
+CA mutations use a private staging generation, fsynced commit manifest and
+roll-forward publication under the existing lock. Interrupted uncommitted state
+is retained as evidence; never restore older index/CRL, guess counters or recreate
+the root on upgrade. Employee logout invalidates only the supplied session and
+its owned challenge/lease; retries must not remove a newer session's lease.
+Certificate replacement creates a new immutable identity after revoking the old
+one; client-generated keys and old history remain intact. Lease renewal never
+extends certificates. Readiness is bounded/read-only, separate from liveness.
+An opt-in explicit resource policy gates internal-demo 10.8.0.1 TCP8082 before
+established-flow acceptance; an empty policy denies access. This does not change
+WireGuard or relax six-check admission/employee sessions. Deployment and native
+versus mock evidence must follow docs/CHECKPOINT.md and docs/HARDENING_0.1.9.md.
