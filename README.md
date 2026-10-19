@@ -1,10 +1,15 @@
 # Sistem VanGuard
 
 [Modul lengkap teknisi, admin dan pengguna](docs/MODUL_PENGGUNAAN_VANGUARD.md)
-tersedia juga sebagai [HTML siap dibaca/dicetak](docs/MODUL_PENGGUNAAN_VANGUARD.html).
+t tersedia juga sebagai [HTML siap dibaca/dicetak](docs/MODUL_PENGGUNAAN_VANGUARD.html).
 Modul mencakup pemasangan awal serta pemakaian Ubuntu dan Windows pada lab terpasang.
 Materi generate root CA, CSR, sertifikat HTTPS/perangkat, CRL dan backup sudah
 digabung secara rinci di bab 5.3 modul yang sama, dengan daftar isi subbagian.
+
+## Pembimbing
+
+Proyek ini dikembangkan sebagai bagian dari Tugas Akhir dengan bimbingan
+[@hesmi](https://github.com/hesmi).
 
 Implementasi lab Tugas Akhir Zero Trust Network Access untuk **Ubuntu Server 22.04**.
 Admission sertifikat dilakukan **sebelum** server menambahkan peer WireGuard.
