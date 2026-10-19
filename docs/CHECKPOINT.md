@@ -4,8 +4,8 @@
 
 Branch [hardening/2026-10-18-resilience](https://github.com/LuiLuiLui886/vanguard-ztna/tree/hardening/2026-10-18-resilience).
 CA b922f03, lifecycle/features65c486e dan dokumentasi84f4a81 sudah dipush;
-SHA remote84f4a81 terverifikasi. Main tetap c454c0c. Perubahan timer/dokumentasi
-lanjutan dicatat di [jurnal19 Oktober](PROGRESS_2026-10-19.md).
+SHA remote84f4a81 terverifikasi; commit timer42028cf juga sudah dipush.
+Main tetap c454c0c. Hasil artefak/publikasi ada di [jurnal19 Oktober](PROGRESS_2026-10-19.md).
 Kandidat aplikasi belum di-rollout ke CA/server/admin/client utama.
 
 - Baseline Linux18 Oktober163 PASS/1 SKIP. Full19 Oktober199 PASS/1 SKIP,
@@ -26,8 +26,9 @@ Kandidat aplikasi belum di-rollout ke CA/server/admin/client utama.
 - Akhir pemeriksaan: Windows running dengan viewer; lima Ubuntu shut off.
   Password tidak di-reset; credential/bukti privat tetap hanya di host.
   Paket Windows utama masih0.1.8; kandidat0.1.9 diuji di staging.
-- CI [39282458976](https://github.com/LuiLuiLui886/vanguard-ztna/actions/runs/39282458976)
-  untuk84f4a81 masih queued pada pemeriksaan terakhir; belum dinyatakan PASS.
+- CI terbaru [39283176466](https://github.com/LuiLuiLui886/vanguard-ztna/actions/runs/39283176466)
+  untuk42028cf masih queued pada pemeriksaan terakhir; belum dinyatakan PASS.
+  Pembatalan run84f4a81 diminta karena sudah digantikan.
 - BELUM_TERUJI: rollout0.1.9 utama, Windows VPN revoke/reboot tunnel aktif,
   seluruh matriks lifecycle guest, power-loss disk dan benchmark boot berulang.
   Selanjutnya periksa CI, ikuti [backup/rollout](HARDENING_0.1.9.md) dan gunakan

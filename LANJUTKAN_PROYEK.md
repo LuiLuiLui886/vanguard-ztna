@@ -2,7 +2,7 @@
 
 **19 Oktober2026 — hardening kandidat teruji; Windows timer diperbaiki.**
 Source0.1.9 dan modul sudah dipush ke branch `hardening/2026-10-18-resilience`
-(baseline publikasi84f4a81); main tetap c454c0c. CA/lifecycle/logout/readiness/
+(publikasi aplikasi84f4a81, timer Windows42028cf); main tetap c454c0c. CA/lifecycle/logout/readiness/
 resource/audit belum di-rollout ke layanan utama. Linux lengkap199 PASS/1 SKIP,
 client final29 PASS/1 SKIP, Windows native28 PASS/2 SKIP. Jangan jumlahkan suite
 yang overlap; perintah tunnel pada native memakai stub.
@@ -13,7 +13,7 @@ SSH27,49detik pada satu sampel. Secure Boot,TPM,hash identitas dan kelima XML
 Ubuntu terjaga. Windows running/viewer tersedia; lima Ubuntu shut off. Paket
 utama Windows masih0.1.8;0.1.9 hanya staging. Password tidak diubah.
 
-CI39282458976 terakhir queued, bukan PASS. Langkah berikutnya periksa hasil CI,
+CI39283176466 untuk42028cf terakhir queued, bukan PASS. Langkah berikutnya periksa hasil CI,
 lalu rollout dengan backup dan matriks VPN guest termasuk expiry/revoke/reboot.
 Baca [checkpoint](docs/CHECKPOINT.md), [audit](docs/AUDIT_HARDENING_2026-10-18.md),
 [rollout](docs/HARDENING_0.1.9.md), [Windows](docs/WINDOWS_CLIENT.md) dan
