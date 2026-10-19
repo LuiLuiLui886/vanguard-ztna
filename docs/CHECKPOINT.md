@@ -1,4 +1,21 @@
-# Checkpoint VanGuard — 17 Oktober 2026
+# Checkpoint VanGuard — 19 Oktober 2026
+
+## Terbaru: spesifikasi tugas Codex untuk endpoint fisik dan Windows
+
+[Meta prompt utama](../CODEX_VANGUARD_MASTER_PROMPT.md) tersedia di root repository.
+Dokumen menggabungkan perbaikan sistem, konfigurasi endpoint fisik dengan layanan
+tetap di VM, installer Windows native, kriteria pengujian, dan prompt melanjutkan sesi.
+Fokus awal `ENDPOINT_WINDOWS` menjaga pekerjaan ketahanan yang sedang berlangsung.
+
+Ini penambahan spesifikasi, bukan implementasi fitur atau bukti tes endpoint.
+Tidak ada perubahan aplikasi/VM/jaringan/CA atau pemeriksaan ulang kondisi live.
+Temuan dan hasil operasional di bawah tetap merupakan bukti historis dengan tanggal
+masing-masing. Codex harus memeriksa checkout dan progres terbaru sebelum mengerjakan
+spesifikasi; jangan mengulang pekerjaan yang sudah selesai atau menimpa perubahan lokal.
+
+Langkah berikutnya: buka repository di Codex dan gunakan bagian **Prompt mulai**
+pada dokumen tersebut. Rincian lingkup serta validasi dokumentasi dicatat di
+[jurnal 19 Oktober](PROGRESS_2026-10-19.md).
 
 ## Terbaru: satu modul lengkap termasuk CA/PKI
 

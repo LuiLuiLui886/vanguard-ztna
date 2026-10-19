@@ -1,5 +1,17 @@
 # Lanjutkan proyek VanGuard
 
+**19 Oktober 2026 — meta prompt Codex tersedia.**
+Baca [CODEX_VANGUARD_MASTER_PROMPT.md](CODEX_VANGUARD_MASTER_PROMPT.md) di root.
+Gunakan **Prompt mulai** dengan fokus `ENDPOINT_WINDOWS` untuk persiapan endpoint
+fisik dan installer BAT/PowerShell; tersedia pula fokus perbaikan sistem serta
+prompt melanjutkan sesi. Audit progres ketahanan dan perubahan lokal sebelum edit.
+
+Tugas publikasi ini hanya menambahkan spesifikasi dan catatan proyek. Fitur yang
+diminta dalam prompt belum diimplementasikan atau diuji melalui tugas ini; VM,
+jaringan, CA, dan kredensial tidak diubah. Langkah berikutnya menjalankan spesifikasi
+melalui Codex sesuai batas persiapan lokal. Lihat [checkpoint](docs/CHECKPOINT.md)
+dan [jurnal 19 Oktober](docs/PROGRESS_2026-10-19.md).
+
 **17 Oktober 2026 — seluruh materi sudah menjadi satu modul.**
 Gunakan [modul utama](docs/MODUL_PENGGUNAAN_VANGUARD.md) atau
 [satu HTML siap baca/cetak](docs/MODUL_PENGGUNAAN_VANGUARD.html).
