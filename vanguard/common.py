@@ -53,7 +53,8 @@ def write_private(path, data):
 
 def run(args, **kwargs):
     try:
-        return subprocess.run(args, check=True, capture_output=True, timeout=30, **kwargs)
+        return subprocess.run(args, check=True, capture_output=True,
+                              timeout=kwargs.pop('timeout', 30), **kwargs)
     except (subprocess.CalledProcessError, subprocess.TimeoutExpired, OSError) as exc:
         # Do not put OpenSSL input, keys, tokens, or command output in API errors.
         raise Rejected("Local cryptographic/network operation failed", 503) from exc
@@ -110,6 +111,12 @@ def make_app(name):
     @app.get("/healthz")
     def health():
         return {"status": "ok", "service": name}
+
+    @app.get('/readyz')
+    def ready():
+        from .health import bounded_readiness
+        result = bounded_readiness(name.rsplit('.', 1)[-1])
+        return result, 200 if result['status'] == 'ready' else 503
 
     return app
 
@@ -183,12 +190,9 @@ class Remote:
                 allow_redirects=False,
             )
             if not 200 <= response.status_code < 300:
-                # Retain a safe upstream explanation without echoing submitted credentials.
-                try:
-                    message = response.json().get("error", "Upstream rejected request")
-                except (ValueError, AttributeError):
-                    message = "Upstream rejected request"
-                error = Rejected(str(message)[:200], 502)
+                # Never persist/echo arbitrary upstream bodies: an error response
+                # may include submitted passwords, tokens or complete requests.
+                error = Rejected(f'Upstream rejected request (HTTP {response.status_code})', 502)
                 error.upstream_status = response.status_code
                 raise error
             return response.content if raw else response.json()

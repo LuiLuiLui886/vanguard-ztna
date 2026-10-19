@@ -7,7 +7,13 @@
 {% if device.revocation_reason %}<p>Alasan pencabutan: {{ reasons.get(device.revocation_reason, device.revocation_reason) }}</p>{% endif %}
 {% if device.revoked_at %}<p>Pencabutan selesai: {{ device.revoked_at|wib }}</p>{% endif %}
 <p>Status masa berlaku berdasarkan waktu sertifikat. Keputusan akses tetap memeriksa CRL, akun dan proof perangkat.</p>
-<p>Satu identitas memiliki satu sertifikat pada versi ini. Renewal dan riwayat beberapa sertifikat per identitas belum tersedia.</p></section>
+<p>Satu identitas memiliki satu sertifikat. Renewal lease tidak memperpanjang sertifikat.</p>
+{% if validity and validity.expiring_soon %}<p class="error">Sertifikat akan kedaluwarsa dalam {{ validity.days_remaining }} hari. Siapkan penggantian identitas.</p>{% endif %}
+<h3>Penggantian identitas</h3><p>Hentikan tunnel lama dan selesaikan pencabutannya melalui dashboard. Pada client buat direktori identitas baru, ID baru serta kedua key baru dengan perintah init; simpan direktori lama sebagai bukti. Gunakan alamat tunnel lama. Unggah request.json baru di bawah setelah status lama dicabut. Akun karyawan tetap sama, lalu unduh bundle identitas baru, login dan lakukan admission dari direktori baru.</p>
+{% if device.status == 'revoked' %}<form action="/devices/{{ device.device_id }}/replace" method="post" enctype="multipart/form-data">
+<input type="hidden" name="csrf" value="{{ session.csrf }}">
+<label>Request identitas baru<input type="file" name="enrollment" accept=".json" required></label>
+<button>Daftarkan identitas pengganti</button></form>{% else %}<p>Form penggantian tersedia setelah pencabutan identitas lama selesai.</p>{% endif %}</section>
 <section><h2>Jejak aktivitas</h2><p>Maksimal 100 aktivitas terbaru. <a href="{{ url_for('activity', device=device.device_id) }}">Lihat seluruh aktivitas perangkat ini dan buat arsip</a>.</p>
 <div class="table-scroll"><table><thead><tr><th>Waktu WIB</th><th>Pelaku</th><th>Tindakan</th><th>Keterangan</th></tr></thead><tbody>
 {% for raw in events %}{% set event = raw|activity %}<tr><td>{{ event.time_wib }}</td><td>{{ event.actor }}</td><td>{{ event.title }}</td><td>{{ event.description }}</td></tr>

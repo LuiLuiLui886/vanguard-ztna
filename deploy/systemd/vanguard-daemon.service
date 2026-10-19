@@ -5,6 +5,12 @@ Wants=network-online.target
 BindsTo=wg-quick@wg0.service
 
 [Service]
+Type=notify
+NotifyAccess=main
+WatchdogSec=90
+TimeoutStartSec=90
+TimeoutAbortSec=5
+LimitCORE=0
 User=root
 EnvironmentFile=/etc/vanguard/server.env
 ExecStart=/opt/vanguard/venv/bin/vanguard-daemon

@@ -53,8 +53,15 @@ class WindowsTunnel:
     name = 'vanguard-client'
 
     def __init__(self):
+        self.owns_service = False
         self.executable = str(Path(os.environ.get('ProgramFiles', r'C:\Program Files'))
                               / 'WireGuard' / 'wireguard.exe')
+
+    def lock(self):
+        from .client import local_lock
+        from .common import private_dir
+        directory = private_dir(Path(os.environ.get('ProgramData', r'C:\ProgramData')) / 'VanGuard')
+        return local_lock(directory / '.tunnel.lock')
 
     def preflight(self):
         require_administrator()
@@ -68,10 +75,17 @@ class WindowsTunnel:
 
     def up(self, config):
         run([self.executable, '/installtunnelservice', str(config)])
+        self.owns_service = True
         # Boot must not reconnect from a stored config without a new client process.
         run(['sc.exe', 'config', 'WireGuardTunnel$' + self.name, 'start=', 'demand'])
 
     def down(self, config):
+        if not self.owns_service:
+            result = subprocess.run(['sc.exe', 'query', 'WireGuardTunnel$' + self.name],
+                                    capture_output=True, timeout=3)
+            if result.returncode == 1060:
+                return
+            raise Rejected('Tunnel ownership unconfirmed; configuration retained for inspection')
         run([self.executable, '/uninstalltunnelservice', self.name])
         # Windows service deletion can finish after wireguard.exe exits. Keep the
         # config until absence is confirmed, so another process cannot take over.

@@ -21,16 +21,24 @@
 <label>Platform<input name="platform" maxlength="80" placeholder="Contoh: Ubuntu 22.04" required></label>
 <label>Akun karyawan<select name="employee_username" required><option value="">Pilih akun</option>{% for employee in employees %}{% if employee.enabled %}<option value="{{ employee.username }}">{{ employee.username }}</option>{% endif %}{% endfor %}</select></label>
 <button class="primary">Terbitkan sertifikat & daftarkan binding</button></form></section>
-<section><h2>Perangkat terdaftar</h2><div class="table-scroll"><table><thead><tr><th>Perangkat</th><th>Workflow</th><th>Tunnel</th><th>Peer</th><th>Tindakan</th></tr></thead><tbody>
+<p><a href="/operations">Pantau penyimpanan dan pertumbuhan audit</a></p>
+<section><h2>Perangkat terdaftar</h2><div class="table-scroll"><table><thead><tr><th>Perangkat</th><th>Workflow</th><th>Tunnel</th><th>Observasi akses</th><th>Tindakan</th></tr></thead><tbody>
 {% for device in devices %}{% set peer = live.get(device.device_id) %}<tr><td><strong>{{ device.metadata.get('display_name') or device.device_id }}</strong><small>ID {{ device.device_id }} · Serial {{ device.serial or '—' }}</small>
 <small>Pemilik: {{ device.metadata.get('owner') or 'Belum diisi' }}</small>
 <small>Akun VPN: {{ device.employee_username or 'Belum ditautkan' }}</small>
 <small>Departemen: {{ device.metadata.get('department') or 'Belum diisi' }}</small>
 <small>Platform: {{ device.metadata.get('platform') or 'Belum diisi' }}</small></td>
 <td>{{ device.status }}{% if device.validity %}<small>{{ device.validity.status }}</small><small>Berlaku sampai (UTC): {{ device.validity.not_after or 'Tidak diketahui' }}</small>{% endif %}
+{% if device.validity and device.validity.expiring_soon %}<small class="error">Sertifikat segera kedaluwarsa ({{ device.validity.days_remaining }} hari). Siapkan identitas pengganti; renewal lease tidak memperpanjang sertifikat.</small>{% endif %}
 {% if device.revocation_reason %}<small>Alasan: {{ revocation_reasons.get(device.revocation_reason, device.revocation_reason) }}</small>{% endif %}
 {% if device.last_error %}<small class="error">{{ device.last_error }}</small>{% endif %}</td>
-<td>{{ peer.tunnel_ip if peer else '—' }}</td><td>{{ ('Aktif' if peer.live else 'Tidak aktif') if peer else 'Tidak tersedia' }}</td>
+<td>{{ peer.tunnel_ip if peer else '—' }}</td><td>
+<small>Registry: {{ 'Terdaftar' if peer else 'Tidak diketahui' }}</small>
+<small>Lease: {{ ('Valid' if peer.lease_valid else 'Tidak valid') if peer and peer.lease_valid is defined else 'Tidak diketahui' }}</small>
+<small>Peer: {{ ('Terpasang' if peer.peer_present else 'Tidak terpasang') if peer and peer.peer_present is defined and peer.peer_present is not none else 'Tidak diketahui' }}</small>
+<small>Handshake terakhir: {{ (peer.last_handshake | wib) if peer and peer.last_handshake else ('Belum ada' if peer and peer.last_handshake == 0 else 'Tidak diketahui') }}</small>
+<small>Transfer RX/TX (byte kumulatif): {{ peer.rx_bytes if peer and peer.rx_bytes is not none and peer.rx_bytes is defined else 'Tidak diketahui' }} / {{ peer.tx_bytes if peer and peer.tx_bytes is not none and peer.tx_bytes is defined else 'Tidak diketahui' }}</small>
+</td>
 <td>{% if device.certificate %}<a href="/devices/{{ device.device_id }}/certificate">Unduh sertifikat</a>{% endif %}
 <p><a href="/devices/{{ device.device_id }}/history">Riwayat perangkat</a></p>
 {% if device.status == 'registered' and device.employee_username %}<p><a href="/devices/{{ device.device_id }}/bundle">Unduh bundle onboarding</a></p>{% endif %}

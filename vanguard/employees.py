@@ -35,6 +35,9 @@ class Employees:
                 CREATE TABLE IF NOT EXISTS employee_leases (
                     device_id TEXT PRIMARY KEY, token_hash TEXT NOT NULL
                 );
+                CREATE TABLE IF NOT EXISTS employee_logouts (
+                    token_hash TEXT PRIMARY KEY, created REAL NOT NULL
+                );
                 CREATE TABLE IF NOT EXISTS employee_attempts (
                     bucket TEXT PRIMARY KEY, count INTEGER NOT NULL, until REAL NOT NULL
                 );
@@ -90,7 +93,8 @@ class Employees:
             else:
                 token = secrets.token_urlsafe(32)
                 expires = at + self.session_seconds
-                db.execute("DELETE FROM employee_sessions WHERE expires <= ?", (at,))
+                # Expired tokens remain invalid for admission, but are retained
+                # so authenticated logout can confirm removal of stale access.
                 db.execute("INSERT INTO employee_sessions VALUES (?,?,?)",
                            (self.token_hash(token), username, expires))
         # Raise after committing failed attempts.

@@ -459,3 +459,52 @@ def test_csv_archive_neutralizes_formula_cells(dashboard):
     payload, _ = ActivityArchive(dash).download(archive_id, 'admin')
     with zipfile.ZipFile(io.BytesIO(payload)) as bundle:
         assert "'=2+3" in bundle.read('aktivitas.csv').decode('utf-8-sig')
+
+
+def test_identity_replacement_preserves_old_binding_and_requires_revocation(lab, dashboard, tmp_path):
+    from vanguard.client import initialize
+    dash, client, secret = dashboard
+    dash.register(lab['request'], METADATA)
+    request = json.loads(initialize(tmp_path / 'replacement', 'replacement-client').read_text())
+    with pytest.raises(Rejected, match='pencabutan'):
+        dash.register(request, replaces='vm-client')
+    old = dict(dash.device('vm-client'))
+    dash.revoke('vm-client')
+    dash.register(request, replaces='vm-client')
+    assert dash.device('vm-client')['certificate'] == old['certificate']
+    assert dash.device('vm-client')['status'] == 'revoked'
+    assert dash.device('replacement-client')['status'] == 'registered'
+    with database(lab['admission'].db) as db:
+        bindings = dict(db.execute('SELECT device_id,username FROM employee_devices').fetchall())
+    assert bindings['vm-client'] == bindings['replacement-client'] == 'employee-test'
+    assert not lab['wg'].active  # enrollment never grants a peer
+    assert login(client, secret).status_code == 302
+    page = client.get('/devices/vm-client/history', base_url='https://localhost')
+    assert page.status_code == 200 and b'Penggantian identitas' in page.data
+
+
+def test_expiry_warning_is_separate_from_validity(lab, monkeypatch):
+    from datetime import datetime, timedelta
+
+    from vanguard import admin
+    from vanguard.pki import load_cert
+    expiry = load_cert(lab['issued']['certificate']).not_valid_after_utc
+    class Clock(datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return expiry - timedelta(days=3)
+    monkeypatch.setattr(admin, 'datetime', Clock)
+    summary = admin.certificate_summary(lab['issued']['certificate'])
+    assert summary['expiring_soon'] is True and summary['days_remaining'] == 3
+    assert summary['status'] == 'Dalam masa berlaku'
+
+
+def test_operations_is_authenticated_and_preserves_audit(dashboard):
+    dash, client, secret = dashboard
+    assert client.get('/operations', base_url='https://localhost').status_code == 302
+    assert login(client, secret).status_code == 302
+    dash.audit('dashboard_viewed', actor='admin')
+    before = dash.history()
+    page = client.get('/operations', base_url='https://localhost')
+    assert page.status_code == 200 and b'Tidak diketahui' not in page.data
+    assert dash.history() == before

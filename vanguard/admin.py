@@ -28,6 +28,7 @@ from .common import (
     tunnel_ip,
     wg_key,
 )
+from .operations import storage_summary
 from .pki import check_csr, fingerprint, load_cert, validate_certificate, validate_fetched_crl
 
 DEVICE_METADATA = {"display_name": 100, "department": 80, "owner": 100, "platform": 80}
@@ -46,8 +47,11 @@ def certificate_summary(pem):
         at = datetime.now(timezone.utc)
         status = ('Belum berlaku' if at < cert.not_valid_before_utc else
                   'Kedaluwarsa' if at >= cert.not_valid_after_utc else 'Dalam masa berlaku')
+        remaining = (cert.not_valid_after_utc - at).total_seconds()
         return {'not_before': cert.not_valid_before_utc.isoformat(),
                 'not_after': cert.not_valid_after_utc.isoformat(), 'status': status,
+                'expiring_soon': 0 < remaining <= 7 * 86400,
+                'days_remaining': max(0, int(remaining // 86400)),
                 'sha256': fingerprint(cert)}
     except Rejected:
         return {'status': 'Sertifikat tidak dapat dibaca'}
@@ -161,7 +165,7 @@ class Dashboard:
             db.execute("INSERT INTO sessions VALUES (?,?,?)", (token, username, at + 1800))
             return token
 
-    def register(self, body, metadata=None, actor='system'):
+    def register(self, body, metadata=None, actor='system', replaces=None):
         if not isinstance(body, dict) or not all(
             isinstance(body.get(k), str) for k in ("device_id", "csr", "wg_public_key", "tunnel_ip")
         ):
@@ -178,13 +182,33 @@ class Dashboard:
         if supplied is not None:
             body["metadata"] = device_metadata(supplied)
         with locked(self.lock):
+            if replaces is not None:
+                old = self.device(device_name(replaces))
+                previous = json.loads(old['request'])
+                if old['status'] != 'revoked' or not previous.get('employee_username'):
+                    raise Rejected('Selesaikan pencabutan identitas lama dan binding akun dahulu', 409)
+                if (name == replaces or body['wg_public_key'] == previous['wg_public_key']
+                        or check_csr(body['csr'], name).public_key().public_numbers() ==
+                        load_cert(old['certificate']).public_key().public_numbers()):
+                    raise Rejected('Pengganti wajib memakai ID dan kedua key baru dari client', 409)
+                if body['tunnel_ip'] != previous['tunnel_ip']:
+                    raise Rejected('Alamat pengganti harus sama dengan identitas lama', 409)
+                body['employee_username'] = previous['employee_username']
+                body['metadata'] = previous.get('metadata', {})
             try:
                 with database(self.db) as db:
+                    db.execute('CREATE TABLE IF NOT EXISTS identity_replacements ('
+                               'old_id TEXT PRIMARY KEY REFERENCES devices(device_id),'
+                               'new_id TEXT UNIQUE NOT NULL REFERENCES devices(device_id))')
                     db.execute(
                         "INSERT INTO devices(device_id,request,status) VALUES (?,?,'pending_issue')",
                         (name, json.dumps(body, sort_keys=True)),
                     )
                     self.audit('registration_requested', name, actor=actor, db=db)
+                    if replaces is not None:
+                        db.execute('INSERT INTO identity_replacements VALUES (?,?)', (replaces, name))
+                        self.audit('identity_replacement_requested', replaces,
+                                   {'replacement': name}, actor, db)
             except sqlite3.IntegrityError as exc:
                 raise Rejected(
                     "Device already exists; use retry on the existing workflow", 409
@@ -509,6 +533,16 @@ def create_app(config=None):
             flash(str(exc), "error")
         return redirect(url_for("index"))
 
+    @app.get('/operations')
+    @login_required
+    def operations():
+        reports = {'Admin': storage_summary(dashboard.db)}
+        try:
+            reports['Server'] = dashboard.server.call('GET', '/api/operations')
+        except Rejected:
+            reports['Server'] = None
+        return render_template('operations.html', reports=reports)
+
     @app.post('/employees')
     @login_required
     def create_employee():
@@ -552,11 +586,20 @@ def create_app(config=None):
                 dashboard.revoke(name, request.form.get('reason'), g.admin_username)
             elif action == "retry":
                 dashboard.retry(name, g.admin_username)
+            elif action == 'replace':
+                uploaded = request.files.get('enrollment')
+                if uploaded is None:
+                    raise Rejected('Upload request.json baru dari client')
+                try:
+                    body = json.load(uploaded)
+                except (ValueError, UnicodeDecodeError) as exc:
+                    raise Rejected('Invalid enrollment JSON') from exc
+                dashboard.register(body, actor=g.admin_username, replaces=name)
             else:
                 raise Rejected("Unknown action", 404)
             flash("Operasi selesai.")
         except Rejected as exc:
-            failed(action if action in ('metadata', 'employee', 'revoke', 'retry') else 'unknown', exc, name)
+            failed(action if action in ('metadata', 'employee', 'revoke', 'retry', 'replace') else 'unknown', exc, name)
             flash(str(exc), "error")
         return redirect(url_for("index"))
 

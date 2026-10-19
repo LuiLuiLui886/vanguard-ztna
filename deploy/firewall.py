@@ -16,7 +16,7 @@ from pathlib import Path
 ADDRESSES = {"ca": 10, "server": 20, "client": 30, "admin": 40, "attacker": 50}
 
 
-def rules(role, management, windows_client=False):
+def rules(role, management, windows_client=False, application_policy=False):
     management = str(ipaddress.IPv4Address(management))
     own = f"192.168.100.{ADDRESSES[role]}"
     lines = [
@@ -61,6 +61,27 @@ def rules(role, management, windows_client=False):
         "  counter drop", " }", " chain forward {",
         "  type filter hook forward priority -10; policy drop;", " }", "}",
     ])
+    if role == 'server' and application_policy:
+        # Dedicated gate precedes established/related. A removed/expired grant
+        # cannot continue a previously established application TCP connection.
+        gate = [
+            ' set application_access {',
+            '  type ipv4_addr . ipv4_addr . inet_proto . inet_service; flags timeout;',
+            ' }',
+            ' chain application_gate {',
+            '  iifname "wg0" ip saddr . ip daddr . meta l4proto . tcp dport @application_access counter accept',
+            '  counter drop',
+            ' }',
+            ' chain output {',
+            '  type filter hook output priority -10; policy accept;',
+            '  oifname "lo" accept',
+            '  oifname "wg0" tcp sport 8082 ip daddr . ip saddr . meta l4proto . tcp sport @application_access counter accept',
+            '  tcp sport 8082 counter drop',
+            ' }',
+        ]
+        lines[3:3] = gate
+        offset = lines.index('  ct state invalid drop')
+        lines.insert(offset + 1, '  tcp dport 8082 jump application_gate')
     return "\n".join(lines) + "\n"
 
 
@@ -71,8 +92,10 @@ def main():
     parser.add_argument("--print-only", action="store_true")
     parser.add_argument('--windows-client', action='store_true',
                         help='Allow additional Windows client .60 / tunnel .4 on server')
+    parser.add_argument('--application-policy', action='store_true',
+                        help='Enable default-deny internal-demo TCP/8082 resource gate')
     args = parser.parse_args()
-    content = rules(args.role, args.management_ip, args.windows_client)
+    content = rules(args.role, args.management_ip, args.windows_client, args.application_policy)
     if args.print_only:
         print(content, end="")
         return

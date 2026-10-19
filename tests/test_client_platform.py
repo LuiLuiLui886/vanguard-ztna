@@ -2,6 +2,7 @@ import base64
 import json
 import os
 import time
+from contextlib import nullcontext
 from types import SimpleNamespace
 
 import pytest
@@ -11,6 +12,34 @@ from vanguard.common import Rejected
 from vanguard.windows import WindowsTunnel
 
 SERVER_KEY = base64.b64encode(b's' * 32).decode()
+
+
+@pytest.mark.skipif(os.name == 'nt', reason='POSIX lock path protection')
+@pytest.mark.parametrize('link_type', ['symlink', 'hardlink'])
+def test_local_lock_rejects_link_without_modifying_target(tmp_path, link_type):
+    target = tmp_path / 'unrelated'
+    target.write_text('sentinel')
+    target.chmod(0o644)
+    path = tmp_path / 'lock'
+    if link_type == 'symlink':
+        path.symlink_to(target)
+    else:
+        os.link(target, path)
+    with pytest.raises(Rejected):
+        with client.local_lock(path):
+            pytest.fail('Unsafe lock was accepted')
+    assert target.read_text() == 'sentinel'
+    assert target.stat().st_mode & 0o777 == 0o644
+
+
+def test_local_lock_excludes_competing_operation_and_releases(tmp_path):
+    path = tmp_path / 'lock'
+    with client.local_lock(path):
+        with pytest.raises(Rejected, match='Another client operation'):
+            with client.local_lock(path):
+                pytest.fail('Competing operation entered the lock')
+    with client.local_lock(path):
+        pass
 
 
 class RecordingTunnel:
@@ -74,7 +103,7 @@ def test_session_replace_handles_repeated_login(tmp_path):
     client.login_employee(directory, Remote(), 'test-user', 'first-test-token')
     client.login_employee(directory, Remote(), 'test-user', 'second-test-token')
     assert json.loads((directory / 'employee-session.json').read_text())['session_token'] == 'second-test-token'
-    assert len(list(directory.iterdir())) == 1
+    assert {p.name for p in directory.iterdir()} == {'employee-session.json', '.session.lock'}
 
 
 @pytest.mark.parametrize('response', [None, {}, {'decision': 'DENY'}, accepted('10.8.0.2'),
@@ -160,7 +189,9 @@ def test_windows_cleanup_waits_for_service_deletion(tmp_path, monkeypatch):
     monkeypatch.setattr(windows.subprocess, 'run',
                         lambda *a, **k: SimpleNamespace(returncode=next(results)))
     monkeypatch.setattr(windows.time, 'sleep', waits.append)
-    WindowsTunnel().down(tmp_path / 'vanguard-client.conf')
+    backend = WindowsTunnel()
+    backend.owns_service = True  # successful install by this process
+    backend.down(tmp_path / 'vanguard-client.conf')
     assert len(waits) == 2
 
 
@@ -169,6 +200,8 @@ def test_windows_cleanup_failure_preserves_config(tmp_path, monkeypatch, result)
     from vanguard import windows
     directory = setup_client(tmp_path)
     backend = WindowsTunnel()
+    backend.owns_service = True  # successful install by this process
+    monkeypatch.setattr(backend, 'lock', nullcontext)
     monkeypatch.setattr(backend, 'preflight', lambda: None)
     monkeypatch.setattr(backend, 'up', lambda config: None)
     monkeypatch.setattr(client, 'admit', lambda *a: accepted())
@@ -183,3 +216,50 @@ def test_windows_cleanup_failure_preserves_config(tmp_path, monkeypatch, result)
     with pytest.raises(Rejected, match='removal'):
         client.connect(directory, None, SERVER_KEY, backend)
     assert (directory / 'vanguard-client.conf').exists()
+
+
+def test_linux_refuses_foreign_interface_and_preserves_failed_start(tmp_path, monkeypatch):
+    backend = client.LinuxTunnel()
+    monkeypatch.setattr(backend, 'links', lambda: [{'ifname': 'wg0', 'ifalias': 'other-owner'}])
+    with pytest.raises(Rejected, match='ownership'):
+        backend.preflight()
+    with pytest.raises(Rejected, match='ownership'):
+        backend.down(tmp_path / 'wg0.conf')
+
+
+def test_repeated_renewal_then_failure_cleans_owned_tunnel(tmp_path, monkeypatch):
+    directory, backend = setup_client(tmp_path), RecordingTunnel()
+    attempts = []
+    def renew(*args):
+        attempts.append(1)
+        if len(attempts) == 6:
+            raise Rejected('CA unavailable')
+        return accepted()
+    monkeypatch.setattr(client, 'admit', renew)
+    monkeypatch.setattr(client.time, 'sleep', lambda _: None)
+    with pytest.raises(Rejected, match='CA unavailable'):
+        client.connect(directory, None, SERVER_KEY, backend)
+    assert len(attempts) == 6
+    assert backend.events[-1] == 'down'
+    assert not (directory / 'vanguard-client.conf').exists()
+
+
+def test_logout_unreachable_keeps_local_token_for_retry(tmp_path):
+    directory = setup_client(tmp_path)
+    saved = directory / 'employee-session.json'
+    saved.write_text(json.dumps({'session_token': 'test-token-' * 4}))
+    class Unavailable:
+        def call(self, *args):
+            raise Rejected('TLS unavailable', 503)
+    with pytest.raises(Rejected, match='belum terkonfirmasi'):
+        client.logout_employee(directory, Unavailable())
+    assert saved.exists()
+
+
+def test_windows_partial_install_does_not_remove_unowned_service(tmp_path, monkeypatch):
+    from vanguard import windows
+    backend = WindowsTunnel()
+    monkeypatch.setattr(windows.subprocess, 'run', lambda *a, **kw: SimpleNamespace(returncode=0))
+    monkeypatch.setattr(windows, 'run', lambda *args: pytest.fail('must not uninstall unknown owner'))
+    with pytest.raises(Rejected, match='ownership'):
+        backend.down(tmp_path / 'vanguard-client.conf')

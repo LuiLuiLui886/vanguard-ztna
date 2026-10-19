@@ -1,0 +1,11 @@
+{% extends 'base.html' %}{% block content %}
+<h1>Penyimpanan dan audit operasional</h1><p><a href="/">Kembali ke dashboard</a></p>
+<p>Observasi disimpan paling sering satu kali per jam ketika halaman ini diperiksa. Pertumbuhan dibandingkan sampel sebelumnya, bukan laju per jam. Bukti lama tidak dihapus otomatis. Ambang peringatan: database 100 MiB atau disk bebas kurang dari 100 MiB.</p>
+{% for name, report in reports.items() %}<section><h2>{{ name }}</h2>
+{% if report %}<p>{{ 'Perlu pemeriksaan penyimpanan' if report.storage_warning else 'Di bawah ambang peringatan' }}</p>
+<p>Database dan journal: {{ report.database_bytes }} byte; catatan audit: {{ report.audit_rows }}.</p>
+<p>Pertumbuhan sejak sampel: {{ report.growth_bytes_since_sample if report.growth_bytes_since_sample is not none else 'Belum ada pembanding' }} byte.</p>
+<p>Disk bebas: {{ report.free_disk_bytes }} byte. Audit tertua: {{ report.oldest_audit_at|wib }}.</p>
+{% else %}<p>Tidak diketahui: layanan belum dapat diperiksa.</p>{% endif %}</section>{% endfor %}
+<p>Periksa juga pemakaian journal systemd melalui journalctl --disk-usage pada guest. Arsipkan dan verifikasi backup sebelum menetapkan retensi; halaman ini tidak menghapus log/database.</p>
+{% endblock %}

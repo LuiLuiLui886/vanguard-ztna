@@ -4,10 +4,12 @@ import argparse
 import json
 import os
 import secrets
+import socket
 import sqlite3
 import time
 from pathlib import Path
 
+from .ca_storage import durable_write
 from .common import (
     Rejected,
     Remote,
@@ -24,6 +26,7 @@ from .common import (
     wg_key,
 )
 from .employees import Employees
+from .operations import storage_summary
 from .pki import (
     fingerprint,
     load_cert,
@@ -32,6 +35,7 @@ from .pki import (
     validate_fetched_crl,
     verify_proof,
 )
+from .resource_policy import NftResources
 from .telemetry import install_denial_timing
 
 
@@ -43,6 +47,22 @@ class WireGuard:
 
     def peers(self):
         return set(run(["wg", "show", self.interface, "peers"]).stdout.decode().split())
+
+    def observations(self):
+        # Never use `wg show dump`: its interface row contains the private key.
+        peers = set(run(['wg', 'show', self.interface, 'peers'], timeout=1).stdout.decode().split())
+        result = {key: {'last_handshake': None, 'rx_bytes': None, 'tx_bytes': None} for key in peers}
+        handshakes = run(['wg', 'show', self.interface, 'latest-handshakes'], timeout=1)
+        transfer = run(['wg', 'show', self.interface, 'transfer'], timeout=1)
+        for line in handshakes.stdout.decode().splitlines():
+            key, timestamp = line.split()
+            if key in result:
+                result[key]['last_handshake'] = int(timestamp)
+        for line in transfer.stdout.decode().splitlines():
+            key, received, sent = line.split()
+            if key in result:
+                result[key].update(rx_bytes=int(received), tx_bytes=int(sent))
+        return result
 
     def add(self, public_key, ip):
         run(
@@ -62,7 +82,7 @@ class WireGuard:
 
 
 class Admission:
-    def __init__(self, directory, root_pem, fetch_crl, wireguard, lease_seconds=300):
+    def __init__(self, directory, root_pem, fetch_crl, wireguard, lease_seconds=300, resources=None):
         self.path = private_dir(directory)
         self.db = self.path / "server.db"
         self.lock = self.path / "admission.lock"
@@ -70,6 +90,7 @@ class Admission:
         self.fetch_crl = fetch_crl
         self.wg = wireguard
         self.lease_seconds = lease_seconds
+        self.resources = resources
         with database(self.db) as db:
             db.executescript("""
                 CREATE TABLE IF NOT EXISTS devices (
@@ -270,6 +291,7 @@ class Admission:
                         db.execute("INSERT INTO employee_leases VALUES (?,?) "
                                    "ON CONFLICT(device_id) DO UPDATE SET token_hash=excluded.token_hash",
                                    (name, session_hash))
+                    self.sync_resources()
                 except Exception:
                     self.wg.remove(row["wg_public_key"])
                     raise
@@ -290,6 +312,7 @@ class Admission:
                 db.execute("UPDATE devices SET enabled=0,lease_until=0 WHERE device_id=?", (name,))
                 db.execute("DELETE FROM challenges WHERE device_id=?", (name,))
             self.wg.remove(row["wg_public_key"])
+            self.sync_resources()
             self.audit("disabled", name, "Peer removed; identity cannot be re-enabled")
         return {"device_id": name, "disabled": True}
 
@@ -311,8 +334,48 @@ class Admission:
                                (row['device_id'],))
             for row in rows:
                 self.wg.remove(row['wg_public_key'])
+            self.sync_resources()
             self.audit("employee_disabled", None, json.dumps({"username": username}))
             return result
+
+    def logout_employee(self, token):
+        hashed = self.employees.token_hash(token)
+        with locked(self.lock):
+            with database(self.db) as db:
+                known = db.execute('SELECT 1 FROM employee_sessions WHERE token_hash=?',
+                                   (hashed,)).fetchone()
+                retried = db.execute('SELECT 1 FROM employee_logouts WHERE token_hash=?',
+                                     (hashed,)).fetchone()
+                if not known and not retried:
+                    raise Rejected('Employee session rejected', 403)
+                db.execute('INSERT OR IGNORE INTO employee_logouts VALUES (?,?)',
+                           (hashed, time.time()))
+                db.execute('DELETE FROM employee_sessions WHERE token_hash=?', (hashed,))
+                db.execute('DELETE FROM challenges WHERE id IN '
+                           '(SELECT challenge_id FROM employee_challenges WHERE token_hash=?)',
+                           (hashed,))
+                db.execute('DELETE FROM employee_challenges WHERE token_hash=?', (hashed,))
+                rows = db.execute('SELECT d.device_id,d.wg_public_key FROM devices d '
+                                  'JOIN employee_leases l ON l.device_id=d.device_id '
+                                  'WHERE l.token_hash=?', (hashed,)).fetchall()
+                for row in rows:
+                    db.execute('UPDATE devices SET lease_until=0 WHERE device_id=?',
+                               (row['device_id'],))
+            # Invalidity survives kernel failure. Keep lease ownership for retry;
+            # a later lease under another token must not be removed by that retry.
+            for row in rows:
+                try:
+                    self.wg.remove(row['wg_public_key'])
+                except Rejected:
+                    self.audit('employee_logout_pending', row['device_id'],
+                               'Session revoked; peer removal unconfirmed')
+                    raise Rejected('Session revoked; peer removal unconfirmed; retry logout', 503)
+            with database(self.db) as db:
+                db.execute('DELETE FROM employee_leases WHERE token_hash=?', (hashed,))
+            self.sync_resources()
+            if known or rows:
+                self.audit('employee_logout', None, 'Session, challenges and scoped access revoked')
+            return {'revoked': True, 'peer_removal_confirmed': True}
 
     def reconcile(self, startup=False):
         with locked(self.lock):
@@ -376,15 +439,41 @@ class Admission:
                             json.dumps(detail, sort_keys=True),
                         ),
                     )
+            self.sync_resources()
             return {"eligible_peers": len(allowed), "crl_available": crl is not None}
 
+    def sync_resources(self):
+        if self.resources is not None:
+            self.resources.sync(self.db, self.wg.peers())
+
     def listing(self):
-        peers = self.wg.peers()
+        try:
+            observed = (self.wg.observations() if hasattr(self.wg, 'observations')
+                        else {key: {} for key in self.wg.peers()})
+        except (Rejected, ValueError):
+            observed = None
         with database(self.db) as db:
             rows = db.execute(
                 "SELECT device_id,serial,wg_public_key,tunnel_ip,enabled,lease_until FROM devices"
             ).fetchall()
-            return [dict(row, live=row["wg_public_key"] in peers) for row in rows]
+            results = []
+            for row in rows:
+                peer = None if observed is None else row['wg_public_key'] in observed
+                detail = (observed or {}).get(row['wg_public_key'], {})
+                lease_valid = bool(row['enabled'] and row['lease_until'] > time.time())
+                if lease_valid:
+                    owner = db.execute('SELECT token_hash FROM employee_leases WHERE device_id=?',
+                                       (row['device_id'],)).fetchone()
+                    try:
+                        self.employees.require_hash(owner[0] if owner else '', row['device_id'])
+                    except Rejected:
+                        lease_valid = False
+                results.append(dict(row, registered=True,
+                    lease_valid=lease_valid,
+                    live=peer, peer_present=peer, last_handshake=detail.get('last_handshake'),
+                    rx_bytes=detail.get('rx_bytes'), tx_bytes=detail.get('tx_bytes'),
+                    observed_at=time.time() if observed is not None else None))
+            return results
 
 
 def from_environment():
@@ -395,6 +484,8 @@ def from_environment():
         Path(trust).read_bytes(),
         lambda: ca.call("GET", "/api/ca/crl", raw=True),
         WireGuard(),
+        resources=NftResources(os.environ['VANGUARD_RESOURCE_POLICY'])
+        if os.environ.get('VANGUARD_RESOURCE_POLICY') else None,
     )
 
 
@@ -457,6 +548,11 @@ def create_app(config=None):
             admission.audit('employee_login_rejected', None, 'Employee credentials rejected')
             raise
 
+    @app.post('/api/employee/logout')
+    def employee_logout():
+        admission.throttle(request_ip())
+        return admission.logout_employee(json_body('employee_session')['employee_session'])
+
     @app.post("/api/devices/<name>/disable")
     @bearer(token)
     def disable(name):
@@ -468,6 +564,11 @@ def create_app(config=None):
         with database(admission.db) as db:
             rows = db.execute("SELECT * FROM audit ORDER BY id DESC LIMIT 200").fetchall()
             return {"events": [dict(row) for row in rows]}
+
+    @app.get('/api/operations')
+    @bearer(token)
+    def operations():
+        return storage_summary(admission.db)
 
     @app.post("/api/challenge")
     def challenge():
@@ -497,11 +598,27 @@ def daemon_main():
     admission = from_environment()
     # On every daemon restart require fresh admissions.
     admission.reconcile(startup=True)
+    notify_supervisor('READY=1')
     while True:
-        admission.reconcile()
+        result = admission.reconcile()
+        durable_write(admission.path / 'daemon-heartbeat.json', json.dumps({
+            'boot_id': Path('/proc/sys/kernel/random/boot_id').read_text().strip(),
+            'monotonic': time.monotonic(), 'crl_available': result['crl_available'],
+        }).encode())
+        notify_supervisor('WATCHDOG=1')
         if args.once:
             return
         time.sleep(5)
+
+
+def notify_supervisor(message):
+    address = os.environ.get('NOTIFY_SOCKET')
+    if address:
+        if address.startswith('@'):
+            address = '\0' + address[1:]
+        with socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM) as channel:
+            channel.settimeout(1)
+            channel.sendto(message.encode(), address)
 
 
 if __name__ == "__main__":

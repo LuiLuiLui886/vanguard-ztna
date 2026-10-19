@@ -18,6 +18,7 @@ PAGE_SIZE = 50
 ARCHIVE_LIMIT = 10000
 ARCHIVE_BYTES = 8 * 1024 * 1024
 EVENTS = {
+    'identity_replacement_requested': ('Penggantian identitas diminta', 'Identitas baru didaftarkan setelah pencabutan identitas lama; binding lama dipertahankan.'),
     'admin_login': ('Masuk dashboard', 'Administrator berhasil masuk dengan password dan TOTP.'),
     'admin_logout': ('Keluar dashboard', 'Administrator mengakhiri sesi dashboard.'),
     'registration_requested': ('Registrasi diminta', 'Permintaan registrasi perangkat disimpan untuk diproses.'),
@@ -50,6 +51,7 @@ REASONS = {
 FIELDS = {'display_name': 'nama perangkat', 'department': 'departemen',
           'owner': 'pemilik', 'platform': 'platform'}
 OPERATIONS = {'registration': 'registrasi perangkat', 'metadata': 'mengubah data perangkat',
+              'replace': 'mengganti identitas',
               'employee': 'menautkan akun', 'revoke': 'mencabut akses', 'retry': 'mengulang proses',
               'employee_create': 'membuat akun karyawan', 'employee_disable': 'menonaktifkan akun',
               'bundle': 'mengunduh bundle', 'certificate': 'mengunduh sertifikat',
@@ -80,6 +82,7 @@ def present(row):
     title, description = EVENTS.get(event, ('Aktivitas lain', 'Peristiwa tersimpan; keterangan jenis ini belum tersedia.'))
     extras = []
     for key, label in (('serial', 'Serial sertifikat'), ('username', 'Akun karyawan'),
+                       ('replacement', 'Identitas pengganti'),
                        ('archive_id', 'Nomor arsip')):
         value = detail.get(key)
         if isinstance(value, str):
@@ -123,6 +126,8 @@ def server_description(row):
         'employee_disabled': 'Akun dinonaktifkan.', 'employee_login': 'Login karyawan berhasil.',
         'admission_timing': 'Waktu deteksi dan respons penolakan admission dicatat.',
         'disabled': 'Identitas perangkat dinonaktifkan.',
+        'employee_logout': 'Sesi karyawan diakhiri; challenge dan akses sesi tersebut dicabut.',
+        'employee_logout_pending': 'Token sesi dicabut; penghapusan peer belum terkonfirmasi, perlu retry.',
     }
     return descriptions.get(row['event'], 'Peristiwa keamanan dicatat pada server.')
 

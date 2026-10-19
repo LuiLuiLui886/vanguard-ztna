@@ -4,9 +4,12 @@ import getpass
 import json
 import math
 import os
+import secrets
 import signal
+import stat
 import tempfile
 import time
+from contextlib import contextmanager, nullcontext
 from pathlib import Path
 
 from cryptography import x509
@@ -127,6 +130,47 @@ def admit(directory, remote):
 
 def login_employee(directory, remote, username, password):
     directory = private_dir(directory)
+    with local_lock(directory / '.session.lock'):
+        return _login_employee(directory, remote, username, password)
+
+
+@contextmanager
+def local_lock(path):
+    """Nonblocking process lock; persistent lock file is not a secret/session."""
+    flags = os.O_RDWR | os.O_CREAT | getattr(os, 'O_NOFOLLOW', 0) | getattr(os, 'O_CLOEXEC', 0)
+    try:
+        fd = os.open(path, flags, 0o600)
+    except OSError as exc:
+        raise Rejected('Client lock unavailable; inspect ownership and path') from exc
+    with os.fdopen(fd, 'r+b') as stream:
+        info = os.fstat(stream.fileno())
+        if not stat.S_ISREG(info.st_mode) or info.st_nlink != 1:
+            raise Rejected('Client lock must be a private regular file')
+        if os.name == 'nt':
+            import msvcrt
+            try:
+                # Reading the byte first fails when another Windows handle
+                # already locks it. Inspect size without reading locked data.
+                if info.st_size == 0:
+                    stream.write(b'0')
+                    stream.flush()
+                stream.seek(0)
+                msvcrt.locking(stream.fileno(), msvcrt.LK_NBLCK, 1)
+            except OSError as exc:
+                raise Rejected('Another client operation owns this lock') from exc
+        else:
+            import fcntl
+            if info.st_uid != os.geteuid():
+                raise Rejected('Client lock has a different owner')
+            os.fchmod(stream.fileno(), 0o600)
+            try:
+                fcntl.flock(stream, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except BlockingIOError as exc:
+                raise Rejected('Another client operation owns this lock') from exc
+        yield
+
+
+def _login_employee(directory, remote, username, password):
     result = remote.call('POST', '/api/employee/login', {'username': username, 'password': password})
     target = directory / 'employee-session.json'
     temporary = None
@@ -144,17 +188,58 @@ def login_employee(directory, remote, username, password):
     return {'username': result['username'], 'expires_at': result['expires_at']}
 
 
+def logout_employee(directory, remote):
+    directory = private_dir(directory)
+    with local_lock(directory / '.session.lock'):
+        target = directory / 'employee-session.json'
+        if not target.exists():
+            raise Rejected('Tidak ada token lokal; pencabutan server tidak dapat dikonfirmasi')
+        saved = json.loads(target.read_text())
+        try:
+            result = remote.call('POST', '/api/employee/logout',
+                                 {'employee_session': saved['session_token']})
+            if result.get('revoked') is not True or result.get('peer_removal_confirmed') is not True:
+                raise Rejected('Unexpected logout result')
+        except Rejected as exc:
+            raise Rejected('Pencabutan server belum terkonfirmasi; token disimpan untuk retry',
+                           503) from exc
+        target.unlink()
+        return {'revoked': True, 'peer_removal_confirmed': True,
+                'local_tunnel': 'Proses connect akan cleanup saat renewal berikutnya; '
+                                'hentikan dengan Ctrl+C untuk cleanup segera'}
+
+
 class LinuxTunnel:
     name = 'wg0'
 
+    def __init__(self):
+        self.owner = 'vanguard-' + secrets.token_hex(16)
+        self.started = False
+
+    def lock(self):
+        return local_lock(Path('/run/lock/vanguard-client-wg0.lock'))
+
+    def links(self):
+        return json.loads(run(['ip', '-j', 'link', 'show']).stdout)
+
     def preflight(self):
-        pass
+        if any(link['ifname'] == self.name for link in self.links()):
+            raise Rejected('wg0 already exists; ownership is unknown; inspect before connecting')
 
     def up(self, config):
         run(['wg-quick', 'up', str(config)])
+        run(['ip', 'link', 'set', 'dev', self.name, 'alias', self.owner])
+        self.started = True
 
     def down(self, config):
+        link = next((item for item in self.links() if item['ifname'] == self.name), None)
+        if link is None:
+            return
+        if not self.started or link.get('ifalias') != self.owner:
+            raise Rejected('Tunnel ownership unconfirmed; configuration retained for inspection')
         run(['wg-quick', 'down', str(config)])
+        if any(item['ifname'] == self.name for item in self.links()):
+            raise Rejected('Tunnel removal unconfirmed; configuration retained')
 
 
 def tunnel_backend():
@@ -176,6 +261,12 @@ def check_admission(result, address):
 
 
 def connect(directory, remote, server_key, backend=None):
+    backend = backend or tunnel_backend()
+    with backend.lock() if hasattr(backend, 'lock') else nullcontext():
+        return _connect(directory, remote, server_key, backend)
+
+
+def _connect(directory, remote, server_key, backend):
     directory = private_dir(directory)
     wg_key(server_key)
     address = tunnel_ip(json.loads((directory / 'request.json').read_text())['tunnel_ip'])
@@ -220,6 +311,7 @@ def main():
     init.add_argument("--device-id", default="vm-client")
     init.add_argument('--tunnel-ip', default='10.8.0.2')
     sub.add_parser("admit")
+    sub.add_parser('logout')
     login = sub.add_parser('login')
     login.add_argument('--username', required=True)
     connection = sub.add_parser("connect")
@@ -237,6 +329,8 @@ def main():
                 print(json.dumps(result, indent=2))
             elif args.command == "admit":
                 print(json.dumps(admit(args.directory, remote), indent=2))
+            elif args.command == 'logout':
+                print(json.dumps(logout_employee(args.directory, remote), indent=2))
             else:
 
                 def stop(*_):
