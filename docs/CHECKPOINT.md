@@ -46,7 +46,8 @@ beban panjang belum dilakukan.
 Bukti privat: `state/deployment/hardening-20261019-2316/` dan
 `state/deployment/hardening-20261020/`. Password tidak diubah; inventaris privat
 hanya diperbarui status akun uji. Jangan commit bukti berisi credential/key.
-Publikasi dokumentasi akhir dan hasil readiness dicatat di jurnal aktif.
+Dokumentasi penutup53ea89c sudah dipush dan SHA remote cocok; pencatatan hasilnya
+ada di jurnal aktif. Tidak ada runner pengujian VM yang masih berjalan.
 
 Fetch penutup menemukan `origin/main` maju ke76af7e6 dengan dokumentasi dosen
 serta spesifikasi endpoint fisik/installer Windows; main lokal tetap c454c0c.
