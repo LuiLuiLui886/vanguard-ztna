@@ -1,5 +1,16 @@
 # Checkpoint VanGuard — 20 Oktober 2026
 
+## Sedang dikerjakan — kandidat readiness0.1.10
+
+Branch `fix/2026-10-20-readiness-lock` dari52e31db memperbaiki HEALTH-LOCK-01
+dengan tunggu lock3,5detik, timeout dependency konsisten dan dua probe admin
+paralel. Deadline subprocess6detik serta read-only/fail-closed tetap.
+Baseline health7PASS; kandidat terarah15PASS; staging CA20/20ready (maks3,344s).
+Full suite dan rollout belum selesai. Paket layanan masih0.1.9; jangan menyebut
+staging sebagai instalasi produksi. Lihat [rincian](READINESS_0.1.10.md) dan
+[jurnal](PROGRESS_2026-10-20.md). Penggabungan main/hardening belum dilakukan;
+pengguna mengarahkan kelanjutan pada perbaikan sistem.
+
 ## Status terbaru — rollout dan matriks VM selesai
 
 Semua enam node sudah memakai **0.1.9** pada branch

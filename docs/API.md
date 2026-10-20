@@ -10,7 +10,9 @@ Paket sudah di-rollout20 Oktober. Hasil dan keterbatasan bukti operasional ada
 pada [matriks validasi](VALIDASI_ROLLOUT_2026-10-20.md).
 
 Deployment mengikuti [checkpoint](CHECKPOINT.md); endpoint berikut tersedia
-pada source kandidat, bukan klaim semua VM sudah diperbarui.
+pada0.1.9. Kandidat [readiness0.1.10](READINESS_0.1.10.md) menunggu lock CA
+maksimal3,5detik dan memeriksa dependency admin secara paralel; batas subprocess
+tetap6detik. Readiness yang gagal tetap503, tanpa cache status sehat.
 
 | Method | Path | Akses dan hasil |
 |---|---|---|

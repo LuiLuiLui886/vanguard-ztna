@@ -6,6 +6,7 @@ import sqlite3
 import subprocess
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import requests
@@ -40,27 +41,45 @@ def daemon_fresh(directory):
         return False
 
 
-def dependency_ready(url, trust):
+def dependency_ready(url, trust, *, role='ca'):
     if not url.startswith('https://'):
         return False
     response = requests.get(url.rstrip('/') + '/readyz', verify=trust,
-                            timeout=(0.5, 1), allow_redirects=False)
+                            timeout=(0.5, 5 if role == 'server' else 4.25),
+                            allow_redirects=False)
     return response.status_code == 200 and response.json().get('status') == 'ready'
+
+
+def shared_ca_lock(lock):
+    """Wait for a short writer, never read a partially published CA generation."""
+    import fcntl
+
+    deadline = time.monotonic() + 3.5
+    while True:
+        try:
+            fcntl.flock(lock, fcntl.LOCK_SH | fcntl.LOCK_NB)
+            return
+        except BlockingIOError:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise
+            time.sleep(min(0.05, remaining))
 
 
 def probe(role):
     checks = {}
-    def inspect(name, action):
+    def status(action):
         try:
-            checks[name] = 'ready' if action() else 'not_ready'
+            return 'ready' if action() else 'not_ready'
         except Exception:
-            checks[name] = 'unknown'
+            return 'unknown'
+
+    def inspect(name, action):
+        checks[name] = status(action)
 
     trust = os.environ.get('VANGUARD_ROOT_CERT', '/etc/vanguard/root.crt')
     if role == 'ca':
         def ca_state():
-            import fcntl
-
             from .ca import Authority
             from .pki import load_cert, validate_crl
             path = Path(os.environ.get('VANGUARD_CA_DIR', '/var/lib/vanguard/ca')).resolve()
@@ -68,7 +87,7 @@ def probe(role):
             authority = object.__new__(Authority)
             authority.path = path
             with open(path / 'ca.lock', 'rb') as lock:
-                fcntl.flock(lock, fcntl.LOCK_SH | fcntl.LOCK_NB)
+                shared_ca_lock(lock)
                 if (path / '.transaction/commit.json').exists():
                     return False
                 authority.check_state()
@@ -80,9 +99,11 @@ def probe(role):
         path = Path(os.environ.get('VANGUARD_' + role.upper() + '_DIR',
                                    '/var/lib/vanguard/' + role)).resolve()
         inspect('database', lambda: database_ready(path / (role + '.db')))
-        inspect('ca', lambda: dependency_ready(os.environ.get(
-            'VANGUARD_CA_URL', 'https://192.168.100.10:8080'), trust))
+        def ca_ready():
+            return dependency_ready(os.environ.get(
+                'VANGUARD_CA_URL', 'https://192.168.100.10:8080'), trust)
         if role == 'server':
+            inspect('ca', ca_ready)
             inspect('daemon', lambda: daemon_fresh(path))
             def interface():
                 subprocess.run(['wg', 'show', 'wg0', 'peers'], check=True,
@@ -90,8 +111,14 @@ def probe(role):
                 return True
             inspect('interface', interface)
         else:
-            inspect('server', lambda: dependency_ready(os.environ.get(
-                'VANGUARD_SERVER_URL', 'https://192.168.100.20:8081'), trust))
+            # These independent read-only requests must overlap: sequential
+            # nested probes can exceed the outer six-second subprocess budget.
+            with ThreadPoolExecutor(max_workers=2) as pool:
+                ca = pool.submit(status, ca_ready)
+                server = pool.submit(status, lambda: dependency_ready(os.environ.get(
+                    'VANGUARD_SERVER_URL', 'https://192.168.100.20:8081'), trust,
+                    role='server'))
+                checks['ca'], checks['server'] = ca.result(), server.result()
     else:
         checks['role'] = 'unknown'
     return {'status': 'ready' if all(v == 'ready' for v in checks.values()) else 'not_ready',

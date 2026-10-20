@@ -1,5 +1,12 @@
 # Lanjutkan proyek VanGuard
 
+**Sedang dikerjakan20 Oktober: kandidat readiness0.1.10** pada branch
+`fix/2026-10-20-readiness-lock`. Health/status+contention15PASS, baseline relevan
+7PASS dari snapshot52e31db, staging CA20/20ready; suite lengkap/rollout menunggu.
+Jangan mengklaim0.1.10 sudah terpasang. Lanjutkan dari
+[rincian patch](docs/READINESS_0.1.10.md) dan [jurnal](docs/PROGRESS_2026-10-20.md).
+Merge main/hardening belum dilakukan; fokus aktif kembali ke perbaikan sistem.
+
 **20 Oktober — rollout0.1.9 dan matriks VM selesai.** Lima Ubuntu dan satu
 Windows dipertahankan. Linux/Windows live lulus untuk lifecycle, resource gate,
 logout bersamaan renewal, reboot aktif, revoke TCP, penggantian immutable serta
