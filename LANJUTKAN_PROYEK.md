@@ -1,10 +1,34 @@
 # Lanjutkan proyek VanGuard
 
-**20 Oktober — IN_PROGRESS:** rollout CA/server/admin/client Ubuntu0.1.9 sudah
-terpasang; gate aplikasi default-deny aktif. Linux HTTP/lifecycle/logout/watchdog/
-expiry/reboot/revocation/replacement PASS; kedua identitas uji direvoke dan akun
-dinonaktifkan. Slot .3 bebas untuk Windows. Upgrade Windows sedang dimulai. CI39283176466 SUCCESS.
-Lihat [jurnal20 Oktober](docs/PROGRESS_2026-10-20.md) dan checkpoint terbaru.
+**20 Oktober — rollout0.1.9 dan matriks VM selesai.** Lima Ubuntu dan satu
+Windows dipertahankan. Linux/Windows live lulus untuk lifecycle, resource gate,
+logout bersamaan renewal, reboot aktif, revoke TCP, penggantian immutable serta
+akun disabled. Seluruh identitas disposable dicabut, akun uji disabled, grant
+kosong, nol peer; task/config/tunnel Windows bersih dan demo sementara dihentikan.
+
+CA/server/admin/Windows running; client Ubuntu/attacker mati untuk RAM. Invariant
+CA, enam XML, hash identitas utama dan Secure Boot/TPM PASS. CI0695e03 SUCCESS:
+205 PASS/1 SKIP pada masing-masing Linux3.10/3.12,28 PASS/2 SKIP Windows helper.
+Jangan menjumlahkan suite overlap atau menyebut helper sebagai pengujian VPN.
+
+**Lanjutan yang diperlukan:** power-loss media CA BELUM_TERUJI; reproduksi
+WIN-CLEANUP-02 (interupsi segera setelah instalasi) sebelum mengubah recovery
+otomatis. Config wajib dipertahankan sampai ownership dan service berhenti
+terkonfirmasi. HEALTH-LOCK-01/P2: readiness sementara503 karena shared lock CA
+berbenturan dengan transaksi;30sampel18ready/12konflik lock, bukan kerusakan
+invariant/CRL. Liveness200 tidak berarti readiness stabil. Verifikasi retry
+terbatas/deadline sebelum perubahan. Jangan ulang enrollment identitas uji lama
+atau restore index/CRL.
+Benchmark boot berulang/soak panjang belum dilakukan. Source/perbaikan arsip
+sudah pada branch `hardening/2026-10-18-resilience`. Fetch terakhir menemukan
+origin/main76af7e6 berisi dokumentasi endpoint/installer yang belum digabung;
+main lokal c454c0c tetap. Baca catatan integrasi pada checkpoint sebelum tugas baru.
+
+Baca [checkpoint](docs/CHECKPOINT.md), [matriks bukti](docs/VALIDASI_ROLLOUT_2026-10-20.md),
+[jurnal aktif](docs/PROGRESS_2026-10-20.md), serta
+[modul tunggal](docs/MODUL_PENGGUNAAN_VANGUARD.html). Credential tetap hanya di
+inventaris privat host. Riwayat berikut dipertahankan sebagai bukti historis;
+status IN_PROGRESS atau versi lama di dalamnya bukan status operasional terkini.
 
 **19 Oktober2026 — hardening kandidat teruji; Windows timer diperbaiki.**
 Source0.1.9 dan modul sudah dipush ke branch `hardening/2026-10-18-resilience`

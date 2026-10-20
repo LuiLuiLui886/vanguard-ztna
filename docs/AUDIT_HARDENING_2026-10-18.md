@@ -107,3 +107,20 @@ akses server; operator memverifikasi path/ownership, stop dan uninstall hingga
 jangan mengklaim semua cleanup otomatis lulus. Kriteria lanjutan: reproduksi
 terkontrol startup/stop race dan pemulihan otomatis yang tetap memastikan
 ownership. Perpanjangan timeout saja bukan bukti penyebab teratasi.
+
+HEALTH-LOCK-01 — **Risiko desain/P2, terverifikasi20 Oktober**:
+`vanguard/health.py:probe/ca_state` mengambil shared lock secara nonblocking.
+Dua snapshot akhir mengamati503 pada CA atau dependency CA/server, meskipun
+liveness200. Diagnosis30sampel menghasilkan18ready dan12BlockingIOError saat
+lock; tidak ada kegagalan invariant/CRL pada sampel tersebut. Dampak: contention
+transaksi dapat menimbulkan not_ready sementara dan merambat ke admin.
+Tidak mengubah503 menjadi200 atau melewati lock. Kriteria selesai berikutnya:
+ukur durasi transaksi, uji retry terbatas pada contention singkat/panjang,
+pastikan keseluruhan deadline6detik dan timeout dependency konsisten, dan
+buktikan probe tetap read-only tanpa menerbitkan CRL atau memulihkan transaksi.
+
+Matriks Windows VM20 Oktober sekarang mencakup expiry, logout race/scope,
+reboot aktif, resource gate/TCP aktif, CA/daemon stop/watchdog, replacement dan
+disable akun; seluruh hasil aktual terdapat pada matriks rollout. Semua akun/
+identitas disposable sudah ditutup dan bukti lama tetap dipertahankan. Bukti
+live ini tidak menutup tiga risiko di atas atau membuktikan soak beban panjang.

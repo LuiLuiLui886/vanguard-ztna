@@ -1232,6 +1232,16 @@ lima Ubuntu dan satu Windows20 Oktober, dengan backup serta verifikasi identitas
 Bukti tiap skenario dibedakan dalam [matriks validasi](VALIDASI_ROLLOUT_2026-10-20.md).
 Periksa [checkpoint](CHECKPOINT.md) untuk status VM dan pekerjaan lanjutan.
 
+Matriks VM Ubuntu dan Windows sudah menguji renewal, expiry, logout bersamaan
+renewal, reboot aktif, pencabutan yang memutus TCP aktif dan penggantian identitas.
+Semua akun/identitas disposable dinonaktifkan/dicabut setelah tes; demo HTTP
+sementara sudah dihentikan, sehingga hasil uji bukan aplikasi bisnis yang selalu
+tersedia. Readiness CA dapat sementara503 ketika lock sedang dipakai transaksi:
+tunggu lalu periksa kembali, dan jangan mengabaikan503 yang terus berulang.
+Healthz200 hanya membuktikan proses hidup. Jika cleanup Windows timeout, jangan
+hapus config sampai ownership dan penghentian service benar-benar terkonfirmasi.
+Power-loss media CA dan seluruh jenis kegagalan OS belum dibuktikan oleh matriks.
+
 Karyawan dapat menjalankan `vanguard-client logout` pada Ubuntu, atau
 `python -m vanguard.client logout` pada Windows dengan virtualenv dan direktori
 identitas yang sama seperti login. Keberhasilan berarti server mengonfirmasi

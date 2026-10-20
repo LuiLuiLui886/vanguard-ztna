@@ -1,15 +1,60 @@
-# Checkpoint VanGuard — 19 Oktober 2026
+# Checkpoint VanGuard — 20 Oktober 2026
 
-## Sedang dikerjakan — rollout20 Oktober (IN_PROGRESS)
+## Status terbaru — rollout dan matriks VM selesai
 
-CA/server/admin/client Ubuntu kini0.1.9, backup quiescent dan readiness19 Oktober
-PASS. Gate resource default-deny aktif; Linux live HTTP/lifecycle/logout/watchdog/
-expiry/reboot/revocation/replacement PASS. Kedua identitas Linux disposable
-sudah direvoke dan akunnya dinonaktifkan. Tidak mengubah identitas utama.
-Rollout Windows0.1.9 sedang dimulai; sebelum verifikasi tetap anggap0.1.8.
-CI39283176466 kini terkonfirmasi SUCCESS seluruh tiga job (20 Oktober).
-Bukti privat:state/deployment/hardening-20261019-2316/ dan hardening-20261020/.
-Baca [jurnal20 Oktober](PROGRESS_2026-10-20.md) sebelum melanjutkan.
+Semua enam node sudah memakai **0.1.9** pada branch
+[hardening/2026-10-18-resilience](https://github.com/LuiLuiLui886/vanguard-ztna/tree/hardening/2026-10-18-resilience).
+Branch hardening masih terpisah dari main. Baca [matriks bukti](VALIDASI_ROLLOUT_2026-10-20.md) dan
+[jurnal 20 Oktober](PROGRESS_2026-10-20.md); riwayat di bawah bukan status terkini.
+
+- Ubuntu dan Windows VM asli: admission/handshake/HTTP, default-deny/LAN/port,
+  TCP aktif setelah grant/revoke, dua renewal otomatis, natural lease expiry,
+  session expiry terarah, CA outage/recovery, daemon stop/watchdog, logout
+  race/idempotensi/scope, reboot aktif dan fresh admission PASS. Replacement
+  memakai ID dan dua key baru dari client, akun/IP tetap; disable akun PASS.
+- Seluruh identitas disposable Linux/Windows direvoke, kedua akun disabled,
+  grant kosong dan nol live peer. Task/tunnel/config uji Windows sudah hilang;
+  demo HTTP sementara dihentikan. Jangan ulang enrollment identitas uji lama.
+- CA invariant setelah seluruh pencabutan PASS. Enam definisi VM sama dengan
+  backup; hash root/key/config utama CA/server/admin dan lima file identitas
+  utama Windows cocok. Secure Boot/TPM, versi0.1.9 dan pip check Windows PASS.
+- Liveness ketiganya200; readiness sementara503 pada CA/dependensinya terbukti
+  akibat konflik lock. Diagnosis30sampel:18ready,12BlockingIOError saat lock,
+  tanpa kegagalan invariant/CRL. **HEALTH-LOCK-01/P2** belum diperbaiki; jangan
+  mengartikan liveness200 sebagai seluruh dependency siap.
+- CA/server/admin/Windows running; Ubuntu client dan attacker shut off untuk
+  membatasi RAM host. Keenam VM tetap ada, tidak ada node diganti.
+- CI [39382689148](https://github.com/LuiLuiLui886/vanguard-ztna/actions/runs/39382689148)
+  pada0695e03 SUCCESS: **205 PASS/1 SKIP** masing-masing Ubuntu Python3.10/3.12;
+  **28 PASS/2 SKIP** Windows helper. Tiga regresi ZIP lokal PASS. CI helper tidak
+  menggantikan bukti tunnel VM, dan suite overlap tidak dijumlahkan.
+- Perbaikan AUD-T01 sudah dipush: pemeriksaan credential memindai isi setiap
+  anggota ZIP, bukan byte kontainer terkompresi. Tidak ada bukti kebocoran pada
+  arsip aplikasi. Modul tetap satu Markdown/HTML termasuk CA/PKI.
+
+**Pekerjaan tersisa:** power-loss disk/host CA masih **BELUM_TERUJI**, berbeda
+dari SIGKILL/transaksi terisolasi. WIN-CLEANUP-02 masih risiko P2: interupsi segera
+setelah instalasi pernah meninggalkan service RUNNING/Disabled melewati timeout;
+config ditahan dan operator berhasil stop/uninstall1060 setelah ownership cocok.
+Normal cleanup dan recovery reboot lulus, tetapi bukan bukti seluruh kegagalan OS
+pulih otomatis. Berikutnya reproduksi terkontrol pada identitas disposable dan
+salinan CA khusus untuk uji durability; jangan restore index/CRL lama atau menebak
+counter. Untuk HEALTH-LOCK-01, ukur durasi contention lalu uji retry terbatas
+tanpa melonggarkan unknown/deadline/read-only. Benchmark boot berulang dan soak
+beban panjang belum dilakukan.
+
+Bukti privat: `state/deployment/hardening-20261019-2316/` dan
+`state/deployment/hardening-20261020/`. Password tidak diubah; inventaris privat
+hanya diperbarui status akun uji. Jangan commit bukti berisi credential/key.
+Publikasi dokumentasi akhir dan hasil readiness dicatat di jurnal aktif.
+
+Fetch penutup menemukan `origin/main` maju ke76af7e6 dengan dokumentasi dosen
+serta spesifikasi endpoint fisik/installer Windows; main lokal tetap c454c0c.
+Perubahan upstream itu tidak mengubah source aplikasi dan belum digabung ke
+branch ini. [Spesifikasi pada main](https://github.com/LuiLuiLui886/vanguard-ztna/blob/76af7e63ec8e90e80377721f0d0bd6d07f1ba0da/CODEX_VANGUARD_MASTER_PROMPT.md)
+adalah lingkup persiapan lanjutan yang terpisah, bukan fitur yang sudah selesai.
+Pertahankan kedua histori saat integrasi; jangan menimpa checkpoint terbaru
+dengan status historis pada main.
 
 ## Riwayat19 Oktober: kandidat0.1.9 teruji dan timer Windows diperbaiki
 

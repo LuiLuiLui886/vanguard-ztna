@@ -113,3 +113,21 @@ Linux live matrix is recorded in docs/VALIDASI_ROLLOUT_2026-10-20.md; Windows
 live work remains in progress until its final evidence/cleanup is recorded.
 A Windows teardown timeout preserved config; verified operator recovery stopped
 the exact service before confirming1060. Do not blindly delete leftover config.
+
+Operational completion — 20 October 2026 evening:
+The Linux and Windows real-VM lifecycle/resource matrices are complete, including
+logout/renewal scope, natural lease expiry, production daemon watchdog, active
+client reboot, active TCP revocation, immutable identity replacement and disabled
+accounts. All disposable identities were revoked, test accounts disabled, grants
+emptied and peers removed. The Windows test task/service/config and temporary
+HTTP listener are absent. Primary identity hashes and all six inactive domain
+definitions match their backups; Windows Secure Boot/TPM remain enabled.
+CA/server/admin/Windows are running; Ubuntu client/attacker are shut off for RAM.
+Readiness is not uniformly healthy: final samples observed transient503, traced
+in30read-only probes to18ready and12nonblocking shared-lock conflicts. No invariant
+or CRL validation failure appeared in those probes. Preserve unknown rather than
+claiming success while the CA writer holds its lock. HEALTH-LOCK-01 requires
+bounded retry/deadline/read-only validation before changing this behavior.
+WIN-CLEANUP-02 immediate-interrupt service timeout and actual CA media power-loss
+remain unresolved evidence limits. CI0695e03 passed205/1 on each Linux3.10/3.12
+and28/2 Windows helpers; helper CI is separate from the real guest tunnel matrix.

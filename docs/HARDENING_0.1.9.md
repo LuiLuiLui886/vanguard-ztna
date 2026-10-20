@@ -1,9 +1,13 @@
-# Kandidat VanGuard 0.1.9 — ketahanan dan pengelolaan akses
+# VanGuard 0.1.9 — ketahanan dan pengelolaan akses
 
 Source berada pada branch `hardening/2026-10-18-resilience`. Pada20 Oktober,
 paket0.1.9 sudah dipasang pada lima Ubuntu dan satu Windows dengan backup serta
-pemeriksaan identitas. Matriks Linux selesai, pengujian Windows lanjutan sedang
-berjalan. Lihat [hasil rollout](VALIDASI_ROLLOUT_2026-10-20.md),
+pemeriksaan identitas. Matriks VM Linux dan Windows selesai, termasuk reboot,
+revoke TCP aktif dan replacement. Identitas uji sudah dicabut dan cleanup
+terkonfirmasi. Power-loss media CA, risiko cleanup interupsi segera di Windows,
+serta readiness503 akibat konflik lock CA tetap pekerjaan lanjutan; jangan
+menyamakan matriks lulus dengan seluruh risiko sudah tertutup.
+Lihat [hasil rollout](VALIDASI_ROLLOUT_2026-10-20.md),
 [audit](AUDIT_HARDENING_2026-10-18.md) dan [jurnal](PROGRESS_2026-10-20.md).
 
 ## Perubahan perilaku

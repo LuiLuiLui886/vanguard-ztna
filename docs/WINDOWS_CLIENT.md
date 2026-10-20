@@ -1,9 +1,17 @@
 # Client Windows tambahan — VanGuard0.1.9
 
-Pada20 Oktober, client utama sudah di-upgrade ke0.1.9 dengan backup ZIP privat,
+Pada 20 Oktober, client utama sudah di-upgrade ke0.1.9 dengan backup ZIP privat,
 verifikasi dependensi dan hash identitas utama tetap sama. WireGuard/HTTP asli,
 default-deny, LAN/portdeny, dua renewal67,18/71,73detik dan cleanup normal PASS.
-Logout live/unreachable PASS. Pengujian expiry/reboot/revoke sedang diselesaikan;
+Logout race/idempotensi/scope, unreachable, natural expiry, CA outage/recovery,
+daemon stop/watchdog, reboot aktif dan admission baru PASS. TCP aktif terputus
+setelah grant dihapus atau sertifikat dicabut. Penggantian dengan ID dan kedua
+key baru dari Windows serta akun disabled PASS. Semua identitas disposable
+dicabut dan akun uji disabled; task/service/config uji sudah tidak ada. Identitas
+utama, Secure Boot/TPM dan definisi VM tetap sama. Ini tidak mencakup seluruh
+kegagalan OS atau soak test panjang; cleanup interupsi di bawah masih risiko.
+Readiness CA dapat sementara503 karena contention lock; liveness bukan readiness.
+Untuk rincian dan batas bukti,
 lihat [matriks aktual](VALIDASI_ROLLOUT_2026-10-20.md) dan [checkpoint](CHECKPOINT.md).
 
 Jika cleanup menampilkan timeout, **jangan hapus config**. Pada uji interupsi
