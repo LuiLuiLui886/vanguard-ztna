@@ -4,7 +4,10 @@ Semua API menggunakan HTTPS dengan trust anchor `/etc/vanguard/root.crt` yang di
 melalui jalur tepercaya. Tidak ada mode `verify=False`. CA trust tidak diunduh tanpa verifikasi.
 Respons gagal berbentuk `{"error":"..."}`. Request JSON dibatasi 64 KiB.
 
-## Tambahan kandidat 0.1.9
+## Tambahan0.1.9
+
+Paket sudah di-rollout20 Oktober. Hasil dan keterbatasan bukti operasional ada
+pada [matriks validasi](VALIDASI_ROLLOUT_2026-10-20.md).
 
 Deployment mengikuti [checkpoint](CHECKPOINT.md); endpoint berikut tersedia
 pada source kandidat, bukan klaim semua VM sudah diperbarui.

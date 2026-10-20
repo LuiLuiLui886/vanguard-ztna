@@ -85,3 +85,25 @@ diterapkan setelah backup/shutdown normal. Boot/SSH, Secure Boot/TPM dan
 hash identitas PASS; native28 PASS/2 SKIP; lima definisi Ubuntu sama. Kriteria
 keamanan/boot tercapai; persentase percepatan desktop/boot umum tetap belum
 terbukti karena hanya satu sampel startup per konfigurasi dan tipe boot berbeda.
+
+## Pembaruan20 Oktober: rollout dan bukti VM
+
+Status historis BELUM_TERUJI pada tabel19 Oktober tidak otomatis menjadi bukti
+terkini. [Matriks rollout](VALIDASI_ROLLOUT_2026-10-20.md) mencatat CA utama
+backup/invariant/upgrade, lifecycle Linux lengkap, produksi watchdog, logout
+race/scope, HTTP policy nyata dan Windows native/live secara terpisah.
+
+AUD-T01 Bug terbukti/P2: scripts/verify_activity_archive.py main memeriksa secret
+hanya pada byte ZIP terkompresi. Reproduksi sintetis membuktikan false negative.
+Helper assert_no_credentials kini membuka semua anggota; tiga regresi lulus,
+workflow admin live dan scan isi arsip lulus. Tidak ada bukti secret bocor dari
+arsip yang dihasilkan aplikasi. Kriteria selesai terpenuhi.
+
+WIN-CLEANUP-02 Risiko desain/P2: WindowsTunnel.down membatasi konfirmasi15detik.
+Pada interupsi segera setelah install dalam fault injection, uninstall kembali
+tetapi service tetap RUNNING/Disabled. Config dipertahankan, logout memutus
+akses server; operator memverifikasi path/ownership, stop dan uninstall hingga
+1060 sebelum arsip/hapus config. Penyebab keterlambatan OS belum dipastikan;
+jangan mengklaim semua cleanup otomatis lulus. Kriteria lanjutan: reproduksi
+terkontrol startup/stop race dan pemulihan otomatis yang tetap memastikan
+ownership. Perpanjangan timeout saja bukan bukti penyebab teratasi.

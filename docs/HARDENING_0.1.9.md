@@ -1,9 +1,10 @@
 # Kandidat VanGuard 0.1.9 — ketahanan dan pengelolaan akses
 
-Source berada pada branch `hardening/2026-10-18-resilience`. Versi paket ini
-membedakan kandidat baru dari 0.1.8; belum berarti paket sudah dipasang pada
-layanan utama. Lihat [audit](AUDIT_HARDENING_2026-10-18.md) dan
-[jurnal lanjutan](PROGRESS_2026-10-19.md) untuk hasil serta batas pengujian.
+Source berada pada branch `hardening/2026-10-18-resilience`. Pada20 Oktober,
+paket0.1.9 sudah dipasang pada lima Ubuntu dan satu Windows dengan backup serta
+pemeriksaan identitas. Matriks Linux selesai, pengujian Windows lanjutan sedang
+berjalan. Lihat [hasil rollout](VALIDASI_ROLLOUT_2026-10-20.md),
+[audit](AUDIT_HARDENING_2026-10-18.md) dan [jurnal](PROGRESS_2026-10-20.md).
 
 ## Perubahan perilaku
 

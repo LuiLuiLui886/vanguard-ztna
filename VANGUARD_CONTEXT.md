@@ -101,3 +101,15 @@ reached authenticated SSH in27.49 seconds. This is not a general desktop/boot
 performance guarantee or a VPN active-reboot test. Secure Boot/TPM and identity
 hashes passed, and28 helper tests passed (2 POSIX-only skips) after the change.
 The installed client remains0.1.8;0.1.9 was tested from isolated staging.
+
+Operational rollout — 20 October 2026:
+All five Ubuntu packages and the additional Windows client are now0.1.9.
+Quiescent backups, isolated CA consistency/transaction checks and unchanged
+primary identity hashes precede rollout. The CA root/index/serial were preserved;
+no old index/CRL restoration or counter guessing was performed. The server now
+enables the explicit TCP8082 application gate with default deny. Temporary
+identity .3 is used sequentially, not either primary client identity.
+Linux live matrix is recorded in docs/VALIDASI_ROLLOUT_2026-10-20.md; Windows
+live work remains in progress until its final evidence/cleanup is recorded.
+A Windows teardown timeout preserved config; verified operator recovery stopped
+the exact service before confirming1060. Do not blindly delete leftover config.

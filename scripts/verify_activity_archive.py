@@ -37,6 +37,15 @@ def parse(response):
     return parser
 
 
+def assert_no_credentials(bundle, credentials):
+    # Compression can hide a verbatim secret in the ZIP container.
+    # Inspect every member, including the manifest and future formats.
+    for name in bundle.namelist():
+        content = bundle.read(name)
+        assert credentials['password'].encode() not in content
+        assert credentials['totp_secret'].encode() not in content
+
+
 def main():
     cli = argparse.ArgumentParser(description=__doc__)
     cli.add_argument('onboarding', type=Path)
@@ -106,12 +115,7 @@ def main():
             assert manifest['archive_id'] == archive_id and rows
             assert manifest['created_by'] == credentials['username']
             assert manifest['row_count'] == len(rows)
-            # Compression can hide a verbatim secret in the ZIP container.
-            # Inspect every member, including the manifest and future formats.
-            for name in bundle.namelist():
-                content = bundle.read(name)
-                assert credentials['password'].encode() not in content
-                assert credentials['totp_secret'].encode() not in content
+            assert_no_credentials(bundle, credentials)
             assert any(row['title'] == 'Masuk dashboard' for row in rows)
             assert any(row['title'] == 'Aktivitas ditelusuri' for row in rows)
         temp = archive_path.with_name('.' + archive_path.name + '.tmp')

@@ -1225,11 +1225,12 @@ python3 scripts/render_module.py docs/MODUL_PENGGUNAAN_VANGUARD.md \
 HTML tidak memuat script, font eksternal atau kredensial. Buka di browser dan
 pilih Ctrl+P → Simpan sebagai PDF → A4 untuk salinan cetak.
 
-### 15.1 Tambahan kandidat 0.1.9: logout, status dan penggantian identitas
+### 15.1 VanGuard0.1.9: logout, status dan penggantian identitas
 
-Bagian ini berlaku setelah teknisi memasang **kandidat 0.1.9** dari branch
-`hardening/2026-10-18-resilience` dan memvalidasi rollout. Jangan menganggap VM
-sudah diperbarui hanya karena modul ini tersedia. Periksa [checkpoint](CHECKPOINT.md).
+Paket **0.1.9** dari branch `hardening/2026-10-18-resilience` sudah dipasang pada
+lima Ubuntu dan satu Windows20 Oktober, dengan backup serta verifikasi identitas.
+Bukti tiap skenario dibedakan dalam [matriks validasi](VALIDASI_ROLLOUT_2026-10-20.md).
+Periksa [checkpoint](CHECKPOINT.md) untuk status VM dan pekerjaan lanjutan.
 
 Karyawan dapat menjalankan `vanguard-client logout` pada Ubuntu, atau
 `python -m vanguard.client logout` pada Windows dengan virtualenv dan direktori
@@ -1257,7 +1258,10 @@ biasa. Jangan menimpa direktori/key lama sebelum prosedur pemulihan selesai.
 
 Halaman **Penyimpanan operasional** (`/operations`) memperlihatkan ukuran database,
 jumlah audit, pertumbuhan dan ruang disk. Tidak ada penghapusan histori otomatis.
-Aplikasi uji internal TCP8082 memerlukan kebijakan eksplisit yang dipasang teknisi;
+Gate aplikasi uji internal TCP8082 sudah dipasang dengan default-deny. Server
+demo pada pengujian memakai service sementara; keberhasilan tes tidak berarti
+ada aplikasi bisnis permanen yang otomatis tersedia. Akses memerlukan kebijakan
+eksplisit pasangan identitas/akun, resource, alamat, protokol dan port;
 pendaftaran perangkat saja tidak memberi grant. Rincian backup, rollout, recovery
 CA tanpa rollback index/CRL dan matriks pengujian ada pada
 [panduan hardening 0.1.9](HARDENING_0.1.9.md).

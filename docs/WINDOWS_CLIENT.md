@@ -1,5 +1,20 @@
-# Client Windows tambahan — validasi awal 0.1.8
+# Client Windows tambahan — VanGuard0.1.9
 
+Pada20 Oktober, client utama sudah di-upgrade ke0.1.9 dengan backup ZIP privat,
+verifikasi dependensi dan hash identitas utama tetap sama. WireGuard/HTTP asli,
+default-deny, LAN/portdeny, dua renewal67,18/71,73detik dan cleanup normal PASS.
+Logout live/unreachable PASS. Pengujian expiry/reboot/revoke sedang diselesaikan;
+lihat [matriks aktual](VALIDASI_ROLLOUT_2026-10-20.md) dan [checkpoint](CHECKPOINT.md).
+
+Jika cleanup menampilkan timeout, **jangan hapus config**. Pada uji interupsi
+segera setelah install, service masih running meskipun uninstall telah diminta;
+akses server dicabut dahulu. Operator mencocokkan path service dengan config
+identitas uji, memastikan proses pemilik tidak lagi berjalan dan mengambil lock,
+lalu menghentikan service yang tepat. Setelah uninstall terkonfirmasi1060,
+config diarsipkan sebelum dihapus. Pemulihan ini tidak membenarkan penghapusan
+service/config yang kepemilikannya belum dipastikan. Detail bukti tetap privat.
+
+## Riwayat validasi0.1.8 dan kandidat0.1.9
 Kandidat 0.1.9: [hardening dan rollout](HARDENING_0.1.9.md) menambahkan logout,
 lock proses dan guard ownership saat cleanup. Gunakan `python -m vanguard.client
 logout` setelah paket yang mendukungnya dipasang. Kegagalan kontak server

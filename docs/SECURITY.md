@@ -75,7 +75,9 @@ dan cache dengan staging, manifest commit durable, dan roll-forward seluruh stat
 Operasi berikutnya menyelesaikan commit sebelum mutasi baru. Staging tanpa commit
 dipertahankan sebagai bukti; state rusak tanpa manifest ditolak. Tidak ada restore
 index/CRL lama atau tebakan counter. SIGKILL sudah diuji pada CA sementara;
-power-loss disk dan rollout CA produksi tetap memerlukan bukti terpisah.
+rollout CA utama20 Oktober sudah lolos invariant/salinan terisolasi dan backup;
+power-loss disk tetap memerlukan bukti terpisah. Lihat
+[matriks live](VALIDASI_ROLLOUT_2026-10-20.md).
 
 TLS client memverifikasi chain dan IP terhadap Root CA. Implementasi Requests tidak menerapkan
 CRL untuk **sertifikat HTTPS service**; revoke admission berlaku pada sertifikat perangkat.
