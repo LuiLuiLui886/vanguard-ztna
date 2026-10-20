@@ -1,6 +1,17 @@
 # Checkpoint VanGuard — 19 Oktober 2026
 
-## Aktif: kandidat0.1.9 teruji dan timer Windows diperbaiki
+## Sedang dikerjakan — rollout20 Oktober (IN_PROGRESS)
+
+CA/server/admin/client Ubuntu kini0.1.9, backup quiescent dan readiness19 Oktober
+PASS. Gate resource default-deny aktif; Linux live HTTP/lifecycle/logout/watchdog/
+expiry/reboot/revocation/replacement PASS. Kedua identitas Linux disposable
+sudah direvoke dan akunnya dinonaktifkan. Tidak mengubah identitas utama.
+Rollout Windows0.1.9 sedang dimulai; sebelum verifikasi tetap anggap0.1.8.
+CI39283176466 kini terkonfirmasi SUCCESS seluruh tiga job (20 Oktober).
+Bukti privat:state/deployment/hardening-20261019-2316/ dan hardening-20261020/.
+Baca [jurnal20 Oktober](PROGRESS_2026-10-20.md) sebelum melanjutkan.
+
+## Riwayat19 Oktober: kandidat0.1.9 teruji dan timer Windows diperbaiki
 
 Branch [hardening/2026-10-18-resilience](https://github.com/LuiLuiLui886/vanguard-ztna/tree/hardening/2026-10-18-resilience).
 CA b922f03, lifecycle/features65c486e dan dokumentasi84f4a81 sudah dipush;

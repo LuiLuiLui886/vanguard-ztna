@@ -1,5 +1,11 @@
 # Lanjutkan proyek VanGuard
 
+**20 Oktober — IN_PROGRESS:** rollout CA/server/admin/client Ubuntu0.1.9 sudah
+terpasang; gate aplikasi default-deny aktif. Linux HTTP/lifecycle/logout/watchdog/
+expiry/reboot/revocation/replacement PASS; kedua identitas uji direvoke dan akun
+dinonaktifkan. Slot .3 bebas untuk Windows. Upgrade Windows sedang dimulai. CI39283176466 SUCCESS.
+Lihat [jurnal20 Oktober](docs/PROGRESS_2026-10-20.md) dan checkpoint terbaru.
+
 **19 Oktober2026 — hardening kandidat teruji; Windows timer diperbaiki.**
 Source0.1.9 dan modul sudah dipush ke branch `hardening/2026-10-18-resilience`
 (publikasi aplikasi84f4a81, timer Windows42028cf); main tetap c454c0c. CA/lifecycle/logout/readiness/
