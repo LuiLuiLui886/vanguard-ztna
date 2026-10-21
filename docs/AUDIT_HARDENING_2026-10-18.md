@@ -124,3 +124,33 @@ reboot aktif, resource gate/TCP aktif, CA/daemon stop/watchdog, replacement dan
 disable akun; seluruh hasil aktual terdapat pada matriks rollout. Semua akun/
 identitas disposable sudah ditutup dan bukti lama tetap dipertahankan. Bukti
 live ini tidak menutup tiga risiko di atas atau membuktikan soak beban panjang.
+
+## Pembaruan21 Oktober: biaya publikasi CA
+
+**CA-IO-01 — Risiko desain/P2, terverifikasi ulang.**
+`vanguard/ca_storage.py:Publication.recover/publish_file` menerbitkan ulang dan
+fsync parent untuk setiap anggota meskipun isinya identik. Salinan CA operasional
+mempunyai77anggota,74identik. Benchmark awal6,471–7,967detik; lock operasional
+saat pemantauan paralel mencapai5,980detik. Dampak: I/O bertambah mengikuti arsip
+sertifikat dan readiness dapat503 karena lock melebihi3,5detik. Tidak ada bukti
+kerusakan CA pada sampel ini.
+
+Kandidat0.1.11 mempertahankan inode identik, memperbaiki mode0600 dan fsync file;
+anggota berubah tetap ditulis/fsync/rename. Semua parent disinkronkan setelah
+publikasi dan sebelum manifest commit dihapus. Manifest/work lengkap diverifikasi
+sebelum publikasi; tidak ada pemulihan index lama atau tebakan counter.
+
+Kriteria selesai: inode identik tetap, anggota baru/berubah terbit, kegagalan
+fsync mempertahankan commit, SIGKILL pulih maju dengan seluruh manifest,
+permission aman, biaya terukur turun pada CA sementara, full suite/CI PASS dan
+postflight VM terdokumentasi.34 tes terarah PASS; benchmark bergantian tanpa
+writer operasional2,458–2,606detik sebelum dan1,165–1,201detik sesudah. Full suite,
+CI dan rollout kandidat masih IN_PROGRESS pada pencatatan ini.
+
+**HEALTH-LOCK-01 — Risiko desain/P2, mitigasi parsial.**0.1.10 sudah terpasang
+CA/server/admin. Lokal dan dua CI Linux masing-masing213PASS/1SKIP; helper
+Windows28PASS/2SKIP. HTTPS postflight31HTTP200/2HTTP503. Deadline/unknown/read-only
+teruji, tetapi bukan bukti contention hilang.0.1.11 mengurangi biaya writer;
+ketahanan pada beban panjang tetap perlu pengukuran. Power-loss media CA dan
+WIN-CLEANUP-02 tetap **Perilaku yang belum diuji/Risiko desain**, sesuai rincian
+sebelumnya; patch ini tidak membuktikan pemulihan otomatis untuk keduanya.

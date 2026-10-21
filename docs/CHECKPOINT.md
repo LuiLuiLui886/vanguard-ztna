@@ -1,15 +1,28 @@
-# Checkpoint VanGuard — 20 Oktober 2026
+# Checkpoint VanGuard — 21 Oktober 2026
 
-## Sedang dikerjakan — kandidat readiness0.1.10
+**21 Oktober, kandidat0.1.11 IN_PROGRESS:** optimasi publikasi CA mempertahankan
+manifest penuh dan barrier fsync sebelum commit dihapus.34 tes terarah PASS;
+benchmark salinan CA bergantian2,458–2,606detik menjadi1,165–1,201detik. Full
+lokal/CI sedang dijalankan; belum di-rollout. CA/server/admin masih0.1.10,
+client/attacker/Windows0.1.9. Lima Ubuntu running; Windows shut off. Unit server
+sesudah benchmark active dan nol peer. Jangan ulangi benchmark/rollout tanpa
+memeriksa bukti privat dan jurnal21 Oktober. Source beku selama pengujian.
 
-Branch `fix/2026-10-20-readiness-lock` dari52e31db memperbaiki HEALTH-LOCK-01
-dengan tunggu lock3,5detik, timeout dependency konsisten dan dua probe admin
-paralel. Deadline subprocess6detik serta read-only/fail-closed tetap.
-Baseline health7PASS; kandidat terarah15PASS; staging CA20/20ready (maks3,344s).
-Full suite dan rollout belum selesai. Paket layanan masih0.1.9; jangan menyebut
-staging sebagai instalasi produksi. Lihat [rincian](READINESS_0.1.10.md) dan
-[jurnal](PROGRESS_2026-10-20.md). Penggabungan main/hardening belum dilakukan;
-pengguna mengarahkan kelanjutan pada perbaikan sistem.
+
+## Sedang dikerjakan21 Oktober — postflight readiness0.1.10
+
+CA/server/admin sudah0.1.10 sejak rollout20 Oktober, bukan hanya staging.
+Source d94266e di branch `fix/2026-10-20-readiness-lock`: lokal213PASS/1SKIP,
+CI39437511242 masing-masing Linux3.10/3.12:213PASS/1SKIP, Windows helper28/2.
+Backup dan15hash/invariant CA/enam XML PASS. Postflight jalur sah masih memiliki
+31HTTP200/2HTTP503 dari33sampel; keduanya admin dependency server. Belum boleh
+mengklaim semua postflight lulus atau mengulang rollout yang sudah selesai.
+
+Pada21 Oktober keenam VM ditemukan mati; CA/server/admin dinyalakan untuk
+verifikasi pascaboot dan diagnosis read-only nested dependency. Client/attacker/
+Windows tetap mati. Baca [jurnal aktif](PROGRESS_2026-10-21.md) dan
+[rincian patch](READINESS_0.1.10.md). Perubahan jurnal20 Oktober dipertahankan.
+Main/hardening belum digabung; pengguna mengarahkan fokus pada perbaikan sistem.
 
 ## Status terbaru — rollout dan matriks VM selesai
 

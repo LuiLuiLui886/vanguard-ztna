@@ -9,6 +9,7 @@ import hashlib
 import json
 import os
 import shutil
+import stat
 import uuid
 from pathlib import Path
 
@@ -28,7 +29,7 @@ def sync_dir(path):
         os.close(fd)
 
 
-def durable_write(path, data):
+def durable_write(path, data, *, sync_parent=True):
     temporary = path.with_name('.' + path.name + '.publishing')
     with open(temporary, 'wb') as out:
         os.chmod(temporary, 0o600)
@@ -36,7 +37,8 @@ def durable_write(path, data):
         out.flush()
         os.fsync(out.fileno())
     os.replace(temporary, path)
-    sync_dir(path.parent)
+    if sync_parent:
+        sync_dir(path.parent)
 
 
 class Publication:
@@ -83,6 +85,10 @@ class Publication:
                 self.publish_file(name)
             for name in DIRECTORIES:
                 private_dir(self.root / name)
+                sync_dir(self.root / name)
+            # One directory barrier per parent suffices for all its renames.
+            # Until these complete the durable full-generation manifest remains
+            # available, so interruption always replays the committed generation.
             sync_dir(self.root)
             # All members durable before removing the commit decision. A crash
             # before durable removal merely replays the identical generation.
@@ -93,7 +99,23 @@ class Publication:
             raise Rejected('CA committed transaction needs operator inspection', 503) from exc
 
     def publish_file(self, name):
-        durable_write(self.root / name, (self.work / name).read_bytes())
+        target = self.root / name
+        content = (self.work / name).read_bytes()
+        try:
+            current = target.open('rb')
+        except FileNotFoundError:
+            current = None
+        if current is not None:
+            with current:
+                if current.read() == content:
+                    # The full committed generation was verified above. An
+                    # identical member needs no replacement, but its inode and
+                    # directory entry must still be durable before commit removal.
+                    if stat.S_IMODE(os.fstat(current.fileno()).st_mode) != 0o600:
+                        os.fchmod(current.fileno(), 0o600)
+                    os.fsync(current.fileno())
+                    return
+        durable_write(target, content, sync_parent=False)
 
     def prepare(self):
         self.recover()

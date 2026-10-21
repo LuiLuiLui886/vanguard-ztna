@@ -1,7 +1,8 @@
 # Readiness VanGuard 0.1.10
 
-Status: kandidat pada branch `fix/2026-10-20-readiness-lock`; rollout belum
-dinyatakan selesai. Lihat [checkpoint](CHECKPOINT.md) untuk status terpasang.
+Status21 Oktober:0.1.10 sudah terpasang pada CA/server/admin. Client Ubuntu,
+attacker dan Windows tetap0.1.9. Kandidat0.1.11 sedang divalidasi pada branch
+`fix/2026-10-20-readiness-lock`. Lihat [checkpoint](CHECKPOINT.md).
 
 ## Masalah dan perbaikan
 
@@ -42,9 +43,11 @@ tidak berhasil. Kegagalan yang terus berulang membutuhkan inspeksi CA/dependensi
 - Staging VM-CA melalui wheel pada PYTHONPATH (belum mengganti service):
  20/20ready, waktu maksimum3,344detik. Ini sampel dengan writer normal aktif,
   bukan jaminan semua beban atau simulasi power-loss.
-- Suite lengkap, CI dan rollout HTTPS masih menunggu hasil. Kriteria selesai:
-  pemeriksaan terarah/full suite PASS, backup paket/config terverifikasi, versi
-  layanan tepat, hash identitas/state aman dan sampel HTTPS pascarollout dicatat.
+-0.1.10: full lokal213PASS/1SKIP676,76detik; CI39437511242 SUCCESS, Linux3.10/3.12
+  masing-masing213PASS/1SKIP, Windows helper28PASS/2SKIP. Rollout terverifikasi
+  dengan backup,15hash identitas/state dan enam definisi VM tetap. Postflight
+  HTTPS dari VM-ADMIN31HTTP200/2HTTP503; kedua503 admin dependency server.
+  Sampel dari host ke CA/server ditolak firewall dan bukan bukti bug aplikasi.
 
 ## Rollout dan pemulihan
 
@@ -62,3 +65,21 @@ pada patch ini. Semua backup/key tetap di lokasi privat di luar Git.
 WIN-CLEANUP-02 dan power-loss media CA tetap terbuka. Patch readiness tidak
 mengatasi kedua masalah tersebut, tidak mengganti framework, dan tidak mengubah
 enam pemeriksaan perangkat, sesi karyawan, binding, atau WireGuard.
+
+
+## Kandidat0.1.11 — publikasi CA
+
+Readiness tetap mempunyai batas dan makna yang sama. Perubahan kecil di
+`Publication.publish_file/recover` menghindari penulisan ulang anggota identik.
+Setiap file tetap fsync; setiap direktori parent fsync sekali sebelum manifest
+commit dihapus. Manifest penuh, staging durable, lock dan validasi seluruh
+generasi tetap wajib. Atomic rename satu file bukan transaksi seluruh CA.
+Jika barrier gagal, manifest tetap ada untuk roll-forward pada recovery berikutnya.
+
+34 tes terarah PASS86,54detik, termasuk SIGKILL serta fsync inode/direktori gagal.
+Benchmark bergantian pada CA sementara77anggota/74identik:0.1.10 membutuhkan
+2,458–2,606detik; kandidat1,165–1,201detik (tiga sampel masing-masing).
+Ini hasil terisolasi tanpa writer operasional, bukan SLA atau bukti power-loss.
+Full suite/CI dan rollout kandidat masih IN_PROGRESS. Setelah keduanya PASS,
+backup konsisten dan instalasi wheel terverifikasi pada CA/server/admin mengikuti
+urutan di atas, dengan0.1.10 sebagai paket pemulihan; state terbaru dipertahankan.
