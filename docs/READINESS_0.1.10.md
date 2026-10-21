@@ -1,7 +1,7 @@
-# Readiness VanGuard 0.1.10
+# Readiness0.1.10 dan publikasi CA0.1.11
 
-Status21 Oktober:0.1.10 sudah terpasang pada CA/server/admin. Client Ubuntu,
-attacker dan Windows tetap0.1.9. Kandidat0.1.11 sedang divalidasi pada branch
+Status21 Oktober: **0.1.11 terpasang pada CA/server/admin**. Client Ubuntu,
+attacker dan Windows tetap0.1.9. Source e0e58dd pada branch
 `fix/2026-10-20-readiness-lock`. Lihat [checkpoint](CHECKPOINT.md).
 
 ## Masalah dan perbaikan
@@ -49,7 +49,7 @@ tidak berhasil. Kegagalan yang terus berulang membutuhkan inspeksi CA/dependensi
   HTTPS dari VM-ADMIN31HTTP200/2HTTP503; kedua503 admin dependency server.
   Sampel dari host ke CA/server ditolak firewall dan bukan bukti bug aplikasi.
 
-## Rollout dan pemulihan
+## Riwayat rollout0.1.10 dan pemulihan
 
 Perubahan hanya pada health probe layanan Linux. Siapkan backup CA/server/admin
 dengan layanan terkait dihentikan dan periksa integritas arsip. Pastikan tidak
@@ -67,7 +67,7 @@ mengatasi kedua masalah tersebut, tidak mengganti framework, dan tidak mengubah
 enam pemeriksaan perangkat, sesi karyawan, binding, atau WireGuard.
 
 
-## Kandidat0.1.11 — publikasi CA
+## Versi0.1.11 — publikasi CA
 
 Readiness tetap mempunyai batas dan makna yang sama. Perubahan kecil di
 `Publication.publish_file/recover` menghindari penulisan ulang anggota identik.
@@ -80,6 +80,24 @@ Jika barrier gagal, manifest tetap ada untuk roll-forward pada recovery berikutn
 Benchmark bergantian pada CA sementara77anggota/74identik:0.1.10 membutuhkan
 2,458–2,606detik; kandidat1,165–1,201detik (tiga sampel masing-masing).
 Ini hasil terisolasi tanpa writer operasional, bukan SLA atau bukti power-loss.
-Full suite/CI dan rollout kandidat masih IN_PROGRESS. Setelah keduanya PASS,
-backup konsisten dan instalasi wheel terverifikasi pada CA/server/admin mengikuti
-urutan di atas, dengan0.1.10 sebagai paket pemulihan; state terbaru dipertahankan.
+CI39572681808 pada source e0e58dd SUCCESS:218PASS/1SKIP pada masing-masing
+Linux3.10/3.12,28PASS/2SKIP pada helper Windows. Full lokal218PASS/1SKIP488,85detik. Rollout0.1.11 selesai pada ketiga layanan:
+backup konsisten terverifikasi, pip check,23anggota aplikasi per VM dan15hash
+identitas/state cocok, invariant CA/enam XML/nol peer/grant kosong PASS.
+Wheel SHA256 `546b1ea8616f1d83f3731ef1e674933d9aa325c6fa91f49f54c728a347f98aa0`.
+Pemulihan untuk versi ini menggunakan paket0.1.10 yang terverifikasi, dengan
+state terbaru tetap dipertahankan; jangan restore index/CRL/database.
+
+Postflight HTTPS awal31HTTP200/2HTTP503, maksimum1,731detik. Keduanya admin
+server not_ready. Diagnosis60sampel berikutnya ready, tetapi admin dijalankan
+sebagai child terinstrumentasi sehingga tidak membuktikan jalur HTTPS dashboard
+selalu siap. Biaya publikasi CA teratasi pada sampel; contention/transport503
+belum mempunyai akar masalah terkonfirmasi. Jangan menaikkan timeout atau
+mengubah unknown menjadi ready tanpa bukti. Power-loss dan cleanup interupsi
+Windows tetap terbuka. Hasil penutup berikutnya dicatat dalam jurnal/checkpoint.
+
+Pengukuran HTTPS penutup21 Oktober: berurutan30/30HTTP200 (maks1,074detik),
+paralel29HTTP200/1HTTP503 (maks2,314detik), liveness3/3HTTP200. Satu503 pada
+admin dependency server; CA/database ready. Ini membatasi klaim: optimasi CA
+terukur, tetapi readiness paralel belum stabil. Bukti final-https-samples.json
+tersimpan privat; seluruh hasil gagal sebelumnya dipertahankan.

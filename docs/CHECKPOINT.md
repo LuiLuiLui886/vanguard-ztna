@@ -1,30 +1,51 @@
 # Checkpoint VanGuard — 21 Oktober 2026
 
-**21 Oktober, kandidat0.1.11 IN_PROGRESS:** optimasi publikasi CA mempertahankan
-manifest penuh dan barrier fsync sebelum commit dihapus.34 tes terarah PASS;
-benchmark salinan CA bergantian2,458–2,606detik menjadi1,165–1,201detik. Full
-lokal/CI sedang dijalankan; belum di-rollout. CA/server/admin masih0.1.10,
-client/attacker/Windows0.1.9. Lima Ubuntu running; Windows shut off. Unit server
-sesudah benchmark active dan nol peer. Jangan ulangi benchmark/rollout tanpa
-memeriksa bukti privat dan jurnal21 Oktober. Source beku selama pengujian.
+## Status terbaru — CA/server/admin0.1.11 sudah terpasang
+
+Source e0e58dd di branch `fix/2026-10-20-readiness-lock` sudah dipush.
+Perubahan `Publication.publish_file/recover` mempertahankan file identik dan
+menggabungkan barrier direktori, dengan fsync setiap inode serta seluruh parent
+sebelum commit dihapus. Manifest penuh, lock, staging dan roll-forward tetap
+wajib. Tidak ada restore index/CRL, tebakan counter, atau perubahan admission.
+
+- Lokal Linux218PASS/1SKIP488,85detik;34 tes terarah PASS86,54detik.
+  CI39572681808 SUCCESS: Linux3.10/3.12 masing-masing218PASS/1SKIP;
+  Windows helper28PASS/2SKIP. Helper bukan pengujian tunnel Windows VM.
+- Benchmark CA sementara bergantian (tiga tiap versi,77anggota/74identik):
+  0.1.10=2,458–2,606detik;0.1.11=1,165–1,201detik. Ini bukan SLA atau bukti
+  power-loss disk. Bukti awal yang tidak stabil tetap disimpan.
+- Rollout CA/server/admin0.1.11 selesai setelah backup konsisten terverifikasi;
+  pip check,23anggota aplikasi per VM,15hash identitas/state, invariant CA,
+  enam definisi VM, nol peer dan grant kosong PASS. Pemulihan jika perlu hanya
+  paket0.1.10, dengan state terbaru tetap dipertahankan.
+- Postflight HTTPS awal31HTTP200/2HTTP503, maksimum1,731detik. Dua503 pada
+  admin dependency server. Diagnosis tambahan60sampel ready maksimal1,764detik
+  memakai probe admin terinstrumentasi, bukan seluruhnya endpoint dashboard.
+  Ini tidak membatalkan hasil gagal. HEALTH-LOCK-01 masih mitigasi parsial.
+- Lima Ubuntu running; Windows shut off. Client Ubuntu/attacker/Windows tetap
+  0.1.9. Tidak ada perubahan password, key, enrollment atau service Windows.
+  Inventaris credential hanya di direktori privat host, tidak dikirim ke GitHub.
+
+Baca [jurnal21 Oktober](PROGRESS_2026-10-21.md),
+[catatan readiness/CA](READINESS_0.1.10.md), [audit](AUDIT_HARDENING_2026-10-18.md)
+dan [modul tunggal](MODUL_PENGGUNAAN_VANGUARD.html). Bukti privat:
+`state/hardening/2026-10-21-readiness/`. Jangan mengulang runner rollout yang
+sudah mempunyai rollout-steps.json atau menimpa hasil gagal.
 
 
-## Sedang dikerjakan21 Oktober — postflight readiness0.1.10
+Pengukuran HTTPS penutup21 Oktober: berurutan30/30HTTP200 (maks1,074detik),
+paralel29HTTP200/1HTTP503 (maks2,314detik), liveness3/3HTTP200. Satu503 pada
+admin dependency server; CA/database ready. Ini membatasi klaim: optimasi CA
+terukur, tetapi readiness paralel belum stabil. Bukti final-https-samples.json
+tersimpan privat; seluruh hasil gagal sebelumnya dipertahankan.
 
-CA/server/admin sudah0.1.10 sejak rollout20 Oktober, bukan hanya staging.
-Source d94266e di branch `fix/2026-10-20-readiness-lock`: lokal213PASS/1SKIP,
-CI39437511242 masing-masing Linux3.10/3.12:213PASS/1SKIP, Windows helper28/2.
-Backup dan15hash/invariant CA/enam XML PASS. Postflight jalur sah masih memiliki
-31HTTP200/2HTTP503 dari33sampel; keduanya admin dependency server. Belum boleh
-mengklaim semua postflight lulus atau mengulang rollout yang sudah selesai.
+**Pekerjaan tersisa:** diagnosis503 pada HTTPS dashboard dengan pembuktian
+akar masalah sebelum patch; soak beban; power-loss media CA BELUM_TERUJI;
+WIN-CLEANUP-02 membutuhkan reproduksi interupsi startup dan ownership sebelum
+pemulihan otomatis. Jangan hapus config ketika service belum pasti berhenti.
+Main/hardening belum digabung; perubahan origin/main76af7e6 harus dipertahankan.
 
-Pada21 Oktober keenam VM ditemukan mati; CA/server/admin dinyalakan untuk
-verifikasi pascaboot dan diagnosis read-only nested dependency. Client/attacker/
-Windows tetap mati. Baca [jurnal aktif](PROGRESS_2026-10-21.md) dan
-[rincian patch](READINESS_0.1.10.md). Perubahan jurnal20 Oktober dipertahankan.
-Main/hardening belum digabung; pengguna mengarahkan fokus pada perbaikan sistem.
-
-## Status terbaru — rollout dan matriks VM selesai
+## Riwayat20 Oktober — rollout0.1.9 dan matriks VM selesai
 
 Semua enam node sudah memakai **0.1.9** pada branch
 [hardening/2026-10-18-resilience](https://github.com/LuiLuiLui886/vanguard-ztna/tree/hardening/2026-10-18-resilience).

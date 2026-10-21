@@ -12,7 +12,9 @@ pada [matriks validasi](VALIDASI_ROLLOUT_2026-10-20.md).
 Deployment mengikuti [checkpoint](CHECKPOINT.md); endpoint berikut tersedia
 pada0.1.9. [Readiness0.1.10](READINESS_0.1.10.md) menunggu lock CA
 maksimal3,5detik dan memeriksa dependency admin secara paralel; batas subprocess
-tetap6detik. Readiness yang gagal tetap503, tanpa cache status sehat.
+tetap6detik. Versi0.1.11 terpasang pada ketiga layanan dan mengurangi I/O
+publikasi CA; kontrak API tetap sama. Readiness yang gagal tetap503, tanpa
+cache status sehat. Postflight paralel masih menemukan503; lihat checkpoint.
 
 | Method | Path | Akses dan hasil |
 |---|---|---|

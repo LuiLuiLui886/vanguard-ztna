@@ -154,3 +154,18 @@ teruji, tetapi bukan bukti contention hilang.0.1.11 mengurangi biaya writer;
 ketahanan pada beban panjang tetap perlu pengukuran. Power-loss media CA dan
 WIN-CLEANUP-02 tetap **Perilaku yang belum diuji/Risiko desain**, sesuai rincian
 sebelumnya; patch ini tidak membuktikan pemulihan otomatis untuk keduanya.
+
+
+Hasil CA-IO-01: source e0e58dd, lokal218PASS/1SKIP dan CI39572681808 SUCCESS;
+rollout0.1.11 pada CA/server/admin, backup/invariant/hash/enam XML PASS. Kriteria
+optimasi publikasi dan regresi terpenuhi pada sampel terukur. HEALTH-LOCK-01
+masih mitigasi parsial: postflight31HTTP200/2HTTP503 (admin dependency server).
+Diagnosis60sampel berikutnya ready, tetapi jalur admin berbeda. Akar503 tersisa
+belum terbukti; jangan menandainya sebagai bug implementasi tertentu tanpa
+reproduksi. Power-loss, soak dan race cleanup Windows tetap terbuka.
+
+Pengukuran HTTPS penutup21 Oktober: berurutan30/30HTTP200 (maks1,074detik),
+paralel29HTTP200/1HTTP503 (maks2,314detik), liveness3/3HTTP200. Satu503 pada
+admin dependency server; CA/database ready. Ini membatasi klaim: optimasi CA
+terukur, tetapi readiness paralel belum stabil. Bukti final-https-samples.json
+tersimpan privat; seluruh hasil gagal sebelumnya dipertahankan.

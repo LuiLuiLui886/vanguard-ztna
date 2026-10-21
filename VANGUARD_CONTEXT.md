@@ -131,3 +131,28 @@ bounded retry/deadline/read-only validation before changing this behavior.
 WIN-CLEANUP-02 immediate-interrupt service timeout and actual CA media power-loss
 remain unresolved evidence limits. CI0695e03 passed205/1 on each Linux3.10/3.12
 and28/2 Windows helpers; helper CI is separate from the real guest tunnel matrix.
+
+
+Operational readiness update — 21 October 2026:
+CA/server/admin have0.1.10 installed; Ubuntu client/attacker/Windows remain0.1.9.
+Bounded shared-lock retry and parallel admin probes retain unknown503 on failure.
+Postflight31HTTP200/2HTTP503 does not establish uniformly healthy readiness.
+Candidate0.1.11 reduces redundant publication I/O without shrinking the manifest:
+identical target inodes are retained and fsynced, changed files fsynced/renamed,
+and all parent directories fsynced before removing the durable commit decision.
+An interrupted committed generation still rolls forward; never restore old CA
+state or guess counters. Targeted34tests passed and alternating isolated timings
+improved from2.458–2.606 to1.165–1.201seconds. Full/CI/rollout remain pending at
+this entry; see the newest checkpoint for completion evidence and installed versions.
+No client enrollment, identities, WireGuard protocol or admission checks change.
+
+
+Operational publication completion — 21 October 2026:
+CA/server/admin now run0.1.11. Quiescent backups verified,23wheel members per
+service matched,15primary/state hashes preserved, CA invariants and all six
+VM definitions passed; no peers/resource grants remain. Local Linux218PASS/1SKIP,
+CI39572681808 Linux3.10/3.12 each218PASS/1SKIP, Windows helpers28PASS/2SKIP.
+HTTPS postflight still31HTTP200/2HTTP503 (admin server dependency), despite
+maximum latency1.731seconds. Do not claim uniformly healthy readiness. Keep
+unknown503 and investigate the remaining cause separately. Five Ubuntu VMs
+run; Windows is shut off. Client/attacker/Windows packages remain0.1.9.

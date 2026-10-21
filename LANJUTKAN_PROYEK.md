@@ -1,21 +1,27 @@
 # Lanjutkan proyek VanGuard
 
-**21 Oktober, kandidat0.1.11 IN_PROGRESS:** optimasi publikasi CA mempertahankan
-manifest penuh dan barrier fsync sebelum commit dihapus.34 tes terarah PASS;
-benchmark salinan CA bergantian2,458–2,606detik menjadi1,165–1,201detik. Full
-lokal/CI sedang dijalankan; belum di-rollout. CA/server/admin masih0.1.10,
-client/attacker/Windows0.1.9. Lima Ubuntu running; Windows shut off. Unit server
-sesudah benchmark active dan nol peer. Jangan ulangi benchmark/rollout tanpa
-memeriksa bukti privat dan jurnal21 Oktober. Source beku selama pengujian.
+**21 Oktober — CA/server/admin0.1.11 sudah terpasang.** Optimasi publikasi CA
+menghindari rewrite file identik dan menggabungkan fsync direktori; manifest
+penuh dan roll-forward tetap berlaku. Benchmark terisolasi2,458–2,606 menjadi
+1,165–1,201detik. Lokal218PASS/1SKIP; CI39572681808 SUCCESS Linux218/1 pada
+masing-masing3.10/3.12 dan Windows helper28/2. Source e0e58dd sudah dipush pada
+`fix/2026-10-20-readiness-lock`; main/hardening belum digabung.
 
+Backup ketiga layanan terverifikasi,23anggota aplikasi per VM/15hash/invariant
+CA/enam XML terjaga. Nol peer dan grant kosong. Lima Ubuntu running, Windows
+shut off; client/attacker/Windows tetap0.1.9. Jangan reset password/enrollment.
+Postflight HTTPS31HTTP200/2HTTP503; diagnosis60sampel berikutnya ready tetapi
+memakai probe admin terinstrumentasi. Belum boleh menyatakan readiness stabil.
 
-**21 Oktober — postflight readiness0.1.10 sedang dilanjutkan.** CA/server/admin
-sudah0.1.10; lokal213PASS/1SKIP dan CI Linux213/1 masing-masing, Windows helper28/2.
-Postflight sebelumnya31HTTP200/2HTTP503, sehingga belum seluruhnya lulus.
-Ketiga layanan dinyalakan lagi setelah keenam VM ditemukan mati. Verifikasi
-nested dependency secara read-only; jangan mengulang rollout atau restore state.
-Baca [jurnal aktif](docs/PROGRESS_2026-10-21.md) dan [checkpoint](docs/CHECKPOINT.md).
-Source berada di `fix/2026-10-20-readiness-lock`; merge main/hardening belum dilakukan.
+Pengukuran HTTPS penutup: berurutan30/30HTTP200, paralel29HTTP200/1HTTP503,
+liveness3/3HTTP200. Bukti gagal tetap disimpan.
+
+Lanjutkan diagnosis503 dashboard, soak, WIN-CLEANUP-02 dan bukti power-loss CA.
+Jangan restore state CA/database atau menebak counter. Baca [checkpoint](docs/CHECKPOINT.md),
+[jurnal aktif](docs/PROGRESS_2026-10-21.md), [rincian patch](docs/READINESS_0.1.10.md)
+dan [modul tunggal](docs/MODUL_PENGGUNAAN_VANGUARD.html). Runner rollout sudah
+selesai; jangan dijalankan ulang. Credential dan backup hanya di lokasi privat.
+Bagian berikut merupakan riwayat, bukan status paket/VM terkini.
 
 **20 Oktober — rollout0.1.9 dan matriks VM selesai.** Lima Ubuntu dan satu
 Windows dipertahankan. Linux/Windows live lulus untuk lifecycle, resource gate,

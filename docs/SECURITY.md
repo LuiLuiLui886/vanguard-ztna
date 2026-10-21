@@ -3,7 +3,7 @@
 Dokumen ini memperinci aturan dalam VANGUARD_CONTEXT.md dan AGENTS.md. Tidak mengganti
 topologi atau mengubah implementasi kernel WireGuard.
 
-Kandidat branch 0.1.9 menambahkan perilaku pada [catatan hardening](HARDENING_0.1.9.md).
+Versi0.1.9 menambahkan perilaku pada [catatan hardening](HARDENING_0.1.9.md).
 Status pengujian/deployment ada di checkpoint; source tidak otomatis berarti VM
 sudah memakai versi tersebut.
 
@@ -50,9 +50,10 @@ jika server gagal dihubungi. Kegagalan parsial ditampilkan sebagai `revoking` da
 Penanganan batas detik CRL dapat menambah waktu tunggu maksimal satu detik per fetch.
 
 Unit systemd daemon menurunkan wg0 saat daemon berhenti; admission API bergantung pada
-daemon dan wg0. Kandidat 0.1.9 memakai watchdog 90 detik dengan notifikasi hanya
+daemon dan wg0. Sejak0.1.9 daemon memakai watchdog 90 detik dengan notifikasi hanya
 setelah reconcile selesai, sehingga hang tanpa heartbeat ditangani supervisor.
-Tes transient membuktikan watchdog/stop hook, belum seluruh unit produksi.
+Matriks VM20 Oktober membuktikan watchdog/stop hook unit produksi serta
+penghentian akses pada Linux/Windows; batas buktinya ada di checkpoint.
 API mati saja tetap dibatasi daemon dan lease. Tidak ada jaminan real-time ketika
 supervisor/host gagal atau perlindungan dari administrator root yang menguasai server.
 
@@ -70,7 +71,7 @@ admission menolaknya sebagai identitas perangkat. CA root key hanya berada di VM
 CA menggunakan OpenSSL `ca`, index.txt, serial, crlnumber, serta lock bersama untuk issue,
 revoke, dan CRL. CA API memerlukan token berbeda dari token registry server. Token acak
 minimal 32 karakter, environment file mode 0600, tanpa default fallback.
-CSR sama menggunakan cache hasil. Kandidat 0.1.9 mengatasi interupsi antara signing
+CSR sama menggunakan cache hasil. Versi0.1.9 mengatasi interupsi antara signing
 dan cache dengan staging, manifest commit durable, dan roll-forward seluruh state.
 Operasi berikutnya menyelesaikan commit sebelum mutasi baru. Staging tanpa commit
 dipertahankan sebagai bukti; state rusak tanpa manifest ditolak. Tidak ada restore
@@ -111,3 +112,14 @@ rotasi, atau perlindungan terhadap modifikasi oleh root.
 
 Ini merupakan implementasi lab untuk dievaluasi, bukan sistem yang sudah mendapatkan audit
 keamanan independen atau pembuktian deployment produksi.
+
+
+## Publikasi CA0.1.11 — terpasang21 Oktober
+
+Optimasi mempertahankan file identik dan menyinkronkan setiap inode. File berubah
+memakai fsync lalu rename. Seluruh direktori parent disinkronkan sebelum manifest
+commit dihapus; manifest penuh dan work durable tetap tersedia selama publikasi.
+Kegagalan barrier mempertahankan keputusan commit untuk roll-forward. Ini bukan
+jaminan transaksi banyak file hanya dari atomic rename. Tes SIGKILL/fsync failure
+menggunakan CA sementara; power-loss disk/host tetap BELUM_TERUJI. Paket0.1.11 terpasang pada CA/server/admin dengan backup dan invariant
+terverifikasi; client/attacker/Windows tetap0.1.9. Lihat checkpoint.

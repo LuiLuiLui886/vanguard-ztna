@@ -1232,6 +1232,15 @@ lima Ubuntu dan satu Windows20 Oktober, dengan backup serta verifikasi identitas
 Bukti tiap skenario dibedakan dalam [matriks validasi](VALIDASI_ROLLOUT_2026-10-20.md).
 Periksa [checkpoint](CHECKPOINT.md) untuk status VM dan pekerjaan lanjutan.
 
+Pembaruan21 Oktober: CA/server/admin sudah memakai0.1.11, dengan pemeriksaan
+readiness berbatas waktu dan pengurangan penulisan ulang file CA yang identik.
+Client Ubuntu/attacker/Windows tetap0.1.9. Postflight masih menemukan503 sesaat;
+periksa dependensi jika kegagalan menetap, jangan menganggap liveness sebagai
+bukti seluruh layanan siap.
+Penggantian paket layanan tidak memperbarui sertifikat dan tidak membutuhkan
+ulang enrollment. Status rollout, hasil HTTPS dan batas bukti tersedia pada
+[catatan readiness dan penyimpanan CA](READINESS_0.1.10.md).
+
 Matriks VM Ubuntu dan Windows sudah menguji renewal, expiry, logout bersamaan
 renewal, reboot aktif, pencabutan yang memutus TCP aktif dan penggantian identitas.
 Semua akun/identitas disposable dinonaktifkan/dicabut setelah tes; demo HTTP
