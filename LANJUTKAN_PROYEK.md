@@ -1,5 +1,24 @@
 # Lanjutkan proyek VanGuard
 
+**21 Oktober — patch kapasitas CA selesai.** Unit CA dari40c7f74 kini satu
+worker/8thread. Paket CA/server/admin tetap0.1.11; client/attacker/Windows0.1.9.
+Timeout, TLS, lock, identitas dan admission tetap. Regresi TLS nyata membuktikan
+thread penuh memblokir handshake;16tes lokal PASS. CI39575685564 SUCCESS:
+219PASS/1SKIP masing-masing Linux3.10/3.12,28PASS/2SKIP helper Windows.
+
+Postflight93/93HTTP200; tambahan beban yang sama seperti baseline menghasilkan
+120/120HTTPS berhasil dan40/40probe server ready (sebelumnya36/120 serta3/40
+failure). Backup/unit/invariant/hash/enam XML PASS, nol peer/grant. Lima Ubuntu
+running, Windows shut off. Kriteria mitigasi skenario terukur terpenuhi; bukan
+jaminan overload tak terbatas. Bukti di state/hardening/2026-10-21-parallel/.
+
+Lanjutkan soak, WIN-CLEANUP-02 dan power-loss media CA yang BELUM_TERUJI.
+Jangan ulang rollout unit atau restore index/CRL/database. Main/hardening tetap
+terpisah. Baca [checkpoint](docs/CHECKPOINT.md),
+[catatan kapasitas](docs/CA_SERVICE_CAPACITY.md), [jurnal](docs/PROGRESS_2026-10-21.md)
+dan [modul tunggal](docs/MODUL_PENGGUNAAN_VANGUARD.html). Credential hanya lokal.
+Catatan di bawah merupakan riwayat sebelum patch kapasitas, bukan status terbaru.
+
 **21 Oktober — CA/server/admin0.1.11 sudah terpasang.** Optimasi publikasi CA
 menghindari rewrite file identik dan menggabungkan fsync direktori; manifest
 penuh dan roll-forward tetap berlaku. Benchmark terisolasi2,458–2,606 menjadi

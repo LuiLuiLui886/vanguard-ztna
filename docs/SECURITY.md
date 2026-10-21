@@ -123,3 +123,15 @@ Kegagalan barrier mempertahankan keputusan commit untuk roll-forward. Ini bukan
 jaminan transaksi banyak file hanya dari atomic rename. Tes SIGKILL/fsync failure
 menggunakan CA sementara; power-loss disk/host tetap BELUM_TERUJI. Paket0.1.11 terpasang pada CA/server/admin dengan backup dan invariant
 terverifikasi; client/attacker/Windows tetap0.1.9. Lihat checkpoint.
+
+
+## Kapasitas layanan CA
+
+Unit CA memakai satu worker dan delapan thread setelah perbaikan21 Oktober.
+Empat thread sebelumnya dapat penuh oleh fan-out readiness dan fetch CRL daemon,
+sehingga TLS handshake request berikutnya habis budget koneksi0,5detik. Tes
+Gunicorn/TLS nyata mereproduksinya sebelum patch. Penambahan kapasitas tidak
+mengubah lock mutasi CA, verifikasi TLS, deadline6detik atau penolakan ketika
+pemeriksaan gagal. Layanan tetap dapat not_ready saat overload; jangan mengubahnya
+menjadi200 atau menggunakan CRL lama. Bukti dan pemulihan unit tersedia pada
+[catatan kapasitas](CA_SERVICE_CAPACITY.md).

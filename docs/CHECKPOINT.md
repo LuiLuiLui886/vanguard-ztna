@@ -1,6 +1,41 @@
 # Checkpoint VanGuard — 21 Oktober 2026
 
-## Status terbaru — CA/server/admin0.1.11 sudah terpasang
+## Status terbaru — kapasitas HTTPS CA terverifikasi
+
+Source konfigurasi40c7f74 sudah dipush dan unit CA kini **satu worker/8thread**.
+Paket CA/server/admin tetap0.1.11, client/attacker/Windows0.1.9. Tidak ada perubahan
+timeout, verifikasi TLS, lock CA, admission, credential atau identitas perangkat.
+
+- HEALTH-CAPACITY-01/P2: empat thread sebelumnya dapat penuh oleh fan-out probe
+  serta CRL daemon. Regresi Gunicorn/TLS nyata gagal saat handshake koneksi
+  kelima sebelum patch;16tes terarah lokal PASS34,71detik sesudah patch.
+- CI39575685564 SUCCESS pada40c7f74: masing-masing Linux3.10/3.12 **219PASS/1SKIP**,
+  Windows helper **28PASS/2SKIP**. Tidak mengulang tunnel Windows pada pekerjaan ini.
+- Backup CA/unit169file terverifikasi, systemd-analyze verify PASS, unit aktif
+  cocok source8thread;15hash identitas/state, invariant CA,23anggota paket per
+  layanan dan enam definisi VM tetap. Nol peer dan grant kosong.
+- HTTPS asli dari VM-ADMIN **93/93HTTP200** (90readiness paralel+3liveness),
+  maksimum2,934detik. Dengan tambahan probe diagnostik: HTTPS120/120 berhasil
+  (maks2,173detik), server40/40ready (maks2,662detik). Sebelum perubahan, pola
+  yang sama menghasilkan36/120HTTPS503 dan3/40serverunknown. Semua hasil lama
+  disimpan; ini bukti skenario terukur, bukan jaminan beban tak terbatas.
+- Lima Ubuntu running; Windows shut off. Tidak ada runner VM tersisa setelah
+  penutupan. Credential hanya di inventaris privat host dan tidak diubah.
+
+Bukti privat baru: `state/hardening/2026-10-21-parallel/`. Rollout unit selesai;
+jangan menjalankan ulang rollout.py. Pemulihan hanya unit4thread yang di-backup,
+reload systemd dan restart terencana; **jangan restore state CA/database**.
+Arsip source0.1.11 lama tetap dipertahankan; patch unit ada pada Git40c7f74 dan
+harus dipasang bersama source terkini, bukan diasumsikan ikut upgrade wheel.
+
+Baca [catatan kapasitas](CA_SERVICE_CAPACITY.md), [jurnal](PROGRESS_2026-10-21.md),
+[modul](MODUL_PENGGUNAAN_VANGUARD.html) dan [audit](AUDIT_HARDENING_2026-10-18.md).
+**Berikutnya:** soak dan kapasitas lebih tinggi BELUM_TERUJI; WIN-CLEANUP-02
+perlu reproduksi race startup/cleanup dengan ownership terkonfirmasi; power-loss
+media CA tetap BELUM_TERUJI. Jangan menambah timeout atau menganggap seluruh
+failure OS/overload sudah ditangani. Main/hardening belum digabung.
+
+## Riwayat21 Oktober — rollout paket0.1.11 sebelum patch kapasitas
 
 Source e0e58dd di branch `fix/2026-10-20-readiness-lock` sudah dipush.
 Perubahan `Publication.publish_file/recover` mempertahankan file identik dan

@@ -1,6 +1,7 @@
 # Kapasitas HTTPS CA — 21 Oktober 2026
 
-Status: kandidat konfigurasi di branch `fix/2026-10-20-readiness-lock`.
+Status: unit8thread sudah terpasang pada VM-CA dari source40c7f74, branch
+`fix/2026-10-20-readiness-lock`.
 Paket aplikasi tetap0.1.11; perubahan unit systemd memerlukan pemasangan unit
 serta restart CA, bukan sekadar upgrade wheel. Status terpasang ada pada
 [checkpoint](CHECKPOINT.md).
@@ -27,7 +28,16 @@ atau not_ready503. Jangan menganggap patch ini menghilangkan seluruh overload.
 Kriteria selesai: reproduksi sebelum patch, regresi HTTPS nyata, baseline
 health/status, CI, backup unit/state konsisten sebelum rollout, layanan aktif,
 identitas/invariant/enam VM terjaga, dan sampel HTTPS nyata dengan beban tercatat.
-Baseline15PASS; kandidat16PASS34,71detik. CI/rollout masih IN_PROGRESS.
+Baseline15PASS; kandidat16PASS34,71detik. CI39575685564 SUCCESS:219PASS/1SKIP
+pada masing-masing Linux3.10/3.12 dan28PASS/2SKIP pada helper Windows. Backup
+CA/unit, systemd-analyze verify, unit aktif8thread dan hash root/key/index/serial
+PASS. Postflight HTTPS asli93/93HTTP200 (90readiness+3liveness), maksimum
+2,934detik. Pada diagnosis dengan tambahan beban yang sama seperti baseline,
+HTTPS120/120berhasil (maks2,173detik) dan probe server40/40ready (maks2,662detik);
+sebelumnya36/120HTTPS503 serta3/40serverunknown.15hash identitas/state,23anggota
+paket per layanan, invariant CA dan enam definisi VM terjaga; nol peer/grant.
+Kriteria mitigasi pada skenario terukur terpenuhi. Soak/beban lebih tinggi belum
+diuji dan seluruh hasil gagal sebelum patch tetap disimpan.
 
 Pemulihan hanya mengembalikan unit sebelumnya yang hash-nya cocok, reload systemd,
 dan restart berurutan dengan layanan terkait. Jangan mengembalikan index, serial,

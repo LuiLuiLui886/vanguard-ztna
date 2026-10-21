@@ -14,7 +14,9 @@ pada0.1.9. [Readiness0.1.10](READINESS_0.1.10.md) menunggu lock CA
 maksimal3,5detik dan memeriksa dependency admin secara paralel; batas subprocess
 tetap6detik. Versi0.1.11 terpasang pada ketiga layanan dan mengurangi I/O
 publikasi CA; kontrak API tetap sama. Readiness yang gagal tetap503, tanpa
-cache status sehat. Postflight paralel masih menemukan503; lihat checkpoint.
+cache status sehat. Setelah patch kapasitas unit CA8thread, postflight93/93
+respons HTTP200; sampel sebelumnya tetap menyimpan503. Ini bukan jaminan beban
+tak terbatas. Lihat [catatan kapasitas](CA_SERVICE_CAPACITY.md) dan checkpoint.
 
 | Method | Path | Akses dan hasil |
 |---|---|---|

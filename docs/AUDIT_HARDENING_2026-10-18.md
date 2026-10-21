@@ -179,3 +179,13 @@ lulus setelah8thread. Dampak: not_ready berantai tanpa bukti CA rusak. Kandidat
 mengubah hanya kapasitas unit CA; timeout/lock/fail-closed tetap. Kriteria rollout
 dan batas beban pada [catatan kapasitas](CA_SERVICE_CAPACITY.md); belum ditutup
 sampai hasil VM tercatat. Ini berbeda dari biaya publikasi CA yang sudah ditangani.
+
+
+Hasil HEALTH-CAPACITY-01/HEALTH-LOCK-01 lanjutan: unit8thread dari40c7f74 sudah
+terpasang setelah backup169file, systemd verification dan preservasi identitas.
+CI39575685564 SUCCESS:219PASS/1SKIP per Linux3.10/3.12,28PASS/2SKIP helper Windows.
+Postflight93/93HTTP200. Diagnosis dengan tambahan beban yang sama: HTTPS120/120
+berhasil dan server40/40ready, dibanding36/120dan3/40failure sebelumnya. Invariant
+CA/15hash/enam VM terjaga, nol peer/grant. Kriteria mitigasi pada skenario terukur
+terpenuhi; capacity/soak lebih tinggi tetap **Perilaku yang belum diuji**. Jangan
+menghapus histori failure atau menyebut seluruh overload teratasi.

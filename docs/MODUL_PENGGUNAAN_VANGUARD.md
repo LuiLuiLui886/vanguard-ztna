@@ -1234,9 +1234,17 @@ Periksa [checkpoint](CHECKPOINT.md) untuk status VM dan pekerjaan lanjutan.
 
 Pembaruan21 Oktober: CA/server/admin sudah memakai0.1.11, dengan pemeriksaan
 readiness berbatas waktu dan pengurangan penulisan ulang file CA yang identik.
-Client Ubuntu/attacker/Windows tetap0.1.9. Postflight masih menemukan503 sesaat;
-periksa dependensi jika kegagalan menetap, jangan menganggap liveness sebagai
-bukti seluruh layanan siap.
+Client Ubuntu/attacker/Windows tetap0.1.9. Setelah patch kapasitas unit CA,
+93pemeriksaan HTTPS penutup berhasil; pemantauan dengan tambahan beban juga
+lulus. Sampel bukan jaminan semua beban: periksa dependensi jika503 menetap dan
+jangan menganggap liveness sebagai bukti seluruh layanan siap.
+Unit layanan CA juga memakai satu worker dan delapan thread sejak21 Oktober.
+Perubahan ini memberi kapasitas untuk pemeriksaan dependensi paralel dan fetch
+CRL daemon; batas waktu dan penolakan ketika pemeriksaan gagal tetap berlaku.
+Kapasitas ini tidak menjamin layanan siap pada semua beban. Perubahan unit perlu
+restart layanan terencana setelah backup dan pemeriksaan peer, bukan enrollment
+ulang atau penggantian CA. Rinciannya ada pada [catatan kapasitas HTTPS CA](CA_SERVICE_CAPACITY.md).
+
 Penggantian paket layanan tidak memperbarui sertifikat dan tidak membutuhkan
 ulang enrollment. Status rollout, hasil HTTPS dan batas bukti tersedia pada
 [catatan readiness dan penyimpanan CA](READINESS_0.1.10.md).

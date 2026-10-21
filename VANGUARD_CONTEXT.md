@@ -156,3 +156,18 @@ HTTPS postflight still31HTTP200/2HTTP503 (admin server dependency), despite
 maximum latency1.731seconds. Do not claim uniformly healthy readiness. Keep
 unknown503 and investigate the remaining cause separately. Five Ubuntu VMs
 run; Windows is shut off. Client/attacker/Windows packages remain0.1.9.
+
+
+CA HTTPS capacity — 21 October 2026:
+The CA unit from40c7f74 now uses one worker/eight threads; packages remain0.1.11
+on CA/server/admin and0.1.9 on clients/attacker. Four busy handlers previously
+blocked a fifth TLS handshake beyond the unchanged0.5second connect budget.
+A real Gunicorn/TLS regression reproduced this before the unit-only fix. Local
+16targeted tests passed; CI39575685564 passed219/1 on each Linux3.10/3.12 and
+28/2 Windows helpers. Quiescent CA/unit backup, systemd verification, hashes,
+CA invariants and all six domain definitions passed. HTTPS postflight93/93ready;
+matched added diagnostic load120/120HTTPS and40/40server probes passed, versus
+36/120and3/40failures before. Preserve these bounded evidence claims; no guarantee
+of unlimited load or long soak. TLS/lock/deadlines/fail-closed are unchanged.
+Five Ubuntu VMs run; Windows remains shut off. Remaining work is soak, physical
+CA power-loss evidence and the Windows immediate-interrupt cleanup risk.

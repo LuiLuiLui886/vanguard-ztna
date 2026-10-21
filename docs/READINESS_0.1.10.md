@@ -101,3 +101,14 @@ paralel29HTTP200/1HTTP503 (maks2,314detik), liveness3/3HTTP200. Satu503 pada
 admin dependency server; CA/database ready. Ini membatasi klaim: optimasi CA
 terukur, tetapi readiness paralel belum stabil. Bukti final-https-samples.json
 tersimpan privat; seluruh hasil gagal sebelumnya dipertahankan.
+
+
+## Lanjutan kapasitas unit CA
+
+Source40c7f74 mengatasi risiko thread penuh pada TLS handshake dengan satu worker
+CA/delapan thread, tanpa perubahan kode aplikasi0.1.11 atau timeout. Unit sudah
+terpasang dengan backup, systemd verification, hash/invariant/enam XML terjaga.
+CI39575685564 SUCCESS:219PASS/1SKIP masing-masing Linux3.10/3.12 dan28PASS/2SKIP
+Windows helper. Postflight HTTPS asli93/93HTTP200, maksimum2,934detik. Hasil
+sebelumnya tetap bukti historis; kapasitas berlebih/soak belum dibuktikan. Rincian
+reproduksi dan hasil tambahan pada [catatan kapasitas](CA_SERVICE_CAPACITY.md).
