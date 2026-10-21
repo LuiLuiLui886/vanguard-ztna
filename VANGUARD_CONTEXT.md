@@ -77,3 +77,22 @@ and controlled cleanup passed; Ubuntu .2 and Windows .4 worked simultaneously.
 Version 0.1.8 waits for Windows service deletion before deleting tunnel config;
 failed confirmation preserves config. All five Ubuntu domain definitions remain
 unchanged. Windows revocation and active-tunnel reboot are still unverified.
+
+User physical-pilot decision — 22 October 2026:
+The Linux laptop remains the host for all existing VMs. Add two physical
+Windows 11 endpoints: one desktop over Ethernet and one separate laptop over
+Wi-Fi, on a private router dedicated to testing. Preserve all six existing VMs.
+The agreed addressing plan is router 192.168.50.1/24, Linux host 192.168.50.10/24,
+desktop 192.168.50.20/24 and endpoint laptop 192.168.50.30/24; physical-device
+gateway 192.168.50.1. Host Ethernet is planned and its actual interface must be
+verified. Manual addresses are outside the proposed DHCP pool 192.168.50.100–200.
+Keep the virtual backend 192.168.100.0/24 and tunnel 10.8.0.0/24 separate; allocate
+new unique tunnel addresses through the registry, preserving .2/.4 and reserved .3.
+These are deployment plans, not evidence that IPs, routes or devices were changed.
+Prepare controlled reachability to admission/WireGuard, restricted firewall rules,
+TLS verification, separate endpoint identities and single-then-dual-endpoint tests
+according to CODEX_VANGUARD_MASTER_PROMPT.md sections B0 and D1. Client installation
+must not silently reconfigure the physical NIC or reuse VM bootstrap scripts.
+The latest observed application source is on `fix/2026-10-20-readiness-lock` (`040dc21`);
+read that branch's current checkpoint before further implementation. Historical
+operational evidence in this main-branch document is not a fresh lab observation.

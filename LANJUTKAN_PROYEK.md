@@ -1,5 +1,18 @@
 # Lanjutkan proyek VanGuard
 
+**22 Oktober 2026 — tambahan pekerjaan pilot dua endpoint Windows 11.**
+[Master prompt](CODEX_VANGUARD_MASTER_PROMPT.md) sudah memuat topologi dan IP
+yang disetujui: router 192.168.50.1, Linux host .10, PC LAN .20, laptop Wi-Fi .30,
+seluruhnya /24. Jaringan VM 192.168.100.0/24 dan tunnel 10.8.0.0/24 tetap terpisah.
+Baca Bagian B0/B0.1 dan D1 untuk routing/firewall/TLS, paket manual, enrollment
+terpisah, uji satu lalu dua endpoint bersamaan, serta pemulihan/cleanup.
+
+Ini pembaruan spesifikasi; IP, router, VM, dan endpoint belum diubah pada tugas ini.
+Source terbaru yang diamati ada di `fix/2026-10-20-readiness-lock` (`040dc21`) (0.1.11),
+bukan main 0.1.8. Ambil instruksi terbaru sambil mempertahankan source serta progres
+branch kerja; jangan menimpa perubahan lokal atau mengulang perbaikan ketahanan.
+Ikuti [checkpoint](docs/CHECKPOINT.md) dan [jurnal](docs/PROGRESS_2026-10-22.md).
+
 **19 Oktober 2026 — meta prompt Codex tersedia.**
 Baca [CODEX_VANGUARD_MASTER_PROMPT.md](CODEX_VANGUARD_MASTER_PROMPT.md) di root.
 Gunakan **Prompt mulai** dengan fokus `ENDPOINT_WINDOWS` untuk persiapan endpoint

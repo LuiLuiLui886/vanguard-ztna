@@ -1,4 +1,28 @@
-# Checkpoint VanGuard — 19 Oktober 2026
+# Checkpoint VanGuard — 22 Oktober 2026
+
+## Terbaru: rencana pilot dua endpoint fisik Windows 11
+
+Pengguna menyetujui router khusus 192.168.50.0/24: router .1, laptop Linux host .10,
+PC Windows 11 LAN .20, dan laptop Windows 11 Wi-Fi .30. Gateway fisik .1; alamat manual
+di luar pool DHCP usulan .100–.200. Host direncanakan LAN; interface nyata perlu
+diverifikasi. Jaringan VM 192.168.100.0/24 dan tunnel 10.8.0.0/24 tetap terpisah.
+
+[Master prompt](../CODEX_VANGUARD_MASTER_PROMPT.md) kini memuat Bagian B0/B0.1
+untuk topologi, route/firewall/TLS, paket manual Windows serta enrollment; Bagian
+D1 memuat uji satu endpoint, dua endpoint bersamaan, isolasi pencabutan dan cleanup.
+Installer lengkap tetap merupakan pekerjaan tersendiri; pilot manual tidak
+berarti installer sudah selesai. Keenam VM yang ada harus dipertahankan.
+
+Tugas ini hanya memperbarui dan memublikasikan dokumentasi. Rencana IP belum
+diterapkan; tidak ada perubahan router, VM, aplikasi, jaringan, atau kredensial.
+Saat diperiksa, source terbaru 0.1.11 ada di `fix/2026-10-20-readiness-lock` (`040dc21`),
+sedangkan main masih 0.1.8. Baca checkpoint pada branch implementasi terbaru;
+jangan kembali ke source main hanya untuk mengambil dokumen tugas. Branch tidak
+digabung pada tugas ini. Catatan operasional di bawah adalah bukti historis.
+
+Berikutnya: jalankan Prompt mulai dengan fokus ENDPOINT_WINDOWS; siapkan patch,
+paket dan panduan penerapan sebelum pilot. Rincian ada di
+[jurnal 22 Oktober](PROGRESS_2026-10-22.md).
 
 ## Terbaru: spesifikasi tugas Codex untuk endpoint fisik dan Windows
 

@@ -13,7 +13,7 @@ Dokumen ini menggabungkan tiga pekerjaan: perbaikan sistem, persiapan endpoint f
 
 ### Prompt mulai
 
-> Baca CODEX_VANGUARD_MASTER_PROMPT.md sebagai spesifikasi tugas dan ikuti instruksi proyek yang berlaku. Fokus: ENDPOINT_WINDOWS. Audit kondisi checkout serta progres ketahanan layanan terlebih dahulu. Implementasikan persiapan endpoint fisik dan installer Windows sesuai Bagian B dan C, dengan mempertahankan perubahan pengguna dan arsitektur keamanan. Untuk Bagian A, identifikasi dependensi dan kekurangan yang masih relevan tanpa mengerjakan ulang pekerjaan ketahanan yang sedang aktif. Kerjakan source, pengujian terisolasi, dokumentasi, dan paket lokal sampai selesai atau ada hambatan konkret. Siapkan pilot sesuai Bagian D. Jangan menerapkan perubahan pada VM/jaringan/laptop aktif atau memublikasikan paket dalam tugas persiapan ini. Laporkan hasil aktual dan perbarui checkpoint agar tugas bisa dilanjutkan.
+> Baca CODEX_VANGUARD_MASTER_PROMPT.md sebagai spesifikasi tugas dan ikuti instruksi proyek yang berlaku. Fokus: ENDPOINT_WINDOWS. Prioritaskan pilot dua endpoint Windows 11 pada router khusus 192.168.50.0/24 sesuai Bagian B0 dan D1: PC melalui LAN dan laptop endpoint melalui Wi-Fi, dengan seluruh VM tetap di laptop Linux. Audit checkout dan branch perbaikan terbaru terlebih dahulu; jangan kembali ke source main yang lebih lama atau menimpa progres ketahanan. Implementasikan persiapan endpoint dan installer Windows sesuai Bagian B dan C. Siapkan jalur pemasangan manual yang tervalidasi untuk pilot awal sambil melanjutkan installer; laporkan status keduanya secara terpisah. Untuk Bagian A, identifikasi dependensi dan kekurangan yang masih relevan tanpa mengerjakan ulang pekerjaan aktif. Kerjakan source, pengujian terisolasi, dokumentasi, dan paket lokal sampai selesai atau ada hambatan konkret. Siapkan konfigurasi penerapan dan rollback yang dapat ditinjau. Jangan menerapkan perubahan pada VM/router/jaringan/laptop aktif atau memublikasikan paket dalam tugas persiapan ini. Laporkan hasil aktual dan perbarui checkpoint.
 
 ### Prompt melanjutkan sesi
 
@@ -28,11 +28,12 @@ Kamu bertugas sebagai engineer yang mengimplementasikan perubahan di repository 
 ### Konteks dan hasil yang dituju
 
 - CA, gateway/server, dashboard admin, dan layanan pendukung tetap berjalan pada VM.
-- Client akan mencakup laptop/PC Windows dan Ubuntu fisik. Lab lama tetap tersedia untuk regresi.
+- Pilot terdekat mencakup dua endpoint fisik Windows 11: komputer melalui LAN dan laptop lain melalui Wi-Fi. Laptop Linux pengguna tetap menjadi host seluruh VM; keenam VM lama tetap tersedia untuk regresi, bukan diganti oleh endpoint fisik.
 - Pengguna memerlukan konfigurasi yang tidak bergantung pada alamat lab serta pemasangan Windows melalui `.bat` yang menjalankan `.ps1` native.
 - Ketahanan layanan sedang diusahakan. Tentukan kondisi terbaru sebelum menyentuh pekerjaan tersebut.
-- Detail LAN, Ethernet/Wi-Fi host, akses dari internet, domain, dan aplikasi tujuan belum ditetapkan. Jangan mengarang nilai produksi.
+- Pengguna telah menyetujui rencana router khusus 192.168.50.0/24 dan alamat perangkat pada Bagian B0. Host direncanakan melalui LAN. Rencana belum berarti sudah diterapkan; periksa interface, akses administrator, kemampuan router, serta kondisi aktual. Internet publik dan aplikasi bisnis belum menjadi lingkup pilot.
 - Review lama mengacu pada commit `c454c0c5931615188bfadc568e3e3d1d2008e353`, versi 0.1.8. Gunakan hanya sebagai petunjuk pencarian, bukan sebagai target checkout atau bukti kondisi terbaru.
+- Pemeriksaan 22 Oktober menemukan source 0.1.11 pada `fix/2026-10-20-readiness-lock` di `040dc21`, yang memuat hardening sebelumnya; main masih 0.1.8. Verifikasi ulang ref dan CI saat mulai. Baca checkpoint pada branch kerja terbaru, bukan menganggap catatan historis main sebagai keadaan VM saat ini. Master prompt terbaru di main dapat dibaca terpisah dari source branch kerja; jangan mengganti source dengan main hanya untuk mengambil dokumen ini.
 
 ### Audit awal dan cara bekerja
 
@@ -98,6 +99,41 @@ Kriteria selesai A: perbaikan terkonfirmasi, regresi keamanan lulus pada lingkun
 
 ## Bagian B — Server tetap VM, endpoint menjadi perangkat fisik
 
+### B0. Topologi pilot dan rencana IP yang disetujui pengguna
+
+Ada tiga perangkat fisik dan satu router pribadi khusus pengujian. Seluruh VM tetap berada pada laptop Linux pengguna. PC dan laptop Windows adalah dua perangkat client tambahan dengan identitas terpisah.
+
+| Perangkat/jaringan | Rencana alamat | Sambungan/peran |
+| --- | --- | --- |
+| Router khusus | 192.168.50.1/24 | Gateway LAN dan Wi-Fi pengujian |
+| Laptop Linux pengguna | 192.168.50.10/24 | Host VM; direncanakan melalui LAN, verifikasi interface nyata |
+| PC Windows 11 | 192.168.50.20/24 | Endpoint fisik pertama melalui LAN |
+| Laptop Windows 11 lain | 192.168.50.30/24 | Endpoint fisik kedua melalui Wi-Fi |
+| Jaringan internal VM | 192.168.100.0/24 | Pertahankan CA .10, SERVER .20, CLIENT .30, ADMIN .40, ATTACKER .50, Windows VM .60 |
+| Jaringan WireGuard | 10.8.0.0/24 | Server .1, alokasi client lama .2/.4 dan reservasi eksperimen .3 tetap dijaga |
+
+Mask perangkat fisik adalah 255.255.255.0 dan gateway 192.168.50.1. Alamat fisik yang direncanakan manual berada di luar pool DHCP usulan 192.168.50.100–192.168.50.200. Verifikasi konflik alamat, pool aktual, reservasi, serta interface lain sebelum penerapan. Jangan menyamakan IP antarperangkat atau mengganti subnet NAT VM menjadi subnet fisik yang sama.
+
+LAN dan SSID pengujian harus mengizinkan komunikasi yang diperlukan antarketiga perangkat. Periksa guest/client isolation hanya pada jaringan uji yang dituju. Konfirmasi model/akses router, interface LAN host, build/arsitektur Windows 11, dan hak administrator endpoint. Jangan mengasumsikan jaringan uji memiliki internet; siapkan paket/dependensi terverifikasi sebelum pengujian. Jangan menanyakan ulang OS endpoint atau rencana subnet yang sudah diketahui.
+
+**Pekerjaan konektivitas yang harus disiapkan:**
+
+1. Inventarisasi route, interface, jaringan libvirt, firewall host/VM/router, versi paket terpasang dan status layanan. Bedakan rencana alamat dari bukti konfigurasi aktual. Hindari mengaktifkan semua VM client/attacker sekaligus jika RAM host tidak mencukupi; definisinya tetap dipertahankan.
+2. Evaluasi lebih dahulu routing terbatas dari kedua endpoint menuju VM-SERVER 192.168.100.20 melalui host 192.168.50.10. Bila cocok, siapkan route /32 ke server pada endpoint, atau route pada router jika kemampuannya mendukung, beserta jalur balik dan forwarding host. Default gateway endpoint tetap router .50.1. Jangan menganggap menambahkan route saja cukup: aturan libvirt NAT dan seluruh firewall yang dilewati harus diperiksa.
+3. Untuk jalur routing tersebut, izinkan hanya sumber fisik .50.20/.50.30 menuju API TCP8081 dan WireGuard UDP51820 di VM-SERVER. Pertahankan akses lab lama dan administrasi yang sah. Jangan membuka akses langsung endpoint ke CA/dashboard atau aplikasi internal melalui LAN. Jangan flush ruleset global, mematikan firewall Windows, atau menambahkan NIC fisik langsung ke bridge NAT libvirt.
+4. Jika routing tidak memungkinkan, siapkan alternatif port forwarding terbatas pada alamat LAN host. Dokumentasikan port eksternal/internal, source IP yang terlihat, aturan balasan, dan rollback. Konfigurasi API serta endpoint WireGuard harus konsisten dengan alamat yang dipakai endpoint; identitas TLS harus sesuai. Jangan membuka port WAN/internet secara otomatis.
+5. Siapkan profil publik dan panduan penerapan terpisah untuk host Linux, router, VM-SERVER, PC LAN, dan laptop Wi-Fi. Sertakan pemeriksaan sebelum/sesudah serta cara mengembalikan route dan aturan milik pilot. Bedakan persiapan jaringan oleh operator dari installer aplikasi: installer tidak mengganti IP, DHCP, gateway, atau DNS utama endpoint.
+
+Jika routing mempertahankan akses API melalui 192.168.100.20, verifikasi sertifikat yang ada sebelum memutuskan penerbitan baru. Bila alamat API berubah, siapkan SAN yang cocok tanpa mematikan verifikasi TLS. Semua pilihan tetap mengikuti kontrak konfigurasi Bagian B1; keberhasilan routing tidak menjadi alasan mempertahankan ketergantungan IP hardcoded pada client/bundle.
+
+### B0.1. Prioritas pekerjaan menjelang pilot
+
+Prioritaskan konektivitas, profil client, paket Windows yang dapat dipasang manual, enrollment, dan uji satu endpoint sebelum keduanya bersamaan. Installer lengkap tetap dikerjakan sesuai Bagian C; jalur manual yang berhasil tidak berarti installer selesai. Siapkan wheel, dependensi Windows dan manifest versi/hash tanpa private key atau sesi. Jangan hanya membawa paket dari main0.1.8 atau menganggap semua perubahan deployment ikut berada di dalam wheel: cocokkan juga unit/config dengan source teruji terbaru.
+
+Siapkan dua device ID dan dua pasangan key yang dibuat pada endpoint masing-masing, dengan IP tunnel baru yang dipastikan unik oleh registry/admin. Jangan gunakan IP LAN .50.20/.50.30 sebagai IP tunnel, menyalin identitas VM, atau mengambil alokasi .2/.3/.4. Verifikasi model binding akun pada versi terbaru; masing-masing endpoint harus memiliki binding dan sesi yang sah.
+
+Gunakan `internal-demo` pada 10.8.0.1:8082 sebagai target awal apabila kebijakan terbaru masih sesuai. Siapkan prosedur menjalankan layanan demo sementara dan grant eksplisit untuk kedua identitas. Demo dan grant hasil tes terdahulu telah dibersihkan menurut catatan repo; jangan menganggap target sudah aktif. Uji aplikasi lain menjadi tahap berikutnya, tanpa memperluas AllowedIPs atau policy secara otomatis.
+
 ### B1. Audit dan satu kontrak konfigurasi
 
 Periksa khususnya vanguard/client.py, admin.py, ca.py, common.py, deploy/firewall.py, deploy/install.sh, unit systemd, environment examples, generator bundle, dan bootstrap Windows. Buat tabel lokasi, nilai hardcoded, fungsi, perubahan yang diperlukan, dan dampaknya.
@@ -110,7 +146,7 @@ Validasi IP/hostname, port, CIDR, konflik alamat, dan input sebelum subprocess/g
 
 ### B2. Konektivitas dan TLS
 
-Catat kebutuhan deployment sebagai BELUM_DIKETAHUI jika belum tersedia: media koneksi host, subnet LAN, lokasi client, target aplikasi/port, domain/IP yang dipakai, akses router, dan kebutuhan internet.
+Gunakan keputusan topologi/IP pada Bagian B0. Tandai BELUM_DIKETAHUI hanya untuk detail yang belum diverifikasi: interface host, model/kemampuan router, hak administrator, build/arsitektur Windows, internet untuk dependensi, dan pilihan routing atau port forwarding. Target pilot awal mengikuti Bagian B0.1; aplikasi bisnis/domain produksi belum ditetapkan.
 
 Siapkan topologi serta matriks sumber–tujuan–protokol–port untuk pilihan yang sesuai: interface VM tambahan melalui bridge bila didukung, routing terkontrol, atau port forwarding terbatas. Jangan menganggap bridge Wi-Fi sama dengan Ethernet. Pertahankan isolasi backend CA/admin sejauh memungkinkan.
 
@@ -126,7 +162,7 @@ Endpoint membuat key X.509 dan WireGuard sendiri. Hasilkan CSR/public key untuk 
 
 Bundle hanya berisi data yang sesuai untuk client, sertifikat publik, dan petunjuk platform. Import harus memeriksa kecocokan identitas/key/sertifikat dan tidak menimpa identitas lama. Konfirmasi trust root serta server public key melalui jalur administrasi tepercaya, bukan semata karena unduhan bundle berhasil.
 
-Siapkan pemasangan client Ubuntu yang memeriksa prasyarat, runtime, WireGuard, dan permission, terpisah dari installer role server. Pertahankan jaringan utama laptop. Lindungi key/token; reinstall tidak membuat identitas baru. Integrasikan hanya CLI yang benar-benar tersedia.
+Pertahankan kompatibilitas client Ubuntu yang sudah ada. Pemasangan Ubuntu fisik merupakan pekerjaan lanjutan bila dipilih; prioritas pilot saat ini adalah dua endpoint Windows 11. Setiap alur pemasangan client harus terpisah dari installer role server, menjaga jaringan utama, melindungi key/token, dan tidak membuat identitas baru saat reinstall. Integrasikan hanya CLI yang benar-benar tersedia.
 
 Kriteria selesai B: profil lab tetap bekerja; profil custom konsisten pada client/bundle/deployment; TLS sesuai identitas; input invalid ditolak; onboarding tidak mengaktifkan peer; tersedia topologi, matriks konektivitas, contoh tanpa secret, dan prosedur pilot. Nilai jaringan yang belum diketahui tidak boleh diperlakukan sebagai konfigurasi siap pakai.
 
@@ -138,7 +174,7 @@ Buat satu titik masuk `.bat` dengan logika utama `.ps1`. Usulan file: Install-Va
 
 Pengguna membuka installer, melihat prasyarat, menyetujui UAC bila diperlukan, memasang aplikasi, kemudian mendapat status dan langkah enrollment. Jendela harus menampilkan hasil akhir/kesalahan yang dapat ditindaklanjuti, lokasi log, dan exit code yang benar. Tangani path berspasi/karakter khusus, working directory, quoting, pembatalan UAC, serta argumen tanpa eval atau command injection.
 
-Paket client harus bisa digunakan tanpa Git, clone repo, WSL, atau Git Bash. Pilih satu target Windows x64 awal yang tersedia untuk diuji. Nyatakan matriks OS/arsitektur/PowerShell/Python/WireGuard berdasarkan bukti; usahakan bootstrap kompatibel Windows PowerShell 5.1 bila sesuai kebutuhan proyek. Jangan mengklaim dukungan versi yang belum diuji.
+Paket client harus bisa digunakan tanpa Git, clone repo, WSL, atau Git Bash. Target pilot adalah kedua endpoint Windows 11 pada Bagian B0; verifikasi arsitektur/build sebenarnya, jangan langsung menganggap x64 atau runtime sudah tersedia. Nyatakan matriks OS/arsitektur/PowerShell/Python/WireGuard berdasarkan bukti; usahakan bootstrap kompatibel Windows PowerShell 5.1 bila sesuai kebutuhan proyek. Jangan mengklaim dukungan versi yang belum diuji.
 
 ### C2. Runtime, distribusi, dan integritas
 
@@ -186,6 +222,20 @@ Kriteria selesai C: source installer/launcher/uninstaller, paket lokal tanpa sec
 
 ## Bagian D — Verifikasi, pilot, dan pelaporan
 
+### D1. Kriteria pilot PC LAN dan laptop Wi-Fi
+
+Siapkan checklist berikut dalam panduan pilot, dengan status PASS/FAIL/BELUM_DIJALANKAN dan bukti per perangkat. Jalankan pada lingkungan fisik hanya ketika akses serta otorisasi penerapannya tersedia.
+
+1. Preflight: alamat/mask/gateway sesuai rencana atau perubahan yang disetujui; tidak ada konflik subnet; API sebelum tunnel dapat diakses dengan TLS valid; readiness layanan diperiksa. Keberhasilan ping atau tes TCP saja tidak membuktikan jalur UDP WireGuard siap.
+2. Uji PC Windows 11 LAN terlebih dahulu: pemasangan, generate key/CSR, enrollment/binding, login tanpa peer, admission, handshake, dan akses HTTP demo dengan grant. Tanpa grant, akses harus ditolak. Catat versi paket, konfigurasi publik, waktu, dan hasil tanpa rahasia.
+3. Ulangi pada laptop Windows 11 Wi-Fi dengan identitas dan IP tunnel berbeda. Buktikan komunikasi melalui SSID uji yang dimaksud, termasuk pembentukan ulang koneksi setelah putus Wi-Fi secara terkontrol.
+4. Hubungkan keduanya bersamaan. Buktikan dua identitas/lease/handshake dan akses aplikasi masing-masing; revoke atau logout endpoint pertama lalu pastikan aksesnya terputus dan endpoint kedua tetap berfungsi. Verifikasi kembali setelah peran ditukar menggunakan sesi/identitas uji yang sah, tanpa menghidupkan kembali identitas revoked.
+5. Uji penolakan akses aplikasi langsung melalui LAN, perangkat tidak terdaftar, serta grant/lease/sesi yang tidak berlaku. Uji renewal berulang dan cleanup normal; catat pengujian expiry/reboot yang benar-benar dilakukan, bukan menyalin bukti Windows VM sebagai bukti endpoint fisik.
+6. Siapkan recovery untuk risiko WIN-CLEANUP-02 jika masih relevan: cabut akses di server, verifikasi ownership dan keadaan service/proses, lalu konfirmasi teardown sebelum mengarsipkan/menghapus config. Jangan mengganti key atau menghapus service VPN lain agar koneksi berikutnya berhasil.
+7. Setelah pilot, cabut identitas/sesi disposable dan grant terkait, hentikan demo sementara, serta pulihkan route/aturan sementara milik pilot. Pertahankan akses admin, CA state terbaru, identitas utama dan bukti pengujian.
+
+Laporkan secara terpisah kesiapan PC LAN, laptop Wi-Fi, dan penggunaan bersamaan. Jika konektivitas/TLS, binding identitas, enforcement akses atau pemulihan gagal, tandai langkah itu sebagai penghambat sebelum memperluas pilot. Jangan menyatakan siap produksi; uji power-loss CA dan soak panjang yang belum dilakukan tetap dicatat terpisah, bukan dilakukan mendadak pada CA utama untuk mengejar jadwal.
+
 ### Pengujian yang wajib dibedakan
 
 | Lapisan | Bukti yang dicari | Batas klaim |
@@ -199,7 +249,7 @@ Pilih tes berdasarkan risiko perubahan. Pertahankan regresi untuk registrasi tan
 
 Untuk konfigurasi: uji profil lab/custom, konsistensi bundle, SAN cocok/salah, konflik subnet/IP, serta tidak ada perubahan jaringan utama. Untuk Windows: fresh install, prasyarat tersedia/tidak cocok, path khusus, UAC dibatalkan, offline jika didukung, download/hash gagal, interupsi, reinstall, upgrade, repair, uninstall, preservasi key, ACL, dan exit code. Gunakan runner Windows native bila tersedia; tandai sisanya BELUM_DIJALANKAN.
 
-Siapkan pilot satu endpoint fisik dan satu resource uji: inventarisasi baseline, install, generate key/CSR, enrollment, login, admission, handshake, akses resource yang diizinkan, penolakan resource lain serta bypass LAN, renewal, disconnect/logout, revocation saat TCP aktif, reboot, dan cleanup. Tentukan indikator serta waktu yang harus direkam. Gunakan identitas uji dan jangan menambahkan peer statis.
+Mulai dari satu endpoint fisik dan satu resource uji, kemudian lanjutkan kedua endpoint bersamaan sesuai Bagian D1: inventarisasi baseline, install, generate key/CSR, enrollment, login, admission, handshake, akses resource yang diizinkan, penolakan resource lain serta bypass LAN, renewal, disconnect/logout, revocation saat TCP aktif, reboot, dan cleanup. Tentukan indikator serta waktu yang harus direkam. Gunakan identitas uji dan jangan menambahkan peer statis.
 
 Lakukan tes terarah setiap perubahan dan suite proyek yang relevan sebelum handoff. Jangan terus memperluas tes setelah risiko konkret sudah cukup diverifikasi. Untuk tahap penerapan kelak, siapkan urutan rollout, backup konsisten, rollback konfigurasi, serta cara menjaga akses administrasi.
 
