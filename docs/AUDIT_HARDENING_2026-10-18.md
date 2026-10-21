@@ -169,3 +169,13 @@ paralel29HTTP200/1HTTP503 (maks2,314detik), liveness3/3HTTP200. Satu503 pada
 admin dependency server; CA/database ready. Ini membatasi klaim: optimasi CA
 terukur, tetapi readiness paralel belum stabil. Bukti final-https-samples.json
 tersimpan privat; seluruh hasil gagal sebelumnya dipertahankan.
+
+HEALTH-CAPACITY-01 — **Risiko desain/P2**, unit CA4thread. Fan-out monitor
+paralel dan CRL daemon dapat memenuhi seluruh thread, sehingga TLS handshake
+koneksi berikutnya habis budget0,5detik. Diagnosis VM3/40probe server unknown
+ReadTimeout0,505–0,507detik; komponen lain ready. Regresi HTTPS Gunicorn nyata
+empat holder+probe kelima gagal di ssl.do_handshake sebelum patch;16tes terarah
+lulus setelah8thread. Dampak: not_ready berantai tanpa bukti CA rusak. Kandidat
+mengubah hanya kapasitas unit CA; timeout/lock/fail-closed tetap. Kriteria rollout
+dan batas beban pada [catatan kapasitas](CA_SERVICE_CAPACITY.md); belum ditutup
+sampai hasil VM tercatat. Ini berbeda dari biaya publikasi CA yang sudah ditangani.
