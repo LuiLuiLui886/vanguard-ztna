@@ -202,3 +202,18 @@ disconnect, explicit additional TLS hosts, generation-only pilot config/firewall
 and offline Windows installer/launcher sources. Keys still originate on clients;
 registration/import/installation never grants access. Native Windows/physical
 pilot/signing remain unverified; see ENDPOINT_WINDOWS_PILOT.md and newest checkpoint.
+
+
+Real-world installation preparation — 22 October 2026, afternoon:
+User explicitly requests installation steps and preparation, and confirms the
+same dedicated-router/host/PC-LAN/laptop-WiFi topology. Prepare a single local
+installation kit and actionable operator/user guide. This confirmation does not
+mean the router/IPs or endpoint installation have already been applied. Preserve
+all six VMs and client-side keys; keep the existing CA. The current host preflight
+is BLOCKED (Ethernet .50.10 absent; CA/server/admin guests shut off). New read-only
+checks must report manual/unknown/not-tested distinctly; never report production
+ready from file hashes or domain state. Admin0.1.12 is needed for profiled bundles;
+server0.1.11 already supplies the required admission/logout/resource APIs. Use
+INSTALL_REALWORLD.md for backup, runtime verification, staged installation and
+acceptance; native/physical tests and effective host firewall remain outstanding.
+No live rollout or GitHub publication has been performed for this preparation.

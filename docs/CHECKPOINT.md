@@ -1,5 +1,37 @@
 # Checkpoint VanGuard — 22 Oktober 2026
 
+## Status terbaru — kit pemasangan nyata (persiapan lokal)
+
+Pengguna mengonfirmasi router.50/24, host Linux+VM, PC Windows LAN dan laptop
+Windows Wi-Fi. Panduan **INSTALL_REALWORLD.md/.html** menyediakan langkah operator/
+pengguna lengkap, backup, runtime resmi, admin upgrade, enrollment/demo dan rollback.
+Modul tunggal Bab15.4 menautkan panduan. Source aplikasi/installer r3 tidak diubah.
+
+Baru: scripts/build_realworld_kit.py menyatukan kandidat Windows r3, profil/root
+publik yang diserialisasi ulang, wheel admin yang cocok, kandidat firewall, demo,
+pemeriksa host/endpoint read-only dan checklist60kasus. deploy/pilot/verify_kit.py
+menolak hash salah, anggota tambahan/hilang serta symlink. Root dari bundle tetap
+bukan trust independen; fingerprint dan key wajib dicek ke layanan aktif.
+
+Tes tambahan lokal **10PASS** (kit/host assessment/package); bukan uji native.
+Host preflight aktual13.25WIB **BLOCKED**: Ethernet.50.10 belum tersedia dan
+VM-CA/SERVER/ADMIN shut off. Bridge/forwarding flag saja tidak membuktikan jalur.
+Keenam VM tetap ada/mati, jaringan masih Wi-Fi.66/24. Tidak ada live mutation/push.
+Kit final `dist/vanguard-installation-20261022.zip` tersedia,12.403.926byte,
+101anggota hash PASS. ZIP SHA256
+`30d08dac0fbf4964ff75e07d4dbc96e0f997105dbabb9519d3284433babc5b6c`;
+manifest `e4e942e40fc621094d12e2fbd6ab55a4cf6943949490d0746f0e35251aa0a9ef`.
+Buka START_HERE.html atau docs/INSTALL_REALWORLD.html sesudah verifikasi hash.
+Panduan80tautan lokal/11blokbash dan credential scan PASS.
+Runtime installer tidak disertakan; Python3.13x64/WireGuard dari sumber resmi
+wajib diverifikasi. PowerShell baru/native installer/fisik BELUM_DIJALANKAN.
+
+Berikutnya: selesaikan backup/router/kabel/IP dan inspeksi host/libvirt firewall;
+validasi root/key/alokasi lalu uji native dan PC dahulu, laptop, keduanya. Jangan
+memulihkan CA lama atau mengklaim produksi. Bukti state/realworld-20261022/.
+
+## Riwayat — hasil kandidat endpoint dan pemeriksaan prompt
+
 ## Status terbaru — persiapan endpoint fisik dan Windows0.1.12
 
 Pemeriksaan ulang GitHub22 Oktober13.00WIB: **belum ada prompt baru**. Fetch/API

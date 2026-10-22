@@ -1,5 +1,14 @@
 # Lanjutkan proyek VanGuard
 
+**Persiapan pemasangan nyata22 Oktober:** topologi lama dikonfirmasi pengguna.
+Baca [panduan langkah instalasi](docs/INSTALL_REALWORLD.html) dan checkpoint
+terbaru. Kit menggabungkan Windows r3/profil publik/wheel admin/checklist/pemeriksa
+read-only.10tes lokal tambahan PASS; native Windows dan pilot masih belum diuji.
+Preflight host BLOCKED: Ethernet pilot belum siap dan tiga backend mati. Belum
+mengubah VM/router/endpoint atau push. Kit `dist/vanguard-installation-20261022.zip`101anggota terverifikasi tersedia;
+hash ZIP/manifest pada checkpoint/jurnal. Buka START_HERE.html.
+
+
 Cek ulang GitHub22 Oktober13.00WIB: belum ada prompt baru; main235df05 dan
 master prompt tidak berubah, kedua branch lain/PR#1 tanpa instruksi tambahan.
 Tetap lanjut dari hasil lokal di bawah sesuai batas persiapan; tidak ada push.

@@ -1358,3 +1358,24 @@ data serta Python/WireGuard bersama. Pemulihan parsial otomatis, shortcut GUI,
 ARM64 dan signing organisasi belum tersedia. Seluruh pengujian installer native
 serta pilot PC/laptop **BELUM_DIJALANKAN**. Tes Linux/mocks bukan bukti ACL Windows,
 handshake fisik atau rollout. WIN-CLEANUP-02 tetap perlu uji target terpisah.
+
+### 15.4 Persiapan pemasangan pada perangkat nyata
+
+Topologi dikonfirmasi22 Oktober: router khusus192.168.50.1/24, host Linux.50.10,
+PC LAN.50.20 dan laptop Wi-Fi.50.30; backend/enam VM lama tetap. Kit penerapan
+menggabungkan installer Windows r3, profil publik, wheel admin0.1.12, pemeriksa
+read-only, demo publik dan template acceptance. Baca
+[panduan pemasangan nyata](INSTALL_REALWORLD.html) untuk langkah rinci dan
+perintah yang dijalankan pada host/VM/Windows yang benar.
+
+Urutannya: backup dan runtime tepercaya; jaringan/backend; periksa root/key;
+upgrade aplikasi admin untuk bundle berprofil; install PC; generate request dan
+enrollment; login/admission/demo; ulangi laptop; uji isolasi dua endpoint dan
+rollback. Aplikasi admin perlu0.1.12 untuk field profil; server0.1.11 tetap memakai
+kontrak admission/logout/resource gate yang sudah ada. Jangan membuat ulang CA.
+
+Pemeriksa host aktual masih BLOCKED karena Ethernet pilot belum siap dan backend
+mati. Unit tests Linux bukan bukti UAC/ACL/installer native atau koneksi fisik.
+Kit tetap kandidat unsigned, runtime Python/WireGuard harus tersedia dan diverifikasi
+operator; tidak ada credential/private key di kit. Pemeriksa integritas PASS
+hanya membuktikan file cocok manifest dari kanal tepercaya, bukan siap produksi.

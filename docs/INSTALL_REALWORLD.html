@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Pemasangan VanGuard pada perangkat nyata</title><style>
+body { font: 16px/1.65 system-ui,sans-serif; color:#172536; background:#eef2f6;
+       margin:0; padding:2rem; }
+main { max-width:980px; margin:auto; padding:3rem; background:white; }
+h1,h2,h3,h4 { line-height:1.25; color:#12465a; }
+nav ol { list-style:none; padding-left:0; }
+.toc-h2 { margin-top:.5rem; font-weight:600; }
+.toc-h3 { margin-left:1rem; } .toc-h4 { margin-left:2rem; }
+h1 { font-size:2.2rem; } h2 { margin-top:2.8rem; border-bottom:2px solid #dae5e9;
+                            padding-bottom:.5rem; }
+a { color:#075b83; } table { width:100%; border-collapse:collapse; margin:1rem 0; }
+th,td { border:1px solid #ccd7dd; padding:.5rem; text-align:left; vertical-align:top; }
+th { background:#edf5f6; } pre { background:#f1f5f7; padding:1rem;
+                             white-space:pre-wrap; overflow-wrap:anywhere; }
+code { font-size:.9em; } blockquote { border-left:4px solid #1c7088; margin-left:0;
+                                    padding-left:1rem; }
+.print-note { border:1px solid #c7dbe4; padding:1rem; background:#f3f8fa; }
+@page { size:A4; margin:18mm; }
+@media print {
+ body { background:white; padding:0; font-size:10pt; }
+ main { padding:0; max-width:none; }
+ h2,h3,h4 { break-after:avoid; } h2 { margin-top:1.8rem; }
+ pre,tr { break-inside:avoid; } thead { display:table-header-group; }
+ a { color:inherit; } .print-note { display:none; }
+}
+</style></head><body><main><p class="print-note">Modul dapat dibaca tanpa internet. Untuk PDF, tekan Ctrl+P, pilih Simpan sebagai PDF, ukuran A4. Tautan dokumen pendukung memerlukan folder docs dari repository yang sama.</p><h1>Pemasangan VanGuard pada perangkat nyata</h1><nav aria-label="Daftar isi"><h2>Daftar isi</h2><ol><li class="toc-h2"><a href="#bab-1">1. Siapkan perangkat dan pembagian tugas</a></li><li class="toc-h2"><a href="#bab-2">2. Isi kit dan cara memeriksa integritas</a></li><li class="toc-h2"><a href="#bab-3">3. Siapkan Python dan WireGuard pada Windows</a></li><li class="toc-h2"><a href="#bab-4">4. Backup sebelum perubahan aktif</a></li><li class="toc-h2"><a href="#bab-5">5. Siapkan jaringan khusus dan backend yang ada</a></li><li class="toc-h2"><a href="#bab-6">6. Siapkan profil dan upgrade aplikasi admin</a></li><li class="toc-h2"><a href="#bab-7">7. Install pada PC Windows LAN dahulu</a></li><li class="toc-h2"><a href="#bab-8">8. Enrollment, login dan penggunaan oleh karyawan</a></li><li class="toc-h2"><a href="#bab-9">9. Siapkan resource demo dan buktikan akses</a></li><li class="toc-h2"><a href="#bab-10">10. Disconnect, logout dan pemulihan</a></li><li class="toc-h2"><a href="#bab-11">11. Apa yang sudah siap dan yang belum</a></li></ol></nav>
+<p>Panduan operator dan pengguna —22 Oktober2026. Topologi sudah dikonfirmasi:
+router khusus, backend VM pada laptop Linux, PC Windows LAN dan laptop Windows
+Wi-Fi. Tujuan tahap pertama adalah <strong>pilot nyata terbatas</strong>, bukan membuka layanan
+ke internet atau menyatakan siap produksi. Installer Windows masih kandidat0.1.12
+r3; native UAC/ACL/repair dan jaringan kedua endpoint harus dibuktikan pada target.</p>
+<h2 id="bab-1">1. Siapkan perangkat dan pembagian tugas</h2>
+<table>
+<thead>
+<tr>
+<th>Komponen</th>
+<th>Yang disiapkan</th>
+<th>Alamat rencana</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Router khusus</td>
+<td>Admin router, DHCP reservation, LAN dan SSID uji saling terhubung; jangan memakai guest isolation</td>
+<td>192.168.50.1/24</td>
+</tr>
+<tr>
+<td>Laptop Linux host</td>
+<td>Catu daya, kabel LAN, akses admin lokal/console, ruang backup dan RAM untuk tiga backend VM</td>
+<td>192.168.50.10/24</td>
+</tr>
+<tr>
+<td>PC Windows11 x64</td>
+<td>Kabel LAN, admin lokal, waktu benar, PowerShell5.1, Python3.13 x64 dan WireGuard resmi</td>
+<td>192.168.50.20/24</td>
+</tr>
+<tr>
+<td>Laptop Windows11 x64</td>
+<td>Wi-Fi ke SSID uji, admin lokal, prasyarat sama</td>
+<td>192.168.50.30/24</td>
+</tr>
+<tr>
+<td>Backend</td>
+<td>VM-CA, VM-SERVER, VM-ADMIN yang sudah ada; VM client/attacker lama tetap disimpan</td>
+<td>.100.10/.100.20/.100.40</td>
+</tr>
+</tbody>
+</table>
+<p>Gunakan dua kabel Ethernet untuk router–host dan router–PC; laptop endpoint lewat
+Wi-Fi. Jangan ubah subnet/backend VM atau mengganti lima Ubuntu dan satu Windows
+lama. Host harus tetap mendapat pendinginan/daya dan tidak sleep saat layanan
+berjalan. Kapasitas host diperiksa terhadap alokasi VM yang sudah ada; jangan
+menyalakan seluruh guest sekaligus hanya untuk pilot. Simpan akses console untuk
+pemulihan ketika rute/SSH salah.</p>
+<p>Pembagian pekerjaan: operator host mengurus VM/routing/firewall/backup; admin
+VanGuard mengurus akun, binding, sertifikat dan grant; karyawan hanya menjalankan
+client/login. Password dan username operasional hanya dicatat pada inventaris
+privat komputer ini, bukan kit, GitHub, screenshot atau laporan hasil.</p>
+<p><strong>Kondisi saat kit disiapkan:</strong> host masih Wi-Fi192.168.66.9/24, Ethernet belum
+memiliki alamat pilot, keenam VM mati. Karena itu kit belum boleh dianggap sudah
+memberikan akses. Pemeriksa host memang mengembalikan BLOCKED pada kondisi ini.</p>
+<h2 id="bab-2">2. Isi kit dan cara memeriksa integritas</h2>
+<p>Ekstrak ZIP kit ke folder baru. Jangan mencampur dengan rilis/identitas lama.</p>
+<table>
+<thead>
+<tr>
+<th>Isi</th>
+<th>Kegunaan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>START_HERE.html</td>
+<td>Halaman mulai yang dibuka di browser</td>
+</tr>
+<tr>
+<td>windows/</td>
+<td>Kandidat installer BAT/PowerShell r3 dan20wheel Windows offline</td>
+</tr>
+<tr>
+<td>config/</td>
+<td>Profil publik, root publik, rencana jaringan, contoh env admin</td>
+</tr>
+<tr>
+<td>backend/</td>
+<td>Wheel0.1.12 untuk upgrade aplikasi admin; firewall kandidat dan halaman demo publik</td>
+</tr>
+<tr>
+<td>checks/</td>
+<td>Pemeriksa integritas, host Linux dan endpoint Windows read-only</td>
+</tr>
+<tr>
+<td>docs/</td>
+<td>Panduan ini, modul lengkap CA–pengguna dan histori/batas bukti</td>
+</tr>
+<tr>
+<td>ACCEPTANCE.csv</td>
+<td>Template hasil PC, laptop dan penggunaan bersamaan; awalnya belum diuji</td>
+</tr>
+<tr>
+<td>DEPLOYMENT_STATUS.json</td>
+<td>Status kandidat/bagian yang belum tervalidasi</td>
+</tr>
+<tr>
+<td>kit-manifest.json</td>
+<td>SHA256 setiap file; hash manifest harus diperiksa dari kanal lain</td>
+</tr>
+</tbody>
+</table>
+<p>Runtime installer Python/WireGuard <strong>tidak disertakan</strong>. Python wheel offline
+sudah ada; instalasi prasyarat runtime tetap tahap terpisah. Jangan memakai
+installer0.1.7 VM atau deploy/windows/bootstrap.ps1 pada perangkat fisik.</p>
+<p>Operator memberi SHA256 ZIP dan manifest melalui kanal tepercaya terpisah.
+Di Windows gunakan Get-FileHash; di Linux gunakan sha256sum. Membandingkan hash
+hanya dengan file dari unduhan yang sama tidak membuktikan autentisitas.
+Setelah hash ZIP cocok, ekstrak, lalu verifikasi seluruh anggota kit:</p>
+<pre><code class="language-powershell"># WINDOWS ADMIN: ubah path sesuai lokasi kit. Hash harus datang dari operator.
+Get-FileHash -Algorithm SHA256 -LiteralPath 'C:\lokasi\vanguard-realworld-pilot-20261022.zip'
+&amp; 'C:\Program Files\Python313\python.exe' `
+  'C:\Program Files\VanGuardPilotKit\checks\verify_kit.py' `
+  'C:\Program Files\VanGuardPilotKit' --expected-manifest-sha256 'HASH_MANIFEST_DARI_OPERATOR'
+</code></pre>
+<p>Pemeriksa integritas menolak hash berubah, file tambahan/hilang, symlink dan path
+keluar kit. Hasil PASS hanya integritas, bukan Windows/layanan sudah aman atau
+siap. Simpan hasil acceptance di folder laporan <strong>di luar kit</strong>, supaya anggota
+paket tetap sama dengan manifest. Jangan mengedit template ACCEPTANCE di dalam
+kit; salin dahulu ke folder hasil.</p>
+<h2 id="bab-3">3. Siapkan Python dan WireGuard pada Windows</h2>
+<p>Unduh Python Windows installer64-bit seri3.13 dari
+<a href="https://www.python.org/downloads/windows/">halaman resmi Python</a>; pilih installer
+penuh, bukan embeddable ZIP. Pada pemeriksaan22 Oktober, seri3.13 terbaru di
+halaman resmi adalah3.13.17; wheel kandidat dibangun untuk CPython3.13/win_amd64.
+Versi patch pada perangkat tetap wajib dicatat dan diuji, tidak otomatis dianggap
+lulus karena sama seri. Gunakan Custom installation, sertakan pip/venv, Install
+for all users ke <code>C:\Program Files\Python313</code>. Hindari mengubah PATH global jika
+aplikasi lain memakai Python; launcher menggunakan path absolut.</p>
+<p>Unduh WireGuard dari <a href="https://www.wireguard.com/install/">halaman instalasi resmi</a>.
+Operator memeriksa Authenticode valid dan publisher Python Software Foundation/
+WireGuard sesuai artefak. Jangan mengambil installer dari tautan pihak ketiga atau
+menonaktifkan Defender/SmartScreen/execution policy. Jika kebijakan organisasi
+mengharuskan signing script, tanda tangani kandidat melalui proses organisasi
+sebelum uji; paket sekarang belum signed.</p>
+<p>Contoh pemeriksaan <strong>sebelum</strong> menjalankan installer yang diunduh:</p>
+<pre><code class="language-powershell">Get-AuthenticodeSignature -LiteralPath 'C:\lokasi\installer-yang-diunduh.exe' |
+  Select-Object Status,@{Name='Publisher';Expression={$_.SignerCertificate.Subject}}
+</code></pre>
+<p>Nama/path di atas placeholder, bukan file yang disertakan. Hash resmi/publisher
+harus ditinjau operator; status valid tidak menggantikan pemeriksaan publisher.
+Jika runtime sudah ada, jangan downgrade atau menimpa runtime aplikasi lain.
+Gunakan path yang cocok prasyarat; versi/arsitektur lain adalah blocker kandidat.</p>
+<p>Setelah pemasangan, operator mengonfirmasi sertifikat signer <strong>wireguard.exe yang
+terpasang</strong> lewat kanal tepercaya, termasuk thumbprint. Jangan menyalin thumbprint
+dari executable yang belum dipercaya lalu menyebutnya verifikasi independen.</p>
+<pre><code class="language-powershell">&amp; 'C:\Program Files\Python313\python.exe' -c &quot;import sys,struct,venv,ensurepip; print(sys.version); print(struct.calcsize('P')*8)&quot;
+Get-AuthenticodeSignature -LiteralPath 'C:\Program Files\WireGuard\wireguard.exe' |
+  Select-Object Status,@{Name='Publisher';Expression={$_.SignerCertificate.Subject}},@{Name='Thumbprint';Expression={$_.SignerCertificate.Thumbprint}}
+</code></pre>
+<p>Jangan mengimpor konfigurasi WireGuard manual/static peer. VanGuard mengelola
+service tunnel setelah admission, dan private key dibuat kemudian oleh client.</p>
+<h2 id="bab-4">4. Backup sebelum perubahan aktif</h2>
+<p>Catat waktu dan baseline, ruang disk serta lokasi backup di inventaris privat.
+Saat guest mati, backup disk guest/UEFI/TPM serta XML melalui prosedur hypervisor;
+jangan menyalin disk yang aktif tanpa mekanisme konsistensi. Preserve seluruh enam
+VM, terutama CA dan identitas utama. Untuk upgrade aplikasi admin, gunakan backup
+service yang dihentikan seperti Bagian6. Backup bukan izin memulihkan CA lama.</p>
+<p>Pada host, simpan XML/daftar disk, route, konfigurasi jaringan, ruleset host/libvirt,
+konfigurasi router dan akses pemulihan. Contoh keluaran hanya ke folder privat:</p>
+<pre><code class="language-bash"># HOST: baru snapshot read-only; tidak menyalakan atau mengubah jaringan.
+umask 077
+backup_dir=&quot;$HOME/VanGuard-Privat/pilot-$(date +%Y%m%d-%H%M%S)&quot;
+mkdir -m 700 &quot;$backup_dir&quot;
+virsh -c qemu:///system dumpxml VM-CA &gt; &quot;$backup_dir/VM-CA.xml&quot;
+virsh -c qemu:///system domblklist VM-CA --details &gt; &quot;$backup_dir/VM-CA-disks.txt&quot;
+ip -j -4 address show &gt; &quot;$backup_dir/addresses.json&quot;
+ip -j -4 route show &gt; &quot;$backup_dir/routes.json&quot;
+# Ulangi XML/daftar disk untuk lima guest lain; simpan firewall via admin host.
+</code></pre>
+<p>Jangan mengunggah backup atau environment/database. Pastikan backup dapat dibaca,
+checksum cocok dan lokasi disk benar sebelum mengubah apa pun. Jangan restore
+index, serial, crlnumber, CRL atau database keamanan lama saat rollback aplikasi.</p>
+<h2 id="bab-5">5. Siapkan jaringan khusus dan backend yang ada</h2>
+<ol>
+<li>Hubungkan host dan PC ke LAN router, laptop ke SSID uji. Operator router
+menetapkan .50.1/24 dan reservation .50.10/.20/.30; hindari konflik DHCP/static.
+Default gateway endpoint .50.1. Jangan mengubah jaringan rumah/kantor utama.</li>
+<li>Host mendapat .50.10/24 pada Ethernet; backend libvirt tetap .100/24. Pertahankan
+Wi-Fi administrasi sampai jalur LAN/console teruji. Jangan bridge NIC backend,
+menghapus NAT libvirt, mengubah kernel atau memasang custom WireGuard.</li>
+<li>Setelah backup terverifikasi, nyalakan backend bertahap: CA, server, admin.
+Windows VM/client/attacker lama tidak wajib hidup untuk pilot ini. Periksa
+waktu/NTP, service readiness, freshness CRL dan disk/log. CRL kedaluwarsa harus
+diperbaiki lewat mekanisme CA yang sah; jangan melewati pemeriksaannya.</li>
+<li>Pada setiap endpoint, inspeksi adapter; tambahkan host route .100.20/32 melalui
+.50.10 pada adapter yang benar. Jangan membuat route default ke laptop host.</li>
+<li>Tinjau forwarding host/libvirt dan return path, kemudian firewall VM-SERVER.
+Dua sumber .50.20/.30 hanya boleh ke .100.20 TCP8081 dan UDP51820. Jangan buka
+CA8080/admin5000 atau aplikasi8082 langsung dari LAN. Admin tetap melalui
+jalur management host yang sudah ada.</li>
+</ol>
+<p>Perintah tahap penerapan backend (jalankan satu per satu setelah backup):</p>
+<pre><code class="language-bash"># HOST: perintah ini menyalakan VM; hanya ketika tahap penerapan sudah dimulai.
+virsh -c qemu:///system start VM-CA
+virsh -c qemu:///system start VM-SERVER
+virsh -c qemu:///system start VM-ADMIN
+</code></pre>
+<p>Jangan menjalankan <code>start</code> pada guest yang sudah hidup; cek <code>virsh list --all</code>.
+Di setiap guest, periksa service terkait; server juga vanguard-daemon/wg-quick@wg0.
+Tidak ada peer statis pada wg0. TLS/readiness harus diperiksa dari jalur yang
+memang diizinkan, misalnya server menuju CA dan admin menuju server.</p>
+<pre><code class="language-bash"># VM-ADMIN dengan trust anchor yang sudah dipasang melalui kanal tepercaya.
+curl --fail --show-error --silent --connect-timeout 3 --max-time 8 \
+  --cacert /etc/vanguard/root.crt https://192.168.100.20:8081/readyz
+</code></pre>
+<p>TCP berhasil/ping bukan bukti UDP siap. Rule <code>backend/server-firewall.candidate.nft</code>
+adalah bahan review, <strong>jangan langsung apply</strong>. Pastikan management IP .100.1 dan
+aturan layanan lama cocok, buat backup ruleset, jalankan nft syntax check di
+VM-SERVER, dan gunakan rollback terjadwal yang mempertahankan akses console.
+Host firewall belum diketahui backend/chain efektifnya; accept pada chain nft
+baru dapat tetap kalah oleh drop chain libvirt lain. Operator harus memeriksa
+ruleset aktual sebelum menentukan lokasi rule. Rincian matriks ada pada
+<a href="ENDPOINT_WINDOWS_PILOT.md">panduan pilot</a>; tidak ada script host yang menebak
+aturan atau flush firewall global.</p>
+<p>Contoh route sementara setelah interface dikonfirmasi, Windows Administrator:</p>
+<pre><code class="language-powershell">Get-NetIPConfiguration
+Get-NetRoute -AddressFamily IPv4
+# Isi $ifIndex dari adapter LAN/Wi-Fi yang mempunyai IP endpoint yang disetujui.
+New-NetRoute -DestinationPrefix '192.168.100.20/32' -InterfaceIndex $ifIndex `
+  -NextHop '192.168.50.10' -PolicyStore ActiveStore
+</code></pre>
+<p>Jangan menambah jika sudah ada route identik. ActiveStore hilang saat reboot;
+uji ulang preflight setelah boot. Persistensi baru diputuskan setelah pilot lolos.
+Router tidak memerlukan static route backend jika kedua endpoint memakai /32 ini.</p>
+<p>Jalankan pemeriksa host dari kit:</p>
+<pre><code class="language-bash">python3 checks/pilot_preflight.py
+</code></pre>
+<p>Script hanya membaca alamat, forwarding flag dan status6VM dengan batas waktu;
+tidak sudo, menyalakan guest, membuka port atau mengubah route. Exit2 berarti
+FAIL/UNKNOWN atau review manual masih diperlukan. Bahkan semua cek otomatis PASS
+belum membuktikan firewall/TLS/UDP/aplikasi. Gunakan report untuk memperbaiki
+prasyarat, bukan menganggap script gagal karena tidak mengembalikan ready.</p>
+<h2 id="bab-6">6. Siapkan profil dan upgrade aplikasi admin</h2>
+<p>Profil kit menggunakan salinan root/public key lokal. <strong>Bandingkan lagi dengan
+layanan aktif</strong>: fingerprint root DER dan server WireGuard public key. Jangan
+membaca/mengirim server private key. Contoh read-only di node yang benar:</p>
+<pre><code class="language-bash"># VM-ADMIN atau VM-CA: fingerprint trust anchor publik.
+openssl x509 -in /etc/vanguard/root.crt -outform DER | sha256sum
+# VM-SERVER: hanya public key interface, bukan konfigurasi/private key.
+sudo wg show wg0 public-key
+</code></pre>
+<p>Jika berbeda, berhenti dan telusuri asal/root/rotasi. Jangan menimpa trust agar
+cocok kit. Operator membangun ulang profil/kit dari root/key publik yang sah.
+Dengan routing .100.20, SAN HTTPS lama tetap sesuai; tidak perlu membuat CA
+baru atau mengganti sertifikat layanan hanya untuk pilot ini.</p>
+<p>Kontrak server0.1.11 sudah mendukung admission/logout/resource gate yang diperlukan.
+Untuk bundle berprofil, <strong>VM-ADMIN perlu aplikasi0.1.12</strong> dan environment baru.
+CA/server tidak perlu di-upgrade untuk sekadar menambah field profil pada bundle.
+Jangan menjalankan deploy/install.sh sebagai upgrade buta terhadap seluruh lab.
+Wheel backend di kit sama hash dengan wheel aplikasi pada paket Windows; dependensi
+aplikasi0.1.11 dan0.1.12 sama. Jika pip check gagal, hentikan upgrade dan tinjau
+runtime, jangan mengunduh/mengganti dependency diam-diam.</p>
+<p>Operator menyalin wheel dan config publik ke <code>/srv/vanguard-pilot/</code> pada VM-ADMIN,
+direktori milik root yang tidak writable akun biasa. Hash dicek terhadap manifest.
+Contoh urutan pada <strong>VM-ADMIN saja</strong>, setelah jalur pemulihan tersedia:</p>
+<pre><code class="language-bash">sudo systemctl stop vanguard-admin
+# Pastikan inactive sebelum backup konsisten; jika stop gagal, jangan lanjut.
+sudo systemctl is-active vanguard-admin
+</code></pre>
+<p><code>is-active</code> harus menampilkan inactive (exit nonzero memang diharapkan). Backup
+root-only yang baru harus mencakup <code>/opt/vanguard/venv</code>, <code>/var/lib/vanguard/admin</code>,
+<code>/etc/vanguard/admin.env</code>, profil lama jika ada, dan unit. Hindari memasukkan
+isi environment ke terminal/log. Contoh backup konsisten, setelah admin inactive:</p>
+<pre><code class="language-bash"># VM-ADMIN: arsip memuat rahasia; hanya root, jangan dikirim bersama kit.
+pilot_backup=&quot;/var/backups/vanguard-pilot/$(date +%Y%m%d-%H%M%S)&quot;
+sudo install -d -m 0700 &quot;$pilot_backup&quot;
+sudo tar --acls --xattrs -cpf &quot;$pilot_backup/admin-before.tar&quot; -C / \
+  opt/vanguard/venv var/lib/vanguard/admin etc/vanguard \
+  etc/systemd/system/vanguard-admin.service
+sudo chmod 0600 &quot;$pilot_backup/admin-before.tar&quot;
+sudo tar -tf &quot;$pilot_backup/admin-before.tar&quot; &gt; /dev/null
+sudo sha256sum &quot;$pilot_backup/admin-before.tar&quot;
+</code></pre>
+<p>Jika arsip/checksum gagal, jangan upgrade. Arsip DB menjadi bukti pemulihan yang
+harus direview, bukan bahan rollback rutin. Setelah backup terverifikasi:</p>
+<pre><code class="language-bash">sudo /opt/vanguard/venv/bin/python -m pip install --no-index --no-deps \
+  /srv/vanguard-pilot/backend/vanguard_ztna-0.1.12-py3-none-any.whl
+sudo /opt/vanguard/venv/bin/python -m pip check
+sudo install -o root -g vanguard -m 0640 \
+  /srv/vanguard-pilot/config/profile.json /etc/vanguard/endpoint-profile.json
+sudoedit /etc/vanguard/admin.env
+</code></pre>
+<p>Tambahkan tepat satu baris <code>VANGUARD_CLIENT_PROFILE=/etc/vanguard/endpoint-profile.json</code>;
+pertahankan semua nilai env lain, terutama secret/token. Jangan mengganti env dengan
+file contoh kit. Lalu mulai admin dan periksa readiness/bundle tanpa menerbitkan
+sertifikat uji pada health check:</p>
+<pre><code class="language-bash">sudo systemctl start vanguard-admin
+sudo systemctl is-active vanguard-admin
+curl --fail --show-error --silent --connect-timeout 3 --max-time 8 \
+  --cacert /etc/vanguard/root.crt https://192.168.100.40:5000/readyz
+</code></pre>
+<p>Jika gagal, pertahankan log yang disaring, hentikan admin dan pulihkan runtime/env/
+profil/unit dari backup kompatibel. Jangan rollback database/CA untuk membatalkan
+upgrade paket. Paket/backup/izin aktual harus diverifikasi operator; contoh di
+atas belum dieksekusi oleh kit.</p>
+<h2 id="bab-7">7. Install pada PC Windows LAN dahulu</h2>
+<ol>
+<li>Pastikan admin lokal, runtime, IP/route dan backend siap. Salin kit yang sudah
+dicek hash ke <code>C:\Program Files\VanGuardPilotKit</code> menggunakan Explorer/terminal
+Administrator. Periksa ACL: SYSTEM/Administrators boleh tulis; Users hanya
+baca. Sumber root/profil juga harus terlindungi. Jangan memakai Downloads
+writable pengguna sebagai sumber script elevated. Hindari junction/reparse.</li>
+<li>Buka PowerShell Administrator, jalankan pemeriksaan. Script tidak mengubah
+jaringan/key/service; hasil FAIL/UNKNOWN harus ditindaklanjuti.</li>
+</ol>
+<pre><code class="language-powershell">&amp; 'C:\Program Files\VanGuardPilotKit\checks\Check-Endpoint.ps1' -Role PC
+</code></pre>
+<p>Untuk path Python berbeda, tambahkan <code>-PythonPath 'PATH_PYTHON_TERVERIFIKASI'</code>.
+Exit2 selalu meminta pemeriksaan manual/native lanjutan; tidak menandai siap
+produksi. Script PowerShell pemeriksa ini belum diuji native pada target.</p>
+<ol start="3">
+<li>Jalankan <code>windows\Install-VanGuard.bat</code>. UAC bila belum elevated; masukkan
+hash <strong>windows/manifest.json</strong>, bukan kit-manifest, path Python yang diverifikasi,
+dan thumbprint signer WireGuard terpasang yang dikonfirmasi operator. Hash
+endpoint r3: <code>47b50e47e156e1b41ff11ffba01e0e76433eb5f96cfde81b4b6df8361f530cb1</code>.</li>
+<li>Exit0 berarti runtime aplikasi terpasang; belum ada key, login, peer atau VPN.
+Exit1 berarti gagal;1223 UAC batal. Jangan menghapus state/key untuk mengulang.</li>
+<li>Launcher terpasang di Program Files, konfigurasi/identitas terpisah. Jalankan:</li>
+</ol>
+<pre><code class="language-powershell">$launcher = Join-Path $env:ProgramFiles 'VanGuardEndpoint\VanGuard.ps1'
+&amp; $launcher -Action configure
+&amp; $launcher -Action status
+&amp; $launcher -Action init
+</code></pre>
+<p>Configure: pilih <code>config\profile.json</code> dan <code>config\root.crt</code> dari kit terlindungi,
+konfirmasi fingerprint root dan public key server lewat admin. Init: masukkan
+<strong>ID perangkat/IP tunnel yang dialokasikan admin</strong>. Usulan PC10.8.0.5/laptop.6
+harus dicek registry terlebih dahulu; .2/.3/.4 jangan dipakai. Jangan memakai
+identitas VM-client untuk perangkat fisik baru. Private key dibuat pada PC.</p>
+<h2 id="bab-8">8. Enrollment, login dan penggunaan oleh karyawan</h2>
+<ol>
+<li>Kirim hanya <code>request.json</code> dari identity PC ke admin melalui kanal tepercaya.
+Lokasi identity: <code>%ProgramFiles%\VanGuardEndpointData\identity</code>. Jangan
+mengirim identity.key, wg.key atau employee-session.json.</li>
+<li>Admin membuka dashboard dari jalur management yang sudah ada, login+TOTP,
+membuat/memilih akun karyawan, mengunggah request, memeriksa ID/WG public key/IP,
+lalu mengikat akun. Registrasi tidak boleh menambah peer.</li>
+<li>Admin mengunduh bundle publik hasil registrasi dan mengirimkannya ke PC.
+Import harus memakai identity asli yang membuat request. Bundle/profil/root
+berbeda ditolak; jangan memaksa overwrite. Jalankan:</li>
+</ol>
+<pre><code class="language-powershell">&amp; $launcher -Action import-bundle
+&amp; $launcher -Action diagnose
+&amp; $launcher -Action login
+&amp; $launcher -Action connect
+</code></pre>
+<p>Import menanyakan ZIP; login menanyakan username, password diketik tersembunyi.
+Tidak ada password pada command-line atau kit. Diagnose memeriksa HTTPS readiness;
+UDP/aplikasi tetap unknown. Connect melakukan enam pemeriksaan perangkat+sesi,
+lalu tunnel dibuat jika admission diterima. Terminal harus tetap terbuka untuk
+renewal. Status file lokal atau service installed bukan bukti handshake/aplikasi.</p>
+<ol start="4">
+<li>Admin memeriksa registered/lease valid/peer/handshake/transfer secara terpisah.
+Karyawan baru dapat mengakses demo setelah ada grant eksplisit yang sesuai.
+Ulangi untuk laptop Wi-Fi menggunakan <code>-Role Laptop</code>, identitas dan IP berbeda;
+PC harus lulus dulu sebelum keduanya dipakai bersama.</li>
+</ol>
+<h2 id="bab-9">9. Siapkan resource demo dan buktikan akses</h2>
+<p>Pilot hanya mencakup HTTP uji10.8.0.1 TCP8082. Tidak menyediakan internet penuh
+atau aplikasi bisnis otomatis. Operator menjalankan demo sementara pada server
+melalui service yang dikelola; jangan menaruh data sensitif atau bind demo sebagai
+jalan pintas LAN. Admin/server menetapkan kebijakan tuple:
+<code>device_id + username + internal-demo + 10.8.0.1 + tcp + 8082</code>.
+Contoh demo sementara pada VM-SERVER setelah firewall gate terverifikasi. Salin
+hanya <code>backend/demo/index.html</code> publik dari kit ke staging operator. Gunakan
+folder baru milik pilot; jangan menimpa service/folder aplikasi yang sudah ada.</p>
+<pre><code class="language-bash"># VM-SERVER: mulai service demo hanya saat pilot; bukan bagian otomatis installer.
+sudo install -d -o root -g root -m 0755 /srv/vanguard-pilot-demo
+sudo install -o root -g root -m 0644 \
+  /srv/vanguard-pilot/backend/demo/index.html /srv/vanguard-pilot-demo/index.html
+sudo systemd-run --unit=vanguard-pilot-demo --uid=vanguard \
+  --property=NoNewPrivileges=yes --property=ProtectSystem=strict \
+  --property=ProtectHome=yes /usr/bin/python3 -m http.server 8082 \
+  --bind 10.8.0.1 --directory /srv/vanguard-pilot-demo
+</code></pre>
+<p>Service berjalan sebagai user non-root dan hanya bind alamat tunnel. Jangan
+menyimpulkan aman dari bind saja; gate aplikasi juga wajib menolak ingress LAN.
+Jika nama unit/folder sudah dipakai, inspeksi ownership sebelum menggunakan nama
+lain. Hentikan dengan <code>sudo systemctl stop vanguard-pilot-demo</code> setelah pengujian.</p>
+<p>File kebijakan server mengikuti path <code>VANGUARD_RESOURCE_POLICY</code> yang dikonfigurasi
+pada server (umumnya <code>/etc/vanguard/resource-policy.json</code>), bukan profil client. Pertahankan grant lain yang masih sah; lakukan perubahan dengan validator
+kebijakan/prosedur server. Nilai karyawan aktual hanya inventaris privat.</p>
+<p>Format satu grant (placeholder, bukan akun yang otomatis dibuat):</p>
+<pre><code class="language-json">{&quot;grants&quot;:[{&quot;device_id&quot;:&quot;ID_PERANGKAT&quot;,&quot;username&quot;:&quot;AKUN_KARYAWAN&quot;,&quot;resource&quot;:&quot;internal-demo&quot;,&quot;address&quot;:&quot;10.8.0.1&quot;,&quot;protocol&quot;:&quot;tcp&quot;,&quot;port&quot;:8082}]}
+</code></pre>
+<p>Siapkan kandidat file kebijakan privat yang mempertahankan grant sah lainnya.
+Validasi dengan loader aplikasi sebelum operator menerapkannya; output cukup
+jumlah grant, jangan cetak isi akun:</p>
+<pre><code class="language-bash"># VM-SERVER: validasi kandidat lokal, tidak memasang grant/peer.
+sudo /opt/vanguard/venv/bin/python -c \
+  &quot;from vanguard.resource_policy import load_policy; print('policy valid; grants:',len(load_policy('/etc/vanguard/resource-policy.candidate.json')))&quot;
+</code></pre>
+<p>Operator mempublikasikan file tervalidasi secara atomic pada path kebijakan yang
+sudah dikonfirmasi, mode0600/root. Daemon/renewal menyinkronkan set akses dari
+kebijakan+sesi/lease; jangan menambahkan elemen nft manual untuk melewati admission.
+Jika gate/env belum aktif, berhenti dan selesaikan rollout gate dengan backup;
+keberadaan file JSON saja tidak mengaktifkan enforcement.</p>
+<p>Uji HTTP dari endpoint setelah admission dan grant:</p>
+<pre><code class="language-powershell">curl.exe --connect-timeout 3 --max-time 8 http://10.8.0.1:8082/
+</code></pre>
+<p>Syarat minimum penerimaan pilot:</p>
+<table>
+<thead>
+<tr>
+<th>Pengujian</th>
+<th>Hasil wajib</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Install/enrollment/login saja</td>
+<td>Belum ada peer otomatis</td>
+</tr>
+<tr>
+<td>Perangkat sah+akun sah+enam cek lolos</td>
+<td>Lease dan peer sesuai, handshake teramati</td>
+</tr>
+<tr>
+<td>HTTP dengan grant tepat</td>
+<td>Berhasil lewat tunnel</td>
+</tr>
+<tr>
+<td>Tanpa grant/port lain/LAN langsung .100.20:8082</td>
+<td>Ditolak</td>
+</tr>
+<tr>
+<td>Identitas tidak terdaftar/expired/revoked/akun nonaktif</td>
+<td>Ditolak, akses terkait dibersihkan</td>
+</tr>
+<tr>
+<td>Renewal berulang</td>
+<td>Lease diperbarui; validity sertifikat tidak berubah</td>
+</tr>
+<tr>
+<td>Logout/revoke PC saat TCP aktif</td>
+<td>Akses PC terputus; laptop tetap bekerja</td>
+</tr>
+<tr>
+<td>Tukar peran PC/laptop</td>
+<td>Isolasi sama, tanpa menghidupkan identitas revoked</td>
+</tr>
+<tr>
+<td>Wi-Fi putus/sambung/reboot</td>
+<td>Tidak reconnect dengan akses statis; fresh admission wajib</td>
+</tr>
+<tr>
+<td>Cleanup gagal</td>
+<td>Config dipertahankan sampai ownership/tunnel down pasti</td>
+</tr>
+<tr>
+<td>Repair/upgrade/uninstall</td>
+<td>Key/config dipertahankan; komponen shared tidak dihapus</td>
+</tr>
+</tbody>
+</table>
+<p>Salin ACCEPTANCE.csv keluar kit. Catat PASS/FAIL/BELUM_DIJALANKAN, waktu UTC/WIB,
+versi, ID uji, lease/handshake/transfer, hasil HTTP dan lokasi bukti tersaring.
+Jangan mengisi PASS hanya karena checklist tersedia. Tes Linux sebelumnya260/1
+bukan bukti kedua endpoint fisik.</p>
+<h2 id="bab-10">10. Disconnect, logout dan pemulihan</h2>
+<p>Pada terminal pemilik, Ctrl+C meminta cleanup. Dari terminal administrator lain:</p>
+<pre><code class="language-powershell">$launcher = Join-Path $env:ProgramFiles 'VanGuardEndpoint\VanGuard.ps1'
+&amp; $launcher -Action disconnect
+&amp; $launcher -Action logout
+</code></pre>
+<p>Disconnect menghentikan tunnel lokal, tidak mencabut token server. Logout mencabut
+sesi/challenge/lease terkait saja. Jika server tak terjangkau, pencabutan server
+belum terkonfirmasi; hubungi admin dan retry setelah konektivitas pulih. Jangan
+menghapus config ketika service/tunnel down belum pasti. Jangan taskkill massal.</p>
+<p>Jika service hang (WIN-CLEANUP-02): cabut akses di server, verifikasi peer/grant
+hilang, identifikasi service/proses pemilik, pastikan teardown sebelum config
+diarsipkan. Jangan menimpa key atau menghapus VPN lain agar bisa connect lagi.</p>
+<p>Setelah uji: cabut identitas/sesi/grant disposable, disable akun uji sesuai scope,
+hentikan demo sementara, hapus hanya route/rule pilot yang baru dibuat. Kembalikan
+config/runtime dari backup bila perlu, <strong>tanpa restore CA/database keamanan lama</strong>.
+Uninstall mempertahankan identity/config dan Python/WireGuard shared; decommission
+server harus dikonfirmasi dahulu. Lease/cert expiry, soak panjang dan media
+power-loss CA masih perlu pengujian terpisah sebelum klaim produksi.</p>
+<h2 id="bab-11">11. Apa yang sudah siap dan yang belum</h2>
+<p>Source aplikasi0.1.12, paket offline Windows r3, public profile, wheel admin,
+generator firewall, pemeriksa read-only, template acceptance dan panduan tersedia.
+Kit dibangun/diverifikasi lokal; hasil terbaru dicatat pada CHECKPOINT/jurnal.
+Tidak ada credential/private key atau runtime installer dalam kit.</p>
+<p>Belum selesai di target: native PowerShell/UAC/ACL/fresh/repair/upgrade/uninstall,
+runtime/signing sesuai kebijakan, kabel/router/IP pilot, host forwarding efektif,
+readiness live, registry alokasi .5/.6 dan pengujian dua endpoint. Langkah berikutnya
+adalah menyambungkan router/topologi, menyelesaikan baseline/backup, kemudian uji
+native Windows dan pemasangan PC dahulu. Jangan membuka layanan ke internet atau
+menganggap paket unsigned sebagai release produksi.</p>
+</main></body></html>
