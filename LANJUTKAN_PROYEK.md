@@ -3,7 +3,7 @@
 
 **22 Oktober — kandidat endpoint Windows0.1.12 disiapkan lokal.** Fokus master
 prompt235df05 ENDPOINT_WINDOWS pada branch
-`feature/2026-10-22-physical-endpoints`, source040dc21. Jangan checkout main0.1.8
+`feature/2026-10-22-physical-endpoints`, dasar040dc21, commit implementasi52976be. Jangan checkout main0.1.8
 mengganti hardening terbaru. Lima repo/tujuh branch diperiksa; prompt agent hanya
 VanGuard. Batas terbaru **tidak push/publish atau menerapkan VM/router/jaringan/
 endpoint aktif** pada tugas persiapan ini.

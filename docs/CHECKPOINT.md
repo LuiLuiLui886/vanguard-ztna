@@ -5,7 +5,8 @@
 Fokus master prompt235df05: **ENDPOINT_WINDOWS, lokal saja**. Lima repo/tujuh
 branch GitHub akun lokal diperiksa; hanya VanGuard mempunyai prompt tugas agent.
 Source dasar040dc21 bersih dipertahankan, branch baru
-`feature/2026-10-22-physical-endpoints`. Tidak merge source main0.1.8. Tidak push,
+`feature/2026-10-22-physical-endpoints`, commit implementasi lokal **52976be**.
+Tidak merge source main0.1.8. Tidak push,
 publish release atau menerapkan perubahan VM/router/host/endpoint sesuai batas
 master prompt yang diminta pengguna. Semua hasil paket di bawah kandidat lokal.
 
