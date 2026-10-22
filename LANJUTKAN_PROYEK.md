@@ -1,5 +1,9 @@
 # Lanjutkan proyek VanGuard
 
+Cek ulang GitHub22 Oktober13.00WIB: belum ada prompt baru; main235df05 dan
+master prompt tidak berubah, kedua branch lain/PR#1 tanpa instruksi tambahan.
+Tetap lanjut dari hasil lokal di bawah sesuai batas persiapan; tidak ada push.
+
 
 **22 Oktober — kandidat endpoint Windows0.1.12 disiapkan lokal.** Fokus master
 prompt235df05 ENDPOINT_WINDOWS pada branch
