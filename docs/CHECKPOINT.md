@@ -1,5 +1,25 @@
 # Checkpoint VanGuard — 22 Oktober 2026
 
+## Pembaruan dokumentasi penerapan — revisi2
+
+Artefak terbaru: `dist/vanguard-dokumentasi-penerapan-20261022-r2.zip` (338.739byte)
+dan kit lengkap `dist/vanguard-installation-20261022-docs-r2.zip` (12.421.751byte).
+ZIP kit SHA256 `19ede36ca3967f4717e012e3d027e341331bc837fda57cbc8255eefceb078f30`;
+manifest `4649b11f89a18ba08da9df32fe4e30aa0b940796f86eedcb06dd045df1ce701e`.
+17bab,103tautan/anchor,12blokbash syntax dan secret scan PASS.101anggota kit
+hash PASS; windows/backend/checks/config byte-for-byte identik dengan kit lama.
+Native Windows/physical tidak diuji pada pekerjaan dokumentasi ini. Artefak lama
+utuh; gunakan revisi docs-r2 untuk panduan terbaru. Bukti state/realworld-docs-20261022/.
+
+INSTALL_REALWORLD.md/.html sekarang berisi17bab bernomor, daftar isi dan petunjuk
+pembaca. Tambahan: rencana/topologi, syarat lanjut/berhenti per tahap, observasi
+aman, native checklist, troubleshooting, bukti penerimaan, operasi harian dan
+serah terima. Modul utama Bab15.5 menautkan bagian yang sesuai, termasuk CA Bab5.3.
+Tidak ada perubahan aplikasi/installer/VM/jaringan/credential atau hasil native
+baru. Kit dokumentasi revisi2 disiapkan dengan mempertahankan artefak sebelumnya;
+hash/hasil validasi akhir dicatat dalam jurnal22 Oktober. Tugas ini tidak push.
+
+
 ## Status terbaru — kit pemasangan nyata (persiapan lokal)
 
 Pengguna mengonfirmasi router.50/24, host Linux+VM, PC Windows LAN dan laptop

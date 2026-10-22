@@ -1379,3 +1379,26 @@ mati. Unit tests Linux bukan bukti UAC/ACL/installer native atau koneksi fisik.
 Kit tetap kandidat unsigned, runtime Python/WireGuard harus tersedia dan diverifikasi
 operator; tidak ada credential/private key di kit. Pemeriksa integritas PASS
 hanya membuktikan file cocok manifest dari kanal tepercaya, bukan siap produksi.
+
+
+### 15.5 Runbook penerapan lengkap dan serah terima
+
+Revisi dokumentasi2 melengkapi [panduan penerapan nyata](INSTALL_REALWORLD.html)
+dengan17bab bernomor serta daftar isi. Dokumen menyediakan pembagian tugas,
+prasyarat perangkat/runtime, jaringan, backup, upgrade admin, PC dahulu/laptop
+kemudian, enrollment, demo, denial tests, recovery dan operasi harian.
+
+| Kebutuhan | Bagian panduan penerapan |
+|---|---|
+| Instalasi per host/VM/Windows | Bab1–10; baca label lokasi eksekusi setiap perintah |
+| Rencana topologi, window dan rollback | Bab12 |
+| Syarat lanjut/berhenti dan hasil yang harus terlihat | Bab13 |
+| Diagnosis berdasarkan gejala | Bab14 |
+| Format bukti pengujian dan penerimaan | Bab15 |
+| Operasi rutin, expiry, shutdown | Bab16 |
+| Serah terima dan hubungan dengan CA | Bab17 |
+
+Cetak HTML ke PDF A4 dengan Ctrl+P bila diperlukan. Isi formulir/bukti di salinan
+terpisah dari kit agar manifest tidak berubah. Dokumen adalah panduan, bukan
+pernyataan native Windows atau endpoint fisik sudah lulus. Paket aplikasi tetap
+0.1.12r3; revisi dokumentasi tidak memasang perangkat atau memperbarui CA.

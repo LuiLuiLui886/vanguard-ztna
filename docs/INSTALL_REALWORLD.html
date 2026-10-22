@@ -24,13 +24,53 @@ code { font-size:.9em; } blockquote { border-left:4px solid #1c7088; margin-left
  pre,tr { break-inside:avoid; } thead { display:table-header-group; }
  a { color:inherit; } .print-note { display:none; }
 }
-</style></head><body><main><p class="print-note">Modul dapat dibaca tanpa internet. Untuk PDF, tekan Ctrl+P, pilih Simpan sebagai PDF, ukuran A4. Tautan dokumen pendukung memerlukan folder docs dari repository yang sama.</p><h1>Pemasangan VanGuard pada perangkat nyata</h1><nav aria-label="Daftar isi"><h2>Daftar isi</h2><ol><li class="toc-h2"><a href="#bab-1">1. Siapkan perangkat dan pembagian tugas</a></li><li class="toc-h2"><a href="#bab-2">2. Isi kit dan cara memeriksa integritas</a></li><li class="toc-h2"><a href="#bab-3">3. Siapkan Python dan WireGuard pada Windows</a></li><li class="toc-h2"><a href="#bab-4">4. Backup sebelum perubahan aktif</a></li><li class="toc-h2"><a href="#bab-5">5. Siapkan jaringan khusus dan backend yang ada</a></li><li class="toc-h2"><a href="#bab-6">6. Siapkan profil dan upgrade aplikasi admin</a></li><li class="toc-h2"><a href="#bab-7">7. Install pada PC Windows LAN dahulu</a></li><li class="toc-h2"><a href="#bab-8">8. Enrollment, login dan penggunaan oleh karyawan</a></li><li class="toc-h2"><a href="#bab-9">9. Siapkan resource demo dan buktikan akses</a></li><li class="toc-h2"><a href="#bab-10">10. Disconnect, logout dan pemulihan</a></li><li class="toc-h2"><a href="#bab-11">11. Apa yang sudah siap dan yang belum</a></li></ol></nav>
-<p>Panduan operator dan pengguna —22 Oktober2026. Topologi sudah dikonfirmasi:
+</style></head><body><main><p class="print-note">Modul dapat dibaca tanpa internet. Untuk PDF, tekan Ctrl+P, pilih Simpan sebagai PDF, ukuran A4. Tautan dokumen pendukung memerlukan folder docs dari repository yang sama.</p><h1>Pemasangan VanGuard pada perangkat nyata</h1><nav aria-label="Daftar isi"><h2>Daftar isi</h2><ol><li class="toc-h2"><a href="#bab-1">Cara membaca dan mengisi dokumen</a></li><li class="toc-h2"><a href="#bab-2">1. Siapkan perangkat dan pembagian tugas</a></li><li class="toc-h2"><a href="#bab-3">2. Isi kit dan cara memeriksa integritas</a></li><li class="toc-h2"><a href="#bab-4">3. Siapkan Python dan WireGuard pada Windows</a></li><li class="toc-h2"><a href="#bab-5">4. Backup sebelum perubahan aktif</a></li><li class="toc-h2"><a href="#bab-6">5. Siapkan jaringan khusus dan backend yang ada</a></li><li class="toc-h2"><a href="#bab-7">6. Siapkan profil dan upgrade aplikasi admin</a></li><li class="toc-h2"><a href="#bab-8">7. Install pada PC Windows LAN dahulu</a></li><li class="toc-h2"><a href="#bab-9">8. Enrollment, login dan penggunaan oleh karyawan</a></li><li class="toc-h2"><a href="#bab-10">9. Siapkan resource demo dan buktikan akses</a></li><li class="toc-h2"><a href="#bab-11">10. Disconnect, logout dan pemulihan</a></li><li class="toc-h2"><a href="#bab-12">11. Apa yang sudah siap dan yang belum</a></li><li class="toc-h2"><a href="#bab-13">12. Lembar rencana dan topologi yang harus disepakati</a></li><li class="toc-h3"><a href="#bagian-12-1">12.1 Urutan rollback yang harus dipahami sebelum mulai</a></li><li class="toc-h2"><a href="#bab-14">13. Pelaksanaan per tahap dengan syarat lanjut</a></li><li class="toc-h3"><a href="#bagian-13-1">13.1 Perintah observasi yang tidak menampilkan private key</a></li><li class="toc-h3"><a href="#bagian-13-2">13.2 Langkah native installer yang wajib dibuktikan</a></li><li class="toc-h2"><a href="#bab-15">14. Troubleshooting berdasarkan gejala</a></li><li class="toc-h2"><a href="#bab-16">15. Bukti penerimaan dan laporan pengujian</a></li><li class="toc-h2"><a href="#bab-17">16. Operasi harian, shutdown dan pemeliharaan</a></li><li class="toc-h3"><a href="#bagian-16-1">16.1 Sebelum dipakai</a></li><li class="toc-h3"><a href="#bagian-16-2">16.2 Selama layanan dipakai</a></li><li class="toc-h3"><a href="#bagian-16-3">16.3 Mengakhiri hari atau pilot</a></li><li class="toc-h2"><a href="#bab-18">17. Serah terima, CA dan batas penerapan</a></li><li class="toc-h3"><a href="#bagian-17-1">17.1 Formulir serah terima</a></li><li class="toc-h3"><a href="#bagian-17-2">17.2 Penjelasan CA untuk penerapan ini</a></li><li class="toc-h3"><a href="#bagian-17-3">17.3 Batas klaim dan dokumen acuan</a></li></ol></nav>
+<p>Runbook penerapan lengkap, revisi dokumentasi2 —22 Oktober2026. Topologi sudah dikonfirmasi:
 router khusus, backend VM pada laptop Linux, PC Windows LAN dan laptop Windows
 Wi-Fi. Tujuan tahap pertama adalah <strong>pilot nyata terbatas</strong>, bukan membuka layanan
 ke internet atau menyatakan siap produksi. Installer Windows masih kandidat0.1.12
 r3; native UAC/ACL/repair dan jaringan kedua endpoint harus dibuktikan pada target.</p>
-<h2 id="bab-1">1. Siapkan perangkat dan pembagian tugas</h2>
+<h2 id="bab-1">Cara membaca dan mengisi dokumen</h2>
+<p>Dokumen ini adalah panduan kerja, bukan laporan bahwa penerapan telah selesai.
+Bab1–10 berisi langkah instalasi/pemakaian; Bab12–17 berisi lembar kendali,
+pemeriksaan tiap tahap, troubleshooting, operasi dan serah terima. Hasil aktual
+harus dicatat pada lembar pelaksanaan, bukan mengganti status hanya karena perintah
+sudah tersedia. Versi HTML memiliki daftar isi dan dapat dicetak ke PDF: Ctrl+P →
+Simpan sebagai PDF → A4. Buka seluruh folder docs agar tautan pendukung berfungsi.</p>
+<table>
+<thead>
+<tr>
+<th>Pembaca</th>
+<th>Jalur kerja</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Operator host/backend</td>
+<td>Bab1–6,9–10,12–17; siapkan pemulihan sebelum perubahan</td>
+</tr>
+<tr>
+<td>Admin VanGuard</td>
+<td>Bab6,8–10,13–17; kelola akun/binding/grant dan arsip aktivitas</td>
+</tr>
+<tr>
+<td>Karyawan PC/laptop</td>
+<td>Bab3,7–8,10 dan troubleshooting Bab14; jangan mengubah CA/firewall</td>
+</tr>
+<tr>
+<td>Penguji/pembimbing</td>
+<td>Bab9,11,13,15–17; bedakan bukti unit/native/fisik</td>
+</tr>
+</tbody>
+</table>
+<p>Label HOST berarti laptop Linux, VM-ADMIN/VM-SERVER/VM-CA berarti guest yang
+bersangkutan, WINDOWS ADMIN berarti PowerShell elevated di endpoint yang sedang
+diuji. Jangan menyalin semua blok sekaligus. Contoh <code>$ifIndex</code>, <code>HASH_...</code>, ID/IP
+alokasi, nama akun dan path installer harus diisi dari pemeriksaan aktual. Jangan
+mengetik placeholder secara literal lalu menganggap kegagalan sebagai bug sistem.</p>
+<p>Sumber implementasi kandidat: aplikasi0.1.12 dan installer Windows r3. Revisi
+panduan ini tidak mengubah versi aplikasi atau memberi hasil uji native baru.</p>
+<h2 id="bab-2">1. Siapkan perangkat dan pembagian tugas</h2>
 <table>
 <thead>
 <tr>
@@ -80,7 +120,7 @@ privat komputer ini, bukan kit, GitHub, screenshot atau laporan hasil.</p>
 <p><strong>Kondisi saat kit disiapkan:</strong> host masih Wi-Fi192.168.66.9/24, Ethernet belum
 memiliki alamat pilot, keenam VM mati. Karena itu kit belum boleh dianggap sudah
 memberikan akses. Pemeriksa host memang mengembalikan BLOCKED pada kondisi ini.</p>
-<h2 id="bab-2">2. Isi kit dan cara memeriksa integritas</h2>
+<h2 id="bab-3">2. Isi kit dan cara memeriksa integritas</h2>
 <p>Ekstrak ZIP kit ke folder baru. Jangan mencampur dengan rilis/identitas lama.</p>
 <table>
 <thead>
@@ -146,7 +186,7 @@ keluar kit. Hasil PASS hanya integritas, bukan Windows/layanan sudah aman atau
 siap. Simpan hasil acceptance di folder laporan <strong>di luar kit</strong>, supaya anggota
 paket tetap sama dengan manifest. Jangan mengedit template ACCEPTANCE di dalam
 kit; salin dahulu ke folder hasil.</p>
-<h2 id="bab-3">3. Siapkan Python dan WireGuard pada Windows</h2>
+<h2 id="bab-4">3. Siapkan Python dan WireGuard pada Windows</h2>
 <p>Unduh Python Windows installer64-bit seri3.13 dari
 <a href="https://www.python.org/downloads/windows/">halaman resmi Python</a>; pilih installer
 penuh, bukan embeddable ZIP. Pada pemeriksaan22 Oktober, seri3.13 terbaru di
@@ -178,7 +218,7 @@ Get-AuthenticodeSignature -LiteralPath 'C:\Program Files\WireGuard\wireguard.exe
 </code></pre>
 <p>Jangan mengimpor konfigurasi WireGuard manual/static peer. VanGuard mengelola
 service tunnel setelah admission, dan private key dibuat kemudian oleh client.</p>
-<h2 id="bab-4">4. Backup sebelum perubahan aktif</h2>
+<h2 id="bab-5">4. Backup sebelum perubahan aktif</h2>
 <p>Catat waktu dan baseline, ruang disk serta lokasi backup di inventaris privat.
 Saat guest mati, backup disk guest/UEFI/TPM serta XML melalui prosedur hypervisor;
 jangan menyalin disk yang aktif tanpa mekanisme konsistensi. Preserve seluruh enam
@@ -199,7 +239,7 @@ ip -j -4 route show &gt; &quot;$backup_dir/routes.json&quot;
 <p>Jangan mengunggah backup atau environment/database. Pastikan backup dapat dibaca,
 checksum cocok dan lokasi disk benar sebelum mengubah apa pun. Jangan restore
 index, serial, crlnumber, CRL atau database keamanan lama saat rollback aplikasi.</p>
-<h2 id="bab-5">5. Siapkan jaringan khusus dan backend yang ada</h2>
+<h2 id="bab-6">5. Siapkan jaringan khusus dan backend yang ada</h2>
 <ol>
 <li>Hubungkan host dan PC ke LAN router, laptop ke SSID uji. Operator router
 menetapkan .50.1/24 dan reservation .50.10/.20/.30; hindari konflik DHCP/static.
@@ -259,7 +299,7 @@ tidak sudo, menyalakan guest, membuka port atau mengubah route. Exit2 berarti
 FAIL/UNKNOWN atau review manual masih diperlukan. Bahkan semua cek otomatis PASS
 belum membuktikan firewall/TLS/UDP/aplikasi. Gunakan report untuk memperbaiki
 prasyarat, bukan menganggap script gagal karena tidak mengembalikan ready.</p>
-<h2 id="bab-6">6. Siapkan profil dan upgrade aplikasi admin</h2>
+<h2 id="bab-7">6. Siapkan profil dan upgrade aplikasi admin</h2>
 <p>Profil kit menggunakan salinan root/public key lokal. <strong>Bandingkan lagi dengan
 layanan aktif</strong>: fingerprint root DER dan server WireGuard public key. Jangan
 membaca/mengirim server private key. Contoh read-only di node yang benar:</p>
@@ -322,7 +362,7 @@ curl --fail --show-error --silent --connect-timeout 3 --max-time 8 \
 profil/unit dari backup kompatibel. Jangan rollback database/CA untuk membatalkan
 upgrade paket. Paket/backup/izin aktual harus diverifikasi operator; contoh di
 atas belum dieksekusi oleh kit.</p>
-<h2 id="bab-7">7. Install pada PC Windows LAN dahulu</h2>
+<h2 id="bab-8">7. Install pada PC Windows LAN dahulu</h2>
 <ol>
 <li>Pastikan admin lokal, runtime, IP/route dan backend siap. Salin kit yang sudah
 dicek hash ke <code>C:\Program Files\VanGuardPilotKit</code> menggunakan Explorer/terminal
@@ -356,7 +396,7 @@ konfirmasi fingerprint root dan public key server lewat admin. Init: masukkan
 <strong>ID perangkat/IP tunnel yang dialokasikan admin</strong>. Usulan PC10.8.0.5/laptop.6
 harus dicek registry terlebih dahulu; .2/.3/.4 jangan dipakai. Jangan memakai
 identitas VM-client untuk perangkat fisik baru. Private key dibuat pada PC.</p>
-<h2 id="bab-8">8. Enrollment, login dan penggunaan oleh karyawan</h2>
+<h2 id="bab-9">8. Enrollment, login dan penggunaan oleh karyawan</h2>
 <ol>
 <li>Kirim hanya <code>request.json</code> dari identity PC ke admin melalui kanal tepercaya.
 Lokasi identity: <code>%ProgramFiles%\VanGuardEndpointData\identity</code>. Jangan
@@ -384,7 +424,7 @@ Karyawan baru dapat mengakses demo setelah ada grant eksplisit yang sesuai.
 Ulangi untuk laptop Wi-Fi menggunakan <code>-Role Laptop</code>, identitas dan IP berbeda;
 PC harus lulus dulu sebelum keduanya dipakai bersama.</li>
 </ol>
-<h2 id="bab-9">9. Siapkan resource demo dan buktikan akses</h2>
+<h2 id="bab-10">9. Siapkan resource demo dan buktikan akses</h2>
 <p>Pilot hanya mencakup HTTP uji10.8.0.1 TCP8082. Tidak menyediakan internet penuh
 atau aplikasi bisnis otomatis. Operator menjalankan demo sementara pada server
 melalui service yang dikelola; jangan menaruh data sensitif atau bind demo sebagai
@@ -486,7 +526,7 @@ keberadaan file JSON saja tidak mengaktifkan enforcement.</p>
 versi, ID uji, lease/handshake/transfer, hasil HTTP dan lokasi bukti tersaring.
 Jangan mengisi PASS hanya karena checklist tersedia. Tes Linux sebelumnya260/1
 bukan bukti kedua endpoint fisik.</p>
-<h2 id="bab-10">10. Disconnect, logout dan pemulihan</h2>
+<h2 id="bab-11">10. Disconnect, logout dan pemulihan</h2>
 <p>Pada terminal pemilik, Ctrl+C meminta cleanup. Dari terminal administrator lain:</p>
 <pre><code class="language-powershell">$launcher = Join-Path $env:ProgramFiles 'VanGuardEndpoint\VanGuard.ps1'
 &amp; $launcher -Action disconnect
@@ -505,7 +545,7 @@ config/runtime dari backup bila perlu, <strong>tanpa restore CA/database keamana
 Uninstall mempertahankan identity/config dan Python/WireGuard shared; decommission
 server harus dikonfirmasi dahulu. Lease/cert expiry, soak panjang dan media
 power-loss CA masih perlu pengujian terpisah sebelum klaim produksi.</p>
-<h2 id="bab-11">11. Apa yang sudah siap dan yang belum</h2>
+<h2 id="bab-12">11. Apa yang sudah siap dan yang belum</h2>
 <p>Source aplikasi0.1.12, paket offline Windows r3, public profile, wheel admin,
 generator firewall, pemeriksa read-only, template acceptance dan panduan tersedia.
 Kit dibangun/diverifikasi lokal; hasil terbaru dicatat pada CHECKPOINT/jurnal.
@@ -516,4 +556,512 @@ readiness live, registry alokasi .5/.6 dan pengujian dua endpoint. Langkah berik
 adalah menyambungkan router/topologi, menyelesaikan baseline/backup, kemudian uji
 native Windows dan pemasangan PC dahulu. Jangan membuka layanan ke internet atau
 menganggap paket unsigned sebagai release produksi.</p>
+<h2 id="bab-13">12. Lembar rencana dan topologi yang harus disepakati</h2>
+<p>Isi sebelum window penerapan. Catat kontak penanggung jawab secara privat;
+lembar publik cukup role atau kode petugas. Tidak ada password pada lembar ini.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Rencana</th>
+<th>Aktual saat pelaksanaan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Waktu mulai/selesai dan zona waktu</td>
+<td>Window yang disepakati</td>
+<td>BELUM_DIISI</td>
+</tr>
+<tr>
+<td>Operator host/backend, admin, penguji</td>
+<td>Tiga peran; boleh satu orang dengan catatan</td>
+<td>BELUM_DIISI</td>
+</tr>
+<tr>
+<td>Hash kit/manifest dan versi aplikasi</td>
+<td>Dari operator melalui kanal tepercaya</td>
+<td>BELUM_DIISI</td>
+</tr>
+<tr>
+<td>Model/router/firmware dan port LAN</td>
+<td>Router khusus, bukan jaringan utama</td>
+<td>BELUM_DIISI</td>
+</tr>
+<tr>
+<td>SSID uji, guest isolation, client isolation</td>
+<td>LAN dan Wi-Fi uji dapat berkomunikasi sesuai kebijakan</td>
+<td>BELUM_DIISI</td>
+</tr>
+<tr>
+<td>Interface Ethernet host</td>
+<td>Nama nyata dari ip address, bukan tebakan</td>
+<td>BELUM_DIISI</td>
+</tr>
+<tr>
+<td>Alokasi DHCP/static dan konflik IP</td>
+<td>.50.10/.20/.30 terpisah dan tidak duplikat</td>
+<td>BELUM_DIISI</td>
+</tr>
+<tr>
+<td>Akses console/backup dan verifikasi checksum</td>
+<td>Lokasi privat, dapat dibaca operator</td>
+<td>BELUM_DIISI</td>
+</tr>
+<tr>
+<td>Firewall host/libvirt</td>
+<td>Backend/chain/hook/handle sebelum perubahan</td>
+<td>BELUM_DIISI</td>
+</tr>
+<tr>
+<td>Windows build/arsitektur/Python/WireGuard/PowerShell</td>
+<td>Dicatat masing-masing PC dan laptop</td>
+<td>BELUM_DIISI</td>
+</tr>
+<tr>
+<td>ID/IP tunnel PC dan laptop</td>
+<td>.5/.6 usulan; registry diperiksa sebelum persetujuan</td>
+<td>BELUM_DIISI</td>
+</tr>
+<tr>
+<td>Root fingerprint, server WG public key</td>
+<td>Dibandingkan dengan backend aktif</td>
+<td>BELUM_DIISI</td>
+</tr>
+</tbody>
+</table>
+<p>Topologi aliran, bukan bukti koneksi yang telah berhasil:</p>
+<pre><code class="language-text">PC Windows LAN .50.20 ----- kabel -----+
+                                      |
+Laptop Windows Wi-Fi .50.30 -- SSID -- Router khusus .50.1/24
+                                      |
+                                   kabel LAN
+                                      |
+                          Host Linux Ethernet .50.10
+                          route/forward/libvirt filter
+                                      |
+                          virbr-vg 192.168.100.1/24
+                          + VM-CA     .100.10 HTTPS8080
+                          + VM-SERVER .100.20 HTTPS8081 / UDP51820
+                          + VM-ADMIN  .100.40 HTTPS5000
+                          + 3 guest client/attacker lama dipertahankan
+
+Sebelum tunnel: endpoint -&gt; .100.20:8081 (admission HTTPS)
+Setelah admission: endpoint -&gt; .100.20:51820 (WireGuard UDP)
+Di dalam tunnel: identitas yang punya grant -&gt; 10.8.0.1:8082
+CA/admin bukan tujuan yang dibuka langsung kepada endpoint fisik.
+</code></pre>
+<p>Tiga ruang alamat berbeda: .50/24 untuk LAN fisik, .100/24 untuk backend guest,
+10.8/24 untuk tunnel. Default gateway endpoint tetap router.50.1; host.50.10 hanya
+next hop rute khusus server. Tidak ada rencana WAN/port forwarding internet.
+Jangan membuka admin/CA pada router karena client tidak perlu memanggilnya langsung.</p>
+<h3 id="bagian-12-1">12.1 Urutan rollback yang harus dipahami sebelum mulai</h3>
+<p>Tetapkan siapa yang boleh menghentikan pilot dan di mana console tersedia.
+Rollback dimulai ketika kehilangan jalur administrasi, trust/key tidak cocok,
+default-deny gagal, identitas lain terputus oleh logout scoped, atau cleanup
+kepemilikan tidak pasti. Hentikan tahap berikutnya; simpan bukti tersaring.</p>
+<ol>
+<li>Cabut sesi/grant pilot melalui server/admin yang sah; verifikasi peer/aplikasi
+endpoint terkait terputus, pertahankan scope endpoint lain.</li>
+<li>Hentikan proses connect milik pilot. Konfirmasi teardown; jika gagal, tangani
+WIN-CLEANUP-02 dengan ownership terverifikasi sebelum menyentuh config.</li>
+<li>Hapus hanya route /32 dan rule bertanda pilot yang baru dibuat, memakai interface,
+next-hop atau handle yang dicatat. Jangan flush tabel global/libvirt.</li>
+<li>Bila upgrade admin gagal, pulihkan runtime/env/unit/profil kompatibel yang
+di-backup; pertahankan database/CA terkini dan histori pencabutan.</li>
+<li>Periksa lagi akses console/management, readiness, nol akses disposable dan
+identitas utama tetap. Catat hasil rollback, bukan hanya perintah yang dijalankan.</li>
+</ol>
+<p>Jika tidak bisa memastikan restore runtime kompatibel, biarkan layanan terkait
+berhenti/fail-closed dan eskalasi ke operator. Jangan mengembalikan CA/database
+lama untuk mengejar hasil hijau.</p>
+<h2 id="bab-14">13. Pelaksanaan per tahap dengan syarat lanjut</h2>
+<table>
+<thead>
+<tr>
+<th>Tahap / penanggung jawab</th>
+<th>Tindakan dan rujukan</th>
+<th>Hasil yang harus terlihat</th>
+<th>Berhenti jika</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T0 Operator</td>
+<td>Inventaris, hash kit, backup, console; Bab1–4</td>
+<td>Paket cocok manifest; backup checksum benar; keenam VM tercatat</td>
+<td>Hash berbeda/backup tidak terbaca/console tidak tersedia</td>
+</tr>
+<tr>
+<td>T1 Operator jaringan</td>
+<td>Router, IP, route host/endpoint; Bab5</td>
+<td>.50/24 sesuai rencana, tidak overlap, backend .100/24 tetap</td>
+<td>IP duplikat, Wi-Fi terisolasi, interface salah</td>
+</tr>
+<tr>
+<td>T2 Operator backend</td>
+<td>CA → server → admin, clock/CRL/readiness</td>
+<td>Service terkait active dan readiness200 melalui jalur sah</td>
+<td>503, CRL invalid/stale, trust tidak cocok</td>
+</tr>
+<tr>
+<td>T3 Operator firewall</td>
+<td>Review forwarding/NAT/return path dan kandidat VM</td>
+<td>Hanya TCP8081/UDP51820 dari dua endpoint; management tetap</td>
+<td>API/CA/admin terbuka salah scope, bypass LAN atau akses admin hilang</td>
+</tr>
+<tr>
+<td>T4 Operator admin</td>
+<td>Backup konsisten dan upgrade admin0.1.12; Bab6</td>
+<td>pip check PASS, service/readiness sehat, profil terbaca</td>
+<td>Env hilang, dependency gagal, root/key berbeda</td>
+</tr>
+<tr>
+<td>T5 Operator PC</td>
+<td>Runtime, preflight, UAC/install, status; Bab3,7</td>
+<td>Runtime terpasang, tanpa peer/identitas otomatis</td>
+<td>Signature/path/hash/UAC/state gagal</td>
+</tr>
+<tr>
+<td>T6 Admin+karyawan PC</td>
+<td>Init/request/binding/import/login; Bab8</td>
+<td>Binding cocok original key/request, login belum menambah peer</td>
+<td>Key hilang/ID reused/akun salah/bundle tidak cocok</td>
+</tr>
+<tr>
+<td>T7 Penguji PC</td>
+<td>Connect/admission/grant/demo, deny tests; Bab9</td>
+<td>Lease/peer/handshake benar, hanya resource berizin yang lolos</td>
+<td>Bypass admission/grant, LAN langsung lolos, cleanup tidak pasti</td>
+</tr>
+<tr>
+<td>T8 Laptop</td>
+<td>Ulang T5–T7 via Wi-Fi dengan identitas berbeda</td>
+<td>Bukti laptop sendiri; SSID/adapter benar</td>
+<td>Menggunakan key/ID PC, guest isolation, runtime tidak cocok</td>
+</tr>
+<tr>
+<td>T9 Bersama</td>
+<td>Renewal, logout/revoke satu sisi, tukar peran</td>
+<td>Akses satu sisi terputus sesuai scope; sisi lain tetap</td>
+<td>Sesi/perangkat lain ikut terputus atau TCP dicabut tetap berjalan</td>
+</tr>
+<tr>
+<td>T10 Operator+admin</td>
+<td>Cleanup, arsip audit, serah terima; Bab10,15–17</td>
+<td>Disposable dicabut, demo berhenti bila selesai, bukti tersimpan</td>
+<td>Peer/grant/tunnel/config ownership belum jelas</td>
+</tr>
+</tbody>
+</table>
+<h3 id="bagian-13-1">13.1 Perintah observasi yang tidak menampilkan private key</h3>
+<p>Di VM-SERVER, gunakan output terarah; <strong>jangan</strong> memakai <code>wg showconf</code> atau dump
+konfigurasi/environment ke laporan karena dapat membawa rahasia.</p>
+<pre><code class="language-bash"># VM-SERVER: public key dan bukti tunnel, bukan private key.
+sudo wg show wg0 peers
+sudo wg show wg0 latest-handshakes
+sudo wg show wg0 transfer
+sudo wg show wg0 allowed-ips
+systemctl is-active vanguard-server vanguard-daemon wg-quick@wg0
+</code></pre>
+<p>Public key tetap metadata identitas; batasi penyebaran laporan sesuai kebutuhan.
+Handshake0 berarti belum pernah terlihat; waktu lama bukan bukti aktif sekarang.
+Byte kumulatif harus dibandingkan sebelum/sesudah request demo, bukan dipakai
+sendiri sebagai bukti akses aplikasi. Server/API/dashboard menyediakan lease dan
+status registered terpisah; nilai unknown harus tetap dicatat unknown.</p>
+<p>Jika perlu log untuk kegagalan, operator membacanya pada node privat dalam rentang
+waktu kejadian. Jangan menyalin request lengkap, header Authorization, OTP, password,
+token, key atau environment. Arsip administrator dilakukan melalui dashboard
+agar field kejadian/alasan yang aman tetap konsisten dengan sistem.</p>
+<h3 id="bagian-13-2">13.2 Langkah native installer yang wajib dibuktikan</h3>
+<p>Lakukan pada identitas disposable, setelah baseline/backup. Rekam hash identitas
+sebelum/sesudah secara privat, bukan isi key.</p>
+<ol>
+<li>Fresh install di path terlindungi: exit0, runtime lengkap, belum ada peer/key
+yang dibuat installer. Configure/init adalah tahap terpisah.</li>
+<li>UAC dibatalkan: exit1223, tidak melanjutkan instalasi. Salah hash manifest:
+proses gagal, existing identity tidak berubah.</li>
+<li>Reinstall/repair: runtime baru lolos check sebelum pointer berganti; key/config
+tetap. Interupsi: status tidak boleh terlihat INSTALLED jika belum selesai.</li>
+<li>Upgrade ketika tunnel aktif: ditolak sampai pemilik menyelesaikan cleanup.
+Jangan menutup paksa aplikasi lain atau menghapus config.</li>
+<li>Path berspasi dan ACL: package/runtime terlindungi; reparse/junction ditolak;
+pengguna biasa tidak dapat membaca key atau menulis kode elevated.</li>
+<li>Uninstall setelah service absent: binary milik aplikasi hilang, data/key/config
+serta Python/WireGuard shared tetap. Decommission server diuji terpisah.</li>
+</ol>
+<p>Checklist ini belum merupakan bukti bahwa hasil di atas sudah tercapai. Linux
+unit tests dan parse PowerShell tidak menggantikan eksekusi Windows native.</p>
+<h2 id="bab-15">14. Troubleshooting berdasarkan gejala</h2>
+<table>
+<thead>
+<tr>
+<th>Gejala</th>
+<th>Pemeriksaan pertama</th>
+<th>Tindakan aman / kriteria selesai</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Preflight host BLOCKED</td>
+<td>Alamat Ethernet .50.10/24 dan status CA/server/admin</td>
+<td>Selesaikan jaringan/startup sesuai window; exit2 tetap perlu review manual</td>
+</tr>
+<tr>
+<td>PC dapat menghubungi API, laptop tidak</td>
+<td>SSID/guest isolation/IP/route /32/adapter Wi-Fi</td>
+<td>Betulkan SSID/rute yang disetujui; jangan membuka CA/admin</td>
+</tr>
+<tr>
+<td>Timeout HTTPS sebelum tunnel</td>
+<td>Route .100.20/32, host forwarding efektif, libvirt filter, firewall VM, listener</td>
+<td>Telusuri jalur satu per satu; TCP8081 harus berhasil dengan TLS valid</td>
+</tr>
+<tr>
+<td>TLS certificate verify failed</td>
+<td>Waktu, URL/SAN, root fingerprint independen</td>
+<td>Cocokkan ke layanan aktif; jangan verify=False atau mengganti trust dari ZIP semata</td>
+</tr>
+<tr>
+<td>Readiness503</td>
+<td>Detail dependency unknown/not_ready, waktu/CRL/daemon/disk</td>
+<td>Atasi dependency; liveness200 tidak cukup, jangan memperpanjang timeout tanpa bukti</td>
+</tr>
+<tr>
+<td>Installer gagal sebelum UAC</td>
+<td>Hash paket, sumber admin-only, ACL/reparse, execution policy organisasi</td>
+<td>Tempatkan lewat operator pada path terlindungi; signing bila wajib, bukan bypass policy</td>
+</tr>
+<tr>
+<td>Python tidak ditemukan/tidak cocok</td>
+<td>Path absolut, 3.13,64bit,pip/venv, lokasi terlindungi</td>
+<td>Pasang runtime resmi yang sesuai; jangan menimpa runtime aplikasi lain</td>
+</tr>
+<tr>
+<td>WireGuard signature/thumbprint ditolak</td>
+<td>Signature valid, publisher dan thumbprint signer yang dikonfirmasi admin</td>
+<td>Periksa asal dan waktu/trust store; jangan menerima thumbprint tak dikenal</td>
+</tr>
+<tr>
+<td>Config sudah ada</td>
+<td>Ownership instalasi, file profil/root lama, setup-state</td>
+<td>Bandingkan konfigurasi; jangan hapus config/key agar configure dapat berjalan</td>
+</tr>
+<tr>
+<td>Init menolak direktori tidak kosong</td>
+<td>Apakah identitas sudah pernah dibuat</td>
+<td>Lanjutkan identitas yang sah; init bukan reset atau repair key</td>
+</tr>
+<tr>
+<td>Import bundle ditolak</td>
+<td>Original request/ID/IP/WGkey, root/profil, cert/key, validity</td>
+<td>Minta bundle yang benar; tidak menyalin private key dari perangkat lain</td>
+</tr>
+<tr>
+<td>Login gagal</td>
+<td>Akun karyawan aktif dan binding perangkat yang benar</td>
+<td>Admin memeriksa akun; username/password tidak diunggah ke laporan</td>
+</tr>
+<tr>
+<td>Login berhasil tetapi connect ditolak</td>
+<td>Enam cek perangkat, sesi, CRL, revocation, clock</td>
+<td>Perbaiki sebab terkonfirmasi; kredensial valid bukan izin melewati admission</td>
+</tr>
+<tr>
+<td>Peer ada tetapi handshake belum terlihat</td>
+<td>Endpoint UDP51820, server public key, route/NAT/filter balasan</td>
+<td>Buktikan lalu lintas UDP; ping/TCP/API saja belum cukup</td>
+</tr>
+<tr>
+<td>Handshake ada tetapi HTTP demo gagal</td>
+<td>Demo aktif/bind10.8.0.1, grant identity+akun, lease valid, gate aktif</td>
+<td>Benahi grant/listener yang benar; jangan membuka LAN atau menambah peer statis</td>
+</tr>
+<tr>
+<td>HTTP LAN langsung justru berhasil</td>
+<td>Ingress interface, gate sebelum established, target/port pengujian</td>
+<td>Hentikan pilot; enforcement gagal sampai bypass ditutup dan diuji ulang</td>
+</tr>
+<tr>
+<td>Renewal terhenti/lease habis</td>
+<td>Terminal connect, sesi8jam, clock/CA/daemon/koneksi</td>
+<td>Fresh login bila sesi expired; lease renewal tidak memperpanjang sertifikat</td>
+</tr>
+<tr>
+<td>Disconnect timeout / service hang</td>
+<td>Pemilik proses/service, marker, config, status server</td>
+<td>Cabut akses server; pastikan teardown sebelum mengarsipkan config; WIN-CLEANUP-02</td>
+</tr>
+<tr>
+<td>Logout server tidak terjangkau</td>
+<td>Jalur API/layanan</td>
+<td>Pencabutan belum terkonfirmasi; retry/admin revoke, bukan tampilkan sukses</td>
+</tr>
+<tr>
+<td>Setelah reboot tidak terhubung</td>
+<td>Route ActiveStore hilang, terminal renewal tidak hidup</td>
+<td>Periksa route/preflight lalu login/admission baru; jangan autostart peer statis</td>
+</tr>
+<tr>
+<td>Kit integrity gagal setelah mengisi checklist</td>
+<td>File acceptance diedit di dalam kit atau ada file tambahan</td>
+<td>Gunakan salinan checklist di luar kit; kembalikan kit dari ZIP terverifikasi</td>
+</tr>
+</tbody>
+</table>
+<p>Jangan mengubah banyak lapisan sekaligus. Catat gejala, waktu, dugaan, satu perubahan,
+hasil pengukuran ulang dan keputusan lanjut/rollback. Jika belum diuji, gunakan
+BELUM_DIJALANKAN; jika pemeriksaan tidak bisa dilakukan, gunakan UNKNOWN beserta
+alasan. Catat kegagalan sekalipun percobaan berikutnya berhasil.</p>
+<h2 id="bab-16">15. Bukti penerimaan dan laporan pengujian</h2>
+<p>Salin ACCEPTANCE.csv dari kit ke folder bukti privat. Matriks template mencakup PC,
+laptop dan bersama; skenario yang tidak berlaku (misalnya putus Wi-Fi pada PC LAN)
+ditandai TIDAK_BERLAKU dengan alasan, bukan PASS. Setiap hasil memerlukan bukti
+waktu dan versi yang sama dengan eksekusi. Jangan menjumlahkan suite overlap atau
+menyalin hasil VM lama menjadi hasil perangkat fisik.</p>
+<p>Contoh catatan satu kasus (template, <strong>bukan hasil uji</strong>):</p>
+<pre><code class="language-text">ID kasus       : PC-ADMISSION-01
+Perangkat      : PC-LAN
+Waktu UTC/WIB  : BELUM_DIISI
+Versi/hash kit : BELUM_DIISI
+Prasyarat      : root/key cocok, akun aktif/binding sah, tanpa peer statis
+Tindakan       : login, buktikan belum ada peer; connect, lakukan request demo
+Hasil harapan  : admission wajib; peer/lease sesuai; HTTP hanya dengan grant
+Hasil aktual   : BELUM_DIJALANKAN
+Bukti aman     : lokasi laporan tersaring; jangan lampirkan token/private key
+Cleanup        : BELUM_DIJALANKAN
+Keputusan      : BELUM_DINILAI
+</code></pre>
+<p>Untuk revoke TCP aktif, koneksi harus benar-benar terbuka sebelum revocation;
+catat waktu revocation, penghentian transfer, status peer/grant dan kondisi endpoint
+lain. Satu request HTTP baru setelah revoke tidak membuktikan sesi TCP lama terputus.
+Untuk renewal, rekam beberapa pembaruan lease beserta sertifikat yang tidak berubah.
+Untuk pengujian expired, gunakan identitas/sesi disposable dan skenario terkontrol;
+jangan mengubah jam CA utama untuk memaksa hasil.</p>
+<p>Hasil minimal yang diserahkan:</p>
+<ul>
+<li>Inventaris versi, topologi aktual, root/public key yang diverifikasi, tanpa key privat.</li>
+<li>Hash kit dan baseline backup yang tersimpan privat, catatan perubahan per tahap.</li>
+<li>Hasil PC, laptop dan bersama, termasuk denial/bypass/renewal/cleanup/isolasi logout.</li>
+<li>Arsip aktivitas admin beserta filter waktu dan checksum; simpan bukti kegagalan.</li>
+<li>Daftar disposable yang dicabut, grant/service/route pilot yang dibersihkan.</li>
+<li>Keterbatasan yang belum diuji, pemilik tindak lanjut dan keputusan pilot diterima/ditunda.</li>
+</ul>
+<p>Arsip dashboard adalah snapshot yang dapat diverifikasi, bukan ledger yang tahan
+perubahan oleh root VM. Jika perlu retensi/off-site, salin arsip ke penyimpanan
+terkontrol sesuai kebijakan, tanpa menghapus bukti lama otomatis.</p>
+<h2 id="bab-17">16. Operasi harian, shutdown dan pemeliharaan</h2>
+<h3 id="bagian-16-1">16.1 Sebelum dipakai</h3>
+<p>Operator memastikan host mendapat daya dan tidak sleep, tiga backend tersedia,
+waktu sinkron, disk/log cukup, readiness dependency sehat serta CRL aktual.
+Admin meninjau sertifikat mendekati expiry dan akun/perangkat nonaktif. Karyawan
+memeriksa profil yang disetujui, login dan connect melalui launcher. Tidak perlu
+init, enrollment ulang atau generate CA setiap hari.</p>
+<p>Jika certificate hampir kedaluwarsa, rencanakan penggantian immutable: siapkan key/
+request baru pada client, ikuti alur replace admin setelah pencabutan lama sesuai
+prosedur, preserve histori/binding. Lease renewal tidak memperpanjang sertifikat.
+Jangan menimpa direktori identitas lama sebelum tunnel down terkonfirmasi.</p>
+<h3 id="bagian-16-2">16.2 Selama layanan dipakai</h3>
+<p>Bedakan domain running, service active, liveness, readiness, lease, peer, handshake
+serta transfer. Masing-masing menjawab pertanyaan berbeda. Pantau halaman
+penyimpanan operasional, pertumbuhan database/audit dan ruang disk; jangan menghapus
+log/database untuk membuat grafik terlihat baik. Rekam alasan gagal yang aman.</p>
+<p>Untuk perubahan profil/port/trust atau upgrade runtime, buat window, backup dan
+uji kompatibilitas baru. Signing/hash paket harus diperbarui ketika isi berubah;
+jangan mengedit ZIP terverifikasi lalu memakai checksum sebelumnya. Hindari
+mengubah interface/IP aktif di tengah sesi tanpa rencana kehilangan koneksi.</p>
+<h3 id="bagian-16-3">16.3 Mengakhiri hari atau pilot</h3>
+<ol>
+<li>Karyawan menutup akses aplikasi, disconnect lalu logout ketika server masih
+terjangkau. Admin memastikan lease/peer/grant terkait sudah dibersihkan.</li>
+<li>Selesaikan akun/identitas disposable dan hentikan demo sementara jika pilot
+selesai. Jangan mencabut identitas utama hanya untuk mematikan mesin.</li>
+<li>Simpan arsip audit dan laporan hasil. Backup terbaru mengikuti konsistensi
+aplikasi dan lokasi privat; tidak menggantikan histori backup sebelumnya.</li>
+<li>Operator menghentikan backend secara normal setelah memastikan tidak ada user
+aktif. Shutdown admin, server, lalu CA; konfirmasi keadaan guest sebelum host
+dimatikan. Hindari forced power-off sebagai rutinitas.</li>
+<li>Pada pemakaian berikutnya, urutan startup CA → server → admin dan verifikasi
+readiness diulang. Reboot bukan bukti revocation; fresh admission tetap wajib.</li>
+</ol>
+<h2 id="bab-18">17. Serah terima, CA dan batas penerapan</h2>
+<h3 id="bagian-17-1">17.1 Formulir serah terima</h3>
+<table>
+<thead>
+<tr>
+<th>Item serah terima</th>
+<th>Isi/keputusan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tanggal, operator, admin penerima</td>
+<td>BELUM_DIISI; identitas personal rinci disimpan privat</td>
+</tr>
+<tr>
+<td>Versi/hash kit dan aplikasi terpasang per node</td>
+<td>BELUM_DIISI; jangan menganggap versi kandidat sudah terpasang</td>
+</tr>
+<tr>
+<td>Diagram jaringan dan rule/route aktual</td>
+<td>BELUM_DIISI; rencana tidak sama dengan hasil diterapkan</td>
+</tr>
+<tr>
+<td>Hasil PC LAN/laptop Wi-Fi/bersama</td>
+<td>BELUM_DIJALANKAN</td>
+</tr>
+<tr>
+<td>Bukti default-deny dan scoped logout/revoke</td>
+<td>BELUM_DIJALANKAN</td>
+</tr>
+<tr>
+<td>Backup, checksum, lokasi dan akses pemulihan</td>
+<td>BELUM_DIISI; lokasi privat, bukan password</td>
+</tr>
+<tr>
+<td>Sertifikat expiry, prosedur replace dan CRL</td>
+<td>BELUM_DIISI</td>
+</tr>
+<tr>
+<td>Penanggung jawab operasi/audit/insiden</td>
+<td>BELUM_DIISI</td>
+</tr>
+<tr>
+<td>Daftar masalah terbuka dan rencana penyelesaian</td>
+<td>WIN-CLEANUP-02/native/fisik/soak/power-loss sesuai bukti aktual</td>
+</tr>
+<tr>
+<td>Keputusan penerimaan</td>
+<td>DITUNDA sampai kriteria target terpenuhi; jangan tanda tangan hasil fiktif</td>
+</tr>
+</tbody>
+</table>
+<h3 id="bagian-17-2">17.2 Penjelasan CA untuk penerapan ini</h3>
+<p>CA mengesahkan sertifikat perangkat/HTTPS; WireGuard memakai keypair terpisah.
+Private key X.509 dan WireGuard perangkat dibuat di perangkat. Admin mendaftarkan
+request/binding dan mengirim sertifikat publik, bukan membuat key milik karyawan.
+Sertifikat saja belum memberi peer: sesi karyawan dan enam pemeriksaan admission
+termasuk CRL/revocation/proof/binding tetap wajib.</p>
+<p>Pada backend yang sudah ada <strong>gunakan CA yang sudah ada</strong>. Jangan menjalankan init
+untuk mengganti CA, memperbaiki CRL secara manual, menebak counter atau mengembalikan
+index lama. Domain/IP tambahan pada HTTPS memerlukan SAN dan allowlist operator;
+rencana saat ini tetap mengakses.100.20 sehingga tidak memerlukan CA baru.</p>
+<p>Untuk lingkungan yang benar-benar kosong, prosedur lengkap generate CA, key/CSR
+HTTPS, signing, trust, CRL dan pemeriksaan sudah tersedia pada
+<a href="MODUL_PENGGUNAAN_VANGUARD.html#bagian-5-3">modul utama Bab5.3</a>.
+Baca prasyarat lingkungan kosong dahulu. Untuk sistem ini jalur yang digunakan
+adalah verifikasi/pemeliharaan CA yang ada, bukan menyalin tahap init lab baru.</p>
+<h3 id="bagian-17-3">17.3 Batas klaim dan dokumen acuan</h3>
+<p>Paket ini mendukung persiapan pilot LAN/Wi-Fi terkontrol. Ia belum membuktikan
+kapasitas produksi, HA, akses internet publik, pengelolaan fleet besar atau semua
+jenis aplikasi/protokol. Resource gate yang dicontohkan khusus internal-demo
+TCP8082; menambah route/resource pada profil saja tidak membuat kebijakan baru.
+Prasyarat runtime, signing organisasi, native Windows dan topologi aktual wajib
+ditutup melalui pengujian target.</p>
+<p>Gunakan <a href="CHECKPOINT.md">checkpoint</a> untuk status terbaru,
+<a href="ENDPOINT_WINDOWS_PILOT.md">panduan teknis pilot</a> untuk matriks routing/firewall,
+<a href="API.md">API</a> untuk kontrak layanan, <a href="SECURITY.md">keamanan</a> untuk trust/lifecycle,
+dan <a href="WINDOWS_CLIENT.md">Windows client</a> untuk histori serta batas bukti guest.
+Jika revisi kit dan checkout berbeda, cocokkan hash serta tanggal; dokumen dalam
+ZIP adalah snapshot saat build, bukan status VM real-time.</p>
 </main></body></html>

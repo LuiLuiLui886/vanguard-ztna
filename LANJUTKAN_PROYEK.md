@@ -1,5 +1,13 @@
 # Lanjutkan proyek VanGuard
 
+**Dokumentasi penerapan revisi2:** [runbook17bab](docs/INSTALL_REALWORLD.html)
+mencakup instalasi, topologi, syarat lanjut, troubleshooting, operasi harian dan
+serah terima. Modul utama Bab15.5 sudah terhubung. Hasil native/fisik tetap belum
+diuji; source aplikasi0.1.12r3 tidak berubah. ZIP dokumen:
+`dist/vanguard-dokumentasi-penerapan-20261022-r2.zip`; kit lengkap terbaru:
+`dist/vanguard-installation-20261022-docs-r2.zip`.103tautan/12blokbash valid;
+hash dan hasil lengkap ada pada checkpoint/jurnal.
+
 **Persiapan pemasangan nyata22 Oktober:** topologi lama dikonfirmasi pengguna.
 Baca [panduan langkah instalasi](docs/INSTALL_REALWORLD.html) dan checkpoint
 terbaru. Kit menggabungkan Windows r3/profil publik/wheel admin/checklist/pemeriksa

@@ -24,7 +24,7 @@ code { font-size:.9em; } blockquote { border-left:4px solid #1c7088; margin-left
  pre,tr { break-inside:avoid; } thead { display:table-header-group; }
  a { color:inherit; } .print-note { display:none; }
 }
-</style></head><body><main><p class="print-note">Modul dapat dibaca tanpa internet. Untuk PDF, tekan Ctrl+P, pilih Simpan sebagai PDF, ukuran A4. Tautan dokumen pendukung memerlukan folder docs dari repository yang sama.</p><h1>Modul lengkap penggunaan Sistem VanGuard</h1><nav aria-label="Daftar isi"><h2>Daftar isi</h2><ol><li class="toc-h2"><a href="#bab-1">1. Tujuan, hasil belajar, dan jalur membaca</a></li><li class="toc-h2"><a href="#bab-2">2. Mengenal sistem dan identitas</a></li><li class="toc-h2"><a href="#bab-3">3. Topologi, perangkat lunak, dan batas lab</a></li><li class="toc-h2"><a href="#bab-4">4. Memulai lab yang sudah terpasang</a></li><li class="toc-h3"><a href="#bagian-4-1">4.1 Nyalakan dan periksa VM — HOST</a></li><li class="toc-h3"><a href="#bagian-4-2">4.2 Verifikasi layanan — HOST, lalu guest yang dipilih</a></li><li class="toc-h2"><a href="#bab-5">5. Pemasangan awal — khusus lingkungan baru</a></li><li class="toc-h3"><a href="#bagian-5-1">5.1 Siapkan host, enam guest, source dan SSH</a></li><li class="toc-h3"><a href="#bagian-5-2">5.2 Pasang aplikasi Ubuntu pada role yang benar</a></li><li class="toc-h3"><a href="#bagian-5-3">5.3 CA, sertifikat, trust dan CRL — panduan rinci</a></li><li class="toc-h4"><a href="#bagian-5-3-1">5.3.1 CA itu apa dan apa hubungannya dengan VPN?</a></li><li class="toc-h4"><a href="#bagian-5-3-2">5.3.2 Struktur file dan parameter CA yang sebenarnya</a></li><li class="toc-h4"><a href="#bagian-5-3-3">5.3.3 Persiapan sebelum generate CA</a></li><li class="toc-h4"><a href="#bagian-5-3-4">5.3.4 Generate root CA pada VM baru</a></li><li class="toc-h4"><a href="#bagian-5-3-5">5.3.5 Verifikasi root sebelum dipercaya</a></li><li class="toc-h4"><a href="#bagian-5-3-6">5.3.6 Distribusikan root publik melalui HOST</a></li><li class="toc-h4"><a href="#bagian-5-3-7">5.3.7 Generate key dan CSR HTTPS pada setiap layanan</a></li><li class="toc-h4"><a href="#bagian-5-3-8">5.3.8 Contoh lengkap: tanda tangani HTTPS SERVER lewat CA</a></li><li class="toc-h4"><a href="#bagian-5-3-9">5.3.9 Verifikasi sertifikat HTTPS dan jalankan layanan</a></li><li class="toc-h4"><a href="#bagian-5-3-10">5.3.10 Bagaimana sertifikat perangkat diterbitkan?</a></li><li class="toc-h4"><a href="#bagian-5-3-11">5.3.11 CRL, pencabutan dan pemeriksaannya</a></li><li class="toc-h4"><a href="#bagian-5-3-12">5.3.12 Backup, kedaluwarsa dan pemulihan</a></li><li class="toc-h4"><a href="#bagian-5-3-13">5.3.13 Kesalahan umum dan hasil yang harus dicatat</a></li><li class="toc-h3"><a href="#bagian-5-4">5.4 Konfigurasi token dan akun admin awal</a></li><li class="toc-h3"><a href="#bagian-5-5">5.5 Firewall dan layanan</a></li><li class="toc-h3"><a href="#bagian-5-6">5.6 Pasang aplikasi Windows baru</a></li><li class="toc-h2"><a href="#bab-6">6. Admin: menyiapkan akun dan perangkat</a></li><li class="toc-h3"><a href="#bagian-6-1">6.1 Login dashboard</a></li><li class="toc-h3"><a href="#bagian-6-2">6.2 Buat akun karyawan</a></li><li class="toc-h3"><a href="#bagian-6-3">6.3 Buat request hanya pada client baru</a></li><li class="toc-h3"><a href="#bagian-6-4">6.4 Daftar, unduh dan pasang sertifikat</a></li><li class="toc-h2"><a href="#bab-7">7. Karyawan Ubuntu: login dan memakai VPN</a></li><li class="toc-h2"><a href="#bab-8">8. Karyawan Windows: dari login desktop sampai disconnect</a></li><li class="toc-h2"><a href="#bab-9">9. Memastikan sistem sudah dapat digunakan</a></li><li class="toc-h2"><a href="#bab-10">10. Admin: aktivitas, arsip, dan penghentian akses</a></li><li class="toc-h3"><a href="#bagian-10-1">10.1 Mencari tindakan berdasarkan waktu</a></li><li class="toc-h3"><a href="#bagian-10-2">10.2 Menyimpan arsip yang dapat diverifikasi</a></li><li class="toc-h3"><a href="#bagian-10-3">10.3 Mencabut akses</a></li><li class="toc-h2"><a href="#bab-11">11. Praktikum dan penilaian</a></li><li class="toc-h2"><a href="#bab-12">12. Mengakhiri sesi dan mematikan lab</a></li><li class="toc-h2"><a href="#bab-13">13. Pemecahan masalah</a></li><li class="toc-h2"><a href="#bab-14">14. Bukti yang tersedia dan pekerjaan berikutnya</a></li><li class="toc-h2"><a href="#bab-15">15. Lembar kerja dan serah terima</a></li><li class="toc-h3"><a href="#bagian-15-1">15.1 VanGuard0.1.9: logout, status dan penggantian identitas</a></li><li class="toc-h3"><a href="#bagian-15-2">15.2 Windows lambat terbuka</a></li><li class="toc-h3"><a href="#bagian-15-3">15.3 Pilot PC Windows LAN dan laptop Windows Wi-Fi</a></li><li class="toc-h3"><a href="#bagian-15-4">15.4 Persiapan pemasangan pada perangkat nyata</a></li></ol></nav>
+</style></head><body><main><p class="print-note">Modul dapat dibaca tanpa internet. Untuk PDF, tekan Ctrl+P, pilih Simpan sebagai PDF, ukuran A4. Tautan dokumen pendukung memerlukan folder docs dari repository yang sama.</p><h1>Modul lengkap penggunaan Sistem VanGuard</h1><nav aria-label="Daftar isi"><h2>Daftar isi</h2><ol><li class="toc-h2"><a href="#bab-1">1. Tujuan, hasil belajar, dan jalur membaca</a></li><li class="toc-h2"><a href="#bab-2">2. Mengenal sistem dan identitas</a></li><li class="toc-h2"><a href="#bab-3">3. Topologi, perangkat lunak, dan batas lab</a></li><li class="toc-h2"><a href="#bab-4">4. Memulai lab yang sudah terpasang</a></li><li class="toc-h3"><a href="#bagian-4-1">4.1 Nyalakan dan periksa VM — HOST</a></li><li class="toc-h3"><a href="#bagian-4-2">4.2 Verifikasi layanan — HOST, lalu guest yang dipilih</a></li><li class="toc-h2"><a href="#bab-5">5. Pemasangan awal — khusus lingkungan baru</a></li><li class="toc-h3"><a href="#bagian-5-1">5.1 Siapkan host, enam guest, source dan SSH</a></li><li class="toc-h3"><a href="#bagian-5-2">5.2 Pasang aplikasi Ubuntu pada role yang benar</a></li><li class="toc-h3"><a href="#bagian-5-3">5.3 CA, sertifikat, trust dan CRL — panduan rinci</a></li><li class="toc-h4"><a href="#bagian-5-3-1">5.3.1 CA itu apa dan apa hubungannya dengan VPN?</a></li><li class="toc-h4"><a href="#bagian-5-3-2">5.3.2 Struktur file dan parameter CA yang sebenarnya</a></li><li class="toc-h4"><a href="#bagian-5-3-3">5.3.3 Persiapan sebelum generate CA</a></li><li class="toc-h4"><a href="#bagian-5-3-4">5.3.4 Generate root CA pada VM baru</a></li><li class="toc-h4"><a href="#bagian-5-3-5">5.3.5 Verifikasi root sebelum dipercaya</a></li><li class="toc-h4"><a href="#bagian-5-3-6">5.3.6 Distribusikan root publik melalui HOST</a></li><li class="toc-h4"><a href="#bagian-5-3-7">5.3.7 Generate key dan CSR HTTPS pada setiap layanan</a></li><li class="toc-h4"><a href="#bagian-5-3-8">5.3.8 Contoh lengkap: tanda tangani HTTPS SERVER lewat CA</a></li><li class="toc-h4"><a href="#bagian-5-3-9">5.3.9 Verifikasi sertifikat HTTPS dan jalankan layanan</a></li><li class="toc-h4"><a href="#bagian-5-3-10">5.3.10 Bagaimana sertifikat perangkat diterbitkan?</a></li><li class="toc-h4"><a href="#bagian-5-3-11">5.3.11 CRL, pencabutan dan pemeriksaannya</a></li><li class="toc-h4"><a href="#bagian-5-3-12">5.3.12 Backup, kedaluwarsa dan pemulihan</a></li><li class="toc-h4"><a href="#bagian-5-3-13">5.3.13 Kesalahan umum dan hasil yang harus dicatat</a></li><li class="toc-h3"><a href="#bagian-5-4">5.4 Konfigurasi token dan akun admin awal</a></li><li class="toc-h3"><a href="#bagian-5-5">5.5 Firewall dan layanan</a></li><li class="toc-h3"><a href="#bagian-5-6">5.6 Pasang aplikasi Windows baru</a></li><li class="toc-h2"><a href="#bab-6">6. Admin: menyiapkan akun dan perangkat</a></li><li class="toc-h3"><a href="#bagian-6-1">6.1 Login dashboard</a></li><li class="toc-h3"><a href="#bagian-6-2">6.2 Buat akun karyawan</a></li><li class="toc-h3"><a href="#bagian-6-3">6.3 Buat request hanya pada client baru</a></li><li class="toc-h3"><a href="#bagian-6-4">6.4 Daftar, unduh dan pasang sertifikat</a></li><li class="toc-h2"><a href="#bab-7">7. Karyawan Ubuntu: login dan memakai VPN</a></li><li class="toc-h2"><a href="#bab-8">8. Karyawan Windows: dari login desktop sampai disconnect</a></li><li class="toc-h2"><a href="#bab-9">9. Memastikan sistem sudah dapat digunakan</a></li><li class="toc-h2"><a href="#bab-10">10. Admin: aktivitas, arsip, dan penghentian akses</a></li><li class="toc-h3"><a href="#bagian-10-1">10.1 Mencari tindakan berdasarkan waktu</a></li><li class="toc-h3"><a href="#bagian-10-2">10.2 Menyimpan arsip yang dapat diverifikasi</a></li><li class="toc-h3"><a href="#bagian-10-3">10.3 Mencabut akses</a></li><li class="toc-h2"><a href="#bab-11">11. Praktikum dan penilaian</a></li><li class="toc-h2"><a href="#bab-12">12. Mengakhiri sesi dan mematikan lab</a></li><li class="toc-h2"><a href="#bab-13">13. Pemecahan masalah</a></li><li class="toc-h2"><a href="#bab-14">14. Bukti yang tersedia dan pekerjaan berikutnya</a></li><li class="toc-h2"><a href="#bab-15">15. Lembar kerja dan serah terima</a></li><li class="toc-h3"><a href="#bagian-15-1">15.1 VanGuard0.1.9: logout, status dan penggantian identitas</a></li><li class="toc-h3"><a href="#bagian-15-2">15.2 Windows lambat terbuka</a></li><li class="toc-h3"><a href="#bagian-15-3">15.3 Pilot PC Windows LAN dan laptop Windows Wi-Fi</a></li><li class="toc-h3"><a href="#bagian-15-4">15.4 Persiapan pemasangan pada perangkat nyata</a></li><li class="toc-h3"><a href="#bagian-15-5">15.5 Runbook penerapan lengkap dan serah terima</a></li></ol></nav>
 <p>Edisi 17 Oktober 2026 · Panduan teknisi, administrator, dan karyawan</p>
 <p>Modul ini menjelaskan persiapan, pemasangan, pendaftaran pengguna/perangkat,
 pembuatan CA dan pengelolaan sertifikat secara rinci, pemakaian VPN Ubuntu dan
@@ -1621,4 +1621,51 @@ mati. Unit tests Linux bukan bukti UAC/ACL/installer native atau koneksi fisik.
 Kit tetap kandidat unsigned, runtime Python/WireGuard harus tersedia dan diverifikasi
 operator; tidak ada credential/private key di kit. Pemeriksa integritas PASS
 hanya membuktikan file cocok manifest dari kanal tepercaya, bukan siap produksi.</p>
+<h3 id="bagian-15-5">15.5 Runbook penerapan lengkap dan serah terima</h3>
+<p>Revisi dokumentasi2 melengkapi <a href="INSTALL_REALWORLD.html">panduan penerapan nyata</a>
+dengan17bab bernomor serta daftar isi. Dokumen menyediakan pembagian tugas,
+prasyarat perangkat/runtime, jaringan, backup, upgrade admin, PC dahulu/laptop
+kemudian, enrollment, demo, denial tests, recovery dan operasi harian.</p>
+<table>
+<thead>
+<tr>
+<th>Kebutuhan</th>
+<th>Bagian panduan penerapan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Instalasi per host/VM/Windows</td>
+<td>Bab1–10; baca label lokasi eksekusi setiap perintah</td>
+</tr>
+<tr>
+<td>Rencana topologi, window dan rollback</td>
+<td>Bab12</td>
+</tr>
+<tr>
+<td>Syarat lanjut/berhenti dan hasil yang harus terlihat</td>
+<td>Bab13</td>
+</tr>
+<tr>
+<td>Diagnosis berdasarkan gejala</td>
+<td>Bab14</td>
+</tr>
+<tr>
+<td>Format bukti pengujian dan penerimaan</td>
+<td>Bab15</td>
+</tr>
+<tr>
+<td>Operasi rutin, expiry, shutdown</td>
+<td>Bab16</td>
+</tr>
+<tr>
+<td>Serah terima dan hubungan dengan CA</td>
+<td>Bab17</td>
+</tr>
+</tbody>
+</table>
+<p>Cetak HTML ke PDF A4 dengan Ctrl+P bila diperlukan. Isi formulir/bukti di salinan
+terpisah dari kit agar manifest tidak berubah. Dokumen adalah panduan, bukan
+pernyataan native Windows atau endpoint fisik sudah lulus. Paket aplikasi tetap
+0.1.12r3; revisi dokumentasi tidak memasang perangkat atau memperbarui CA.</p>
 </main></body></html>
