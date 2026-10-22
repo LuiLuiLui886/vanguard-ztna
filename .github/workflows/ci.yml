@@ -34,6 +34,7 @@ jobs:
           python -m pip check
           python -m vanguard.client --help
           [scriptblock]::Create((Get-Content -Raw deploy/windows/bootstrap.ps1)) | Out-Null
+          Get-ChildItem deploy/endpoint/windows/*.ps1 | ForEach-Object { [scriptblock]::Create((Get-Content -Raw $_.FullName)) | Out-Null }
           python -m pytest -q tests/test_client_platform.py --junitxml=build/reports/windows-client.xml
       - name: Save client report
         if: always()

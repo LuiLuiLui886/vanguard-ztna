@@ -16,8 +16,13 @@ from pathlib import Path
 ADDRESSES = {"ca": 10, "server": 20, "client": 30, "admin": 40, "attacker": 50}
 
 
-def rules(role, management, windows_client=False, application_policy=False):
+def rules(role, management, windows_client=False, application_policy=False, physical_clients=()):
     management = str(ipaddress.IPv4Address(management))
+    physical = [str(ipaddress.IPv4Address(value)) for value in physical_clients]
+    if (len(physical) != len(set(physical)) or len(physical) > 2
+            or any(ip not in ('192.168.50.20', '192.168.50.30') for ip in physical)
+            or (physical and role != 'server')):
+        raise ValueError('Physical pilot addresses must be the two approved endpoints on server only')
     own = f"192.168.100.{ADDRESSES[role]}"
     lines = [
         "add table inet vanguard",
@@ -44,6 +49,7 @@ def rules(role, management, windows_client=False, application_policy=False):
         )
     elif role == "server":
         extra = ', 192.168.100.60' if windows_client else ''
+        extra += ''.join(', ' + ip for ip in physical)
         clients = '{ 10.8.0.2, 10.8.0.4 }' if windows_client else '10.8.0.2'
         lines.extend([
             f"  ip saddr {{ 192.168.100.30, 192.168.100.40, 192.168.100.50{extra} }} "
@@ -94,8 +100,13 @@ def main():
                         help='Allow additional Windows client .60 / tunnel .4 on server')
     parser.add_argument('--application-policy', action='store_true',
                         help='Enable default-deny internal-demo TCP/8082 resource gate')
+    parser.add_argument('--physical-client', action='append', default=[],
+                        help='Generate-only approved pilot source; requires --print-only')
     args = parser.parse_args()
-    content = rules(args.role, args.management_ip, args.windows_client, args.application_policy)
+    if args.physical_client and not args.print_only:
+        parser.error('Physical pilot is preparation-only; use --print-only for reviewed rules')
+    content = rules(args.role, args.management_ip, args.windows_client, args.application_policy,
+                    args.physical_client)
     if args.print_only:
         print(content, end="")
         return

@@ -212,3 +212,25 @@ Rentang tanggal pada filter bersifat inklusif menurut hari WIB. Field CSV/JSON
 dibatasi pada detail aman yang dikenal UI; kode event lama yang belum dikenal
 ditampilkan dengan keterangan umum. Batas arsip 10.000 catatan dan 8 MiB data
 sebelum kompresi. Pembuatan/unduhan arsip dicatat pada audit dashboard.
+
+## Kandidat lokal0.1.12 — profil endpoint dan import
+
+Belum di-rollout. `VANGUARD_CLIENT_PROFILE` opsional pada **VM-ADMIN** menunjuk
+JSON publik schema1 yang tervalidasi (`vanguard.profile`). Dashboard menyertakan
+profil ini pada manifest ZIP jika root cocok CA. Bundle lama tanpa profil tetap
+untuk alur manual lab; importer baru memerlukan root dan profil independen.
+Tidak ada endpoint management baru atau perubahan otorisasi admission/logout.
+
+Kontrak profil: `schema`, `api_url` HTTPS, `wireguard_host`, `wireguard_port`,
+`server_public_key`, `root_sha256`, `backend_network`, `tunnel_network`,
+`allowed_ips` (host route /32), `resources` (name/address/protocol/port).
+Tunnel10.8.0.0/24 tetap sesuai registry; profile tidak memberikan resource grant.
+CLI: `--profile PROFILE --trust ROOT --directory IDENTITY` lalu init dengan
+ID/IP eksplisit, import-bundle ZIP, login, connect, status, diagnose, disconnect,
+logout. Override API/server key yang berbeda ditolak sebelum admission.
+
+`status` melaporkan keberadaan file lokal, tunnel unknown dan admission required;
+file sesi bukan bukti token valid. `diagnose` hanya HTTPS `/readyz`, UDP/aplikasi
+unknown. `disconnect` meminta connect pemilik melakukan cleanup, terpisah dari
+logout server. Timeout teardown tidak berarti sukses; config tetap disimpan.
+Lihat [pilot Windows](ENDPOINT_WINDOWS_PILOT.md) untuk prasyarat dan batas bukti.

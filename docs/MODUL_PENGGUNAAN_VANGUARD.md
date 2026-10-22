@@ -1305,3 +1305,56 @@ Pengujian clock native menunjukkan perbaikan, tetapi waktu tunggu login,
 aktivitas startup dan beban disk/RAM host juga berpengaruh. Lima Ubuntu tetap
 ada; nyalakan hanya layanan yang diperlukan secara bertahap. Rincian bukti,
 keterbatasan dan pemulihan XML ada di [panduan Windows](WINDOWS_CLIENT.md).
+
+### 15.3 Pilot PC Windows LAN dan laptop Windows Wi-Fi
+
+**Tambahan22 Oktober2026: kandidat lokal0.1.12, belum dipasang atau dipublikasikan.**
+Enam VM lab tetap ada; PC dan laptop fisik menggunakan identitas tambahan. Jangan
+memakai bootstrap VM pada perangkat fisik atau membuat ulang CA. Panduan langkah
+terperinci, rencana rule/route, paket dan matriks hasil tersedia pada
+[pilot endpoint Windows](ENDPOINT_WINDOWS_PILOT.md). Tahap ini hanya persiapan;
+master prompt terbaru melarang perubahan jaringan/VM/perangkat dan push.
+
+Rencana router192.168.50.1/24 menghubungkan host Linux .50.10 melalui Ethernet,
+PC .50.20 melalui LAN, laptop .50.30 melalui Wi-Fi. Backend tetap .100/24, tunnel
+10.8/24. Endpoint memakai route /32 menuju server .100.20 melalui host .50.10;
+host/libvirt/VM firewall harus ditinjau bersama. Hanya HTTPS8081 dan WG UDP51820,
+bukan akses langsung aplikasi8082/CA/admin. IP tunnel .5/.6 baru usulan; admin
+harus memastikan registry sebelum alokasi, jangan menyimpulkan kosong dari ping.
+
+Urutan pilot setelah izin penerapan dan verifikasi native:
+
+1. Operator menyiapkan jaringan, prasyarat Windows11x64/Python3.13x64/WireGuard,
+   backup dan paket offline pada path admin-only. Cocokkan hash manifest dan
+   publisher runtime lewat kanal tepercaya. Paket unsigned belum siap distribusi.
+2. Install-VanGuard.bat menjalankan installer PowerShell/UAC. Aplikasi terpasang
+   belum berarti enrolled/login/VPN. Installer tidak mengubah NIC, membuat key,
+   menambah peer atau mengunduh runtime otomatis.
+3. Launcher `VanGuard.ps1 -Action configure` meminta profil/root tepercaya beserta
+   fingerprint root dan public key server. Config tidak ditimpa. `-Action init`
+   meminta ID/IP yang dialokasikan admin; kedua private key dibuat pada endpoint.
+4. Kirim request.json ke admin, daftar dan bind akun. Bundle publik hasil admin
+   diimpor dengan `-Action import-bundle`, cocok dengan root/profil/key/request
+   asli. Tidak ada private key dikirim balik atau akses otomatis saat import.
+5. `-Action diagnose` memeriksa readiness HTTPS; UDP/aplikasi masih unknown.
+   `-Action login` meminta password tersembunyi, lalu `-Action connect` menjalankan
+   preflight, admission dan renewal. Terminal pemilik harus tetap terbuka.
+6. Admin memeriksa lease/peer/handshake/transfer dan memberi grant explicit
+   internal-demo TCP8082. Buktikan HTTP lewat10.8.0.1:8082 berhasil dengan grant
+   serta ditolak tanpa grant/LAN langsung. Ping bukan syarat pilot fisik.
+7. Ulangi pada laptop Wi-Fi, kemudian kedua endpoint bersamaan. Logout/revoke
+   satu endpoint harus memutus aksesnya tanpa memutus yang lain. Catat renewal,
+   Wi-Fi putus/sambung, active TCP revocation, expiry/reboot dan cleanup sebenarnya.
+8. Ctrl+C atau `-Action disconnect` meminta cleanup lokal; `-Action logout`
+   mencabut sesi server. Jika server tidak terjangkau, revocation belum
+   terkonfirmasi. Jangan menghapus config jika ownership/tunnel down belum pasti.
+9. Setelah pilot, cabut identitas/sesi/grant disposable, hentikan demo sementara
+   dan pulihkan hanya route/rule pilot. Preserve identitas utama dan histori CA.
+
+Runtime berada di Program Files/VanGuardEndpoint, sedangkan identity/config/log
+terpisah di Program Files/VanGuardEndpointData dengan akses SYSTEM/Administrators.
+Reinstall/repair membangun runtime baru tanpa rotasi key; uninstall mempertahankan
+data serta Python/WireGuard bersama. Pemulihan parsial otomatis, shortcut GUI,
+ARM64 dan signing organisasi belum tersedia. Seluruh pengujian installer native
+serta pilot PC/laptop **BELUM_DIJALANKAN**. Tes Linux/mocks bukan bukti ACL Windows,
+handshake fisik atau rollout. WIN-CLEANUP-02 tetap perlu uji target terpisah.

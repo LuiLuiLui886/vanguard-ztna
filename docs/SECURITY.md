@@ -135,3 +135,26 @@ mengubah lock mutasi CA, verifikasi TLS, deadline6detik atau penolakan ketika
 pemeriksaan gagal. Layanan tetap dapat not_ready saat overload; jangan mengubahnya
 menjadi200 atau menggunakan CRL lama. Bukti dan pemulihan unit tersedia pada
 [catatan kapasitas](CA_SERVICE_CAPACITY.md).
+
+## Persiapan endpoint0.1.12, belum rollout
+
+Profil publik harus diterima melalui kanal operator tepercaya dengan fingerprint
+Root CA dan public key WireGuard server yang diperiksa terpisah. Root dalam ZIP
+bukan trust anchor baru. Importer memeriksa signature/validity/EKU/key/request,
+menolak anggota ZIP/path tambahan dan binding berbeda; hanya device.crt baru yang
+dipublikasikan, tidak mengganti key/root/profile/sesi. Idempotent untuk PEM identik.
+CRL/akun/lease aktual tetap diperiksa admission server; import tidak memberi peer.
+
+Installer native kandidat tidak mengunduh, membuat key, membuka jaringan atau
+mengubah trust Windows/global PATH. Paket, runtime dan sumber profil harus pada
+path admin-only tanpa reparse point; data identitas dipisahkan. Hash manifest
+harus berasal dari kanal tepercaya, bukan dihitung sendiri dari unduhan lalu
+dianggap autentik. Kandidat unsigned dan native ACL/UAC belum diuji; jangan bypass
+kebijakan eksekusi. Runtime Python3.13x64/WireGuard resmi terverifikasi harus sudah
+tersedia. Launcher memeriksa konflik subnet/route sebelum admission; snapshot
+bukan proof firewall/UDP. Pemulihan service yang belum terkonfirmasi tetap manual.
+
+`CA.sign_tls` tambahan DNS/IP memerlukan allowlist operator eksplisit. Sanitasi
+host mencegah injeksi ekstensi; default tetap alamat layanan lab. Perubahan ini
+diuji pada CA sementara, bukan penerbitan/rotasi sertifikat utama. Riwayat CA dan
+revocation tidak dipulihkan saat rollback paket. Baca [rencana pilot](ENDPOINT_WINDOWS_PILOT.md).

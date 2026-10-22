@@ -245,7 +245,8 @@ authorityKeyIdentifier = keyid:always
             self._crl()
         return {"serial": serial, "revoked": True}
 
-    def sign_tls(self, csr_path, ip, output):
+    def sign_tls(self, csr_path, ip, output, approved_hosts=()):
+        ip = self.tls_host(ip, approved_hosts)
         output = Path(output).resolve()
         if output.exists():
             raise Rejected('Output already exists')
@@ -255,7 +256,7 @@ authorityKeyIdentifier = keyid:always
         with self.transaction() as work:
             signed = private_dir(work.path / 'tls-issued') / (digest + '.crt')
             if not signed.exists():
-                work._sign_tls(csr_path, ip, signed)
+                work._sign_tls(csr_path, ip, signed, approved_hosts)
             data = signed.read_bytes()
         with tempfile.NamedTemporaryFile(dir=output.parent) as stream:
             stream.write(data)
@@ -264,10 +265,23 @@ authorityKeyIdentifier = keyid:always
             os.link(stream.name, output)  # atomic, exclusive, never overwrite
             sync_dir(output.parent)
 
-    def _sign_tls(self, csr_path, ip, output):
-        ip = str(ipaddress.IPv4Address(ip))
-        if ip not in {"192.168.100.10", "192.168.100.20", "192.168.100.40"}:
-            raise Rejected("TLS certificate must belong to a VanGuard service VM")
+    @staticmethod
+    def tls_host(value, approved_hosts=()):
+        from .profile import host
+        value = host(value)
+        permitted = {'192.168.100.10', '192.168.100.20', '192.168.100.40'}
+        permitted.update(host(name) for name in approved_hosts)
+        if value not in permitted:
+            raise Rejected('TLS host requires an explicit operator allowlist')
+        return value
+
+    def _sign_tls(self, csr_path, ip, output, approved_hosts=()):
+        ip = self.tls_host(ip, approved_hosts)
+        try:
+            ipaddress.IPv4Address(ip)
+            san = 'IP:' + ip
+        except ValueError:
+            san = 'DNS:' + ip
         output = Path(output).resolve()
         if output.exists():
             raise Rejected("Output already exists")
@@ -276,7 +290,7 @@ authorityKeyIdentifier = keyid:always
             ext.write_text(
                 f"[tls]\nbasicConstraints=critical,CA:false\n"
                 f"keyUsage=critical,digitalSignature,keyEncipherment\n"
-                f"extendedKeyUsage=serverAuth\nsubjectAltName=IP:{ip}\n"
+                f"extendedKeyUsage=serverAuth\nsubjectAltName={san}\n"
                 "subjectKeyIdentifier=hash\nauthorityKeyIdentifier=keyid:always\n"
             )
             self.openssl(
@@ -336,7 +350,9 @@ def main():
     sub.add_parser("init")
     tls = sub.add_parser("sign-tls")
     tls.add_argument("--csr", required=True)
-    tls.add_argument("--ip", required=True)
+    tls.add_argument("--ip", required=True, help="Service IPv4 or DNS name")
+    tls.add_argument("--approved-host", action="append", default=[],
+                     help="Explicit operator allowlist for additional service SAN")
     tls.add_argument("--out", required=True)
     args = parser.parse_args()
     authority = Authority(args.directory)
@@ -344,7 +360,7 @@ def main():
         authority.initialize()
         print(f"CA initialized: {authority.path / 'root.crt'}")
     else:
-        authority.sign_tls(args.csr, args.ip, args.out)
+        authority.sign_tls(args.csr, args.ip, args.out, args.approved_host)
         print(f"TLS certificate signed: {args.out}")
 
 

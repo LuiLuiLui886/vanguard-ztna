@@ -171,3 +171,34 @@ matched added diagnostic load120/120HTTPS and40/40server probes passed, versus
 of unlimited load or long soak. TLS/lock/deadlines/fail-closed are unchanged.
 Five Ubuntu VMs run; Windows remains shut off. Remaining work is soak, physical
 CA power-loss evidence and the Windows immediate-interrupt cleanup risk.
+
+
+Physical endpoint preparation — 22 October 2026:
+The user requested checking all GitHub repositories and executing their agent
+prompts. Local GitHub account LuiLuiLui886 has five repositories/seven branches;
+only VanGuard supplies an applicable master prompt. Main235df05 has the newest
+CODEX_VANGUARD_MASTER_PROMPT.md; retain040dc21 hardening source instead of merging
+older main0.1.8. Work branch feature/2026-10-22-physical-endpoints targets
+ENDPOINT_WINDOWS. The newer specification explicitly allows local source/tests/
+packaging only: no push, release publication or changes to active VMs, host/router
+network or endpoints in this preparation task.
+
+Approved pilot plan: dedicated router192.168.50.1/24; Linux VM host .50.10 via
+Ethernet, physical Windows11 PC .50.20 LAN and laptop .50.30 Wi-Fi. All five
+Ubuntu guests and the additional Windows guest remain on192.168.100.0/24.
+Prefer endpoint route192.168.100.20/32 via host.50.10 with narrowly reviewed host/
+libvirt/VM forwarding for HTTPS8081 and WG UDP51820. No CA/admin/LAN application
+bypass. Tunnel10.8.0.0/24 remains fixed; .2/.3/.4 reserved, .5/.6 only proposed
+pending registry allocation. Router/interface capabilities and host firewall
+backend must be verified before application; do not assume a route fixes NAT.
+
+Observed22 October: all six VMs shut off; enp2s0 NO-CARRIER, active host Wi-Fi
+192.168.66.9/24 via .66.1, virbr-vg192.168.100.1/24 NAT, forwarding flag1. Privileged
+firewall inspection unavailable noninteractively. No VM/network mutations made.
+Existing installed versions are last-recorded0.1.11 services/0.1.9 clients, not
+revalidated running services. Candidate source0.1.12 introduces one public profile
+contract, checked enrollment import, configurable API/WG transport, scoped local
+disconnect, explicit additional TLS hosts, generation-only pilot config/firewall,
+and offline Windows installer/launcher sources. Keys still originate on clients;
+registration/import/installation never grants access. Native Windows/physical
+pilot/signing remain unverified; see ENDPOINT_WINDOWS_PILOT.md and newest checkpoint.

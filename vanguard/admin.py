@@ -72,11 +72,15 @@ def device_metadata(value):
 
 
 class Dashboard:
-    def __init__(self, directory, ca, server):
+    def __init__(self, directory, ca, server, client_profile=None):
         self.path = private_dir(directory)
         self.db = self.path / "admin.db"
         self.lock = self.path / "workflow.lock"
         self.ca, self.server = ca, server
+        self.client_profile = client_profile
+        if client_profile is not None:
+            from .profile import validate_profile
+            self.client_profile = validate_profile(client_profile)
         with database(self.db) as db:
             db.executescript("""
                 CREATE TABLE IF NOT EXISTS users (
@@ -363,17 +367,23 @@ class Dashboard:
                             wireguard_endpoint='192.168.100.20:51820',
                             certificate_sha256=fingerprint(load_cert(row['certificate'])),
                             root_sha256=fingerprint(root), admission_required=True)
+            if self.client_profile is not None:
+                if self.client_profile['root_sha256'] != fingerprint(root):
+                    raise Rejected('Client profile root differs from CA')
+                manifest.update(profile=self.client_profile,
+                                server=self.client_profile['api_url'],
+                                wireguard_endpoint=f"{self.client_profile['wireguard_host']}:{self.client_profile['wireguard_port']}")
             instructions = (
-                'VanGuard onboarding bundle (Ubuntu 22.04)\n\n'
+                'VanGuard onboarding bundle (Ubuntu / Windows)\n\n'
                 'Verify device_id, certificate SHA-256 and Root CA fingerprint with your administrator.\n'
                 'This bundle contains PUBLIC material only. Keep identity.key and wg.key on the original client.\n'
                 'Install device.crt in the SAME private identity directory that created request.json (mode 0600).\n'
                 'Use the trusted /etc/vanguard/root.crt; do not replace trust solely from an unverified download.\n'
-                'manifest.json documents the binding; the current CLI does not import it automatically.\n'
+                'For profiled bundles use import-bundle with independently trusted --profile and --trust.\n'
                 'Login: sudo /opt/vanguard/venv/bin/vanguard-client --directory IDENTITY_DIR login --username USERNAME\n'
                 'Use the employee username from manifest.json; enter the password interactively.\n'
-                'For the main 10.8.0.2 client, restart the configured vanguard-client service.\n'
-                'Other tunnel IPs require a separately managed lab interface; admit alone does not create a tunnel.\n'
+                'Connect interactively with the trusted profile after employee login.\n'
+                'admit alone does not create a local tunnel; connect maintains admission renewal.\n'
                 'No static peer, private key, password or session token is included.\n'
                 'Registration/download never grants VPN access. All admission checks remain mandatory.\n'
             )
@@ -424,6 +434,11 @@ def create_app(config=None):
         dashboard.audit('operation_failed', name,
                         {'action': action, 'http_status': getattr(exc, 'upstream_status', exc.status)},
                         actor=g.admin_username)
+
+    profile_path = os.environ.get('VANGUARD_CLIENT_PROFILE')
+    if profile_path:
+        from .profile import load_profile
+        dashboard.client_profile = load_profile(profile_path)
 
     @app.before_request
     def csrf_check():

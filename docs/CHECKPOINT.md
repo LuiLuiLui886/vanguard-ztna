@@ -1,6 +1,65 @@
-# Checkpoint VanGuard — 21 Oktober 2026
+# Checkpoint VanGuard — 22 Oktober 2026
 
-## Status terbaru — kapasitas HTTPS CA terverifikasi
+## Status terbaru — persiapan endpoint fisik dan Windows0.1.12
+
+Fokus master prompt235df05: **ENDPOINT_WINDOWS, lokal saja**. Lima repo/tujuh
+branch GitHub akun lokal diperiksa; hanya VanGuard mempunyai prompt tugas agent.
+Source dasar040dc21 bersih dipertahankan, branch baru
+`feature/2026-10-22-physical-endpoints`. Tidak merge source main0.1.8. Tidak push,
+publish release atau menerapkan perubahan VM/router/host/endpoint sesuai batas
+master prompt yang diminta pengguna. Semua hasil paket di bawah kandidat lokal.
+
+- Profil schema1 konsisten antara generator/admin/client; API HTTPS dan WG endpoint
+  tidak lagi terkunci alamat lab bila profil diberikan. Root/key diperiksa, route
+  /32 dan resource eksplisit, tunnel10.8/24 tetap sesuai registry server.
+- Import bundle cocok original request/private keys/root/profil tanpa overwrite
+  identitas atau memberikan peer. Init dengan profil wajib ID/IP dialokasikan.
+- Disconnect scoped meminta proses pemilik membersihkan tunnel; logout server
+  tetap berbeda. Cleanup gagal mempertahankan config. Launcher memeriksa overlap
+  subnet/route sebelum admission. Admission enam cek+sesi tetap wajib.
+- Helper TLS menerima DNS/IP tambahan hanya melalui allowlist operator; diuji
+  pada CA sementara. Generator profil/firewall physical hanya generate-only.
+- Kandidat Windows BAT/PowerShell offline, staging runtime, mutex, guard install
+  terputus, launcher dan uninstall preserve identity. Target buildcp313/win_amd64,
+  Python/WireGuard harus sudah terpasang. Unsigned, BELUM_UJI_TARGET.
+- Paket `dist/endpoint-windows-0.1.12-candidate-r3.zip`,20wheel/27anggota manifest,
+  12.007.094byte. ZIP SHA256
+  `689f3b2303fe7f5d4b03c31f8b32a6aa9b6adcf152a4c75232e37794eb942f61`.
+  Manifest SHA256 `47b50e47e156e1b41ff11ffba01e0e76433eb5f96cfde81b4b6df8361f530cb1`.
+  Build ulang identik, hash/dependency closure/cross-platform pip offline dry-run
+  PASS; bukan native install. Kandidat pertama dan wheel awal tetap disimpan.
+- Baseline lokal81PASS/1SKIP; terarah109PASS/1SKIP; package-final4PASS. Jangan
+  menjumlahkan suite overlap. Suite penuh pertama TERPUTUS tanpa JUnit; runr2
+  selesai **260PASS/1SKIP dalam501,29detik**, Python3.12.3/Linux. Skip ACL native
+  Windows pada Linux. Bukti full-linux-r2.xml/log; tidak ada VM/network test baru.
+- Ruff/pip check/bash syntax PASS; modul15bab/39blokbash/65tautan/15tabel valid,
+  scan credential dan izin inventaris privat PASS. PowerShell native tidak ada
+  di host; parse PS pada workflow baru BELUM_DIJALANKAN, tidak push/run CI.
+
+Kondisi audit22 Oktober: keenam VM **shut off**, tidak dinyalakan/diubah. Ethernet
+enp2s0 NO-CARRIER, Wi-Fi host192.168.66.9/24; backend NAT virbr-vg.100.1/24.
+Firewall host berprivilege belum dapat dibaca noninteraktif. Paket VM terakhir
+tercatat0.1.11 CA/server/admin,0.1.9 client/attacker/Windows; bukan pemeriksaan
+service hidup hari ini. Plan router.50.1,host.50.10,PC.50.20,laptop.50.30 belum
+terpasang. Usulan tunnel.5/.6 belum dialokasikan; .2/.3/.4 tetap dicadangkan.
+
+Bukti lokal `state/endpoint-20261022/`; public-pilot berisi profil/root/admin env/
+network-plan, server-firewall.candidate.nft hanya kandidat. Kredensial tidak diubah,
+tetap inventaris privat di luar Git. Tidak ada backup/live rollout baru karena
+tidak ada perubahan aktif. Panduan [pilot](ENDPOINT_WINDOWS_PILOT.md),
+[jurnal](PROGRESS_2026-10-22.md), [modul tunggal Bab15.3](MODUL_PENGGUNAAN_VANGUARD.html)
+menjelaskan audit, langkah admin/pengguna, backup dan rollback terencana.
+
+Berikutnya: setelah persiapan lokal selesai, penilaian paket/native Windows secara
+terpisah (UAC/ACL/path/hash/fresh/reinstall/repair/upgrade/uninstall/interupsi/key
+preservation), lalu penerapan jaringan yang disetujui. Verifikasi model/router,
+admin/build/arsitektur kedua endpoint, host firewall/libvirt chain/return path,
+registry alokasi, root/key terhadap layanan aktif; pilot PC dahulu, laptop lalu
+bersamaan. Prasyarat otomatis/shortcut GUI/signing/ARM64 belum tersedia. Semua
+hasil fisik BELUM_DIJALANKAN. WIN-CLEANUP-02/power-loss CA/soak tetap tersisa;
+jangan restore CA lama atau menganggap kandidat menutup masalah itu.
+
+## Riwayat21 Oktober — kapasitas HTTPS CA terverifikasi
 
 Source konfigurasi40c7f74 sudah dipush dan unit CA kini **satu worker/8thread**.
 Paket CA/server/admin tetap0.1.11, client/attacker/Windows0.1.9. Tidak ada perubahan

@@ -11,9 +11,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 TOP_LEVEL = (
     "AGENTS.md", "VANGUARD_CONTEXT.md", "LANJUTKAN_PROYEK.md", "README.md", "pyproject.toml", ".gitignore",
+    "CODEX_VANGUARD_MASTER_PROMPT.md",
 )
 DIRECTORIES = ("vanguard", "tests", "scripts", "deploy", "docs")
-SUFFIXES = {".py", ".md", ".html", ".css", ".xml", ".sh", ".ps1", ".txt", ".example", ".service"}
+SUFFIXES = {".py", ".md", ".html", ".css", ".xml", ".sh", ".ps1", ".txt", ".example", ".service", ".bat", ".json", ".lock"}
 
 
 def main():
@@ -26,8 +27,10 @@ def main():
     for directory in DIRECTORIES:
         files.extend(p for p in (ROOT / directory).rglob("*")
                      if p.is_file() and not p.is_symlink() and p.suffix in SUFFIXES
+                     and (p.suffix not in {".json", ".lock"} or directory == "deploy")
                      and not any(part.startswith(".") or part == "__pycache__"
                                  for part in p.relative_to(ROOT).parts))
+    files = sorted(set(files))
     output = ROOT / "dist"
     output.mkdir(exist_ok=True)
     archive = output / f"vanguard-{version}.tar.gz"

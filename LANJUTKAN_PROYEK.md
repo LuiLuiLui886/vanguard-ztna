@@ -1,5 +1,34 @@
 # Lanjutkan proyek VanGuard
 
+
+**22 Oktober — kandidat endpoint Windows0.1.12 disiapkan lokal.** Fokus master
+prompt235df05 ENDPOINT_WINDOWS pada branch
+`feature/2026-10-22-physical-endpoints`, source040dc21. Jangan checkout main0.1.8
+mengganti hardening terbaru. Lima repo/tujuh branch diperiksa; prompt agent hanya
+VanGuard. Batas terbaru **tidak push/publish atau menerapkan VM/router/jaringan/
+endpoint aktif** pada tugas persiapan ini.
+
+Profil publik, import bundle tervalidasi, scoped disconnect, allowlist TLS,
+generator pilot dan kandidat installer offline tersedia. Paket lokal
+`dist/endpoint-windows-0.1.12-candidate-r3.zip`; gunakan r3, bukan kandidat pertama.
+Runtime Python3.13x64/WireGuard harus tersedia, paket unsigned. Identity/key tetap
+client; installer/import/login tidak menambah peer. Native Windows dan pilot
+PC LAN/laptop Wi-Fi BELUM_DIJALANKAN; jangan klaim siap distribusi.
+
+Full suite r2 **260PASS/1SKIP501,29detik** pada Linux/Python3.12.3. Skip ACL
+Windows native. Baseline81PASS/1SKIP, terarah109PASS/1SKIP, package4PASS adalah
+suite overlap, jangan dijumlahkan. Full run pertama TERPUTUS, bukti disimpan.
+Baca [checkpoint](docs/CHECKPOINT.md), [pilot lengkap](docs/ENDPOINT_WINDOWS_PILOT.md),
+[jurnal22 Oktober](docs/PROGRESS_2026-10-22.md), serta
+[modul tunggal Bab15.3](docs/MODUL_PENGGUNAAN_VANGUARD.html).
+
+Enam VM teramati mati dan tidak diubah. Ethernet host belum tersambung; jaringan
+aktif masih Wi-Fi.66/24, bukan router pilot.50/24. IP tunnel.5/.6 baru usulan,
+periksa registry. Sebelum rollout, verifikasi admin/arsitektur perangkat, trust,
+libvirt/host firewall/routing lalu jalankan matriks native secara terpisah dengan
+otorisasi tahap penerapan. WIN-CLEANUP-02/CApowerloss/soak belum ditutup.
+Kredensial tetap hanya inventaris privat. Catatan di bawah adalah histori.
+
 **21 Oktober — patch kapasitas CA selesai.** Unit CA dari40c7f74 kini satu
 worker/8thread. Paket CA/server/admin tetap0.1.11; client/attacker/Windows0.1.9.
 Timeout, TLS, lock, identitas dan admission tetap. Regresi TLS nyata membuktikan

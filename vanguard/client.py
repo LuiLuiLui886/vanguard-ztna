@@ -260,13 +260,13 @@ def check_admission(result, address):
     return result
 
 
-def connect(directory, remote, server_key, backend=None):
+def connect(directory, remote, server_key, backend=None, profile=None):
     backend = backend or tunnel_backend()
     with backend.lock() if hasattr(backend, 'lock') else nullcontext():
-        return _connect(directory, remote, server_key, backend)
+        return _connect(directory, remote, server_key, backend, profile)
 
 
-def _connect(directory, remote, server_key, backend):
+def _connect(directory, remote, server_key, backend, profile=None):
     directory = private_dir(directory)
     wg_key(server_key)
     address = tunnel_ip(json.loads((directory / 'request.json').read_text())['tunnel_ip'])
@@ -275,26 +275,63 @@ def _connect(directory, remote, server_key, backend):
     # Only this process owns the tunnel; refuse to overwrite another configuration.
     if config.exists():
         raise Rejected('Tunnel config exists; ensure old tunnel is down before removing it')
+    endpoint, routes = '192.168.100.20:51820', '10.8.0.1/32'
+    if profile is not None:
+        from .profile import validate_profile
+        profile = validate_profile(profile)
+        if profile['server_public_key'] != server_key or remote.url.rstrip('/') != profile['api_url']:
+            raise Rejected('Endpoint profile differs from API or server key')
+        endpoint = f"{profile['wireguard_host']}:{profile['wireguard_port']}"
+        routes = ', '.join(profile['allowed_ips'])
     backend.preflight()
     admitted = check_admission(admit(directory, remote), address)
     write_private(
         config,
         f"[Interface]\nAddress = {address}/32\n"
         f"PrivateKey = {(directory / 'wg.key').read_text().strip()}\n\n"
-        f"[Peer]\nPublicKey = {server_key}\nEndpoint = 192.168.100.20:51820\n"
-        "AllowedIPs = 10.8.0.1/32\nPersistentKeepalive = 25\n",
+        f"[Peer]\nPublicKey = {server_key}\nEndpoint = {endpoint}\n"
+        f"AllowedIPs = {routes}\nPersistentKeepalive = 25\n",
     )
+    owner = secrets.token_hex(16)
+    marker = directory / '.connection.json'
+    stop_request = directory / '.disconnect.json'
+    write_private(marker, json.dumps({'owner': owner}))
     try:
         backend.up(config)
         print('Admitted; tunnel up. Renewing admission until stopped.', flush=True)
         while True:
-            time.sleep(max(1, min(60, (admitted["lease_until"] - time.time()) / 2)))
+            for _ in range(math.ceil(max(1, min(60, (admitted['lease_until'] - time.time()) / 2)))):
+                time.sleep(1)
+                if stop_request.exists() and json.loads(stop_request.read_text()).get('owner') == owner:
+                    return
             admitted = check_admission(admit(directory, remote), address)
     finally:
         # Also clean up a partially successful install. Keep config if cleanup fails
         # so the next invocation refuses rather than taking ownership blindly.
         backend.down(config)
         config.unlink(missing_ok=True)
+        stop_request.unlink(missing_ok=True)
+        marker.unlink(missing_ok=True)
+
+
+def disconnect(directory):
+    """Ask only the connect process owning this identity to clean up its tunnel."""
+    directory = private_dir(directory)
+    marker = directory / '.connection.json'
+    if not marker.exists():
+        raise Rejected('No owned connect process confirmed; inspect any remaining tunnel')
+    owner = json.loads(marker.read_text())['owner']
+    if not isinstance(owner, str) or len(owner) != 32:
+        raise Rejected('Invalid connection ownership marker')
+    write_private(directory / '.disconnect.json', json.dumps({'owner': owner}))
+    deadline = time.monotonic() + 20
+    while time.monotonic() < deadline:
+        if not marker.exists():
+            return {'local_disconnect_confirmed': True, 'server_session_revoked': False}
+        if json.loads(marker.read_text()).get('owner') != owner:
+            raise Rejected('A newer connection owns the identity; inspect its status')
+        time.sleep(.2)
+    raise Rejected('Cleanup unconfirmed; config retained. Inspect connect terminal; server session not revoked')
 
 
 def main():
@@ -303,26 +340,58 @@ def main():
                              / 'VanGuard' / 'client') if os.name == 'nt'
                          else '/var/lib/vanguard/client')
     parser.add_argument("--directory", default=default_directory)
-    parser.add_argument("--server", default="https://192.168.100.20:8081")
+    parser.add_argument("--server")
+    parser.add_argument("--profile", help="Trusted public endpoint profile JSON")
     parser.add_argument("--trust", default=(str(Path(default_directory) / 'root.crt')
                                             if os.name == 'nt' else '/etc/vanguard/root.crt'))
     sub = parser.add_subparsers(dest="command", required=True)
     init = sub.add_parser("init")
-    init.add_argument("--device-id", default="vm-client")
-    init.add_argument('--tunnel-ip', default='10.8.0.2')
+    init.add_argument("--device-id")
+    init.add_argument('--tunnel-ip')
     sub.add_parser("admit")
+    sub.add_parser("status")
+    sub.add_parser("diagnose")
+    sub.add_parser("disconnect")
+    importer = sub.add_parser("import-bundle")
+    importer.add_argument("bundle")
     sub.add_parser('logout')
     login = sub.add_parser('login')
     login.add_argument('--username', required=True)
     connection = sub.add_parser("connect")
-    connection.add_argument("--server-key", required=True)
+    connection.add_argument("--server-key")
     args = parser.parse_args()
     os.umask(0o077)
     try:
-        if args.command == "init":
-            print(initialize(args.directory, args.device_id, args.tunnel_ip))
+        profile = None
+        if args.profile:
+            from .profile import load_profile
+            profile = load_profile(args.profile, args.trust)
+            if args.server and args.server.rstrip('/') != profile['api_url']:
+                raise Rejected('Do not override API from the trusted profile')
+        server = profile['api_url'] if profile else (args.server or 'https://192.168.100.20:8081')
+        if args.command == 'import-bundle':
+            from .onboarding import import_bundle
+            if profile is None:
+                raise Rejected('Import requires an independently trusted profile and root')
+            print(json.dumps(import_bundle(args.directory, args.bundle, args.trust, profile)))
+        elif args.command == 'disconnect':
+            print(json.dumps(disconnect(args.directory)))
+        elif args.command == 'status':
+            directory = Path(args.directory)
+            print(json.dumps({'identity_initialized': (directory / 'request.json').is_file(),
+                              'certificate_available': (directory / 'device.crt').is_file(),
+                              'session_file_present': (directory / 'employee-session.json').is_file(),
+                              'tunnel_observation': 'unknown', 'admission_required': True}))
+        elif args.command == 'diagnose':
+            result = Remote(server, args.trust).call('GET', '/readyz')
+            print(json.dumps({'server_readiness': result.get('status', 'unknown'),
+                              'wireguard_udp': 'unknown', 'application_access': 'unknown'}))
+        elif args.command == "init":
+            if profile and (not args.device_id or not args.tunnel_ip):
+                raise Rejected('Profile enrollment requires an explicitly allocated device ID and tunnel IP')
+            print(initialize(args.directory, args.device_id or 'vm-client', args.tunnel_ip or '10.8.0.2'))
         else:
-            remote = Remote(args.server, args.trust)
+            remote = Remote(server, args.trust)
             if args.command == 'login':
                 result = login_employee(args.directory, remote, args.username,
                                         getpass.getpass('Employee password: '))
@@ -337,7 +406,10 @@ def main():
                     raise KeyboardInterrupt()
 
                 signal.signal(signal.SIGTERM, stop)
-                connect(args.directory, remote, args.server_key)
+                key = profile['server_public_key'] if profile else args.server_key
+                if not key or (profile and args.server_key and args.server_key != key):
+                    raise Rejected('A consistent trusted server public key is required')
+                connect(args.directory, remote, key, profile=profile)
     except KeyboardInterrupt:
         pass
     except (Rejected, OSError, ValueError) as exc:

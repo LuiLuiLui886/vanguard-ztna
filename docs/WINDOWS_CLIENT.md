@@ -293,3 +293,18 @@ merespons sebelum mengetik. Readiness SSH tidak otomatis berarti desktop atau
 VPN siap. Host hanya7,5GiB RAM dan backing disk guest berada pada perangkatUSB;
 jalankan VM yang diperlukan secara bertahap, hindari pengujian I/O berat
 bersamaan. Pengukuran ini tidak mengubah atau menghapus lima Ubuntu.
+
+## Kandidat endpoint fisik0.1.12 —22 Oktober2026
+
+Client Windows VM lama tetap dipertahankan. Pilot PC LAN dan laptop Wi-Fi adalah
+endpoint tambahan, bukan penggantian VM dan bukan hasil yang sudah diuji. Gunakan
+[panduan pilot lengkap](ENDPOINT_WINDOWS_PILOT.md) dan Bab15.3 pada modul tunggal.
+Source installer ada di `deploy/endpoint/windows`; jangan menggunakan
+`deploy/windows/bootstrap.ps1` provisioning VM pada perangkat fisik.
+
+Paket offline lokal memerlukan Python3.13x64/WireGuard resmi yang sudah tersedia,
+profil/root tepercaya, admin/UAC dan Windows11x64. Belum signed; fresh install,
+repair, upgrade, uninstall, ACL, reboot, Wi-Fi dan pilot bersama BELUM_DIJALANKAN.
+Tidak ada VM/router/NIC yang diubah pada tahap persiapan ini. Konfigurasi native
+hanya dianggap siap setelah matriks uji target terpenuhi, bukan karena unit tests
+Linux atau helper CI lama lulus. WIN-CLEANUP-02 belum ditutup oleh installer ini.
