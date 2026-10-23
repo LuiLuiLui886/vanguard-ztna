@@ -1,9 +1,10 @@
 # Lanjutkan proyek VanGuard
 
-**ZIP kit ikut Git atas permintaan23Oktober:** publikasi downloads/ sedang
-disiapkan. Baca [README download](downloads/README.md) untuk clone/pull, checksum,
+**ZIP kit sudah di GitHub23Oktober:** commit artefak6479c8c tersedia di
+branch feature/2026-10-22-physical-endpoints; kedua ZIP di downloads/ diunduh
+ulang dari GitHub dan checksum identik lokal (PASS). Baca [README download](downloads/README.md) untuk clone/pull, checksum,
 ekstraksi dan installer Windows. Artefak kandidat lama dipertahankan; native/fisik
-tetap belum diuji. Hasil verifikasi remote ada pada jurnal/checkpoint terbaru.
+tetap belum diuji. Gunakan git pull --ff-only pada branch tersebut, lalu buka folder downloads/.
 
 **23 Oktober — seluruh source/dokumentasi sudah dipush.** Branch
 `feature/2026-10-22-physical-endpoints`, ref369ac96 dan blob BAT/runbook terverifikasi

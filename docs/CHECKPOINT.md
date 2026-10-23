@@ -1,15 +1,26 @@
 # Checkpoint VanGuard — 23 Oktober 2026
 
-## Publikasi ZIP instalasi — sedang berlangsung
+## ZIP instalasi tersedia di GitHub —23 Oktober
 
-Pengguna meminta ZIP ikut Git. Dua arsip final docs-r2 yang telah diverifikasi
-akan disalin byte-for-byte ke downloads/ beserta SHA256SUMS/README. Kit lengkap
-12.421.751byte memuat BAT/PS+20wheel; ZIP dokumentasi338.739byte. Validasi ZIP,
-101anggota kit-manifest, nested wheel dan inventory-secret scan PASS; tidak ada
-credential/privatekey/stateVM. dist/state tetap diabaikan secara umum. Source/
-installer/konfigurasi tidak diubah, native/fisik tetap BELUM_DIJALANKAN. Hasil ref
-remote dan hash download dicatat pada jurnal23Oktober sebelum dinyatakan selesai.
+Commit artefak **6479c8c** telah dipush non-force pada branch
+`feature/2026-10-22-physical-endpoints`. Dua ZIP kini berada di downloads/ dan
+ikut clone/pull biasa. Baca [petunjuk download](../downloads/README.md) serta
+[checksum](../downloads/SHA256SUMS). Tidak memerlukan Git LFS atau release terpisah.
 
+- Kit lengkap12.421.751byte, SHA256
+  `19ede36ca3967f4717e012e3d027e341331bc837fda57cbc8255eefceb078f30`.
+- Dokumentasi338.739byte, SHA256
+  `3a5b707a3fb191a2c684a70323b091dd00af97d81e70be623b1a22f8922f6b41`.
+- Kedua artefak diunduh ulang dari raw GitHub pada commit6479c8c; ukuran dan
+  SHA256 identik lokal, PASS. Ref remote juga cocok commit publikasi.
+- ZIP/manifests/nestedwheel/secret scan PASS;20wheel Windows tersedia. Aplikasi,
+  installer dan konfigurasi tidak berubah. Native/fisik tetap BELUM_DIJALANKAN.
+- dist/state tetap diabaikan secara umum, kredensial/privatekey/stateVM tetap
+  lokal. Izin pengguna untuk ZIP menggantikan pembatasan artefak sebelumnya.
+
+Bukti state/publication-20261023/zip/. Tidak ada merge main atau perubahan VM/
+jaringan. Paket adalah snapshot22Oktober: README downloads/checkpoint Git ini
+menjelaskan publikasi yang terjadi23Oktober.
 
 ## Publikasi pembaruan —23 Oktober selesai
 
