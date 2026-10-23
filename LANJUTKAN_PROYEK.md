@@ -1,8 +1,9 @@
 # Lanjutkan proyek VanGuard
 
-**23 Oktober — pengguna meminta push seluruh pembaruan.** Publikasi branch
-`feature/2026-10-22-physical-endpoints` sedang disiapkan, tanpa merge main/rollout.
-Hasil remote dan validasi dicatat di [jurnal23Oktober](docs/PROGRESS_2026-10-23.md).
+**23 Oktober — seluruh source/dokumentasi sudah dipush.** Branch
+`feature/2026-10-22-physical-endpoints`, ref369ac96 dan blob BAT/runbook terverifikasi
+remote.10tes lokal PASS; tanpa merge main/rollout/CI baru. ZIP/state/credential
+tetap lokal. Hasil dicatat di [jurnal23Oktober](docs/PROGRESS_2026-10-23.md).
 Catatan belum-push di bawah merupakan histori22Oktober, bukan larangan terbaru.
 
 **Dokumentasi penerapan revisi2:** [runbook17bab](docs/INSTALL_REALWORLD.html)

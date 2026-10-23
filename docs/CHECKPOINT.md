@@ -1,15 +1,22 @@
 # Checkpoint VanGuard — 23 Oktober 2026
 
-## Publikasi pembaruan —23 Oktober (sedang berlangsung)
+## Publikasi pembaruan —23 Oktober selesai
 
-Pengguna mengotorisasi push seluruh pembaruan pada branch
-`feature/2026-10-22-physical-endpoints`. Dasar implementasi/dokumen terakhir e9162aa;
-source, installer Windows dan runbook17bab akan dipush setelah pemeriksaan secrets.
-Larangan push22Oktober telah digantikan oleh instruksi ini, tanpa izin merge main
-atau deployment. dist/state/credential tetap lokal; tidak membuat GitHub release.
-Verifikasi remote/hasil CI harus dibaca dari jurnal23Oktober sebelum menyebut
-publikasi selesai. Windows native installer dan endpoint fisik tetap belum diuji.
+Branch `feature/2026-10-22-physical-endpoints` sudah dipush non-force ke GitHub.
+Ref remote369ac96 cocok HEAD lokal sesudah publikasi; blob installer BAT dan
+runbook INSTALL_REALWORLD.md juga cocok melalui API GitHub. Semua implementasi
+serta dokumentasi sampai e9162aa ikut, ditambah catatan otorisasi publikasi.
 
+Validasi hari ini:10tes kit/package PASS0,36detik, Ruff/pip check/diffcheck PASS,
+201blob unik pada5commit baru+perubahan pending lolos inventory-secret scan;
+modul/tautan/syntax dan izin inventaris PASS. Tidak menjalankan CI baru atau
+mengulang suite penuh hari ini. Bukti state/publication-20261023/.
+
+Source installer BAT/PowerShell, source aplikasi, builder, tests dan panduan kini
+tersedia remote. ZIP/wheel di dist, state dan credential tetap lokal; tidak
+membuat release atau merge main. Tidak ada perubahan VM/router/endpoint. Native
+Windows installer/pilot fisik tetap BELUM_DIJALANKAN. Catatan no-push22Oktober
+bersifat historis dan digantikan izin eksplisit pengguna23Oktober.
 
 ## Pembaruan dokumentasi penerapan — revisi2
 
