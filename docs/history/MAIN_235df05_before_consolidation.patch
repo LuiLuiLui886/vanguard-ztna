@@ -1,0 +1,360 @@
+diff --git a/LANJUTKAN_PROYEK.md b/LANJUTKAN_PROYEK.md
+index 24f36ea..6359fc7 100644
+--- a/LANJUTKAN_PROYEK.md
++++ b/LANJUTKAN_PROYEK.md
+@@ -1,5 +1,30 @@
+ # Lanjutkan proyek VanGuard
+ 
++**22 Oktober 2026 — tambahan pekerjaan pilot dua endpoint Windows 11.**
++[Master prompt](CODEX_VANGUARD_MASTER_PROMPT.md) sudah memuat topologi dan IP
++yang disetujui: router 192.168.50.1, Linux host .10, PC LAN .20, laptop Wi-Fi .30,
++seluruhnya /24. Jaringan VM 192.168.100.0/24 dan tunnel 10.8.0.0/24 tetap terpisah.
++Baca Bagian B0/B0.1 dan D1 untuk routing/firewall/TLS, paket manual, enrollment
++terpisah, uji satu lalu dua endpoint bersamaan, serta pemulihan/cleanup.
++
++Ini pembaruan spesifikasi; IP, router, VM, dan endpoint belum diubah pada tugas ini.
++Source terbaru yang diamati ada di `fix/2026-10-20-readiness-lock` (`040dc21`) (0.1.11),
++bukan main 0.1.8. Ambil instruksi terbaru sambil mempertahankan source serta progres
++branch kerja; jangan menimpa perubahan lokal atau mengulang perbaikan ketahanan.
++Ikuti [checkpoint](docs/CHECKPOINT.md) dan [jurnal](docs/PROGRESS_2026-10-22.md).
++
++**19 Oktober 2026 — meta prompt Codex tersedia.**
++Baca [CODEX_VANGUARD_MASTER_PROMPT.md](CODEX_VANGUARD_MASTER_PROMPT.md) di root.
++Gunakan **Prompt mulai** dengan fokus `ENDPOINT_WINDOWS` untuk persiapan endpoint
++fisik dan installer BAT/PowerShell; tersedia pula fokus perbaikan sistem serta
++prompt melanjutkan sesi. Audit progres ketahanan dan perubahan lokal sebelum edit.
++
++Tugas publikasi ini hanya menambahkan spesifikasi dan catatan proyek. Fitur yang
++diminta dalam prompt belum diimplementasikan atau diuji melalui tugas ini; VM,
++jaringan, CA, dan kredensial tidak diubah. Langkah berikutnya menjalankan spesifikasi
++melalui Codex sesuai batas persiapan lokal. Lihat [checkpoint](docs/CHECKPOINT.md)
++dan [jurnal 19 Oktober](docs/PROGRESS_2026-10-19.md).
++
+ **17 Oktober 2026 — seluruh materi sudah menjadi satu modul.**
+ Gunakan [modul utama](docs/MODUL_PENGGUNAAN_VANGUARD.md) atau
+ [satu HTML siap baca/cetak](docs/MODUL_PENGGUNAAN_VANGUARD.html).
+diff --git a/VANGUARD_CONTEXT.md b/VANGUARD_CONTEXT.md
+index cab9a8d..cd76891 100644
+--- a/VANGUARD_CONTEXT.md
++++ b/VANGUARD_CONTEXT.md
+@@ -77,3 +77,22 @@ and controlled cleanup passed; Ubuntu .2 and Windows .4 worked simultaneously.
+ Version 0.1.8 waits for Windows service deletion before deleting tunnel config;
+ failed confirmation preserves config. All five Ubuntu domain definitions remain
+ unchanged. Windows revocation and active-tunnel reboot are still unverified.
++
++User physical-pilot decision — 22 October 2026:
++The Linux laptop remains the host for all existing VMs. Add two physical
++Windows 11 endpoints: one desktop over Ethernet and one separate laptop over
++Wi-Fi, on a private router dedicated to testing. Preserve all six existing VMs.
++The agreed addressing plan is router 192.168.50.1/24, Linux host 192.168.50.10/24,
++desktop 192.168.50.20/24 and endpoint laptop 192.168.50.30/24; physical-device
++gateway 192.168.50.1. Host Ethernet is planned and its actual interface must be
++verified. Manual addresses are outside the proposed DHCP pool 192.168.50.100–200.
++Keep the virtual backend 192.168.100.0/24 and tunnel 10.8.0.0/24 separate; allocate
++new unique tunnel addresses through the registry, preserving .2/.4 and reserved .3.
++These are deployment plans, not evidence that IPs, routes or devices were changed.
++Prepare controlled reachability to admission/WireGuard, restricted firewall rules,
++TLS verification, separate endpoint identities and single-then-dual-endpoint tests
++according to CODEX_VANGUARD_MASTER_PROMPT.md sections B0 and D1. Client installation
++must not silently reconfigure the physical NIC or reuse VM bootstrap scripts.
++The latest observed application source is on `fix/2026-10-20-readiness-lock` (`040dc21`);
++read that branch's current checkpoint before further implementation. Historical
++operational evidence in this main-branch document is not a fresh lab observation.
+diff --git a/docs/CHECKPOINT.md b/docs/CHECKPOINT.md
+index c7c071f..7c41a39 100644
+--- a/docs/CHECKPOINT.md
++++ b/docs/CHECKPOINT.md
+@@ -1,4 +1,45 @@
+-# Checkpoint VanGuard — 17 Oktober 2026
++# Checkpoint VanGuard — 22 Oktober 2026
++
++## Terbaru: rencana pilot dua endpoint fisik Windows 11
++
++Pengguna menyetujui router khusus 192.168.50.0/24: router .1, laptop Linux host .10,
++PC Windows 11 LAN .20, dan laptop Windows 11 Wi-Fi .30. Gateway fisik .1; alamat manual
++di luar pool DHCP usulan .100–.200. Host direncanakan LAN; interface nyata perlu
++diverifikasi. Jaringan VM 192.168.100.0/24 dan tunnel 10.8.0.0/24 tetap terpisah.
++
++[Master prompt](../CODEX_VANGUARD_MASTER_PROMPT.md) kini memuat Bagian B0/B0.1
++untuk topologi, route/firewall/TLS, paket manual Windows serta enrollment; Bagian
++D1 memuat uji satu endpoint, dua endpoint bersamaan, isolasi pencabutan dan cleanup.
++Installer lengkap tetap merupakan pekerjaan tersendiri; pilot manual tidak
++berarti installer sudah selesai. Keenam VM yang ada harus dipertahankan.
++
++Tugas ini hanya memperbarui dan memublikasikan dokumentasi. Rencana IP belum
++diterapkan; tidak ada perubahan router, VM, aplikasi, jaringan, atau kredensial.
++Saat diperiksa, source terbaru 0.1.11 ada di `fix/2026-10-20-readiness-lock` (`040dc21`),
++sedangkan main masih 0.1.8. Baca checkpoint pada branch implementasi terbaru;
++jangan kembali ke source main hanya untuk mengambil dokumen tugas. Branch tidak
++digabung pada tugas ini. Catatan operasional di bawah adalah bukti historis.
++
++Berikutnya: jalankan Prompt mulai dengan fokus ENDPOINT_WINDOWS; siapkan patch,
++paket dan panduan penerapan sebelum pilot. Rincian ada di
++[jurnal 22 Oktober](PROGRESS_2026-10-22.md).
++
++## Terbaru: spesifikasi tugas Codex untuk endpoint fisik dan Windows
++
++[Meta prompt utama](../CODEX_VANGUARD_MASTER_PROMPT.md) tersedia di root repository.
++Dokumen menggabungkan perbaikan sistem, konfigurasi endpoint fisik dengan layanan
++tetap di VM, installer Windows native, kriteria pengujian, dan prompt melanjutkan sesi.
++Fokus awal `ENDPOINT_WINDOWS` menjaga pekerjaan ketahanan yang sedang berlangsung.
++
++Ini penambahan spesifikasi, bukan implementasi fitur atau bukti tes endpoint.
++Tidak ada perubahan aplikasi/VM/jaringan/CA atau pemeriksaan ulang kondisi live.
++Temuan dan hasil operasional di bawah tetap merupakan bukti historis dengan tanggal
++masing-masing. Codex harus memeriksa checkout dan progres terbaru sebelum mengerjakan
++spesifikasi; jangan mengulang pekerjaan yang sudah selesai atau menimpa perubahan lokal.
++
++Langkah berikutnya: buka repository di Codex dan gunakan bagian **Prompt mulai**
++pada dokumen tersebut. Rincian lingkup serta validasi dokumentasi dicatat di
++[jurnal 19 Oktober](PROGRESS_2026-10-19.md).
+ 
+ ## Terbaru: satu modul lengkap termasuk CA/PKI
+ 
+diff --git a/docs/PROGRESS_2026-10-17.md b/docs/PROGRESS_2026-10-17.md
+index e0a77f0..597c9df 100644
+--- a/docs/PROGRESS_2026-10-17.md
++++ b/docs/PROGRESS_2026-10-17.md
+@@ -37,118 +37,59 @@
+   inventaris terbaru. Folder0700, kedua inventaris/kartu0600 terverifikasi.
+   Tidak mengganti password; login terakhir15 Oktober, tidak dites ulang hari ini.
+ - Validasi PASS:15bab, sintaks22blok Bash,26tautan HTML termasuk daftar isi,
+-  10tabel, scan kredensial/private key dan permission lokal. Ruff renderer dan
+-  git diff --check PASS. Bukti state/documentation/2026-10-17/validation.json.
+-- Percobaan preview Firefox headless timeout35detik tanpa screenshot; tidak
+-  mengklaim pemeriksaan visual atau PDF sudah dihasilkan. HTML selesai dibuat
+-  dan diperiksa strukturnya; operator dapat Ctrl+P untuk menyimpan PDF.
+-- Tidak menjalankan contoh instalasi/shutdown, login atau tes VPN pada VM.
+-  Validasi dokumen tidak menggantikan uji operasional. Enam VM tetap shut off
+-  pada pemeriksaan tugas ini. Seluruh TA belum dinyatakan selesai.
+-- Pemeriksaan GitHub aktual: gh repo view mengembalikan isPrivate=false untuk
+-  LuiLuiLui886/vanguard-ztna. Berbeda dengan checkpoint15 Oktober yang private.
+-  Dokumentasi diselesaikan dan di-commit lokal; push ditunda karena tujuan remote
+-  tidak sesuai preferensi private pengguna. Visibility tidak diubah pada tugas ini.
+-- Berikutnya gunakan modul untuk sesi pemakaian, lalu pastikan tujuan publikasi
+-  sebelum push. Gap lease expiry/revocation/reboot Windows dan ketahanan counter
+-  CA tetap dicatat sebagai pekerjaan lanjutan.
++  10tabel, scan kredensial/private key dan permission lokal. Bukti state/documentation/2026-10-17/validation.json.
++- Percobaan preview Firefox headless timeout35detik tanpa screenshot; tidak mengklaim pemeriksaan visual atau PDF sudah dihasilkan. HTML selesai dibuat dan diperiksa strukturnya; operator dapat Ctrl+P untuk menyimpan PDF.
++- Tidak menjalankan contoh instalasi/shutdown, login atau tes VPN pada VM. Validasi dokumen tidak menggantikan uji operasional. Enam VM tetap shut off pada pemeriksaan tugas ini. Seluruh TA belum dinyatakan selesai.
++- Pemeriksaan GitHub aktual: gh repo view mengembalikan isPrivate=false untuk LuiLuiLui886/vanguard-ztna. Berbeda dengan checkpoint15 Oktober yang private. Dokumentasi diselesaikan dan di-commit lokal; push ditunda karena tujuan remote tidak sesuai preferensi private pengguna. Visibility tidak diubah pada tugas ini.
++- Berikutnya gunakan modul untuk sesi pemakaian, lalu pastikan tujuan publikasi sebelum push. Gap lease expiry/revocation/reboot Windows dan ketahanan counter CA tetap dicatat sebagai pekerjaan lanjutan.
+ 
+ ## Intent push modul setelah instruksi pengguna
+ 
+-- Pengguna meminta modul tetap dipush setelah diberi tahu repository public.
+-  Pemeriksaan ulang mengonfirmasi isPrivate=false; lanjutkan push modul dan
+-  dokumentasi sesuai instruksi terbaru tanpa mengubah visibility repository.
+-- Periksa perubahan yang akan dikirim, scan nilai kredensial/private key,
+-  pastikan kartu Windows/inventaris tetap di luar Git, lalu push main tanpa force.
+-  Setelah push, cocokkan commit remote dan perbarui checkpoint/handoff.
++- Pengguna meminta modul tetap dipush setelah diberi tahu repository public. Pemeriksaan ulang mengonfirmasi isPrivate=false; lanjutkan push modul dan dokumentasi sesuai instruksi terbaru tanpa mengubah visibility repository.
++- Periksa perubahan yang akan dikirim, scan nilai kredensial/private key, pastikan kartu Windows/inventaris tetap di luar Git, lalu push main tanpa force. Setelah push, cocokkan commit remote dan perbarui checkpoint/handoff.
+ 
+ ## Hasil push modul
+ 
+-- Scan seluruh11file pada commit modul d162980 terhadap inventaris privat dan
+-  pola private key PASS. Kartu Windows/inventaris tidak terdaftar di Git.
+-  Validasi modul ulang dan git diff --check PASS.
+-- Push main berhasil78ff14e→e9104a4, mencakup modul Markdown, HTML, renderer,
+-  dokumentasi dan catatan otorisasi terbaru. git ls-remote mengonfirmasi
+-  e9104a49411c2cbee4943bea44758fe17c68f1c6 pada refs/heads/main.
+-- Checkpoint/handoff diperbarui untuk mencatat publikasi berhasil. Kredensial
+-  tetap lokal; tidak ada perubahan VM, aplikasi atau visibility repository.
+-- CI untuk publikasi dokumentasi belum dinyatakan lulus di catatan ini;
+-  hasil CI source0.1.8 sebelumnya tetap merupakan bukti historis terpisah.
++- Scan seluruh11file pada commit modul d162980 terhadap inventaris privat dan pola private key PASS. Kartu Windows/inventaris tidak terdaftar di Git. Validasi modul ulang dan git diff --check PASS.
++- Push main berhasil78ff14e→e9104a4, mencakup modul Markdown, HTML, renderer, dokumentasi dan catatan otorisasi terbaru. git ls-remote mengonfirmasi e9104a49411c2cbee4943bea44758fe17c68f1c6 pada refs/heads/main.
++- Checkpoint/handoff diperbarui untuk mencatat publikasi berhasil. Kredensial tetap lokal; tidak ada perubahan VM, aplikasi atau visibility repository.
++- CI untuk publikasi dokumentasi belum dinyatakan lulus di catatan ini; hasil CI source0.1.8 sebelumnya tetap merupakan bukti historis terpisah.
+ 
+ ## Intent perluasan materi CA/PKI
+ 
+-- Pengguna meminta penjelasan generate CA dan tahapan terkait secara detail.
+-  Bab5.3 sudah memiliki perintah init/sign-tls, tetapi perlu penjelasan konsep,
+-  artefak, lokasi eksekusi, transfer publik, hasil, verifikasi dan pemulihan.
+-- Baca implementasi vanguard/ca.py, pki.py, workflow admin dan unit/env CA.
+-  Perluas bab5.3 dan tambahkan panduan CA rinci dalam Markdown/HTML, dengan
+-  pembedaan root/TLS/perangkat/key WireGuard, masa berlaku, CRL dan backup.
+-- Uji prosedur kriptografis pada direktori CA sementara yang terisolasi di host;
+-  tidak menjalankan init/revoke terhadap CA atau identitas produksi VM.
+-  Simpan bukti privat, periksa contoh perintah/tautan/rahasia, perbarui checkpoint,
+-  kemudian push dokumentasi sesuai otorisasi pengguna yang masih berlaku.
++- Pengguna meminta penjelasan generate CA dan tahapan terkait secara detail. Bab5.3 sudah memiliki perintah init/sign-tls, tetapi perlu penjelasan konsep, artefak, lokasi eksekusi, transfer publik, hasil, verifikasi dan pemulihan.
++- Baca implementasi vanguard/ca.py, pki.py, workflow admin dan unit/env CA. Perluas bab5.3 dan tambahkan panduan CA rinci dalam Markdown/HTML, dengan pembedaan root/TLS/perangkat/key WireGuard, masa berlaku, CRL dan backup.
++- Uji prosedur kriptografis pada direktori CA sementara yang terisolasi di host; tidak menjalankan init/revoke terhadap CA atau identitas produksi VM. Simpan bukti privat, periksa contoh perintah/tautan/rahasia, perbarui checkpoint, kemudian push dokumentasi sesuai otorisasi pengguna yang masih berlaku.
+ 
+ ## Hasil perluasan CA/PKI
+ 
+-- Perluas bab 5.3 MODUL_PENGGUNAAN_VANGUARD.md menjadi enam subbagian; render
+-  ulang HTML. Tambahkan PANDUAN_CA_PKI.md/HTML dengan 13 bagian: konsep, file,
+-  persiapan, init, verifikasi root, distribusi trust, CSR HTTPS, signing/transfer,
+-  verifikasi layanan, issuance perangkat, CRL/revoke, backup dan troubleshooting.
+-  README/DEPLOYMENT menautkan materi; checkpoint/handoff diperbarui.
+-- Uji Authority pada CA sementara host dengan OpenSSL 3.0.13 PASS: RSA 3072 dan
+-  validitas root 3650 hari, self-signature, mode direktori/key, init ulang ditolak,
+-  CSR/key/TLS SAN/purpose cocok, IP salah ditolak, TLS 365 hari, perangkat P-256/
+-  clientAuth 30 hari, retry CSR menghasilkan sertifikat sama, CRL bertanda tangan
+-  satu jam, verifikasi perangkat sebelum revoke OK dan setelah revoke error 23.
+-  Key root tetap sama. Bukti: state/documentation/2026-10-17/ca-guide-validation.json;
+-  artefak/key uji hanya di direktori state yang diabaikan Git dengan akses privat.
+-- Validasi struktur PASS: modul 15 bab/25 blok Bash/28 tautan HTML/11 tabel;
+-  panduan CA 13 bagian/21 blok Bash/15 tautan/5 tabel. Scan nilai inventaris lokal
+-  dan private-key marker PASS; permission inventaris/kartu tetap privat.
+-  Ruff scripts/render_module.py dan git diff --check PASS.
+-- Tidak ada perubahan aplikasi, VM, CA produksi, trust, enrollment atau password.
+-  SSH transfer, backup dan restart layanan dalam contoh tidak dieksekusi ulang.
+-  Uji terisolasi tidak menggantikan pengujian jaringan/VM. Tidak mengklaim PDF
+-  atau validasi visual. Gap durability CA/lease expiry/revocation Windows tetap.
+-- Berikutnya commit/push dokumentasi sesuai otorisasi, cocokkan remote main,
+-  lalu gunakan modul dalam sesi praktik dan lanjutkan gap operasional tersisa.
++- Perluas bab 5.3 MODUL_PENGGUNAAN_VANGUARD.md menjadi enam subbagian; render ulang HTML. Tambahkan PANDUAN_CA_PKI.md/HTML dengan 13 bagian: konsep, file, persiapan, init, verifikasi root, distribusi trust, CSR HTTPS, signing/transfer, verifikasi layanan, issuance perangkat, CRL/revoke, backup dan troubleshooting.
++- Uji Authority pada CA sementara host dengan OpenSSL 3.0.13 PASS: RSA 3072 dan validitas root 3650 hari, self-signature, mode direktori/key, init ulang ditolak, CSR/key/TLS SAN/purpose cocok, IP salah ditolak, TLS 365 hari, perangkat P-256/clientAuth 30 hari, retry CSR menghasilkan sertifikat sama, CRL bertanda tangan satu jam, verifikasi perangkat sebelum revoke OK dan setelah revoke error 23. Key root tetap sama. Bukti: state/documentation/2026-10-17/ca-guide-validation.json; artefak/key uji hanya di direktori state yang diabaikan Git dengan akses privat.
++- Validasi struktur PASS: modul 15 bab/25 blok Bash/28 tautan HTML/11 tabel; panduan CA 13 bagian/21 blok Bash/15 tautan/5 tabel. Scan nilai inventaris lokal dan private-key marker PASS; permission inventaris/kartu tetap privat. Ruff scripts/render_module.py dan git diff --check PASS.
++- Tidak ada perubahan aplikasi, VM, CA produksi, trust, enrollment atau password. SSH transfer, backup dan restart layanan dalam contoh tidak dieksekusi ulang. Uji terisolasi tidak menggantikan pengujian jaringan/VM. Tidak mengklaim PDF atau validasi visual. Gap durability CA/lease expiry/revocation Windows tetap.
++- Berikutnya commit/push dokumentasi sesuai otorisasi, cocokkan remote main, lalu gunakan modul dalam sesi praktik dan lanjutkan gap operasional tersisa.
+ 
+ ## Publikasi panduan CA/PKI
+ 
+-- Commit 7e54bb5 berisi sembilan file dokumentasi, termasuk panduan CA Markdown/
+-  HTML dan perluasan modul. Push main 1f387e5→7e54bb5 berhasil.
+-  git ls-remote mengonfirmasi 7e54bb53817c597c550871bf11b47cf4abdc2aa8.
+-- Evidence/key uji di state terverifikasi diabaikan Git. Tidak ada kredensial
+-  atau arsip privat yang dipublikasikan. Tidak ada perubahan visibility remote.
+-- Catat hasil publikasi di checkpoint/handoff melalui commit dokumentasi lanjutan.
+-  Status CI untuk commit dokumentasi tidak diklaim PASS; validasi lokal di atas
+-  merupakan bukti pemeriksaan tugas ini. Pekerjaan dokumentasi CA selesai.
++- Commit 7e54bb5 berisi sembilan file dokumentasi, termasuk panduan CA Markdown/HTML dan perluasan modul. Push main 1f387e5→7e54bb5 berhasil. git ls-remote mengonfirmasi 7e54bb53817c597c550871bf11b47cf4abdc2aa8.
++- Evidence/key uji di state terverifikasi diabaikan Git. Tidak ada kredensial atau arsip privat yang dipublikasikan. Tidak ada perubahan visibility remote.
++- Catat hasil publikasi di checkpoint/handoff melalui commit dokumentasi lanjutan. Status CI untuk commit dokumentasi tidak diklaim PASS; validasi lokal di atas merupakan bukti pemeriksaan tugas ini. Pekerjaan dokumentasi CA selesai.
+ 
+ ## Intent penggabungan modul
+ 
+-- Pengguna meminta materi dijadikan satu. Gabungkan seluruh isi panduan CA/PKI
+-  ke bab 5.3 modul utama, rapikan nomor dan rujukan, lalu render satu HTML lengkap.
+-  Jadikan alamat panduan lama sebagai penunjuk ke modul agar tautan historis
+-  tetap berfungsi tanpa dua salinan materi yang perlu dipelihara.
+-- Perbarui daftar isi HTML untuk akses langsung ke subbagian, tautan README/
+-  deployment, checkpoint dan handoff. Validasi kelengkapan materi, sintaks Bash,
+-  tautan, HTML dan rahasia sebelum commit/push. Tidak ada perubahan VM atau CA.
++- Pengguna meminta materi dijadikan satu. Gabungkan seluruh isi panduan CA/PKI ke bab 5.3 modul utama, rapikan nomor dan rujukan, lalu render satu HTML lengkap. Jadikan alamat panduan lama sebagai penunjuk ke modul agar tautan historis tetap berfungsi tanpa dua salinan materi yang perlu dipelihara.
++- Perbarui daftar isi HTML untuk akses langsung ke subbagian, tautan README/deployment, checkpoint dan handoff. Validasi kelengkapan materi, sintaks Bash, tautan, HTML dan rahasia sebelum commit/push. Tidak ada perubahan VM atau CA.
+ 
+ ## Hasil penggabungan modul
+ 
+-- Seluruh 13 bagian panduan CA dipindahkan ke bab 5.3.1–5.3.13 modul utama;
+-  rujukan antarbagian disesuaikan, termasuk verifikasi fingerprint dan staging
+-  CSR. Semua 22 blok contoh panduan lama tetap ada, tanpa kehilangan perintah.
+-- Renderer menambahkan daftar isi subbagian h3/h4 dan mempertahankan ID bab lama.
+-  HTML utama memuat materi lengkap. PANDUAN_CA_PKI.md/HTML kini halaman penunjuk
+-  ke modul, sehingga tautan historis tetap hidup tanpa duplikasi materi aktif.
+-  README, DEPLOYMENT, checkpoint dan handoff diperbarui.
+-- Validasi PASS: 15 bab, 39 blok Bash lolos bash -n, 55 tautan HTML, 15 tabel;
+-  seluruh ID/fragment internal dan lintas HTML valid. Scan nilai kredensial lokal
+-  dan pola private key PASS, permission inventaris tetap privat. Ruff renderer
+-  dan git diff --check PASS. Bukti: state/documentation/2026-10-17/validation.json
+-  dan unified-module-validation.json.
+-- Tidak menjalankan ulang init/sign/revoke, pengujian VPN atau perintah pada VM.
+-  Tidak ada perubahan aplikasi, VM, key atau password. Tidak ada PDF/preview
+-  visual baru; HTML dapat dicetak melalui browser. Gap operasional tidak berubah.
++- Seluruh 13 bagian panduan CA dipindahkan ke bab 5.3.1–5.3.13 modul utama; rujukan antarbagian disesuaikan, termasuk verifikasi fingerprint dan staging CSR. Semua 22 blok contoh panduan lama tetap ada, tanpa kehilangan perintah.
++- Renderer menambahkan daftar isi subbagian h3/h4 dan mempertahankan ID bab lama. HTML utama memuat materi lengkap. PANDUAN_CA_PKI.md/HTML kini halaman penunjuk ke modul, sehingga tautan historis tetap hidup tanpa duplikasi materi aktif. README, DEPLOYMENT, checkpoint dan handoff diperbarui.
++- Validasi PASS: 15 bab, 39 blok Bash lolos bash -n, 55 tautan HTML, 15 tabel; seluruh ID/fragment internal dan lintas HTML valid. Scan nilai kredensial lokal dan pola private key PASS, permission inventaris tetap privat. Ruff renderer dan git diff --check PASS. Bukti: state/documentation/2026-10-17/validation.json dan unified-module-validation.json.
++- Tidak menjalankan ulang init/sign/revoke, pengujian VPN atau perintah pada VM. Tidak ada perubahan aplikasi, VM, key atau password. Tidak ada PDF/preview visual baru; HTML dapat dicetak melalui browser. Gap operasional tidak berubah.
+ - Berikutnya commit/push dan cocokkan remote; modul tunggal siap untuk praktik.
++
++## Intent: menambahkan mention dosen di README
++
++- Pengguna meminta akun GitHub dosen `@hesmi` disebut di repository `LuiLuiLui886/vanguard-ztna`.
++- Tambahkan mention publik `@hesmi` pada README tanpa menyentuh source code, konfigurasi VM, CA, WireGuard, kredensial, atau private state.
++- Setelah perubahan, perbarui checkpoint dan handoff; catat file terdampak dan hasil validasi. Tidak ada operasi VM atau perubahan rahasia.
+diff --git a/docs/PROGRESS_2026-10-19.md b/docs/PROGRESS_2026-10-19.md
+new file mode 100644
+index 0000000..8700991
+--- /dev/null
++++ b/docs/PROGRESS_2026-10-19.md
+@@ -0,0 +1,35 @@
++# Progres VanGuard — 19 Oktober 2026
++
++## Intent: publikasi meta prompt Codex
++
++Pengguna meminta file meta prompt yang telah disusun untuk dipush ke repository.
++Tambahkan `CODEX_VANGUARD_MASTER_PROMPT.md` di root agar dapat dibaca langsung
++oleh Codex. Dokumen mencakup perbaikan sistem, persiapan endpoint fisik dengan
++server tetap di VM, serta installer Windows native melalui BAT/PowerShell.
++
++Dasar pekerjaan: remote `main` pada `68f558b0ca00b20def0c38d5709840c917d29d3c`.
++Pertahankan perubahan README dan jurnal terdahulu pada commit tersebut. Perbarui
++checkpoint serta handoff untuk menunjukkan lokasi spesifikasi dan langkah mulai.
++Lingkup hanya dokumentasi; tidak menjalankan tugas implementasi dalam meta prompt
++atau mengubah source aplikasi, VM, jaringan, CA, identitas, maupun kredensial.
++
++## Hasil dokumentasi dan validasi
++
++- File meta prompt ditambahkan utuh dan identik dengan draft yang telah diberikan
++  kepada pengguna. Keempat bagian A–D, prompt mulai, dan prompt melanjutkan sesi
++  telah diperiksa keberadaannya.
++- `docs/CHECKPOINT.md` dan `LANJUTKAN_PROYEK.md` memuat penunjuk ke spesifikasi
++  serta membedakan persiapan dokumen dari implementasi/pengujian fitur.
++- Validasi Python lokal PASS: kesamaan byte dengan draft, struktur bagian,
++  keberadaan target tautan baru, dan tidak ada blok private key pada prompt.
++- `git diff --cached --check` PASS. Perubahan hanya empat file dokumentasi:
++  prompt utama, jurnal ini, checkpoint, dan handoff.
++- Suite aplikasi, CI, Windows native, dan pengujian VM/endpoint fisik tidak
++  dijalankan pada tugas dokumentasi ini; tidak ada klaim hasil operasional baru.
++- Pengguna telah mengotorisasi push ke GitHub. Publikasi dilakukan sebagai commit
++  dokumentasi di atas main terbaru tanpa force push; isi remote diperiksa setelah
++  publikasi. Hasil publikasi disampaikan pada respons tugas.
++
++Langkah berikutnya: gunakan prompt mulai di Codex, verifikasi progres ketahanan
++yang sedang berjalan, lalu implementasikan bagian yang dipilih. Nilai jaringan
++aktual dan bukti pengujian endpoint tetap harus dikumpulkan pada tahap terkait.
+diff --git a/docs/PROGRESS_2026-10-22.md b/docs/PROGRESS_2026-10-22.md
+new file mode 100644
+index 0000000..d8451e7
+--- /dev/null
++++ b/docs/PROGRESS_2026-10-22.md
+@@ -0,0 +1,43 @@
++# Progres VanGuard — 22 Oktober 2026
++
++## Intent: tambahan pekerjaan pilot dua endpoint Windows 11
++
++Pengguna meminta pembaruan dan push master prompt untuk topologi yang telah
++dibahas: laptop Linux menampung seluruh VM, PC Windows 11 melalui LAN, dan
++laptop Windows 11 melalui Wi-Fi pada router pribadi khusus pengujian.
++
++Rencana alamat yang disetujui: router 192.168.50.1/24, host Linux 192.168.50.10,
++PC 192.168.50.20, laptop endpoint 192.168.50.30. Gateway perangkat 192.168.50.1;
++alamat manual berada di luar rencana pool DHCP 192.168.50.100–192.168.50.200.
++Jaringan VM 192.168.100.0/24 dan tunnel 10.8.0.0/24 dipertahankan terpisah.
++Koneksi host direncanakan LAN; interface dan kondisi nyata tetap perlu diperiksa.
++
++Dasar perubahan dokumentasi: main `76af7e63ec8e90e80377721f0d0bd6d07f1ba0da`.
++Saat pemeriksaan, source terbaru ada di `fix/2026-10-20-readiness-lock` (`040dc21`);
++hardening `52e31db` dan main tetap terpisah. Tugas ini tidak menggabungkan branch.
++
++Perbarui master prompt, konteks keputusan, checkpoint, dan handoff. Lingkup
++publikasi hanya dokumentasi: persiapan routing/firewall/TLS, paket Windows,
++enrollment terpisah, uji dua endpoint, serta kriteria lanjut/tunda pilot.
++Tidak menerapkan IP, route, firewall, konfigurasi router/VM, atau instalasi client.
++
++## Hasil dokumentasi dan validasi
++
++- Master prompt diperbarui pada konteks, Prompt mulai, Bagian B0/B0.1/B2/B3,
++  target Windows11 dan Bagian D1. Rencana mencakup route terbatas ke VM-SERVER,
++  firewall/TLS, paket manual dan installer, dua identitas serta uji paralel.
++- Keputusan pengguna ditambahkan pada VANGUARD_CONTEXT.md; checkpoint dan handoff
++  menunjuk ke instruksi terbaru sambil mempertahankan riwayat serta branch aktif.
++- Validasi Python lokal PASS: empat IP unik dan berada pada subnet fisik,
++  subnet fisik tidak overlap dengan VM/tunnel, IP manual di luar pool DHCP,
++  bagian pilot lengkap, tautan baru valid, dan konteks historis tetap utuh.
++- `git diff --cached --check` PASS. Hanya lima file dokumentasi berubah; tidak ada
++  patch aplikasi atau konfigurasi runtime. Suite aplikasi dan tes jaringan/VM/
++  endpoint fisik tidak dijalankan pada tugas pembaruan prompt.
++- Pengguna mengotorisasi pembaruan master prompt di GitHub. Publikasi dilakukan
++  pada main menggunakan pemeriksaan commit dasar tanpa force push; hasil commit
++  dan verifikasi isi remote disampaikan pada respons tugas.
++
++Langkah berikutnya: Codex membaca master prompt terbaru di main sambil menjaga
++source branch perbaikan, lalu mengerjakan persiapan endpoint. Penerapan jaringan
++dan pengujian PC/laptop membutuhkan lingkungan aktual sesuai batas tugas.
