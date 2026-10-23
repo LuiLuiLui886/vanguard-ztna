@@ -1,5 +1,39 @@
 # Checkpoint VanGuard — 23 Oktober 2026
 
+## Lanjutan PC LAN dan validasi CI — 23 Oktober 15:48 WIB
+
+Pengguna mengonfirmasi ZIP belum diekstrak/installer belum dijalankan. Panduan
+[Mulai di PC Windows LAN](../downloads/README.md#mulai-di-pc-windows-lan)
+kini memuat urutan runtime, ekstraksi/checksum, tiga input installer, exit code,
+dan status normal sebelum configure/enrollment. Kedua ZIP lama tetap identik.
+
+[CI39926592953](https://github.com/LuiLuiLui886/vanguard-ztna/actions/runs/39926592953)
+pada **0411127** SUCCESS, JUnit diunduh dan diperiksa:
+
+- Ubuntu22.04/Python3.10: **266 PASS/1 SKIP**,282,577detik.
+- Ubuntu22.04/Python3.12: **266 PASS/1 SKIP**,282,436detik.
+- Windows Server2022/Python3.12 helpers: **28 PASS/2 SKIP**,0,272detik;
+  parsing PowerShell bootstrap/endpoint/pilot juga berhasil. Ini bukan fresh
+  install Windows11, UAC atau tunnel nyata. Skip Windows adalah dua tes lock
+  POSIX; skip Linux memerlukan API ACL Windows asli.
+- Lokal Linux: **10 PASS**,0,078detik, khusus kit/package; suite overlap tidak
+  dijumlahkan. Checksum ZIP,7tautan README/anchor, validasi modul/secret scan PASS.
+
+Host15:42WIB **BLOCKED**: Ethernet enp3s0 UP tanpa IPv4 pilot.50.10, Wi-Fi
+.50.101/24, keenam VM shut off. Firewall nftables/iptables **UNKNOWN** karena
+inspeksi sudo noninteraktif tidak tersedia. Flag forwarding/bridge bukan bukti
+koneksi. Tidak ada perubahan VM/router/host/endpoint atau credential.
+
+Tidak ada bug implementasi baru yang dibuktikan pada sesi ini. Pemasangan native
+Windows11, uji PC LAN/laptop Wi-Fi dan koneksi simultan tetap **BELUM_DIJALANKAN**
+(perilaku belum diuji). Gap WIN-CLEANUP-02, soak dan power-loss CA tetap terbuka.
+Berikutnya: pasang prasyarat/kit di PC, kemudian siapkan backend, trust, alokasi
+identitas dan jaringan sesuai runbook sebelum enrollment/connect. Jangan
+menambahkan peer statis atau mengulang init identitas utama.
+
+Bukti privat: `state/pilot-continuation-20261023/`; hasil publikasi panduan dicatat
+pada jurnal. Source aplikasi/installer tetap kandidat0.1.12 yang diuji0411127.
+
 ## ZIP instalasi tersedia di GitHub —23 Oktober
 
 Commit artefak **6479c8c** telah dipush non-force pada branch

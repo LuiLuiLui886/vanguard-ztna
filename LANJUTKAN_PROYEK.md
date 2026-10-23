@@ -1,5 +1,19 @@
 # Lanjutkan proyek VanGuard
 
+**23 Oktober15:48WIB — CI kandidat berhasil; PC belum install.**
+Workflow39926592953 pada0411127 SUCCESS: Linux3.10/3.12 masing-masing266PASS/1SKIP;
+Windows Server2022 helpers28PASS/2SKIP + parse PowerShell PASS. JUnit aktual
+tersimpan di state/pilot-continuation-20261023/. Bukan uji installer Windows11
+atau PC fisik. Lokal kit/package10PASS; checksum ZIP lama tetap sama.
+
+[Mulai dari ZIP di PC LAN](downloads/README.md#mulai-di-pc-windows-lan) kini
+menjelaskan runtime, ekstraksi, isian installer, exit code dan status awal.
+Host masih BLOCKED: Ethernet enp3s0 tanpa IPv4.50.10, Wi-Fi.50.101, enam VM mati;
+firewall UNKNOWN (sudo noninteraktif unavailable). Tidak mengubah VM/jaringan.
+Lanjutkan pemasangan kandidat di PC dan persiapan backend/trust/jaringan sesuai
+runbook; enrollment/connect menunggu siap. Windows11 native/fisik, power-loss,
+soak dan WIN-CLEANUP-02 tetap belum ditutup. Lihat checkpoint/jurnal terbaru.
+
 **ZIP kit sudah di GitHub23Oktober:** commit artefak6479c8c tersedia di
 branch feature/2026-10-22-physical-endpoints; kedua ZIP di downloads/ diunduh
 ulang dari GitHub dan checksum identik lokal (PASS). Baca [README download](downloads/README.md) untuk clone/pull, checksum,
