@@ -1,0 +1,2 @@
+# Literal unified-diff context lines retain their single-space prefix.
+docs/history/*.patch -whitespace
