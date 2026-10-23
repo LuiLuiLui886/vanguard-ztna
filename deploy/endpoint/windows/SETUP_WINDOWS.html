@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>VanGuard Windows: instalasi sampai terdaftar di admin</title><style>
+body { font: 16px/1.65 system-ui,sans-serif; color:#172536; background:#eef2f6;
+       margin:0; padding:2rem; }
+main { max-width:980px; margin:auto; padding:3rem; background:white; }
+h1,h2,h3,h4 { line-height:1.25; color:#12465a; }
+nav ol { list-style:none; padding-left:0; }
+.toc-h2 { margin-top:.5rem; font-weight:600; }
+.toc-h3 { margin-left:1rem; } .toc-h4 { margin-left:2rem; }
+h1 { font-size:2.2rem; } h2 { margin-top:2.8rem; border-bottom:2px solid #dae5e9;
+                            padding-bottom:.5rem; }
+a { color:#075b83; } table { width:100%; border-collapse:collapse; margin:1rem 0; }
+th,td { border:1px solid #ccd7dd; padding:.5rem; text-align:left; vertical-align:top; }
+th { background:#edf5f6; } pre { background:#f1f5f7; padding:1rem;
+                             white-space:pre-wrap; overflow-wrap:anywhere; }
+code { font-size:.9em; } blockquote { border-left:4px solid #1c7088; margin-left:0;
+                                    padding-left:1rem; }
+.print-note { border:1px solid #c7dbe4; padding:1rem; background:#f3f8fa; }
+@page { size:A4; margin:18mm; }
+@media print {
+ body { background:white; padding:0; font-size:10pt; }
+ main { padding:0; max-width:none; }
+ h2,h3,h4 { break-after:avoid; } h2 { margin-top:1.8rem; }
+ pre,tr { break-inside:avoid; } thead { display:table-header-group; }
+ a { color:inherit; } .print-note { display:none; }
+}
+</style></head><body><main><p class="print-note">Modul dapat dibaca tanpa internet. Untuk PDF, tekan Ctrl+P, pilih Simpan sebagai PDF, ukuran A4. Tautan dokumen pendukung memerlukan folder docs dari repository yang sama.</p><h1>VanGuard Windows: instalasi sampai terdaftar di admin</h1><nav aria-label="Daftar isi"><h2>Daftar isi</h2><ol><li class="toc-h2"><a href="#bab-1">1. Persiapan dan memasang aplikasi</a></li><li class="toc-h2"><a href="#bab-2">2. Siapkan jaringan dan data dari administrator</a></li><li class="toc-h2"><a href="#bab-3">3. Komputer baru membuat key dan CSR, bukan CA baru</a></li><li class="toc-h2"><a href="#bab-4">4. Administrator mendaftarkan perangkat</a></li><li class="toc-h2"><a href="#bab-5">5. Import sertifikat, login dan koneksi</a></li><li class="toc-h2"><a href="#bab-6">6. Disconnect, logout, repair dan pencabutan</a></li><li class="toc-h2"><a href="#bab-7">7. Sumber paket dan batas pengujian</a></li></ol></nav>
+<p>Paket offline untuk Windows 11 x64. Satu folder memuat BAT/PowerShell, installer
+Python 3.13.17, WireGuard 1.1.1, wheel aplikasi/dependensi dan panduan ini.
+Internet tidak diperlukan untuk pip/runtime; pemeriksaan kepercayaan tanda tangan
+Windows tetap harus berhasil. Jangan mematikan pemeriksaan signature atau policy.</p>
+<h2 id="bab-1">1. Persiapan dan memasang aplikasi</h2>
+<ol>
+<li>Ambil ZIP terbaru dari halaman downloads repo main. Bandingkan SHA256 dengan
+nilai yang diberikan admin/halaman GitHub tepercaya sebelum menjalankan file.</li>
+<li>Ekstrak <strong>seluruh isi</strong> ke folder baru, misalnya
+<code>C:\Program Files\VanGuardInstaller</code>. File BAT, PS1, manifest, folder runtimes
+dan wheels harus tetap bersama. Windows meminta izin admin saat menyalin.
+Jangan menjalankan BAT dari dalam tampilan ZIP atau hanya menyalin BAT.</li>
+<li>Buka <code>Install-VanGuard.bat</code>. Setujui UAC. Jika policy organisasi menolak
+PowerShell, hubungi admin untuk distribusi/signing yang diizinkan; jangan
+mengubah execution policy global atau mematikan Defender/SmartScreen.</li>
+<li>Installer memeriksa integritas seluruh paket serta Authenticode publisher
+Python Software Foundation/WireGuard LLC. Python3.13 x64 all-users yang valid
+dan WireGuard yang sudah terpasang dipakai kembali. Runtime belum ada dipasang
+dari runtimes. PATH global, DNS, IP LAN dan identitas lama tidak diubah.</li>
+<li>Tunggu hingga <strong>Exit code: 0</strong>. Kode1/2 berarti gagal: baca fase dan alasannya;
+1223 berarti UAC batal;3010 meminta restart manual, lalu jalankan installer lagi.
+Tidak ada reboot otomatis. Runtime parsial tidak dihapus/ditimpa sembarangan.</li>
+<li>Buka PowerShell Administrator dan periksa:</li>
+</ol>
+<pre><code class="language-powershell">$vg = Join-Path $env:ProgramFiles 'VanGuardEndpoint\VanGuard.ps1'
+&amp; $vg -Action status
+</code></pre>
+<p>Pada instalasi baru, <code>Terpasang; profil tepercaya belum tersedia</code> normal.
+Aplikasi di <code>C:\Program Files\VanGuardEndpoint</code>; konfigurasi/identitas di
+<code>C:\Program Files\VanGuardEndpointData</code>. Installer tidak membuat key, mendaftar
+perangkat, login, memasang peer, atau menyalakan tunnel.</p>
+<h2 id="bab-2">2. Siapkan jaringan dan data dari administrator</h2>
+<p>Sebelum enrollment, admin menyiapkan backend yang sehat, sertifikat HTTPS sesuai
+alamat API, profil publik <code>profile.json</code>, <code>root.crt</code>, fingerprint SHA256 root,
+public key WireGuard server, device ID unik, IP tunnel kosong dan akun karyawan.
+Konfirmasi fingerprint/key melalui komunikasi admin yang tepercaya, bukan hanya
+karena ada di ZIP. Bundel installer tidak berisi kredensial atau alokasi identitas.</p>
+<p>Untuk pilot PC LAN: alamat PC192.168.50.20/24, router192.168.50.1, host Linux
+192.168.50.10. Backend API192.168.100.20:8081 HTTPS dan UDP51820. Operator memeriksa
+routing/firewall sesuai runbook repo; installer tidak mengubahnya. IP tunnel
+berbeda dari IP LAN.10.8.0.2/.3/.4 sudah dicadangkan; .5/.6 hanya boleh dipakai
+setelah admin memeriksa registry. PC dan laptop wajib memiliki identitas berbeda.</p>
+<p>Admin memerlukan kandidat0.1.12 dengan VANGUARD_CLIENT_PROFILE yang sesuai untuk
+bundle berprofil. Paket backend/VM lama tidak otomatis di-upgrade oleh installer
+Windows. Hentikan alur jika bundle tidak memiliki profil yang cocok.</p>
+<p>Simpan profil/root di folder admin-only, misalnya <code>C:\Program Files\VanGuardTrust</code>.
+Dari PowerShell Administrator:</p>
+<pre><code class="language-powershell">$vg = Join-Path $env:ProgramFiles 'VanGuardEndpoint\VanGuard.ps1'
+&amp; $vg -Action configure
+&amp; $vg -Action status
+</code></pre>
+<p>Masukkan lokasi profil/root, fingerprint dan public key saat diminta. Configure
+menolak penimpaan konfigurasi lama. Data rahasia CA tidak pernah disalin ke PC.</p>
+<h2 id="bab-3">3. Komputer baru membuat key dan CSR, bukan CA baru</h2>
+<p><strong>CA hanya satu, tetap di VM-CA.</strong> Komputer baru membuat private key X.509 dan
+WireGuard sendiri serta permintaan sertifikat (CSR). CA menandatangani CSR setelah
+admin mendaftarkan perangkat. Jangan menjalankan init CA, membuat root pengganti,
+menyalin private key CA atau menyalin identitas komputer lain.</p>
+<pre><code class="language-powershell">&amp; $vg -Action init
+</code></pre>
+<p>Isi device ID dan IP tunnel yang dialokasikan admin. Hasil request publik ada di:
+<code>C:\Program Files\VanGuardEndpointData\identity\request.json</code>.
+Kirim <strong>hanya request.json</strong> ke admin melalui jalur yang disepakati. Private key
+<code>identity.key</code>, <code>wg.key</code>, sesi/token dan seluruh folder identity jangan dikirim.
+Init hanya untuk perangkat baru; reinstall tidak memerlukan init ulang.</p>
+<h2 id="bab-4">4. Administrator mendaftarkan perangkat</h2>
+<p>Pada komputer admin/jalur management yang diizinkan:</p>
+<ol>
+<li>Buka dashboard HTTPS VanGuard dengan trust root yang telah diverifikasi.
+Untuk lab, endpoint dashboard192.168.100.40:5000. Jangan membuka CA/dashboard
+ke seluruh jaringan PC fisik hanya untuk mempermudah enrollment.</li>
+<li>Login menggunakan akun administrator dan TOTP dari authenticator admin.
+Akun administrator berbeda dari akun karyawan untuk VPN.</li>
+<li>Pada formulir akun karyawan, buat akun yang disetujui (atau gunakan akun sah
+yang tersedia), dengan password melalui form. Username/password dibagikan
+secara privat; jangan memasukkannya ke Git atau dokumentasi publik.</li>
+<li>Pada formulir registrasi perangkat, masukkan request.json publik, metadata
+pemilik/departemen dan pilih akun karyawan. Cocokkan device ID, IP tunnel,
+public key/CSR dengan permintaan dari PC yang benar.</li>
+<li>Proses registrasi meminta sertifikat ke CA dan menyimpan binding sertifikat,
+public key WireGuard, device ID, IP tunnel serta akun karyawan. Registrasi
+<strong>tidak menambahkan live peer</strong>. Status harus registered; jika pending_issue/
+pending_registry, perbaiki dependensi dan gunakan retry, jangan membuat CA baru.</li>
+<li>Unduh bundle perangkat dari dashboard. Bundle berisi sertifikat publik,
+root publik, manifest/profil dan README; tidak berisi private key client.
+Kirim bundle kembali ke PC asal. Catat waktu/aktor dan lihat audit/history.</li>
+</ol>
+<p>Menghasilkan Root CA pertama kali hanya untuk instalasi sistem benar-benar baru,
+bukan langkah onboarding PC. Prosedur inisialisasi lengkap ada pada modul utama
+repo <code>docs/MODUL_PENGGUNAAN_VANGUARD.html</code>, Bab5.3. Sistem yang sedang digunakan
+harus mempertahankan root, index, serial, CRL serta histori pencabutannya.</p>
+<h2 id="bab-5">5. Import sertifikat, login dan koneksi</h2>
+<p>Letakkan bundle publik dari admin di folder terlindungi, lalu:</p>
+<pre><code class="language-powershell">&amp; $vg -Action import-bundle
+&amp; $vg -Action status
+&amp; $vg -Action diagnose
+&amp; $vg -Action login
+&amp; $vg -Action connect
+</code></pre>
+<p>Import meminta path bundle dan memeriksa binding dengan kedua key asli, profil,
+root dan sertifikat. Login meminta username karyawan serta password interaktif
+tersembunyi. Jangan menaruh password pada argumen terminal. Diagnose memeriksa
+HTTPS/readiness; bukan bukti UDP/tunnel. Enam pemeriksaan perangkat dan sesi
+karyawan tetap wajib sebelum server menambahkan peer.</p>
+<p>Biarkan terminal connect terbuka agar lease diperbarui. Dari terminal lain uji
+aplikasi yang diizinkan, misalnya <code>http://10.8.0.1:8082</code> jika admin telah menjalankan
+demo dan memberi grant eksplisit identitas/resource/TCP/port8082. Tanpa grant,
+akses seharusnya ditolak. Jangan menambahkan peer statis lewat GUI WireGuard.</p>
+<h2 id="bab-6">6. Disconnect, logout, repair dan pencabutan</h2>
+<p>Ctrl+C pada terminal connect meminta cleanup. Alternatif terminal admin kedua:</p>
+<pre><code class="language-powershell">$vg = Join-Path $env:ProgramFiles 'VanGuardEndpoint\VanGuard.ps1'
+&amp; $vg -Action disconnect
+&amp; $vg -Action logout
+</code></pre>
+<p>Disconnect menutup tunnel milik sesi. Logout meminta pencabutan sesi server;
+server tidak terjangkau berarti pencabutan <strong>belum terkonfirmasi</strong>. Jangan menghapus
+config jika penghentian tunnel/kepemilikannya belum pasti. Admin dapat mencabut
+identitas atau menonaktifkan akun melalui dashboard ketika perangkat hilang.</p>
+<p>Repair/reinstall: disconnect dahulu, jalankan BAT lagi. Key/config dipertahankan;
+runtime aplikasi baru diuji sebelum dipakai. Uninstall aplikasi:</p>
+<pre><code class="language-powershell">&amp; &quot;$env:ProgramFiles\VanGuardEndpoint\Uninstall-VanGuard.ps1&quot;
+</code></pre>
+<p>Uninstall mempertahankan data identitas dan Python/WireGuard bersama. Menghapus
+aplikasi bukan revocation server; decommission harus diselesaikan admin.</p>
+<h2 id="bab-7">7. Sumber paket dan batas pengujian</h2>
+<p>Installer runtime disalin tanpa modifikasi dari:</p>
+<ul>
+<li>Python: https://www.python.org/downloads/windows/ dan
+https://www.python.org/ftp/python/3.13.17/python-3.13.17-amd64.exe</li>
+<li>WireGuard: https://www.wireguard.com/install/ dan
+https://download.wireguard.com/windows-client/wireguard-amd64-1.1.1.msi</li>
+<li>Opsi Python: https://docs.python.org/3.13/using/windows.html</li>
+<li>Source WireGuard Windows: https://git.zx2c4.com/wireguard-windows/</li>
+</ul>
+<p>Versi/hash/URL tercatat di runtime-lock.json. Signature diverifikasi di Windows
+sebelum runtime dijalankan. Paket aplikasi sendiri belum Authenticode-signed.
+Hasil uji aktual tercatat di checkpoint repo; keberhasilan VM tidak otomatis
+membuktikan PC LAN/laptop Wi-Fi, policy organisasi, UAC interaktif atau semua
+skenario OS. Uji aplikasi dengan satu perangkat dahulu, kemudian perangkat kedua.</p>
+</main></body></html>

@@ -236,3 +236,14 @@ can obtain it through Git. Publish only the two verified docs-r2 archives under
 source-only artifact restriction; keep dist/state broadly ignored and preserve
 credentials/keys/VM backups outside Git. The bytes remain the verified22October
 snapshot, not a new installer build or native test. No live rollout or main merge.
+
+
+Windows installer and repository consolidation authorization — 24 October 2026:
+User explicitly requests bundled Python/WireGuard prerequisites, BAT fixes and
+real testing in the existing Windows VM, plus a complete endpoint enrollment
+and admin guide. Back up first; preserve the primary Windows identity/runtime
+and all five Ubuntu nodes. This supersedes preparation-only VM restrictions for
+these installer tests, not unrelated host/router changes. New computers generate
+keys/CSR and obtain a certificate from the existing CA; never recreate that CA.
+User also authorizes consolidating GitHub to one/two branches. Preserve history
+with ordinary merges/backups; delete only fully integrated branch references.

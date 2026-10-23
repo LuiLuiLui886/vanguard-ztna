@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "python": {
+    "file": "runtimes/python-3.13.17-amd64.exe",
+    "version": "3.13.17",
+    "url": "https://www.python.org/ftp/python/3.13.17/python-3.13.17-amd64.exe",
+    "publisher": "Python Software Foundation",
+    "sha256": "5da012101ba2e17113a9a1cd901e9ce1441086f2b7ecb5de06ec94163899a190",
+    "size": 29941280
+  },
+  "wireguard": {
+    "file": "runtimes/wireguard-amd64-1.1.1.msi",
+    "version": "1.1.1",
+    "url": "https://download.wireguard.com/windows-client/wireguard-amd64-1.1.1.msi",
+    "publisher": "WireGuard LLC",
+    "sha256": "7bfed60ad61b785c914b38b61555a975488e1d3ec472dbfb2fcdf498fca75242",
+    "size": 3293184
+  }
+}

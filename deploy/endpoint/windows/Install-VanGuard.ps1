@@ -1,5 +1,5 @@
 # Offline pilot installer. No VM/network provisioning, downloads or identity creation.
-param([switch]$Elevated, [switch]$Preview)
+param([switch]$Elevated, [switch]$Preview, [string]$ExpectedManifestSha256='')
 $ErrorActionPreference = 'Stop'
 . (Join-Path $PSScriptRoot 'Common.ps1')
 $phase = 'preflight'
@@ -9,7 +9,7 @@ try {
     # The package must be staged by the operator under an administrator-only path.
     Assert-SafePath $PSScriptRoot
     if ($Preview) {
-        Write-Host 'Preview: Windows 11 x64; Python 3.13 x64 dan WireGuard resmi harus sudah terpasang.'
+        Write-Host 'Preview: Windows 11 x64. Paket menyertakan Python/WireGuard; runtime yang cocok dipertahankan.'
         Write-Host 'Offline. Tidak mengubah jaringan, key, CA, login atau tunnel.'
         Write-Host "Runtime: $AppRoot ; config/identity/log: $DataRoot"
         exit 0
@@ -18,6 +18,10 @@ try {
     if (-not ([Security.Principal.WindowsPrincipal]$who).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
         if ($Elevated) { throw 'Elevasi tidak berhasil.' }
         $arguments = '-NoProfile -File "' + $PSCommandPath + '" -Elevated'
+        if ($ExpectedManifestSha256) {
+            if ($ExpectedManifestSha256 -notmatch '^[a-fA-F0-9]{64}$') { throw 'Hash manifest tidak valid.' }
+            $arguments += ' -ExpectedManifestSha256 ' + $ExpectedManifestSha256
+        }
         try {
             $child = Start-Process -FilePath "$PSHOME\powershell.exe" -ArgumentList $arguments -Verb RunAs -Wait -PassThru
             exit $child.ExitCode
@@ -33,25 +37,20 @@ try {
     if (-not $owned) { throw 'Operasi VanGuard lain sedang berjalan.' }
     Assert-NoTunnel
     $manifestPath = Join-Path $PSScriptRoot 'manifest.json'
-    $approved = Read-Host 'SHA256 manifest yang diterima melalui jalur admin tepercaya'
-    if ($approved -notmatch '^[0-9a-fA-F]{64}$' -or
-        (Get-FileHash -LiteralPath $manifestPath -Algorithm SHA256).Hash -ne $approved) { throw 'Manifest tidak cocok dengan fingerprint tepercaya.' }
+    if ($ExpectedManifestSha256 -and ($ExpectedManifestSha256 -notmatch '^[0-9a-fA-F]{64}$' -or
+        (Get-FileHash -LiteralPath $manifestPath -Algorithm SHA256).Hash -ne $ExpectedManifestSha256)) { throw 'Manifest tidak cocok dengan fingerprint tepercaya.' }
+    Write-Host 'Gunakan ZIP yang checksum-nya telah dikonfirmasi dari sumber resmi proyek.'
     $manifest = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
     if ($manifest.schema -ne 1 -or $manifest.target -ne 'cp313-win_amd64' -or $manifest.signed -ne $false) { throw 'Manifest tidak cocok.' }
     foreach ($entry in $manifest.files.PSObject.Properties) {
-        if ($entry.Name -notmatch '^(?:wheels/)?[a-zA-Z0-9_.-]+$' -or $entry.Value -notmatch '^[0-9a-f]{64}$') { throw 'Path/hash manifest tidak valid.' }
+        if ($entry.Name -notmatch '^(?:(?:wheels|runtimes)/)?[a-zA-Z0-9_.-]+$' -or $entry.Value -notmatch '^[0-9a-f]{64}$') { throw 'Path/hash manifest tidak valid.' }
         $file = Join-Path $PSScriptRoot $entry.Name
         Assert-SafePath $file
         if ((Get-FileHash -LiteralPath $file -Algorithm SHA256).Hash.ToLowerInvariant() -ne $entry.Value) { throw 'Integritas paket gagal; jangan lanjut.' }
     }
-    $python = Read-Host 'Path lengkap python.exe 3.13 x64 yang sudah diverifikasi operator'
-    Assert-SafePath $python
-    Invoke-Checked $python @('-c',"import sys,struct; assert sys.version_info[:2]==(3,13) and struct.calcsize('P')==8")
-    $wg = Join-Path $env:ProgramFiles 'WireGuard\wireguard.exe'
-    Assert-SafePath $wg
-    $sig = Get-AuthenticodeSignature -LiteralPath $wg
-    $publisher = Read-Host 'Thumbprint sertifikat penanda tangan WireGuard yang dikonfirmasi admin (40 hex)'
-    if ($publisher -notmatch '^[0-9a-fA-F]{40}$' -or $sig.Status -ne 'Valid' -or $sig.SignerCertificate.Thumbprint -ne $publisher -or $sig.SignerCertificate.Subject -notmatch 'WireGuard') { throw 'WireGuard resmi dengan signature valid diperlukan.' }
+    $phase = 'prasyarat-python-wireguard'
+    . (Join-Path $PSScriptRoot 'Runtime.ps1')
+    $python = Ensure-Runtimes $PSScriptRoot
     foreach ($dir in @($AppRoot,$DataRoot)) {
         if ((Test-Path -LiteralPath $dir) -and -not (Test-Path -LiteralPath (Join-Path $dir '.vanguard-endpoint-owner'))) {
             throw 'Direktori sudah ada tanpa marker kepemilikan; inspeksi dahulu.'
@@ -89,7 +88,10 @@ try {
     Write-Host "Launcher: $AppRoot\VanGuard.ps1"
     exit 0
 } catch {
-    Write-Host "Gagal pada langkah $phase. Key/config lama dipertahankan. Periksa README dan setup-state.json jika sudah dibuat."
+    Write-Host "Gagal pada langkah $phase. Key/config lama dipertahankan."
+    # Installer accepts no credentials. Error messages here contain only setup diagnostics.
+    Write-Host $_.Exception.Message
+    if ($_.Exception.Message -like 'REBOOT_REQUIRED:*') { exit 3010 }
     exit 1
 } finally {
     if ($owned) { $guard.ReleaseMutex() }

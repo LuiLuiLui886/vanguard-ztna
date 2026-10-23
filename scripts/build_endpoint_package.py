@@ -19,7 +19,26 @@ from packaging.utils import canonicalize_name, parse_wheel_filename
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def build(wheelhouse, output):
+def runtime_inputs(directory, lock):
+    if directory is None:
+        raise ValueError('Runtime directory required for complete offline package')
+    directory = Path(directory)
+    result = {}
+    for role in ('python', 'wireguard'):
+        item = lock[role]
+        name = item['file']
+        if not re.fullmatch(r'runtimes/[a-zA-Z0-9_.-]+', name):
+            raise ValueError('Invalid runtime path')
+        path = directory / Path(name).name
+        if path.is_symlink() or not path.is_file():
+            raise ValueError('Missing runtime: ' + role)
+        if path.stat().st_size != item['size'] or hashlib.sha256(path.read_bytes()).hexdigest() != item['sha256']:
+            raise ValueError('Runtime integrity mismatch: ' + role)
+        result[name] = path
+    return result
+
+
+def build(wheelhouse, output, runtime_directory=None):
     wheelhouse, output = Path(wheelhouse), Path(output)
     if output.exists():
         raise ValueError('Output exists; preserve prior package evidence')
@@ -68,7 +87,12 @@ def build(wheelhouse, output):
             key = canonicalize_name(requirement.name)
             if key not in pins or pins[key] not in requirement.specifier:
                 raise ValueError('Unresolved Windows dependency: ' + str(requirement))
+    runtime_lock = json.loads((ROOT / 'deploy/endpoint/windows/runtime-lock.json').read_text())
+    runtimes = runtime_inputs(runtime_directory, runtime_lock)
     output.mkdir(parents=True)
+    (output / 'runtimes').mkdir()
+    for name, path in runtimes.items():
+        shutil.copyfile(path, output / name)
     (output / 'wheels').mkdir()
     lines = []
     for name, path in sorted(selected.items()):
@@ -95,7 +119,7 @@ def verify_package(directory):
         raise ValueError('Unexpected/missing package members')
     for name, digest in manifest['files'].items():
         path = directory / name
-        if (not re.fullmatch(r'(?:wheels/)?[a-zA-Z0-9_.-]+', name) or path.is_symlink()
+        if (not re.fullmatch(r'(?:(?:wheels|runtimes)/)?[a-zA-Z0-9_.-]+', name) or path.is_symlink()
                 or hashlib.sha256(path.read_bytes()).hexdigest() != digest):
             raise ValueError('Package integrity mismatch')
     return manifest
@@ -105,8 +129,9 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--wheelhouse', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--runtime-directory', type=Path, required=True)
     args = parser.parse_args()
-    build(args.wheelhouse, args.output)
+    build(args.wheelhouse, args.output, args.runtime_directory)
     result = verify_package(args.output)
     print(json.dumps({'status': result['status'], 'files': len(result['files']), 'output': str(args.output)}))
 

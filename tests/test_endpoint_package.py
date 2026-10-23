@@ -54,3 +54,28 @@ def test_windows_entrypoints_do_not_reuse_vm_provisioning():
     assert "'S-1-5-80-*'" not in source
     assert 'NT SERVICE\\TrustedInstaller' in source
     assert 'Marker kepemilikan berbeda' in source
+
+
+def test_runtime_inputs_require_pinned_bytes_and_refuse_links(tmp_path):
+    data = b'synthetic signed installer fixture; authenticity tested on Windows'
+    source = tmp_path / 'setup.exe'
+    source.write_bytes(data)
+    item = {'file': 'runtimes/setup.exe', 'size': len(data),
+            'sha256': hashlib.sha256(data).hexdigest()}
+    lock = {'python': item, 'wireguard': item}
+    assert package.runtime_inputs(tmp_path, lock) == {'runtimes/setup.exe': source}
+    with pytest.raises(ValueError, match='directory required'):
+        package.runtime_inputs(None, lock)
+    source.write_bytes(data + b'tamper')
+    with pytest.raises(ValueError, match='integrity'):
+        package.runtime_inputs(tmp_path, lock)
+    source.unlink()
+    source.symlink_to(tmp_path / 'outside')
+    with pytest.raises(ValueError, match='Missing runtime'):
+        package.runtime_inputs(tmp_path, lock)
+
+
+def test_runtime_manifest_cannot_escape_package(tmp_path):
+    item = {'file': '../setup.exe', 'size': 0, 'sha256': 'a' * 64}
+    with pytest.raises(ValueError, match='Invalid runtime path'):
+        package.runtime_inputs(tmp_path, {'python': item, 'wireguard': item})
