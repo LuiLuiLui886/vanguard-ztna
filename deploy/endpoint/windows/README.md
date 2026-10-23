@@ -24,6 +24,6 @@ Baca checkpoint repo untuk hasil native yang benar-benar selesai. Pengujian
 fisik, ARM64 dan signing distribusi organisasi belum dinyatakan didukung.
 
 Peluncur harian: VanGuard.bat (menu tindakan) pada folder aplikasi terpasang;
-Uninstall-VanGuard.bat untuk uninstall. BAT menggunakan RemoteSigned proses saja
+VanGuardEndpointData\tools\Uninstall-VanGuard.bat untuk uninstall. BAT menggunakan RemoteSigned proses saja
 jika semua scope Windows belum diatur. Policy eksplisit/GPO/MOTW tetap berlaku;
 tidak mengubah registry policy. Jalankan launcher dengan hak administrator.

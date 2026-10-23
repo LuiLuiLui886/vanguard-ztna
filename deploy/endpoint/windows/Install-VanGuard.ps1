@@ -80,8 +80,13 @@ try {
     Invoke-Checked $candidate @('-m','pip','check')
     Invoke-Checked $candidate @('-m','vanguard.client','--help')
     $phase = 'publish'
-    foreach ($file in @('Common.ps1','VanGuard.ps1','VanGuard.bat','Uninstall-VanGuard.ps1','Uninstall-VanGuard.bat')) {
+    foreach ($file in @('Common.ps1','VanGuard.ps1','VanGuard.bat')) {
         Copy-Item -LiteralPath (Join-Path $PSScriptRoot $file) -Destination (Join-Path $AppRoot $file) -Force
+    }
+    $maintenance = Join-Path $DataRoot 'tools'
+    Protect-Directory $maintenance
+    foreach ($file in @('Common.ps1','Uninstall-VanGuard.ps1','Uninstall-VanGuard.bat')) {
+        Copy-Item -LiteralPath (Join-Path $PSScriptRoot $file) -Destination (Join-Path $maintenance $file) -Force
     }
     Write-State (Join-Path $AppRoot 'current.json') @{schema=1;release=$release;version=$manifest.version}
     Write-State (Join-Path $DataRoot 'setup-state.json') @{schema=1;status='INSTALLED';phase='needs-profile-and-enrollment';release=$release}

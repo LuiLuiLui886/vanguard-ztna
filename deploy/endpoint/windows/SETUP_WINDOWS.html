@@ -147,9 +147,9 @@ config jika penghentian tunnel/kepemilikannya belum pasti. Admin dapat mencabut
 identitas atau menonaktifkan akun melalui dashboard ketika perangkat hilang.</p>
 <p>Repair/reinstall: disconnect dahulu, jalankan BAT lagi. Key/config dipertahankan;
 runtime aplikasi baru diuji sebelum dipakai. Uninstall aplikasi:</p>
-<pre><code class="language-powershell">&amp; &quot;$env:ProgramFiles\VanGuardEndpoint\Uninstall-VanGuard.bat&quot;
+<pre><code class="language-powershell">&amp; &quot;$env:ProgramFiles\VanGuardEndpointData\tools\Uninstall-VanGuard.bat&quot;
 </code></pre>
-<p>Uninstall mempertahankan data identitas dan Python/WireGuard bersama. Menghapus
+<p>Uninstall mempertahankan data identitas, tools maintenance dan Python/WireGuard bersama. Menghapus
 aplikasi bukan revocation server; decommission harus diselesaikan admin.</p>
 <h2 id="bab-7">7. Sumber paket dan batas pengujian</h2>
 <p>Installer runtime disalin tanpa modifikasi dari:</p>

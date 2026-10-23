@@ -12,7 +12,7 @@ try {
     & (Join-Path $Package 'Install-VanGuard.bat') /nopause
     if ($LASTEXITCODE -ne 0 -or (Get-FileHash $sentinel).Hash -ne $hash) { throw 'Reinstall failed or altered data.' }
     $results.Add(@{case='reinstall_preserved_data';status='PASS'})
-    & (Join-Path $root 'Uninstall-VanGuard.bat') /nopause
+    & (Join-Path $data 'tools\Uninstall-VanGuard.bat') /nopause
     if ($LASTEXITCODE -ne 0 -or (Test-Path -LiteralPath $root) -or (Get-FileHash $sentinel).Hash -ne $hash) { throw 'Uninstall exit/state/preservation failed.' }
     if (-not (Test-Path "$env:ProgramFiles\WireGuard\wireguard.exe")) { throw 'Shared WireGuard removed.' }
     $results.Add(@{case='uninstall_exit_and_preservation';status='PASS'})

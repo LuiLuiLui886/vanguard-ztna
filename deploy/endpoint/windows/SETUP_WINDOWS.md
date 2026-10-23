@@ -154,10 +154,10 @@ Repair/reinstall: disconnect dahulu, jalankan BAT lagi. Key/config dipertahankan
 runtime aplikasi baru diuji sebelum dipakai. Uninstall aplikasi:
 
 ```powershell
-& "$env:ProgramFiles\VanGuardEndpoint\Uninstall-VanGuard.bat"
+& "$env:ProgramFiles\VanGuardEndpointData\tools\Uninstall-VanGuard.bat"
 ```
 
-Uninstall mempertahankan data identitas dan Python/WireGuard bersama. Menghapus
+Uninstall mempertahankan data identitas, tools maintenance dan Python/WireGuard bersama. Menghapus
 aplikasi bukan revocation server; decommission harus diselesaikan admin.
 
 ## 7. Sumber paket dan batas pengujian

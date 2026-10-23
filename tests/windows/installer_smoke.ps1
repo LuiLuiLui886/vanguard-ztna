@@ -48,7 +48,7 @@ try {
     Run-Bat
     if ((Get-FileHash $sentinel).Hash -ne $hash) { throw 'Repair altered data.' }
     Record 'repair_preserves_config'
-    & (Join-Path $root 'Uninstall-VanGuard.bat') /nopause
+    & (Join-Path $data 'tools\Uninstall-VanGuard.bat') /nopause
     if ($LASTEXITCODE -ne 0 -or (Test-Path $root) -or (Get-FileHash $sentinel).Hash -ne $hash) { throw 'Uninstall failed or removed preserved data.' }
     if (-not (Test-Path "$env:ProgramFiles\WireGuard\wireguard.exe")) { throw 'Shared WireGuard removed.' }
     Record 'uninstall_preserves_data_and_shared_runtime'
