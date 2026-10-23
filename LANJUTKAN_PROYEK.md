@@ -1,5 +1,8 @@
 # Lanjutkan proyek VanGuard
 
+Panduan dan hasil CI telah dipush pada **c76c8f0**, branch
+`feature/2026-10-22-physical-endpoints`; SHA remote terverifikasi.
+
 **23 Oktober15:48WIB — CI kandidat berhasil; PC belum install.**
 Workflow39926592953 pada0411127 SUCCESS: Linux3.10/3.12 masing-masing266PASS/1SKIP;
 Windows Server2022 helpers28PASS/2SKIP + parse PowerShell PASS. JUnit aktual

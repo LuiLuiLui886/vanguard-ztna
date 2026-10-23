@@ -2,6 +2,9 @@
 
 ## Lanjutan PC LAN dan validasi CI — 23 Oktober 15:48 WIB
 
+Panduan dan hasil CI telah dipush pada **c76c8f0**, branch
+`feature/2026-10-22-physical-endpoints`; SHA remote terverifikasi.
+
 Pengguna mengonfirmasi ZIP belum diekstrak/installer belum dijalankan. Panduan
 [Mulai di PC Windows LAN](../downloads/README.md#mulai-di-pc-windows-lan)
 kini memuat urutan runtime, ekstraksi/checksum, tiga input installer, exit code,
