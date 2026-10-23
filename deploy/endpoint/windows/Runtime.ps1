@@ -52,5 +52,7 @@ function Ensure-Runtimes([string]$Package) {
         Invoke-RuntimeInstaller "$env:SystemRoot\System32\msiexec.exe" ('/i "' + $wgInstaller + '" /qn /norestart DO_NOT_LAUNCH=1')
     } else { Write-Host 'WireGuard yang sudah terpasang dipertahankan.' }
     Assert-Publisher $wg 'WireGuard LLC'
+    $wgVersion = [version](Get-Item -LiteralPath $wg).VersionInfo.ProductVersion
+    if ($wgVersion -lt [version]$lock.wireguard.version) { throw 'WireGuard terlalu lama; upgrade terverifikasi oleh admin diperlukan.' }
     return $python
 }

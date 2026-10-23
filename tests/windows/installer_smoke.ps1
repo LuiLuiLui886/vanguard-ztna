@@ -9,7 +9,7 @@ $data = Join-Path $env:ProgramFiles 'VanGuardEndpointData'
 $results = New-Object System.Collections.Generic.List[object]
 function Record([string]$Name) { $results.Add(@{case=$Name;status='PASS'}) }
 function Run-Bat {
-    & "$env:SystemRoot\System32\cmd.exe" /d /c ('""' + (Join-Path $Package 'Install-VanGuard.bat') + '" /nopause"')
+    & (Join-Path $Package 'Install-VanGuard.bat') /nopause
     if ($LASTEXITCODE -ne 0) { throw "BAT failed: $LASTEXITCODE" }
 }
 try {
@@ -20,7 +20,7 @@ try {
     Record 'preview_no_application_state'
     Run-Bat
     Record 'bat_fresh_endpoint_install'
-    & powershell.exe -NoProfile -File (Join-Path $root 'VanGuard.ps1') -Action status
+    & (Join-Path $root 'VanGuard.bat') status /nopause
     if ($LASTEXITCODE -ne 0) { throw 'Fresh status failed.' }
     Record 'status_needs_profile'
     if (Test-Path -LiteralPath (Join-Path $data 'identity')) { throw 'Installer created identity.' }
@@ -41,14 +41,14 @@ try {
         $state = Get-Content -Raw $setupPath | ConvertFrom-Json
         $state.status = 'IN_PROGRESS'
         [IO.File]::WriteAllText($setupPath,($state | ConvertTo-Json))
-        & powershell.exe -NoProfile -File (Join-Path $root 'VanGuard.ps1') -Action status
+        & (Join-Path $root 'VanGuard.bat') status /nopause
         if ($LASTEXITCODE -eq 0) { throw 'Incomplete setup incorrectly reported success.' }
         Record 'incomplete_setup_blocks_launcher'
     } finally { [IO.File]::WriteAllBytes($setupPath,$original) }
     Run-Bat
     if ((Get-FileHash $sentinel).Hash -ne $hash) { throw 'Repair altered data.' }
     Record 'repair_preserves_config'
-    & powershell.exe -NoProfile -File (Join-Path $root 'Uninstall-VanGuard.ps1')
+    & (Join-Path $root 'Uninstall-VanGuard.bat') /nopause
     if ($LASTEXITCODE -ne 0 -or (Test-Path $root) -or (Get-FileHash $sentinel).Hash -ne $hash) { throw 'Uninstall failed or removed preserved data.' }
     if (-not (Test-Path "$env:ProgramFiles\WireGuard\wireguard.exe")) { throw 'Shared WireGuard removed.' }
     Record 'uninstall_preserves_data_and_shared_runtime'

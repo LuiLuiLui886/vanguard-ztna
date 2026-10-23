@@ -37,7 +37,9 @@ nilai yang diberikan admin/halaman GitHub tepercaya sebelum menjalankan file.</l
 <code>C:\Program Files\VanGuardInstaller</code>. File BAT, PS1, manifest, folder runtimes
 dan wheels harus tetap bersama. Windows meminta izin admin saat menyalin.
 Jangan menjalankan BAT dari dalam tampilan ZIP atau hanya menyalin BAT.</li>
-<li>Buka <code>Install-VanGuard.bat</code>. Setujui UAC. Jika policy organisasi menolak
+<li>Buka <code>Install-VanGuard.bat</code>. Setujui UAC. Jika semua scope policy belum
+diatur (Undefined), BAT memilih RemoteSigned hanya untuk proses ini; tidak
+menyimpan policy ke registry. Policy eksplisit tetap dihormati. Jika policy organisasi menolak
 PowerShell, hubungi admin untuk distribusi/signing yang diizinkan; jangan
 mengubah execution policy global atau mematikan Defender/SmartScreen.</li>
 <li>Installer memeriksa integritas seluruh paket serta Authenticode publisher
@@ -49,8 +51,8 @@ dari runtimes. PATH global, DNS, IP LAN dan identitas lama tidak diubah.</li>
 Tidak ada reboot otomatis. Runtime parsial tidak dihapus/ditimpa sembarangan.</li>
 <li>Buka PowerShell Administrator dan periksa:</li>
 </ol>
-<pre><code class="language-powershell">$vg = Join-Path $env:ProgramFiles 'VanGuardEndpoint\VanGuard.ps1'
-&amp; $vg -Action status
+<pre><code class="language-powershell">$vg = Join-Path $env:ProgramFiles 'VanGuardEndpoint\VanGuard.bat'
+&amp; $vg status
 </code></pre>
 <p>Pada instalasi baru, <code>Terpasang; profil tepercaya belum tersedia</code> normal.
 Aplikasi di <code>C:\Program Files\VanGuardEndpoint</code>; konfigurasi/identitas di
@@ -72,9 +74,9 @@ bundle berprofil. Paket backend/VM lama tidak otomatis di-upgrade oleh installer
 Windows. Hentikan alur jika bundle tidak memiliki profil yang cocok.</p>
 <p>Simpan profil/root di folder admin-only, misalnya <code>C:\Program Files\VanGuardTrust</code>.
 Dari PowerShell Administrator:</p>
-<pre><code class="language-powershell">$vg = Join-Path $env:ProgramFiles 'VanGuardEndpoint\VanGuard.ps1'
-&amp; $vg -Action configure
-&amp; $vg -Action status
+<pre><code class="language-powershell">$vg = Join-Path $env:ProgramFiles 'VanGuardEndpoint\VanGuard.bat'
+&amp; $vg configure
+&amp; $vg status
 </code></pre>
 <p>Masukkan lokasi profil/root, fingerprint dan public key saat diminta. Configure
 menolak penimpaan konfigurasi lama. Data rahasia CA tidak pernah disalin ke PC.</p>
@@ -83,7 +85,7 @@ menolak penimpaan konfigurasi lama. Data rahasia CA tidak pernah disalin ke PC.<
 WireGuard sendiri serta permintaan sertifikat (CSR). CA menandatangani CSR setelah
 admin mendaftarkan perangkat. Jangan menjalankan init CA, membuat root pengganti,
 menyalin private key CA atau menyalin identitas komputer lain.</p>
-<pre><code class="language-powershell">&amp; $vg -Action init
+<pre><code class="language-powershell">&amp; $vg init
 </code></pre>
 <p>Isi device ID dan IP tunnel yang dialokasikan admin. Hasil request publik ada di:
 <code>C:\Program Files\VanGuardEndpointData\identity\request.json</code>.
@@ -102,7 +104,7 @@ Akun administrator berbeda dari akun karyawan untuk VPN.</li>
 yang tersedia), dengan password melalui form. Username/password dibagikan
 secara privat; jangan memasukkannya ke Git atau dokumentasi publik.</li>
 <li>Pada formulir registrasi perangkat, masukkan request.json publik, metadata
-pemilik/departemen dan pilih akun karyawan. Cocokkan device ID, IP tunnel,
+pemilik/departemen/platform (Windows11) dan pilih akun karyawan. Cocokkan device ID, IP tunnel,
 public key/CSR dengan permintaan dari PC yang benar.</li>
 <li>Proses registrasi meminta sertifikat ke CA dan menyimpan binding sertifikat,
 public key WireGuard, device ID, IP tunnel serta akun karyawan. Registrasi
@@ -118,11 +120,11 @@ repo <code>docs/MODUL_PENGGUNAAN_VANGUARD.html</code>, Bab5.3. Sistem yang sedan
 harus mempertahankan root, index, serial, CRL serta histori pencabutannya.</p>
 <h2 id="bab-5">5. Import sertifikat, login dan koneksi</h2>
 <p>Letakkan bundle publik dari admin di folder terlindungi, lalu:</p>
-<pre><code class="language-powershell">&amp; $vg -Action import-bundle
-&amp; $vg -Action status
-&amp; $vg -Action diagnose
-&amp; $vg -Action login
-&amp; $vg -Action connect
+<pre><code class="language-powershell">&amp; $vg import-bundle
+&amp; $vg status
+&amp; $vg diagnose
+&amp; $vg login
+&amp; $vg connect
 </code></pre>
 <p>Import meminta path bundle dan memeriksa binding dengan kedua key asli, profil,
 root dan sertifikat. Login meminta username karyawan serta password interaktif
@@ -135,9 +137,9 @@ demo dan memberi grant eksplisit identitas/resource/TCP/port8082. Tanpa grant,
 akses seharusnya ditolak. Jangan menambahkan peer statis lewat GUI WireGuard.</p>
 <h2 id="bab-6">6. Disconnect, logout, repair dan pencabutan</h2>
 <p>Ctrl+C pada terminal connect meminta cleanup. Alternatif terminal admin kedua:</p>
-<pre><code class="language-powershell">$vg = Join-Path $env:ProgramFiles 'VanGuardEndpoint\VanGuard.ps1'
-&amp; $vg -Action disconnect
-&amp; $vg -Action logout
+<pre><code class="language-powershell">$vg = Join-Path $env:ProgramFiles 'VanGuardEndpoint\VanGuard.bat'
+&amp; $vg disconnect
+&amp; $vg logout
 </code></pre>
 <p>Disconnect menutup tunnel milik sesi. Logout meminta pencabutan sesi server;
 server tidak terjangkau berarti pencabutan <strong>belum terkonfirmasi</strong>. Jangan menghapus
@@ -145,7 +147,7 @@ config jika penghentian tunnel/kepemilikannya belum pasti. Admin dapat mencabut
 identitas atau menonaktifkan akun melalui dashboard ketika perangkat hilang.</p>
 <p>Repair/reinstall: disconnect dahulu, jalankan BAT lagi. Key/config dipertahankan;
 runtime aplikasi baru diuji sebelum dipakai. Uninstall aplikasi:</p>
-<pre><code class="language-powershell">&amp; &quot;$env:ProgramFiles\VanGuardEndpoint\Uninstall-VanGuard.ps1&quot;
+<pre><code class="language-powershell">&amp; &quot;$env:ProgramFiles\VanGuardEndpoint\Uninstall-VanGuard.bat&quot;
 </code></pre>
 <p>Uninstall mempertahankan data identitas dan Python/WireGuard bersama. Menghapus
 aplikasi bukan revocation server; decommission harus diselesaikan admin.</p>
@@ -164,4 +166,9 @@ sebelum runtime dijalankan. Paket aplikasi sendiri belum Authenticode-signed.
 Hasil uji aktual tercatat di checkpoint repo; keberhasilan VM tidak otomatis
 membuktikan PC LAN/laptop Wi-Fi, policy organisasi, UAC interaktif atau semua
 skenario OS. Uji aplikasi dengan satu perangkat dahulu, kemudian perangkat kedua.</p>
+<p>Execution policy proses dijelaskan Microsoft di
+https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-5.1 .
+RemoteSigned tetap menolak skrip unduhan internet yang unsigned bila ditandai
+MOTW. Jika ditolak, admin perlu distribusi/signing sesuai kebijakan; installer
+tidak menghapus tanda internet secara otomatis.</p>
 </main></body></html>

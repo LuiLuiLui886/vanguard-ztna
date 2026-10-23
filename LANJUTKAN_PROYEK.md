@@ -1,5 +1,12 @@
 # Lanjutkan proyek VanGuard
 
+**24 Oktober — IN_PROGRESS installer Windows lengkap dan konsolidasi branch.**
+Baca checkpoint24Oktober/jurnal. CI terbaru268PASS/1SKIP Linux3.10/3.12,
+28PASS/2SKIP helper Windows; native installer masih menunggu backup disk selesai.
+Paket runtimes+BAT r2 dan runner native tersedia di state/installer-20261024/.
+Tidak menyalakan Windows selama vol-clone masih berlangsung. Main sudah digabung
+ke branch kerja, tetapi remote main/cleanup branch masih pending.
+
 Panduan dan hasil CI telah dipush pada **c76c8f0**, branch
 `feature/2026-10-22-physical-endpoints`; SHA remote terverifikasi.
 

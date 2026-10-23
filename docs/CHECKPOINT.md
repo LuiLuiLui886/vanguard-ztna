@@ -1,4 +1,22 @@
-# Checkpoint VanGuard — 23 Oktober 2026
+# Checkpoint VanGuard — 24 Oktober 2026
+
+## Installer lengkap dan konsolidasi — IN_PROGRESS24 Oktober
+
+Permintaan pengguna: Python/WireGuard satu paket, perbaikan BAT, uji VM Windows,
+panduan CSR/admin dan dua branch maksimal. Source562b0b0 + merge827c664;
+perubahan tambahan sedang diuji. CI39994146862 pada827c664 SUCCESS: Linux3.10/
+3.12 masing-masing268PASS/1SKIP; Windows helpers28PASS/2SKIP. Bukan uji installer.
+Baseline39PASS/1SKIP; regresi lokal41PASS/1SKIP. Rincian jurnal24Oktober.
+
+Backup Git --all valid. Backup disk Windows melalui virsh vol-clone masih
+berjalan saat entry ini (volume vanguard-windows-before-installer-20261024.qcow2);
+jangan menyalakan Windows sampai proses selesai. Semua VM masih mati. Native
+installer BELUM_DIJALANKAN, runner/tests/windows/installer_smoke.ps1 sudah siap.
+Paket-r2 di state/installer-20261024/; credential tetap inventaris privat.
+
+Main sudah digabung ke branch endpoint dengan histori/atribusi pembimbing utuh;
+remote main belum dipindahkan dan branch lama belum dihapus. Lanjutkan native,
+perbaikan terbukti, paket final/scan, push main dan hapus hanya branch terintegrasi.
 
 ## Lanjutan PC LAN dan validasi CI — 23 Oktober 15:48 WIB
 
@@ -278,7 +296,7 @@ Main/hardening belum digabung; perubahan origin/main76af7e6 harus dipertahankan.
 ## Riwayat20 Oktober — rollout0.1.9 dan matriks VM selesai
 
 Semua enam node sudah memakai **0.1.9** pada branch
-[hardening/2026-10-18-resilience](https://github.com/LuiLuiLui886/vanguard-ztna/tree/hardening/2026-10-18-resilience).
+[hardening/2026-10-18-resilience](https://github.com/LuiLuiLui886/vanguard-ztna/tree/52e31dbbfb044306fdd1bddcbee9dd5f42608c59).
 Branch hardening masih terpisah dari main. Baca [matriks bukti](VALIDASI_ROLLOUT_2026-10-20.md) dan
 [jurnal 20 Oktober](PROGRESS_2026-10-20.md); riwayat di bawah bukan status terkini.
 
@@ -334,7 +352,7 @@ dengan status historis pada main.
 
 ## Riwayat19 Oktober: kandidat0.1.9 teruji dan timer Windows diperbaiki
 
-Branch [hardening/2026-10-18-resilience](https://github.com/LuiLuiLui886/vanguard-ztna/tree/hardening/2026-10-18-resilience).
+Branch [hardening/2026-10-18-resilience](https://github.com/LuiLuiLui886/vanguard-ztna/tree/52e31dbbfb044306fdd1bddcbee9dd5f42608c59).
 CA b922f03, lifecycle/features65c486e dan dokumentasi84f4a81 sudah dipush;
 SHA remote84f4a81 terverifikasi; commit timer42028cf juga sudah dipush.
 Main tetap c454c0c. Hasil artefak/publikasi ada di [jurnal19 Oktober](PROGRESS_2026-10-19.md).

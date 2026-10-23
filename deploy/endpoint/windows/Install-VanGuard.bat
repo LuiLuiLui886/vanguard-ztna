@@ -11,7 +11,8 @@ if not exist "%~dp0Install-VanGuard.ps1" (
   set "VANGUARD_EXIT=2"
   goto finish
 )
-"%VANGUARD_PS%" -NoLogo -NoProfile -File "%~dp0Install-VanGuard.ps1"
+set "VANGUARD_SCRIPT=%~dp0Install-VanGuard.ps1"
+"%VANGUARD_PS%" -NoLogo -NoProfile -Command "$options=@('-NoLogo','-NoProfile'); if (@(Get-ExecutionPolicy -List | Where-Object { $_.ExecutionPolicy -ne 'Undefined' }).Count -eq 0) { Write-Host 'Policy default Windows: RemoteSigned hanya untuk proses ini.'; $options+=@('-ExecutionPolicy','RemoteSigned') }; & $env:VANGUARD_PS @options -File $env:VANGUARD_SCRIPT; exit $LASTEXITCODE"
 set "VANGUARD_EXIT=%ERRORLEVEL%"
 :finish
 echo.

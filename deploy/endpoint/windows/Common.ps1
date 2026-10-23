@@ -18,8 +18,8 @@ function Assert-SafePath([string]$Path) {
             $item = Get-Item -LiteralPath $p -Force
             if ($item.Attributes -band [IO.FileAttributes]::ReparsePoint) { throw 'Reparse point/junction ditolak.' }
             $acl = Get-Acl -LiteralPath $p
-            foreach ($rule in $acl.Access) {
-                $sid = $rule.IdentityReference.Translate([Security.Principal.SecurityIdentifier]).Value
+            foreach ($rule in $acl.GetAccessRules($true,$true,[Security.Principal.SecurityIdentifier])) {
+                $sid = $rule.IdentityReference.Value
                 # WriteData/AddFile, AppendData/AddDirectory, WriteEA, DeleteChild,
                 # WriteAttributes, Delete, WriteDACL, WriteOwner (exclude generic read).
                 $writes = 64 -bor 65536 -bor 262144 -bor 524288

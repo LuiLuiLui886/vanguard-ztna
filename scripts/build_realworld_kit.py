@@ -60,6 +60,8 @@ def build(endpoint, public, wheel, output, expected_endpoint_sha256):
         for path in sorted((ROOT / 'docs').iterdir()):
             if path.is_file() and not path.is_symlink() and path.suffix in ('.md', '.html'):
                 shutil.copyfile(path, output / 'docs' / path.name)
+        bundled_runtime = 'runtime-lock.json' in manifest['files'] and any(
+            name.startswith('runtimes/') for name in manifest['files'])
         (output / 'START_HERE.html').write_text('''<!doctype html><html lang="id"><meta charset="utf-8">
 <title>VanGuard — mulai penerapan</title><body><h1>Kit pilot VanGuard</h1>
 <p>Kandidat lokal untuk router khusus, PC Windows LAN dan laptop Windows Wi-Fi.
@@ -68,7 +70,7 @@ Belum tervalidasi native atau siap produksi.</p>
 <li>Buka <a href="docs/INSTALL_REALWORLD.html">panduan langkah pemasangan lengkap</a>.</li>
 <li>Jalankan pemeriksa host/endpoint; selesaikan semua FAIL/UNKNOWN dan review manual.</li>
 <li>Ikuti urutan backend, PC, laptop, lalu kedua endpoint bersamaan.</li></ol>
-<p>Runtime Python/WireGuard diperoleh dari sumber resmi sesuai panduan; tidak termasuk kit.
+<p>Lihat windows/README.md untuk prasyarat dan runtime yang disertakan pada versi paket ini.
 Jangan mengirim private key, password atau token.</p></body></html>''', encoding='utf-8')
         cases = ('preflight', 'fresh_install', 'uac_cancel', 'wrong_hash', 'path_acl',
                  'enrollment_no_peer', 'login_no_peer', 'admission_handshake', 'http_grant',
@@ -83,7 +85,7 @@ Jangan mengirim private key, password atau token.</p></body></html>''', encoding
                     writer.writerow((device, case, 'BELUM_DIJALANKAN', '', '', ''))
         (output / 'DEPLOYMENT_STATUS.json').write_text(json.dumps({
             'schema': 1, 'ready_for_production': False, 'status': 'CANDIDATE_REQUIRES_TARGET_VALIDATION',
-            'runtime_installers_included': False, 'credentials_included': False,
+            'runtime_installers_included': bundled_runtime, 'credentials_included': False,
             'physical_deployment': 'BELUM_DIJALANKAN', 'native_installer': 'BELUM_DIJALANKAN',
             'live_trust_recheck': 'REQUIRED', 'ip_allocation': 'REQUIRED',
             'host_firewall_review': 'REQUIRED'}, indent=2) + '\n')

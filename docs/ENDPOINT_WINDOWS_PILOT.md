@@ -1,5 +1,11 @@
 # Pilot endpoint Windows fisik — kandidat 0.1.12
 
+**Pembaruan installer24 Oktober:** paket Windows baru menyertakan Python/WireGuard
+dan dependensi dalam satu ZIP. Ikuti [panduan Windows terbaru](../deploy/endpoint/windows/SETUP_WINDOWS.md).
+Bagian prasyarat manual/kandidat22Oktober di bawah tetap menjadi riwayat paket lama;
+lihat checkpoint untuk hasil native aktual. Arsitektur, jaringan, CA dan admission
+tidak berubah.
+
 Status 22 Oktober 2026: **persiapan lokal; belum release/rollout**. Ikuti
 [master prompt](../CODEX_VANGUARD_MASTER_PROMPT.md), fokus ENDPOINT_WINDOWS.
 Source dasar `040dc21` dari perbaikan terbaru dipertahankan pada branch

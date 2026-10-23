@@ -28,8 +28,9 @@ try {
         } catch { Write-Host 'UAC dibatalkan atau tidak tersedia.'; exit 1223 }
     }
     Assert-Administrator
-    if (-not [Environment]::Is64BitOperatingSystem -or $env:PROCESSOR_ARCHITECTURE -ne 'AMD64' -or
-        [int](Get-CimInstance Win32_OperatingSystem).BuildNumber -lt 22000) { throw 'Kandidat hanya untuk Windows 11 x64.' }
+    $os = Get-CimInstance Win32_OperatingSystem
+    if ($os.ProductType -ne 1 -or -not [Environment]::Is64BitOperatingSystem -or $env:PROCESSOR_ARCHITECTURE -ne 'AMD64' -or
+        [int]$os.BuildNumber -lt 22000) { throw 'Kandidat hanya untuk Windows 11 x64.' }
     Assert-SafePath $AppRoot
     Assert-SafePath $DataRoot
     $guard = New-Object Threading.Mutex($false,'Global\VanGuardEndpointSetup')
@@ -79,13 +80,13 @@ try {
     Invoke-Checked $candidate @('-m','pip','check')
     Invoke-Checked $candidate @('-m','vanguard.client','--help')
     $phase = 'publish'
-    foreach ($file in @('Common.ps1','VanGuard.ps1','Uninstall-VanGuard.ps1')) {
+    foreach ($file in @('Common.ps1','VanGuard.ps1','VanGuard.bat','Uninstall-VanGuard.ps1','Uninstall-VanGuard.bat')) {
         Copy-Item -LiteralPath (Join-Path $PSScriptRoot $file) -Destination (Join-Path $AppRoot $file) -Force
     }
     Write-State (Join-Path $AppRoot 'current.json') @{schema=1;release=$release;version=$manifest.version}
     Write-State (Join-Path $DataRoot 'setup-state.json') @{schema=1;status='INSTALLED';phase='needs-profile-and-enrollment';release=$release}
     Write-Host 'Aplikasi terpasang. Profil tepercaya, enrollment dan login masih diperlukan. Tidak ada peer/tunnel dibuat.'
-    Write-Host "Launcher: $AppRoot\VanGuard.ps1"
+    Write-Host "Launcher: $AppRoot\VanGuard.bat"
     exit 0
 } catch {
     Write-Host "Gagal pada langkah $phase. Key/config lama dipertahankan."

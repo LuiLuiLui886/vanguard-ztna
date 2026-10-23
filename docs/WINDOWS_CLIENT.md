@@ -1,5 +1,11 @@
 # Client Windows tambahan — VanGuard0.1.9
 
+**Pembaruan installer24 Oktober:** paket Windows baru menyertakan Python/WireGuard
+dan dependensi dalam satu ZIP. Ikuti [panduan Windows terbaru](../deploy/endpoint/windows/SETUP_WINDOWS.md).
+Bagian prasyarat manual/kandidat22Oktober di bawah tetap menjadi riwayat paket lama;
+lihat checkpoint untuk hasil native aktual. Arsitektur, jaringan, CA dan admission
+tidak berubah.
+
 Pada 20 Oktober, client utama sudah di-upgrade ke0.1.9 dengan backup ZIP privat,
 verifikasi dependensi dan hash identitas utama tetap sama. WireGuard/HTTP asli,
 default-deny, LAN/portdeny, dua renewal67,18/71,73detik dan cleanup normal PASS.

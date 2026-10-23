@@ -1,5 +1,11 @@
 # Pemasangan VanGuard pada perangkat nyata
 
+**Pembaruan installer24 Oktober:** paket Windows baru menyertakan Python/WireGuard
+dan dependensi dalam satu ZIP. Ikuti [panduan Windows terbaru](../deploy/endpoint/windows/SETUP_WINDOWS.md).
+Bagian prasyarat manual/kandidat22Oktober di bawah tetap menjadi riwayat paket lama;
+lihat checkpoint untuk hasil native aktual. Arsitektur, jaringan, CA dan admission
+tidak berubah.
+
 Runbook penerapan lengkap, revisi dokumentasi2 —22 Oktober2026. Topologi sudah dikonfirmasi:
 router khusus, backend VM pada laptop Linux, PC Windows LAN dan laptop Windows
 Wi-Fi. Tujuan tahap pertama adalah **pilot nyata terbatas**, bukan membuka layanan
