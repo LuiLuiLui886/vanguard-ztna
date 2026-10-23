@@ -1,5 +1,16 @@
 # Checkpoint VanGuard — 23 Oktober 2026
 
+## Publikasi ZIP instalasi — sedang berlangsung
+
+Pengguna meminta ZIP ikut Git. Dua arsip final docs-r2 yang telah diverifikasi
+akan disalin byte-for-byte ke downloads/ beserta SHA256SUMS/README. Kit lengkap
+12.421.751byte memuat BAT/PS+20wheel; ZIP dokumentasi338.739byte. Validasi ZIP,
+101anggota kit-manifest, nested wheel dan inventory-secret scan PASS; tidak ada
+credential/privatekey/stateVM. dist/state tetap diabaikan secara umum. Source/
+installer/konfigurasi tidak diubah, native/fisik tetap BELUM_DIJALANKAN. Hasil ref
+remote dan hash download dicatat pada jurnal23Oktober sebelum dinyatakan selesai.
+
+
 ## Publikasi pembaruan —23 Oktober selesai
 
 Branch `feature/2026-10-22-physical-endpoints` sudah dipush non-force ke GitHub.

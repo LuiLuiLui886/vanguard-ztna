@@ -227,3 +227,12 @@ force-push, merge or roll out VMs/network/endpoints. Local credentials, private
 state and ignored dist artifacts remain outside Git. Native/physical validation
 limits still apply. See the23October journal and latest checkpoint for actual
 remote verification; historical no-push entries describe earlier stages.
+
+
+ZIP publication authorization — 23 October 2026:
+The user additionally authorizes pushing the complete prepared ZIP kit so Windows
+can obtain it through Git. Publish only the two verified docs-r2 archives under
+ downloads/ with hashes and usage instructions. This supersedes the earlier
+source-only artifact restriction; keep dist/state broadly ignored and preserve
+credentials/keys/VM backups outside Git. The bytes remain the verified22October
+snapshot, not a new installer build or native test. No live rollout or main merge.

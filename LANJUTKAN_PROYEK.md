@@ -1,5 +1,10 @@
 # Lanjutkan proyek VanGuard
 
+**ZIP kit ikut Git atas permintaan23Oktober:** publikasi downloads/ sedang
+disiapkan. Baca [README download](downloads/README.md) untuk clone/pull, checksum,
+ekstraksi dan installer Windows. Artefak kandidat lama dipertahankan; native/fisik
+tetap belum diuji. Hasil verifikasi remote ada pada jurnal/checkpoint terbaru.
+
 **23 Oktober — seluruh source/dokumentasi sudah dipush.** Branch
 `feature/2026-10-22-physical-endpoints`, ref369ac96 dan blob BAT/runbook terverifikasi
 remote.10tes lokal PASS; tanpa merge main/rollout/CI baru. ZIP/state/credential
