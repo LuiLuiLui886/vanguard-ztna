@@ -217,3 +217,13 @@ server0.1.11 already supplies the required admission/logout/resource APIs. Use
 INSTALL_REALWORLD.md for backup, runtime verification, staged installation and
 acceptance; native/physical tests and effective host firewall remain outstanding.
 No live rollout or GitHub publication has been performed for this preparation.
+
+
+Publication authorization — 23 October 2026:
+The user explicitly requests pushing all accumulated updates. This supersedes
+the preparation-only no-push restriction for publishing the current feature
+branch source/tests/installer/documentation. Preserve main/hardening and do not
+force-push, merge or roll out VMs/network/endpoints. Local credentials, private
+state and ignored dist artifacts remain outside Git. Native/physical validation
+limits still apply. See the23October journal and latest checkpoint for actual
+remote verification; historical no-push entries describe earlier stages.

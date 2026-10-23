@@ -1,4 +1,15 @@
-# Checkpoint VanGuard — 22 Oktober 2026
+# Checkpoint VanGuard — 23 Oktober 2026
+
+## Publikasi pembaruan —23 Oktober (sedang berlangsung)
+
+Pengguna mengotorisasi push seluruh pembaruan pada branch
+`feature/2026-10-22-physical-endpoints`. Dasar implementasi/dokumen terakhir e9162aa;
+source, installer Windows dan runbook17bab akan dipush setelah pemeriksaan secrets.
+Larangan push22Oktober telah digantikan oleh instruksi ini, tanpa izin merge main
+atau deployment. dist/state/credential tetap lokal; tidak membuat GitHub release.
+Verifikasi remote/hasil CI harus dibaca dari jurnal23Oktober sebelum menyebut
+publikasi selesai. Windows native installer dan endpoint fisik tetap belum diuji.
+
 
 ## Pembaruan dokumentasi penerapan — revisi2
 
