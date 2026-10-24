@@ -247,3 +247,18 @@ these installer tests, not unrelated host/router changes. New computers generate
 keys/CSR and obtain a certificate from the existing CA; never recreate that CA.
 User also authorizes consolidating GitHub to one/two branches. Preserve history
 with ordinary merges/backups; delete only fully integrated branch references.
+
+
+Windows installer native completion and branch consolidation — 24 October 2026:
+Bundled offline package r6 installs missing Python3.13.17/WireGuard1.1.1 and
+VanGuard0.1.12 on a disposable overlay of the existing Windows VM (5native cases
+passed). Existing-runtime path, SID ACL guards, process-only default policy and
+corrected uninstall/reinstall also have separate native evidence. No enrollment,
+CA mutation, peer or tunnel was created. Original Windows XML/disk restored
+exactly; primary identity hashes/runtime0.1.9 and SecureBoot/TPM matched before.
+The five Ubuntu nodes remain untouched/shut off. Overlay/backup are retained.
+Source/artifact52cfac9 published to main and feature; old hardening/fix references
+removed only after their full history was merged. Main is the default entrypoint,
+feature/2026-10-22-physical-endpoints the second branch. GitHub ZIP bytes match
+native-tested r6. UAC interactive, physical endpoints, MOTW/GPO distribution and
+production readiness are not established by these tests; see current checkpoint.

@@ -1,16 +1,14 @@
 # Pemasangan VanGuard pada perangkat nyata
 
-**Pembaruan installer24 Oktober:** paket Windows baru menyertakan Python/WireGuard
-dan dependensi dalam satu ZIP. Ikuti [panduan Windows terbaru](../deploy/endpoint/windows/SETUP_WINDOWS.md).
-Bagian prasyarat manual/kandidat22Oktober di bawah tetap menjadi riwayat paket lama;
-lihat checkpoint untuk hasil native aktual. Arsitektur, jaringan, CA dan admission
-tidak berubah.
-
-Runbook penerapan lengkap, revisi dokumentasi2 —22 Oktober2026. Topologi sudah dikonfirmasi:
-router khusus, backend VM pada laptop Linux, PC Windows LAN dan laptop Windows
-Wi-Fi. Tujuan tahap pertama adalah **pilot nyata terbatas**, bukan membuka layanan
-ke internet atau menyatakan siap produksi. Installer Windows masih kandidat0.1.12
-r3; native UAC/ACL/repair dan jaringan kedua endpoint harus dibuktikan pada target.
+**Revisi24 Oktober:** gunakan [ZIP Windows lengkap](../downloads/README.md)
+berisi Python/WireGuard/dependensi dan [panduan endpoint](../deploy/endpoint/windows/SETUP_WINDOWS.md).
+Langkah Windows di dokumen ini mengikuti BAT terbaru. Struktur kit sistem22Oktober
+pada Bab2 adalah arsip materi backend; installer Windows di kit lama digantikan ZIP
+24Oktober. [Hasil native](VALIDASI_INSTALLER_2026-10-24.md) mencatat uji runtime
+kosong, reuse, ACL, repair dan uninstall; UAC interaktif serta PC/laptop fisik tetap
+BELUM_TERUJI. Topologi router khusus/backend VM/PC LAN/laptop Wi-Fi dikonfirmasi.
+Tujuan tetap pilot nyata terbatas; tidak membuka layanan ke internet atau mengklaim
+siap produksi. Arsitektur, CA dan admission tidak berubah.
 
 ## Cara membaca dan mengisi dokumen
 
@@ -79,8 +77,8 @@ Ekstrak ZIP kit ke folder baru. Jangan mencampur dengan rilis/identitas lama.
 | DEPLOYMENT_STATUS.json | Status kandidat/bagian yang belum tervalidasi |
 | kit-manifest.json | SHA256 setiap file; hash manifest harus diperiksa dari kanal lain |
 
-Runtime installer Python/WireGuard **tidak disertakan**. Python wheel offline
-sudah ada; instalasi prasyarat runtime tetap tahap terpisah. Jangan memakai
+Kit sistem22Oktober pada tabel ini tidak menyertakan runtime installer. Gunakan
+ZIP Windows24Oktober terpisah yang sudah menyertakan Python/WireGuard. Jangan memakai
 installer0.1.7 VM atau deploy/windows/bootstrap.ps1 pada perangkat fisik.
 
 Operator memberi SHA256 ZIP dan manifest melalui kanal tepercaya terpisah.
@@ -104,42 +102,26 @@ kit; salin dahulu ke folder hasil.
 
 ## 3. Siapkan Python dan WireGuard pada Windows
 
-Unduh Python Windows installer64-bit seri3.13 dari
-[halaman resmi Python](https://www.python.org/downloads/windows/); pilih installer
-penuh, bukan embeddable ZIP. Pada pemeriksaan22 Oktober, seri3.13 terbaru di
-halaman resmi adalah3.13.17; wheel kandidat dibangun untuk CPython3.13/win_amd64.
-Versi patch pada perangkat tetap wajib dicatat dan diuji, tidak otomatis dianggap
-lulus karena sama seri. Gunakan Custom installation, sertakan pip/venv, Install
-for all users ke `C:\Program Files\Python313`. Hindari mengubah PATH global jika
-aplikasi lain memakai Python; launcher menggunakan path absolut.
+Untuk pemasangan baru, ambil ZIP Windows24Oktober dari [downloads](../downloads/README.md).
+Satu folder berisi Python3.13.17 x64, WireGuard1.1.1, wheel aplikasi/dependensi,
+BAT/PowerShell dan SETUP_WINDOWS.html. Cocokkan SHA256 ZIP melalui sumber tepercaya,
+ekstrak seluruh isi ke folder baru di Program Files. Runtime akan dipasang oleh
+BAT pada Bab7 jika belum ada; tidak perlu mengisi path Python/thumbprint manual.
 
-Unduh WireGuard dari [halaman instalasi resmi](https://www.wireguard.com/install/).
-Operator memeriksa Authenticode valid dan publisher Python Software Foundation/
-WireGuard sesuai artefak. Jangan mengambil installer dari tautan pihak ketiga atau
-menonaktifkan Defender/SmartScreen/execution policy. Jika kebijakan organisasi
-mengharuskan signing script, tanda tangani kandidat melalui proses organisasi
-sebelum uji; paket sekarang belum signed.
+Runtime Python3.13x64 all-users dan WireGuard yang sudah sesuai dipertahankan,
+bukan di-upgrade/downgrade otomatis. Folder/registrasi runtime parsial ditolak
+untuk inspeksi. Hash pin dan Authenticode publisher Python Software Foundation/
+WireGuard LLC diverifikasi sebelum eksekusi. Jangan menonaktifkan proteksi atau
+memasang dari sumber yang tidak dipercaya. Skrip aplikasi unsigned; policy/GPO/
+MOTW dapat memerlukan distribusi/signing resmi organisasi. BAT hanya memilih
+RemoteSigned proses bila semua scope Undefined; tidak mengubah policy permanen.
 
-Contoh pemeriksaan **sebelum** menjalankan installer yang diunduh:
-
-```powershell
-Get-AuthenticodeSignature -LiteralPath 'C:\lokasi\installer-yang-diunduh.exe' |
-  Select-Object Status,@{Name='Publisher';Expression={$_.SignerCertificate.Subject}}
-```
-
-Nama/path di atas placeholder, bukan file yang disertakan. Hash resmi/publisher
-harus ditinjau operator; status valid tidak menggantikan pemeriksaan publisher.
-Jika runtime sudah ada, jangan downgrade atau menimpa runtime aplikasi lain.
-Gunakan path yang cocok prasyarat; versi/arsitektur lain adalah blocker kandidat.
-
-Setelah pemasangan, operator mengonfirmasi sertifikat signer **wireguard.exe yang
-terpasang** lewat kanal tepercaya, termasuk thumbprint. Jangan menyalin thumbprint
-dari executable yang belum dipercaya lalu menyebutnya verifikasi independen.
+Setelah instalasi, pemeriksaan versi/signature dapat dilakukan:
 
 ```powershell
 & 'C:\Program Files\Python313\python.exe' -c "import sys,struct,venv,ensurepip; print(sys.version); print(struct.calcsize('P')*8)"
 Get-AuthenticodeSignature -LiteralPath 'C:\Program Files\WireGuard\wireguard.exe' |
-  Select-Object Status,@{Name='Publisher';Expression={$_.SignerCertificate.Subject}},@{Name='Thumbprint';Expression={$_.SignerCertificate.Thumbprint}}
+  Select-Object Status,@{Name='Publisher';Expression={$_.SignerCertificate.Subject}}
 ```
 
 Jangan mengimpor konfigurasi WireGuard manual/static peer. VanGuard mengelola
@@ -331,7 +313,8 @@ atas belum dieksekusi oleh kit.
 
 ## 7. Install pada PC Windows LAN dahulu
 
-1. Pastikan admin lokal, runtime, IP/route dan backend siap. Salin kit yang sudah
+1. Pastikan hak admin lokal tersedia. Instalasi aplikasi dapat mendahului backend;
+   configure/enrollment/connect menunggu trust, IP/route dan backend siap. Salin kit sistem yang sudah
    dicek hash ke `C:\Program Files\VanGuardPilotKit` menggunakan Explorer/terminal
    Administrator. Periksa ACL: SYSTEM/Administrators boleh tulis; Users hanya
    baca. Sumber root/profil juga harus terlindungi. Jangan memakai Downloads
@@ -347,19 +330,21 @@ Untuk path Python berbeda, tambahkan `-PythonPath 'PATH_PYTHON_TERVERIFIKASI'`.
 Exit2 selalu meminta pemeriksaan manual/native lanjutan; tidak menandai siap
 produksi. Script PowerShell pemeriksa ini belum diuji native pada target.
 
-3. Jalankan `windows\Install-VanGuard.bat`. UAC bila belum elevated; masukkan
-   hash **windows/manifest.json**, bukan kit-manifest, path Python yang diverifikasi,
-   dan thumbprint signer WireGuard terpasang yang dikonfirmasi operator. Hash
-   endpoint r3: `47b50e47e156e1b41ff11ffba01e0e76433eb5f96cfde81b4b6df8361f530cb1`.
-4. Exit0 berarti runtime aplikasi terpasang; belum ada key, login, peer atau VPN.
-   Exit1 berarti gagal;1223 UAC batal. Jangan menghapus state/key untuk mengulang.
+3. Ambil ZIP Windows24Oktober dan ekstrak ke folder baru, misalnya
+   `C:\Program Files\VanGuardInstaller20261024`, sesuai [petunjuk checksum](../downloads/README.md).
+   Jalankan `Install-VanGuard.bat` dari folder itu; bukan BAT lama di kit sistem.
+   Python/WireGuard yang belum ada dipasang dari paket. Tidak ada tiga input
+   path Python/manifest/thumbprint yang diperlukan installer lama.
+4. Exit0 berarti aplikasi terpasang; belum ada key, login, peer atau VPN.
+   Exit1/2 gagal;1223 UAC batal;3010 meminta restart manual lalu retry.
+   Jangan menghapus state/key untuk mengulang.
 5. Launcher terpasang di Program Files, konfigurasi/identitas terpisah. Jalankan:
 
 ```powershell
-$launcher = Join-Path $env:ProgramFiles 'VanGuardEndpoint\VanGuard.ps1'
-& $launcher -Action configure
-& $launcher -Action status
-& $launcher -Action init
+$launcher = Join-Path $env:ProgramFiles 'VanGuardEndpoint\VanGuard.bat'
+& $launcher configure
+& $launcher status
+& $launcher init
 ```
 
 Configure: pilih `config\profile.json` dan `config\root.crt` dari kit terlindungi,
@@ -381,10 +366,10 @@ identitas VM-client untuk perangkat fisik baru. Private key dibuat pada PC.
    berbeda ditolak; jangan memaksa overwrite. Jalankan:
 
 ```powershell
-& $launcher -Action import-bundle
-& $launcher -Action diagnose
-& $launcher -Action login
-& $launcher -Action connect
+& $launcher import-bundle
+& $launcher diagnose
+& $launcher login
+& $launcher connect
 ```
 
 Import menanyakan ZIP; login menanyakan username, password diketik tersembunyi.
@@ -483,9 +468,9 @@ bukan bukti kedua endpoint fisik.
 Pada terminal pemilik, Ctrl+C meminta cleanup. Dari terminal administrator lain:
 
 ```powershell
-$launcher = Join-Path $env:ProgramFiles 'VanGuardEndpoint\VanGuard.ps1'
-& $launcher -Action disconnect
-& $launcher -Action logout
+$launcher = Join-Path $env:ProgramFiles 'VanGuardEndpoint\VanGuard.bat'
+& $launcher disconnect
+& $launcher logout
 ```
 
 Disconnect menghentikan tunnel lokal, tidak mencabut token server. Logout mencabut
@@ -506,17 +491,16 @@ power-loss CA masih perlu pengujian terpisah sebelum klaim produksi.
 
 ## 11. Apa yang sudah siap dan yang belum
 
-Source aplikasi0.1.12, paket offline Windows r3, public profile, wheel admin,
+Source aplikasi0.1.12, paket Windows lengkap24Oktober, public profile, wheel admin,
 generator firewall, pemeriksa read-only, template acceptance dan panduan tersedia.
-Kit dibangun/diverifikasi lokal; hasil terbaru dicatat pada CHECKPOINT/jurnal.
-Tidak ada credential/private key atau runtime installer dalam kit.
+Paket runtime kosong/reuse, ACL/policy, repair/uninstall telah diuji native VM;
+lihat [laporan](VALIDASI_INSTALLER_2026-10-24.md) untuk hasil per run dan batasnya.
+Runtime ada dalam ZIP baru; credential/private key tidak disertakan.
 
-Belum selesai di target: native PowerShell/UAC/ACL/fresh/repair/upgrade/uninstall,
-runtime/signing sesuai kebijakan, kabel/router/IP pilot, host forwarding efektif,
-readiness live, registry alokasi .5/.6 dan pengujian dua endpoint. Langkah berikutnya
-adalah menyambungkan router/topologi, menyelesaikan baseline/backup, kemudian uji
-native Windows dan pemasangan PC dahulu. Jangan membuka layanan ke internet atau
-menganggap paket unsigned sebagai release produksi.
+BELUM_TERUJI pada target fisik: UAC interaktif, MOTW/GPO/signing distribusi,
+kabel/router/IP pilot, host forwarding efektif, readiness live, alokasi registry
+.5/.6 dan koneksi dua endpoint. Berikutnya siapkan baseline/backup/backend/jaringan
+lalu PC dahulu dan laptop setelahnya. Keberhasilan VM bukan bukti produksi.
 
 ## 12. Lembar rencana dan topologi yang harus disepakati
 
@@ -662,7 +646,7 @@ unit tests dan parse PowerShell tidak menggantikan eksekusi Windows native.
 | Readiness503 | Detail dependency unknown/not_ready, waktu/CRL/daemon/disk | Atasi dependency; liveness200 tidak cukup, jangan memperpanjang timeout tanpa bukti |
 | Installer gagal sebelum UAC | Hash paket, sumber admin-only, ACL/reparse, execution policy organisasi | Tempatkan lewat operator pada path terlindungi; signing bila wajib, bukan bypass policy |
 | Python tidak ditemukan/tidak cocok | Path absolut, 3.13,64bit,pip/venv, lokasi terlindungi | Pasang runtime resmi yang sesuai; jangan menimpa runtime aplikasi lain |
-| WireGuard signature/thumbprint ditolak | Signature valid, publisher dan thumbprint signer yang dikonfirmasi admin | Periksa asal dan waktu/trust store; jangan menerima thumbprint tak dikenal |
+| WireGuard signature/publisher ditolak | Hash sesuai runtime-lock dan Authenticode publisher WireGuard LLC valid | Periksa asal paket dan waktu/trust store; jangan menonaktifkan verifikasi |
 | Config sudah ada | Ownership instalasi, file profil/root lama, setup-state | Bandingkan konfigurasi; jangan hapus config/key agar configure dapat berjalan |
 | Init menolak direktori tidak kosong | Apakah identitas sudah pernah dibuat | Lanjutkan identitas yang sah; init bukan reset atau repair key |
 | Import bundle ditolak | Original request/ID/IP/WGkey, root/profil, cert/key, validity | Minta bundle yang benar; tidak menyalin private key dari perangkat lain |

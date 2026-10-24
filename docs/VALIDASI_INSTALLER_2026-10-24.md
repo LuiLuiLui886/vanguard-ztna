@@ -95,3 +95,19 @@ media CA dan gap lama WIN-CLEANUP-02. Jangan menghapus konfigurasi tunnel bila
 ownership/penghentian belum terkonfirmasi. Panduan endpoint lengkap tersedia pada
 [SETUP_WINDOWS](../deploy/endpoint/windows/SETUP_WINDOWS.md), termasuk perbedaan
 inisialisasi Root CA pertama dengan penerbitan sertifikat komputer baru.
+
+## Penutupan publikasi dan CI main
+
+Commit52cfac9 dipush ke main+feature; hanya dua branch tersebut tersisa. Seluruh
+histori main/hardening/fix tergabung, dua refs lama dihapus setelah verifikasi
+ancestry. Unduhan ulang ZIP dari GitHub cocok byte/hash paket r6. Primary Windows
+XML/disk kembali persis; hash identitas, Python3.13.16/WG1.1.1/client0.1.9 dan
+SecureBoot/TPM sesuai snapshot sebelum tes. Lima Ubuntu tidak diubah/shut off;
+Windows utama running tanpa tunnel uji.
+
+CI [40072739273](https://github.com/LuiLuiLui886/vanguard-ztna/actions/runs/40072739273)
+main52cfac9 SUCCESS, JUnit diunduh: Linux3.10 **268PASS/1SKIP272,198s**, Linux3.12
+**268PASS/1SKIP289,868s**, Windows Server2022 helpers **28PASS/2SKIP0,333s**.
+Parser PowerShell memeriksa source/runner termasuk missing-runtime. Ini bukti
+CI kode final, berbeda dari runtime installers sungguhan di VM Windows11.
+Commit penutup menyinkronkan docs saja; byte source/test/ZIP tidak berubah.

@@ -1560,8 +1560,10 @@ keterbatasan dan pemulihan XML ada di <a href="WINDOWS_CLIENT.md">panduan Window
 Enam VM lab tetap ada; PC dan laptop fisik menggunakan identitas tambahan. Jangan
 memakai bootstrap VM pada perangkat fisik atau membuat ulang CA. Panduan langkah
 terperinci, rencana rule/route, paket dan matriks hasil tersedia pada
-<a href="ENDPOINT_WINDOWS_PILOT.md">pilot endpoint Windows</a>. Tahap ini hanya persiapan;
-master prompt terbaru melarang perubahan jaringan/VM/perangkat dan push.</p>
+<a href="ENDPOINT_WINDOWS_PILOT.md">pilot endpoint Windows</a>. Persiapan22Oktober telah
+dilanjutkan dengan otorisasi pengguna24Oktober untuk uji installer VM dan push.
+Gunakan <a href="../downloads/README.md">paket lengkap terbaru</a> dan
+<a href="../deploy/endpoint/windows/SETUP_WINDOWS.md">panduan Windows</a>; jaringan fisik belum diterapkan.</p>
 <p>Rencana router192.168.50.1/24 menghubungkan host Linux .50.10 melalui Ethernet,
 PC .50.20 melalui LAN, laptop .50.30 melalui Wi-Fi. Backend tetap .100/24, tunnel
 10.8/24. Endpoint memakai route /32 menuju server .100.20 melalui host .50.10;
@@ -1571,19 +1573,19 @@ harus memastikan registry sebelum alokasi, jangan menyimpulkan kosong dari ping.
 <p>Urutan pilot setelah izin penerapan dan verifikasi native:</p>
 <ol>
 <li>Operator menyiapkan jaringan, prasyarat Windows11x64/Python3.13x64/WireGuard,
-backup dan paket offline pada path admin-only. Cocokkan hash manifest dan
+backup dan paket offline lengkap Python/WireGuard pada path admin-only. Cocokkan hash ZIP dan
 publisher runtime lewat kanal tepercaya. Paket unsigned belum siap distribusi.</li>
 <li>Install-VanGuard.bat menjalankan installer PowerShell/UAC. Aplikasi terpasang
 belum berarti enrolled/login/VPN. Installer tidak mengubah NIC, membuat key,
 menambah peer atau mengunduh runtime otomatis.</li>
-<li>Launcher <code>VanGuard.ps1 -Action configure</code> meminta profil/root tepercaya beserta
-fingerprint root dan public key server. Config tidak ditimpa. <code>-Action init</code>
+<li>Launcher <code>VanGuard.bat configure</code> meminta profil/root tepercaya beserta
+fingerprint root dan public key server. Config tidak ditimpa. <code>init</code>
 meminta ID/IP yang dialokasikan admin; kedua private key dibuat pada endpoint.</li>
 <li>Kirim request.json ke admin, daftar dan bind akun. Bundle publik hasil admin
-diimpor dengan <code>-Action import-bundle</code>, cocok dengan root/profil/key/request
+diimpor dengan <code>import-bundle</code>, cocok dengan root/profil/key/request
 asli. Tidak ada private key dikirim balik atau akses otomatis saat import.</li>
-<li><code>-Action diagnose</code> memeriksa readiness HTTPS; UDP/aplikasi masih unknown.
-<code>-Action login</code> meminta password tersembunyi, lalu <code>-Action connect</code> menjalankan
+<li><code>diagnose</code> memeriksa readiness HTTPS; UDP/aplikasi masih unknown.
+<code>login</code> meminta password tersembunyi, lalu <code>connect</code> menjalankan
 preflight, admission dan renewal. Terminal pemilik harus tetap terbuka.</li>
 <li>Admin memeriksa lease/peer/handshake/transfer dan memberi grant explicit
 internal-demo TCP8082. Buktikan HTTP lewat10.8.0.1:8082 berhasil dengan grant
@@ -1591,7 +1593,7 @@ serta ditolak tanpa grant/LAN langsung. Ping bukan syarat pilot fisik.</li>
 <li>Ulangi pada laptop Wi-Fi, kemudian kedua endpoint bersamaan. Logout/revoke
 satu endpoint harus memutus aksesnya tanpa memutus yang lain. Catat renewal,
 Wi-Fi putus/sambung, active TCP revocation, expiry/reboot dan cleanup sebenarnya.</li>
-<li>Ctrl+C atau <code>-Action disconnect</code> meminta cleanup lokal; <code>-Action logout</code>
+<li>Ctrl+C atau <code>disconnect</code> meminta cleanup lokal; <code>logout</code>
 mencabut sesi server. Jika server tidak terjangkau, revocation belum
 terkonfirmasi. Jangan menghapus config jika ownership/tunnel down belum pasti.</li>
 <li>Setelah pilot, cabut identitas/sesi/grant disposable, hentikan demo sementara
@@ -1601,9 +1603,10 @@ dan pulihkan hanya route/rule pilot. Preserve identitas utama dan histori CA.</l
 terpisah di Program Files/VanGuardEndpointData dengan akses SYSTEM/Administrators.
 Reinstall/repair membangun runtime baru tanpa rotasi key; uninstall mempertahankan
 data serta Python/WireGuard bersama. Pemulihan parsial otomatis, shortcut GUI,
-ARM64 dan signing organisasi belum tersedia. Seluruh pengujian installer native
-serta pilot PC/laptop <strong>BELUM_DIJALANKAN</strong>. Tes Linux/mocks bukan bukti ACL Windows,
-handshake fisik atau rollout. WIN-CLEANUP-02 tetap perlu uji target terpisah.</p>
+ARM64 dan signing organisasi belum tersedia. Native installer VM24Oktober sudah
+diuji: runtime kosong/reuse, ACL/policy dan uninstall/reinstall. Lihat
+<a href="VALIDASI_INSTALLER_2026-10-24.md">hasil per run</a>. UAC interaktif dan pilot PC/laptop
+<strong>BELUM_TERUJI</strong>. WIN-CLEANUP-02 tetap perlu uji target terpisah.</p>
 <h3 id="bagian-15-4">15.4 Persiapan pemasangan pada perangkat nyata</h3>
 <p>Topologi dikonfirmasi22 Oktober: router khusus192.168.50.1/24, host Linux.50.10,
 PC LAN.50.20 dan laptop Wi-Fi.50.30; backend/enam VM lama tetap. Kit penerapan
@@ -1618,8 +1621,9 @@ rollback. Aplikasi admin perlu0.1.12 untuk field profil; server0.1.11 tetap mema
 kontrak admission/logout/resource gate yang sudah ada. Jangan membuat ulang CA.</p>
 <p>Pemeriksa host aktual masih BLOCKED karena Ethernet pilot belum siap dan backend
 mati. Unit tests Linux bukan bukti UAC/ACL/installer native atau koneksi fisik.
-Kit tetap kandidat unsigned, runtime Python/WireGuard harus tersedia dan diverifikasi
-operator; tidak ada credential/private key di kit. Pemeriksa integritas PASS
+Kit sistem22Oktober dipertahankan sebagai arsip; gunakan installer24Oktober yang
+menyertakan runtime Python/WireGuard terverifikasi. Script aplikasi unsigned;
+tidak ada credential/private key di kit. Pemeriksa integritas PASS
 hanya membuktikan file cocok manifest dari kanal tepercaya, bukan siap produksi.</p>
 <h3 id="bagian-15-5">15.5 Runbook penerapan lengkap dan serah terima</h3>
 <p>Revisi dokumentasi2 melengkapi <a href="INSTALL_REALWORLD.html">panduan penerapan nyata</a>

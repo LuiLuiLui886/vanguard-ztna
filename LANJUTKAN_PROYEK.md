@@ -1,16 +1,18 @@
 # Lanjutkan proyek VanGuard
 
-**24 Oktober: uji native installer lengkap selesai; publikasi sedang ditutup.**
+**24 Oktober: installer native selesai dan ZIP sudah di main.**
 Baca [checkpoint](docs/CHECKPOINT.md) dan [hasil installer](docs/VALIDASI_INSTALLER_2026-10-24.md).
 Paket r6 satu ZIP memuat Python/WireGuard/wheel/BAT/panduan. Missing-runtime native
 5PASS, uninstall/reinstall3PASS, guards5PASS, policy PASS. Lokal41PASS/1SKIP.
 
 VM Windows sudah kembali ke XML/disk utama (byte-identik); hash identitas/runtime/SecureBoot/TPM
 cocok snapshot awal sesudah boot. Lima Ubuntu tidak diubah/shut off. Jangan boot overlay
-lagi. Source5aa6e9f dipush feature; ZIP/docs terbaru belum commit pada entry ini.
-Lanjut push artefak/main, hapus dua refs yang terintegrasi,
-periksa CI final, catat SHA/status remote. User mengotorisasi dua branch maksimal.
-Panduan [downloads](downloads/README.md) memakai main sebagai tujuan akhir.
+lagi. Publikasi52cfac9 sudah dipush ke main+feature; ZIP unduhan ulang GitHub cocok
+paket native. Branch kini hanya main dan feature/2026-10-22-physical-endpoints,
+histori hardening/fix tetap ada dalam main. CI40072739273 SUCCESS: Linux3.10/3.12 masing-masing268PASS/1SKIP;
+Windows helpers28PASS/2SKIP. Source/test/ZIP final tetap52cfac9; penutupan hanya
+dokumentasi. Berikutnya pilot PC LAN sesuai runbook, setelah backend/trust/route/
+alokasi identitas siap; kemudian laptop Wi-Fi. Tidak ada runner uji yang aktif. Panduan utama: [downloads](downloads/README.md).
 
 UAC interaktif, PC fisik, MOTW/GPO, soak/power-loss CA dan WIN-CLEANUP-02 tetap
 BELUM_TERUJI. Jangan ulang init CA/identitas lama atau membuat peer statis.

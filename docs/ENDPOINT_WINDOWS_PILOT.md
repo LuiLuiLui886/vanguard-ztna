@@ -192,38 +192,36 @@ serta aplikasi0.1.12. Tidak menggunakan wheel Linux untuk runtime Windows.
 
 ### Langkah operator dan pengguna, setelah uji native diotorisasi
 
-1. Periksa Windows11 build≥22000, x64, PowerShell5.1, hak admin, waktu benar,
-   Python3.13x64 dengan pip/venv dan WireGuard resmi. Runtime belum tersedia/
-   tidak sesuai: berhenti dengan status prasyarat, minta operator menyiapkan
-   installer resmi tervalidasi. Kandidat tidak memasangnya otomatis dan tidak
-   membutuhkan Git/WSL. Siapkan paket/profil/root pada path admin-only yang tidak
-   mengandung reparse point. Verifikasi hash paket **sebelum menjalankan BAT**.
-2. Jalankan Install-VanGuard.bat; setujui UAC, masukkan hash manifest tepercaya,
-   path Python dan thumbprint sertifikat signer WireGuard yang diverifikasi admin.
-   Install hanya venv offline, pip hash-required, pip check, CLI check. Tidak
-   mengubah PATH global/NIC/firewall/SSH dan tidak membuat identitas/peer.
-   Exit0 berarti runtime terpasang, bukan VPN berhasil;1 gagal;1223 UAC dibatalkan.
+1. Periksa Windows11 build≥22000, x64, PowerShell5.1, hak admin dan waktu benar.
+   Ambil ZIP lengkap24Oktober melalui downloads dan verifikasi hash sebelum BAT.
+   Ekstrak ke path admin-only tanpa reparse point. Python/WireGuard sudah dibundel;
+   runtime sesuai yang sudah ada dipakai kembali. Tidak perlu Git/WSL.
+2. Jalankan Install-VanGuard.bat. Runtime belum ada dipasang setelah hash/signature
+   publisher valid, lalu venv offline/pip hash-required/pip check/CLI check.
+   Tidak mengubah PATH global/NIC/firewall/SSH atau membuat identitas/peer.
+   Exit0 berhasil;1/2 gagal;1223 UAC batal;3010 restart manual kemudian retry.
+   Policy eksplisit/GPO tetap dihormati; tidak meminta path/thumbprint manual.
 3. Buka PowerShell Administrator. Launcher:
-   `& "$env:ProgramFiles\VanGuardEndpoint\VanGuard.ps1" -Action configure`.
+   `& "$env:ProgramFiles\VanGuardEndpoint\VanGuard.bat" configure`.
    Pilih profil/root publik; cocokkan fingerprint root dan public key server
    dari kanal admin terpisah. Config lama tidak ditimpa. Binary di
    `%ProgramFiles%\VanGuardEndpoint`; identity/config/log terpisah di
    `%ProgramFiles%\VanGuardEndpointData`, akses SYSTEM/Administrators.
-4. Jalankan `-Action status`, lalu `-Action init`. Masukkan ID dan IP tunnel
+4. Jalankan `status`, lalu `init`. Masukkan ID dan IP tunnel
    yang sudah dialokasikan admin (usulan .5/.6 belum merupakan izin alokasi).
    Private key X.509 dan WG dibuat pada endpoint, tidak pernah dikirim ke admin.
    Kirim hanya `identity\request.json` lewat kanal operator terautentikasi.
 5. Admin mendaftarkan request, mengikat akun karyawan sesuai kewenangan dan
    mengunduh bundle dashboard berprofil. Registrasi dan login tidak menambah peer.
-   Admin mengirim ZIP publik; `-Action import-bundle` memeriksa root independen,
+   Admin mengirim ZIP publik; `import-bundle` memeriksa root independen,
    profil, device ID, WG key, IP, fingerprint, tanda tangan, validity, CN/clientAuth
    dan private key lokal. Bundle berbeda ditolak; identik boleh diulang.
    Import offline belum memeriksa CRL aktual; server admission tetap wajib.
-6. Jalankan `-Action diagnose`: TLS/readyz harus berhasil sebelum tunnel.
+6. Jalankan `diagnose`: TLS/readyz harus berhasil sebelum tunnel.
    Status UDP/aplikasi tetap unknown; tidak dianggap siap hanya karena TCP terbuka.
-   Login dengan `-Action login`, password diketik tersembunyi. Token hanya file
+   Login dengan `login`, password diketik tersembunyi. Token hanya file
    privat. Login bukan admission; akun valid saja belum memberikan akses.
-7. `-Action connect` menjalankan preflight konflik jaringan lalu enam pemeriksaan
+7. `connect` menjalankan preflight konflik jaringan lalu enam pemeriksaan
    perangkat dan sesi server, memasang tunnel hanya setelah admission, serta
    mempertahankan renewal di terminal foreground. Jangan menutup terminal selama
    penggunaan. Jika renewal gagal, cleanup wajib; kegagalan teardown mempertahankan
@@ -239,9 +237,9 @@ serta aplikasi0.1.12. Tidak menggunakan wheel Linux untuk runtime Windows.
 9. Uji akses HTTP `http://10.8.0.1:8082/` dengan grant dan penolakan tanpa grant.
    Route bukan grant; port/resource lain tetap deny. Uji akses langsung .100.20:8082
    dari LAN harus gagal, termasuk percobaan routed ke IP tunnel dari NIC non-WG.
-10. Ctrl+C pemilik atau `-Action disconnect` di terminal admin lain meminta stop
+10. Ctrl+C pemilik atau `disconnect` di terminal admin lain meminta stop
     proses connect dengan nonce ownership. Hasil sukses hanya setelah tunnel down
-    dan marker dibersihkan. Disconnect tidak mencabut sesi server. `-Action logout`
+    dan marker dibersihkan. Disconnect tidak mencabut sesi server. `logout`
     mencabut token/challenge/lease terkait; jika server tak terjangkau, pencabutan
     belum terkonfirmasi. Jangan mematikan seluruh proses Python/WireGuard.
 

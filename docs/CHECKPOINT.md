@@ -1,6 +1,6 @@
 # Checkpoint VanGuard — 24 Oktober 2026
 
-## Installer Windows lengkap — native selesai, publikasi dalam proses
+## Installer Windows lengkap — native selesai dan ZIP sudah di main
 
 Source5aa6e9f memperbaiki BAT default-policy, ACL SID native dan uninstall yang
 menghapus script-nya sendiri. ZIP r6 **44.649.724byte** memuat Python3.13.17,
@@ -24,10 +24,18 @@ WireGuard1.1.1,20wheel dan panduan setup→CSR→admin→import→login/connect.
 - Kredensial tidak diubah dan tetap hanya inventaris privat. Identitas utama
   tidak dipakai untuk enrollment tes; installer0.1.12 terpisah dari client0.1.9.
 
-**Publikasi belum selesai pada entry ini:** feature berisi merge main827c664;
-remote main/dua branch lama belum diubah. Primary Windows sudah terverifikasi. Berikutnya
-commit/push ZIP+docs, fast-forward main dan hapus hanya refs hardening/fix yang
-sudah ancestor. Backup semua refs ada pada Git bundle lokal terverifikasi.
+**Publikasi52cfac9 selesai:** ZIP/docs/runner sudah dipush ke main dan feature.
+Main fast-forward dari235df05 melalui merge histori827c664, tanpa force. Dua refs
+lama hardening/fix dihapus sesudah terbukti ancestor main; commit/histori utuh,
+backup Git bundle tetap lokal. Hanya main dan feature/2026-10-22-physical-endpoints
+tersisa lokal/remote; default main dan visibility public dipertahankan. ZIP dari
+raw GitHub commit52cfac9 diunduh ulang:44.649.724byte/hash identik paket native.
+CI [40072739273](https://github.com/LuiLuiLui886/vanguard-ztna/actions/runs/40072739273)
+pada52cfac9 **SUCCESS**: Linux3.10 **268PASS/1SKIP272,198s**, Linux3.12
+**268PASS/1SKIP289,868s**, Windows helpers **28PASS/2SKIP0,333s**. JUnit aktual
+diunduh. Pengujian VM native tetap bukti terpisah. Commit penutup hanya docs;
+source/test/ZIP tetap identik dengan52cfac9. Modul dan runbook MD/HTML sudah
+mengikuti BAT baru. Tidak ada runner native yang masih aktif.
 
 **BELUM_TERUJI:** UAC interaktif/cancel, PC LAN/laptop Wi-Fi fisik, distribusi
 MOTW/GPO, reboot-required/runtime1618 nyata, soak panjang, power-loss media CA,
@@ -37,6 +45,10 @@ resource grant perlu disiapkan sebelum enrollment/koneksi fisik.
 
 Bukti privat `state/installer-20261024/`, jurnal `PROGRESS_2026-10-24.md`.
 Pemulihan disk sudah selesai; jangan menjalankan prepare_overlay.py lagi.
+Langkah berikutnya: ikuti downloads/SETUP_WINDOWS untuk PC LAN, selesaikan backend
+admin0.1.12+profil, routing/trust dan alokasi identitas sebelum connect; lalu laptop
+Wi-Fi dan uji simultan. Tidak ada installer/prasyarat tambahan yang perlu diunduh
+untuk jalur runtime yang telah dibundel. Hasil fisik wajib dicatat terpisah.
 
 ## Lanjutan PC LAN dan validasi CI — 23 Oktober 15:48 WIB
 
