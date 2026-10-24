@@ -102,6 +102,17 @@ def build(wheelhouse, output, runtime_directory=None):
     for path in sorted((ROOT / 'deploy/endpoint/windows').iterdir()):
         if path.is_file():
             shutil.copyfile(path, output / path.name)
+    # One authoritative manual; package contains a generated offline HTML copy.
+    manual = (ROOT / 'docs/MODUL_PENGGUNAAN_VANGUARD.html').read_text()
+    def published_link(match):
+        link = match[1]
+        if link.startswith(('#', 'https://', 'http://', 'mailto:')):
+            return match[0]
+        from posixpath import normpath
+        target = normpath('docs/' + link)
+        return 'href="https://github.com/LuiLuiLui886/vanguard-ztna/blob/main/' + target + '"'
+    manual = re.sub(r'href="([^"]+)"', published_link, manual)
+    (output / 'MODUL_PENGGUNAAN_VANGUARD.html').write_text(manual)
     (output / 'requirements.lock').write_text('\n'.join(lines) + '\n')
     hashes = {p.relative_to(output).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
               for p in sorted(output.rglob('*')) if p.is_file()}

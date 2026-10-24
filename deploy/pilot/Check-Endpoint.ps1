@@ -6,6 +6,7 @@ param(
 $ErrorActionPreference = 'Stop'
 $kit = Split-Path -Parent $PSScriptRoot
 . (Join-Path $kit 'windows\Common.ps1')
+. (Join-Path $kit 'windows\Platform.ps1')
 $checks = New-Object System.Collections.Generic.List[object]
 function Add-Check([string]$Name,[string]$Status,[string]$Reason) {
     $checks.Add([pscustomobject]@{check=$Name;status=$Status;reason=$Reason})
@@ -19,12 +20,15 @@ try {
     $checks | ConvertTo-Json -Depth 5
     exit 2
 }
-try {
-    $os = Get-CimInstance Win32_OperatingSystem
-    if ([int]$os.BuildNumber -ge 22000 -and $os.ProductType -eq 1 -and $env:PROCESSOR_ARCHITECTURE -eq 'AMD64') {
-        Add-Check 'windows_target' 'PASS' 'Windows build and x64 match candidate target; native lifecycle still needs testing.'
-    } else { Add-Check 'windows_target' 'FAIL' 'Candidate requires Windows 11 x64.' }
-} catch { Add-Check 'windows_target' 'UNKNOWN' 'OS inspection failed.' }
+$os = $null
+try { $os = Get-CimInstance Win32_OperatingSystem }
+catch { Add-Check 'windows_target' 'UNKNOWN' 'OS inspection failed.' }
+if ($null -ne $os) {
+    try {
+        Assert-SupportedWindows $os ([Environment]::Is64BitOperatingSystem) $env:PROCESSOR_ARCHITECTURE
+        Add-Check 'windows_target' 'PASS' 'Windows10 21H2/22H2 or Windows11 x64; see native evidence for edition/build.'
+    } catch { Add-Check 'windows_target' 'FAIL' 'Unsupported OS; see manual target matrix.' }
+}
 $expected = if ($Role -eq 'PC') { '192.168.50.20' } else { '192.168.50.30' }
 try {
     $addresses = @(Get-NetIPAddress -AddressFamily IPv4)
@@ -51,7 +55,7 @@ try {
     Assert-SafePath $wireguard
     $signature = Get-AuthenticodeSignature -LiteralPath $wireguard
     if ($signature.Status -ne 'Valid' -or $signature.SignerCertificate.Subject -notmatch 'WireGuard') { throw 'signature' }
-    Add-Check 'wireguard_signature' 'PASS' 'Valid signature; installer still requires independently confirmed signer thumbprint.'
+    Add-Check 'wireguard_signature' 'PASS' 'Valid signature; complete installer separately verifies pinned payload and exact publisher.'
     Assert-NoTunnel
     Add-Check 'existing_tunnel' 'PASS' 'No VanGuard tunnel service/ownership marker detected.'
 } catch { Add-Check 'wireguard_or_tunnel' 'UNKNOWN' 'WireGuard signature/path or tunnel ownership needs inspection. Do not delete config.' }

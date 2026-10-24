@@ -93,7 +93,7 @@ BELUM_TERUJI: PC LAN/laptop Wi-Fi fisik, UAC interaktif/cancel, GPO/MOTW distrib
 installer restart-required1618/3010 pada runtime sungguhan, soak panjang, power-loss
 media CA dan gap lama WIN-CLEANUP-02. Jangan menghapus konfigurasi tunnel bila
 ownership/penghentian belum terkonfirmasi. Panduan endpoint lengkap tersedia pada
-[SETUP_WINDOWS](../deploy/endpoint/windows/SETUP_WINDOWS.md), termasuk perbedaan
+[SETUP_WINDOWS](MODUL_PENGGUNAAN_VANGUARD.md), termasuk perbedaan
 inisialisasi Root CA pertama dengan penerbitan sertifikat komputer baru.
 
 ## Penutupan publikasi dan CI main

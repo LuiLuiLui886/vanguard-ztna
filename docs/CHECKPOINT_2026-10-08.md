@@ -42,9 +42,9 @@ yang diganti. Kernel/source WireGuard tidak diubah.
 
 1. Observasi `state/deployment/resume-2026-10-08-2145/stability/health.json` COMPLETE.
 2. Publikasi GitHub selesai; lanjutkan kebutuhan TA/demonstrasi melalui
-   [panduan demo](DEMO_TA.md). Jangan unggah state atau backup rahasia.
+   [panduan demo](https://github.com/LuiLuiLui886/vanguard-ztna/blob/31c6981/docs/DEMO_TA.md). Jangan unggah state atau backup rahasia.
 3. TOTP di HP/login pribadi masih menunggu konfirmasi operator. Panduan:
-   [AKTIVASI_ADMIN.md](AKTIVASI_ADMIN.md). Reboot workstation belum diuji.
+   [AKTIVASI_ADMIN.md](https://github.com/LuiLuiLui886/vanguard-ztna/blob/31c6981/docs/AKTIVASI_ADMIN.md). Reboot workstation belum diuji.
 
 Untuk pemeriksaan ulang tanpa mengganggu client:
 

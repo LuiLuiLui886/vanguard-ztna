@@ -111,4 +111,4 @@ tidak boleh mengembalikan index CA/CRL lama yang membatalkan pencabutan.
 
 Topologi lima node, alamat tunnel, UDP 51820, CA dan identitas utama dipertahankan.
 Source/kernel WireGuard tidak dimodifikasi. Panduan operasional ada di
-[DEPLOYMENT.md](DEPLOYMENT.md), [SECURITY.md](SECURITY.md) dan [DEMO_TA.md](DEMO_TA.md).
+[DEPLOYMENT.md](https://github.com/LuiLuiLui886/vanguard-ztna/blob/31c6981/docs/DEPLOYMENT.md), [SECURITY.md](SECURITY.md) dan [DEMO_TA.md](https://github.com/LuiLuiLui886/vanguard-ztna/blob/31c6981/docs/DEMO_TA.md).

@@ -21,7 +21,7 @@ just to save progress. See [today's progress log](PROGRESS_2026-09-24.md).
 - CA, server API, daemon, admin dashboard, and client services are enabled and active.
 - Main client `vm-client` is admitted: one live server peer, allowed IP `10.8.0.2/32`.
   Actual kernel WireGuard handshake and ping to `10.8.0.1` succeeded.
-- Dashboard: <https://192.168.100.40:5000>. See [LAB_ACCESS.md](LAB_ACCESS.md).
+- Dashboard: <https://192.168.100.40:5000>. See [LAB_ACCESS.md](https://github.com/LuiLuiLui886/vanguard-ztna/blob/31c6981/docs/LAB_ACCESS.md).
 
 ## Fixes applied in this session
 

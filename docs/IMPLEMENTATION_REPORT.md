@@ -11,7 +11,7 @@ Backup database/config admin ada di `state/backups/before-0.1.6-2026-10-12/`
 dan `state/backups/before-0.1.6-final-2026-10-12/`. Source final `49dd332`
 dipush ke repository private; CI Python 3.10/3.12 masing-masing 137/137 PASS.
 Rincian:
-[panduan 0.1.6](DASHBOARD_0.1.6.md) dan [jurnal](PROGRESS_2026-10-12.md).
+[panduan 0.1.6](MODUL_PENGGUNAAN_VANGUARD.md) dan [jurnal](PROGRESS_2026-10-12.md).
 
 **Versi 0.1.5 terpasang pada lima VM Ubuntu 22.04.** Audit proposal menghasilkan
 perbaikan dashboard dan [catatan revisi per bagian](SARAN_REVISI_PROPOSAL_2026-10-12.md).
@@ -28,7 +28,7 @@ Proposal Google Docs tetap sebagai sumber yang dibaca; usulan redaksi disimpan d
   Bundle berisi sertifikat, root, manifest dan instruksi; key tetap pada client.
 - Runner pilot benchmark dan regresi parser UDP iperf3 3.9 ditambahkan.
 
-[Panduan dashboard](DASHBOARD_0.1.5.md) dan [tutorial lengkap](TUTORIAL_PENGGUNAAN.md)
+[Panduan dashboard](MODUL_PENGGUNAAN_VANGUARD.md) dan [tutorial lengkap](MODUL_PENGGUNAAN_VANGUARD.md)
 menjelaskan pemakaian. Enam pemeriksaan admission dan binding akun karyawan tetap
 wajib; registrasi/bundle tidak menambah peer. Topologi lima node dan WireGuard
 standar dipertahankan. Riwayat aktivitas belum menjadi renewal sertifikat 1:N.

@@ -194,7 +194,7 @@ memerlukan CSRF. `GET /devices/<id>/history` menampilkan masa berlaku/fingerprin
 alasan/waktu workflow pencabutan serta 100 audit administrasi terbaru per identitas.
 `GET /devices/<id>/bundle` mengirim ZIP materi publik setelah pemeriksaan workflow,
 binding akun, validity dan CRL; tidak menambah peer. `POST /devices/<id>/revoke`
-sekarang mewajibkan field `reason` dari enum pada [panduan dashboard](DASHBOARD_0.1.5.md).
+sekarang mewajibkan field `reason` dari enum pada [panduan dashboard](MODUL_PENGGUNAAN_VANGUARD.md).
 Reason tidak ditambahkan ke kontrak CA API; reason CRL OpenSSL tetap sama.
 
 ## Dashboard 0.1.6 — halaman audit terautentikasi

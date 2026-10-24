@@ -79,8 +79,8 @@ Windows VM native dan PC fisik. Label CANDIDATE_NATIVE_TESTS_REQUIRED pada manif
 adalah metadata saat build; laporan menyimpan hasil uji paket dengan checksum di
 atas. Keberhasilan instalasi tidak membuktikan VPN, firewall atau backend sehat.
 
-Ikuti [panduan lengkap Windows](../deploy/endpoint/windows/SETUP_WINDOWS.md),
-[runbook sistem](../docs/INSTALL_REALWORLD.md), dan
+Ikuti [panduan lengkap Windows](../docs/MODUL_PENGGUNAAN_VANGUARD.md),
+[runbook sistem](../docs/MODUL_PENGGUNAAN_VANGUARD.md), dan
 [checkpoint](../docs/CHECKPOINT.md). Paket0.1.12 admin diperlukan untuk bundle
 berprofil; installer Windows tidak memperbarui backend. Root/public key/alokasi
 IP harus dikonfirmasi admin. IP LAN192.168.50.20 berbeda dari IP tunnel. Tidak ada

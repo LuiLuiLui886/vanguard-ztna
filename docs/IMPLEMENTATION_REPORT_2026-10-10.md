@@ -74,7 +74,7 @@ Git menyimpan dokumentasi terbaru.
 Kelima VM ditemukan mati saat resume; penyebab belum diketahui. Domain lama
 dinyalakan, sesi USERNAME_LOKAL yang expired diperbarui secara privat tanpa enrollment
 ulang, lalu health sebelum upgrade lulus. Sesi baru berakhir **10 Oktober 08:52:10
-WIB**. Renewal admission tidak memperpanjang sesi; lihat [panduan akun](EMPLOYEE_ACCESS.md).
+WIB**. Renewal admission tidak memperpanjang sesi; lihat [panduan akun](https://github.com/LuiLuiLui886/vanguard-ztna/blob/31c6981/docs/EMPLOYEE_ACCESS.md).
 
 ## Batas kesimpulan dan pekerjaan berikutnya
 

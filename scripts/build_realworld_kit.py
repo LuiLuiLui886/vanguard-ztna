@@ -67,7 +67,7 @@ def build(endpoint, public, wheel, output, expected_endpoint_sha256):
 <p>Kandidat lokal untuk router khusus, PC Windows LAN dan laptop Windows Wi-Fi.
 Belum tervalidasi native atau siap produksi.</p>
 <ol><li>Verifikasi SHA256 ZIP/manifest dari kanal admin terpisah sebelum menjalankan script.</li>
-<li>Buka <a href="docs/INSTALL_REALWORLD.html">panduan langkah pemasangan lengkap</a>.</li>
+<li>Buka <a href="docs/MODUL_PENGGUNAAN_VANGUARD.html">panduan langkah pemasangan lengkap</a>.</li>
 <li>Jalankan pemeriksa host/endpoint; selesaikan semua FAIL/UNKNOWN dan review manual.</li>
 <li>Ikuti urutan backend, PC, laptop, lalu kedua endpoint bersamaan.</li></ol>
 <p>Lihat windows/README.md untuk prasyarat dan runtime yang disertakan pada versi paket ini.

@@ -11,7 +11,7 @@ ditolak tanpa peer VPN. Mean **MTTD aplikasi 69,649 ms**, **MTTR Respond aplikas
 Baca `AGENTS.md`, `VANGUARD_CONTEXT.md`, [checkpoint](CHECKPOINT.md) dan
 [jurnal terbaru](PROGRESS_2026-10-10.md) sebelum perubahan.
 
-Panduan operator tersedia di [tutorial penggunaan lengkap](TUTORIAL_PENGGUNAAN.md):
+Panduan operator tersedia di [tutorial penggunaan lengkap](MODUL_PENGGUNAAN_VANGUARD.md):
 boot/login/VPN, dashboard, latihan registrasi terpisah, pengujian, shutdown dan
 troubleshooting. Penambahan tutorial tidak mengubah aplikasi atau keadaan VM.
 
@@ -36,7 +36,7 @@ checkpoint. CA .10, SERVER .20, CLIENT .30, ADMIN .40, ATTACKER .50 tetap pada
 
 Sesi `USERNAME_LOKAL` untuk `vm-client` berakhir **10 Oktober 2026 08:52:10 WIB**.
 Jika expired, login ulang privat lalu restart client sesuai
-[panduan akun](EMPLOYEE_ACCESS.md). Bootstrap kredensial ada di
+[panduan akun](MODUL_PENGGUNAAN_VANGUARD.md). Bootstrap kredensial ada di
 `state/deployment/proposal-2026-10-09/employee-onboarding.json`; jangan cetak/unggah.
 Sesi tidak diperpanjang oleh renewal atau boot. TOTP admin terpisah.
 
@@ -53,8 +53,8 @@ di [matriks proposal](PROPOSAL_ALIGNMENT.md). Seluruh TA belum selesai.
   `state/deployment/metrics-2026-10-09/`. Bukti security/proposal lama dipertahankan.
 - Backup privat: `state/backups/before-0.1.4-2026-10-10/`, lima role.
 - Wheel/source/checksum: `dist/`; Git menyimpan catatan terbaru sesudah arsip dibuat.
-- [Laporan aktif](IMPLEMENTATION_REPORT.md), [demo](DEMO_TA.md),
-  [aktivasi admin](AKTIVASI_ADMIN.md), [resume lama](LANJUTKAN_PROYEK_2026-10-09.md).
+- [Laporan aktif](IMPLEMENTATION_REPORT.md), [demo](MODUL_PENGGUNAAN_VANGUARD.md),
+  [aktivasi admin](MODUL_PENGGUNAAN_VANGUARD.md), [resume lama](LANJUTKAN_PROYEK_2026-10-09.md).
 - Branch main, remote origin, CLI `state/tooling/github/cli/usr/bin/gh`.
 
 Catat rencana sebelum setiap kelompok perubahan, hasil validasi serta sisa langkah

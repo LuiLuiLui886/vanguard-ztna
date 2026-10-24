@@ -262,3 +262,13 @@ removed only after their full history was merged. Main is the default entrypoint
 feature/2026-10-22-physical-endpoints the second branch. GitHub ZIP bytes match
 native-tested r6. UAC interactive, physical endpoints, MOTW/GPO distribution and
 production readiness are not established by these tests; see current checkpoint.
+
+
+Single admin manual and Windows10 validation authorization — 24 October 2026:
+User requests one authoritative, complete admin manual and removal of overlapping
+tutorials from the current GitHub tree, preserving history/evidence. Markdown is
+the single source; HTML/package copies are generated from it. User also authorizes
+an additional Windows10 test VM. Preserve the original six domains, use separate
+blank disk/MAC/IP192.168.100.70 and credentials stored only in private inventory.
+Do not replace Windows11 or reenroll primary identities. Test OS compatibility
+separately from VPN lifecycle and from Windows security servicing status.

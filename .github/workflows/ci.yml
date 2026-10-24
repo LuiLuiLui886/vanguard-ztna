@@ -37,6 +37,7 @@ jobs:
           Get-ChildItem deploy/endpoint/windows/*.ps1 | ForEach-Object { [scriptblock]::Create((Get-Content -Raw $_.FullName)) | Out-Null }
           Get-ChildItem deploy/pilot/*.ps1 | ForEach-Object { [scriptblock]::Create((Get-Content -Raw $_.FullName)) | Out-Null }
           Get-ChildItem tests/windows/*.ps1 | ForEach-Object { [scriptblock]::Create((Get-Content -Raw $_.FullName)) | Out-Null }
+          & tests/windows/installer_platform.ps1 -Platform deploy/endpoint/windows/Platform.ps1
           python -m pytest -q tests/test_client_platform.py --junitxml=build/reports/windows-client.xml
       - name: Save client report
         if: always()

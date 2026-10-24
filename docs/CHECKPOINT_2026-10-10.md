@@ -32,7 +32,7 @@ Lihat [hasil S-01](RESPONSE_METRICS_2026-10-10.md),
 [laporan](IMPLEMENTATION_REPORT.md) dan [jurnal terbaru](PROGRESS_2026-10-10.md).
 
 Tutorial operator dari awal sampai akhir tersedia di
-[TUTORIAL_PENGGUNAAN.md](TUTORIAL_PENGGUNAAN.md). Disusun dari CLI/template 0.1.4;
+[TUTORIAL_PENGGUNAAN.md](https://github.com/LuiLuiLui886/vanguard-ztna/blob/31c6981/docs/TUTORIAL_PENGGUNAAN.md). Disusun dari CLI/template 0.1.4;
 latihan registrasi manual dan shutdown tidak dieksekusi saat penulisannya.
 Panduan deployment diperbaiki agar enrollment baru mencakup akun/binding/login
 karyawan sebelum connect. Tidak ada perubahan source atau VM pada pekerjaan ini.
@@ -52,7 +52,7 @@ karyawan sebelum connect. Tidak ada perubahan source atau VM pada pekerjaan ini.
 ```
 
 4. Jika sesi delapan jam expired, login ulang privat pada VM-CLIENT lalu restart
-   `vanguard-client` sesuai [panduan akun](EMPLOYEE_ACCESS.md). Renewal/boot tidak
+   `vanguard-client` sesuai [panduan akun](https://github.com/LuiLuiLui886/vanguard-ztna/blob/31c6981/docs/EMPLOYEE_ACCESS.md). Renewal/boot tidak
    memperpanjang sesi atau melakukan login otomatis. Jangan cetak token/password.
 5. Implementasikan runner/cleanup benchmark sesuai [rencana](BENCHMARK_PLAN.md),
    pasang iperf3 tanpa daemon persisten, lalu pilot clear dan VanGuard. Ketiga

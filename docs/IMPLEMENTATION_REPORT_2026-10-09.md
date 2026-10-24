@@ -28,7 +28,7 @@ Dashboard menyediakan pembuatan/penonaktifan akun, pengikatan perangkat lama, se
 nama perangkat, departemen, pemilik dan platform. Metadata dapat diedit tanpa
 mengubah identitas kriptografis. Metadata bukan attestation perangkat; data organisasi
 nyata tidak dibuat-buat. Binding akun immutable; reset password dan aktivasi ulang
-akun belum tersedia. Panduan pengguna: [EMPLOYEE_ACCESS.md](EMPLOYEE_ACCESS.md).
+akun belum tersedia. Panduan pengguna: [EMPLOYEE_ACCESS.md](https://github.com/LuiLuiLui886/vanguard-ztna/blob/31c6981/docs/EMPLOYEE_ACCESS.md).
 
 ## Bukti versi 0.1.3
 

@@ -10,7 +10,7 @@ handshake kernel WireGuard dan ping ke `10.8.0.1` berhasil.
 
 Kelima VM ditemukan dalam kondisi mati saat sesi dilanjutkan, kemudian dinyalakan tanpa
 membuat ulang disk atau mengubah topologi. Installer diperbarui pada seluruh VM untuk
-memperbaiki akses akun layanan ke virtual environment. Cara akses ada di [LAB_ACCESS.md](LAB_ACCESS.md).
+memperbaiki akses akun layanan ke virtual environment. Cara akses ada di [LAB_ACCESS.md](https://github.com/LuiLuiLui886/vanguard-ztna/blob/31c6981/docs/LAB_ACCESS.md).
 
 ## Bukti pada VM nyata
 
@@ -126,7 +126,7 @@ menemukan kegagalan validasi. Kedua VM memakai NTP; validasi waktu tetap ketat.
 Stabilitas jangka panjang perlu dipantau dan detail alasan pencabutan otomatis perlu
 ditingkatkan sebelum mengklaim tunnel bebas gangguan.
 
-1. Terapkan dan uji matriks firewall guest pada [DEPLOYMENT.md](DEPLOYMENT.md).
+1. Terapkan dan uji matriks firewall guest pada [DEPLOYMENT.md](https://github.com/LuiLuiLui886/vanguard-ztna/blob/31c6981/docs/DEPLOYMENT.md).
    Deployment ini belum mengaktifkan kebijakan firewall tersebut; UFW client teramati inactive.
 2. Uji lease habis tanpa renewal selama 300 detik, peer asing, serta fixture PKI negatif
    tambahan pada VM bila diperlukan untuk bukti TA. Skenario tersebut sudah dicakup suite

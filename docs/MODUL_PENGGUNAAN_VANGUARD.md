@@ -1,40 +1,45 @@
-# Modul lengkap penggunaan Sistem VanGuard
+# Manual admin Sistem VanGuard
 
-Edisi 17 Oktober 2026 · Panduan teknisi, administrator, dan karyawan
+Edisi24 Oktober2026 · satu sumber resmi untuk pemasangan dan operasi.
+HTML dengan nama yang sama dihasilkan dari Markdown ini; keduanya satu manual,
+bukan panduan berbeda. Salinan manual di ZIP juga dihasilkan dari sumber ini.
+Tutorial lama telah digabung dan dihapus dari tree terbaru; histori Git tetap ada.
 
-Modul ini menjelaskan persiapan, pemasangan, pendaftaran pengguna/perangkat,
-pembuatan CA dan pengelolaan sertifikat secara rinci, pemakaian VPN Ubuntu dan
-Windows, audit, pengujian, serta penghentian sistem dalam satu dokumen.
-Contoh mengikuti lab VanGuard di komputer ini. Gunakan versi HTML dengan nama
-yang sama untuk membaca di browser atau mencetak ke PDF ukuran A4.
+Manual ini ditujukan kepada administrator yang menyiapkan sistem dari lingkungan
+kosong sampai endpoint karyawan dapat mengakses aplikasi yang diizinkan. Setiap
+langkah menyebut mesin, prasyarat, tindakan, hasil yang diperiksa dan kondisi
+berhenti. Nilai berhuruf kapital adalah placeholder; jangan menyalin rahasia ke Git.
 
-## 1. Tujuan, hasil belajar, dan jalur membaca
+## 1. Urutan kerja administrator dan syarat selesai
 
-Setelah mengikuti modul, peserta mampu:
+Pilih jalur sebelum menjalankan perintah. Lab yang sudah terpasang **tidak**
+memerlukan generate CA, pembuatan ulang VM atau init identitas utama.
 
-1. Menjelaskan perbedaan akun sistem operasi, admin dashboard, dan karyawan VPN.
-2. Memeriksa kesiapan VM, waktu, layanan HTTPS, dan sertifikat kepercayaan.
-3. Membuat akun karyawan dan mendaftarkan identitas perangkat melalui dashboard.
-4. Menggunakan VPN dari Ubuntu atau Windows serta membuktikan koneksinya.
-5. Menelusuri waktu/tindakan admin, membuat arsip, dan memeriksa integritasnya.
-6. Menutup sesi, menangani kendala, dan mencatat bukti tanpa membocorkan rahasia.
+| Tahap | Mesin/pelaksana | Bab | Hasil wajib sebelum lanjut |
+|---|---|---|---|
+| Rencana, alamat, backup | Admin/operator host |2–4 | IP tidak bentrok, inventaris privat dan akses console tersedia |
+| Instalasi baru saja | Host dan lima Ubuntu |5 | OS/IP benar, paket/unit terpasang |
+| CA/HTTPS baru saja | CA, server, admin |6 | Satu root, key lokal, chain/SAN/waktu benar |
+| Token, admin/TOTP, firewall, layanan | CA/server/admin |7 | Secret privat, readiness berhasil, peer kosong |
+| Jaringan PC/laptop | Router/host/endpoint |8 | Hanya admission HTTPS dan WG dapat dicapai, LAN aplikasi ditolak |
+| Profil publik dan versi dashboard | Host/admin |9 | Root/key dikonfirmasi, bundle berprofil didukung |
+| Installer endpoint | Windows administrator |10 | Exit0, pip/status lulus, belum ada identitas/tunnel |
+| Akun, CSR, sertifikat dan binding | Endpoint dan dashboard |11 | Registered, key tetap endpoint, bundle cocok |
+| Login dan penggunaan | Karyawan/endpoint |12–13 | Admission, handshake dan akses resource terpisah terverifikasi |
+| Resource dan acceptance | Admin/server/endpoint |14–15 | Default-deny, grant eksplisit, logout/revoke memutus akses |
+| Audit, operasi, pemulihan | Admin/operator |16–18 | Bukti aman, backup, lifecycle dan prosedur selesai |
 
-| Kondisi pembaca | Urutan yang dikerjakan | Hasil akhir |
-|---|---|---|
-| Karyawan pada lab terpasang | Bab 2–4, bab 7 atau8, bab 9 dan12 | Login, tunnel, ping, lalu disconnect |
-| Admin dashboard | Bab 2–6, bab 9–13 | Akun dan perangkat dikelola, aktivitas diarsipkan |
-| Teknisi instalasi baru | Seluruh bab; bab 5 hanya untuk lingkungan kosong | Infrastruktur dan aplikasi siap diserahterimakan |
-| Pembimbing/penguji | Bab 2–3, bab 9–11 dan14 | Memahami bukti serta batas hasil yang dapat diklaim |
+**Lingkungan sudah terpasang:** inventaris/baseline Bab2–4 → pemeriksaan layanan
+Bab7 → jaringan/profil Bab8–9 → endpoint baru Bab10–13. Jika endpoint sudah punya
+identitas, gunakan status/login/connect; jangan ulang init. Semua perubahan harus
+punya jurnal intent/hasil dan langkah pemulihan. Catat BELUM_TERUJI bila belum dijalankan.
 
-Perintah berlabel **HOST** dijalankan pada laptop Ubuntu, **VM-…** di guest yang
-bersangkutan, dan **WINDOWS ADMIN** pada PowerShell yang dijalankan sebagai
-Administrator. Ganti placeholder huruf kapital dengan nilai milik lab Anda.
-Jangan mengetik placeholder sebagai kredensial sungguhan.
+Perintah **HOST** dijalankan di laptop Linux, **VM-ROLE** di guest yang ditulis,
+dan **WINDOWS ADMIN** di PowerShell Run as administrator. Satu terminal per mesin
+mencegah salah target. Hak admin lokal diperlukan untuk pengelolaan tunnel; akun
+VPN sendiri tidak memberi hak admin Windows. Uji satu PC dahulu sebelum laptop.
 
-Lab ini sudah terpasang. Untuk pemakaian harian, **lewati bab 5 dan langkah init
-perangkat utama**. Instalasi ulang CA atau penggantian key bukan cara login.
-
-## 2. Mengenal sistem dan identitas
+## 2. Arsitektur, akun dan batas akses
 
 VanGuard mengizinkan perangkat menjadi peer WireGuard setelah akun karyawan
 terautentikasi dan identitas perangkat lolos pemeriksaan. Sistem tidak mengubah
@@ -71,7 +76,7 @@ memperbarui lease perangkat, tetapi tidak memperpanjang sesi karyawan. Ketika
 sesi habis, karyawan harus login lagi. Private key, token sesi, seed TOTP, dan
 password bukan lampiran laporan.
 
-## 3. Topologi, perangkat lunak, dan batas lab
+## 3. Inventaris, topologi dan perangkat lunak
 
 | VM | LAN | Tunnel | Fungsi |
 |---|---|---|---|
@@ -92,15 +97,53 @@ RAM host yang tercatat sekitar 7,5 GiB; menyalakan seluruh node menambah beban.
 Periksa `free -h` sebelum sesi dan hindari menjalankan pekerjaan berat bersamaan.
 Status `running` pada libvirt belum membuktikan OS selesai boot atau VPN aktif.
 
-Versi yang terakhir dibuktikan pada15 Oktober: dashboard Ubuntu 0.1.6, komponen
-Ubuntu lain0.1.5, client Windows 0.1.8; Windows build26300, Python 3.13.16,
-WireGuard 1.1.1. Versi source terbaru tidak otomatis mengganti paket semua VM.
+Versi source0.1.12, service terakhir0.1.11 dan client lab0.1.9 harus diperiksa
+kembali saat rollout. Source Git tidak otomatis mengganti paket di VM.
+Endpoint installer terpisah0.1.12 tidak menimpa client lab lama di ProgramData.
+VM Windows10 uji tambahan .100.70 diizinkan pengguna, bukan pengganti enam node
+utama; tidak mendapat identitas VPN otomatis.
 
-Layanan terlindungi yang telah dibuktikan adalah **ICMP/ping ke 10.8.0.1**.
-Modul ini tidak menjanjikan internet lewat VPN, akses ERP/web/file server,
-kebijakan per departemen, SSO, atau pembuktian TCP yang belum diimplementasikan.
+Target installer: Windows10 x64 build19044/19045 (21H2/22H2) dan Windows11 x64
+build≥22000. Windows Server/x86/ARM64 ditolak. Windows10 native masih BELUM_TERUJI
+saat edisi ini disusun; lihat laporan validasi/checkpoint untuk hasil akhir.
+Dukungan aplikasi tidak memperpanjang dukungan keamanan OS. Windows10 reguler
+berakhir dukungan14Oktober2025; administrator memerlukan status servicing/ESU yang
+sesuai atau edisi LTSC yang masih didukung. Media evaluation hanya untuk pengujian.
+Sumber: [Microsoft Windows10](https://www.microsoft.com/en-us/software-download/windows10ISO),
+[LTSC2021 lifecycle](https://learn.microsoft.com/en-us/lifecycle/products/windows-10-enterprise-ltsc-2021),
+[Python3.13 Windows](https://docs.python.org/3.13/using/windows.html),
+[WireGuard Windows](https://www.wireguard.com/install/).
 
-## 4. Memulai lab yang sudah terpasang
+Layanan contoh adalah internal-demo10.8.0.1 TCP8082 dengan grant eksplisit.
+Tidak ada akses internet/ERP/file server otomatis. Registrasi, login, status
+file dan ping tidak membuktikan akses aplikasi; tiap lapisan perlu bukti sendiri.
+
+## 4. Baseline, backup dan membuka lab yang sudah ada
+
+Catat waktu dan baseline, ruang disk serta lokasi backup di inventaris privat.
+Saat guest mati, backup disk guest/UEFI/TPM serta XML melalui prosedur hypervisor;
+jangan menyalin disk yang aktif tanpa mekanisme konsistensi. Preserve seluruh enam
+VM, terutama CA dan identitas utama. Untuk upgrade aplikasi admin, gunakan backup
+service yang dihentikan seperti Bab9. Backup bukan izin memulihkan CA lama.
+
+Pada host, simpan XML/daftar disk, route, konfigurasi jaringan, ruleset host/libvirt,
+konfigurasi router dan akses pemulihan. Contoh keluaran hanya ke folder privat:
+
+```bash
+# HOST: baru snapshot read-only; tidak menyalakan atau mengubah jaringan.
+umask 077
+backup_dir="$HOME/VanGuard-Privat/pilot-$(date +%Y%m%d-%H%M%S)"
+mkdir -m 700 "$backup_dir"
+virsh -c qemu:///system dumpxml VM-CA > "$backup_dir/VM-CA.xml"
+virsh -c qemu:///system domblklist VM-CA --details > "$backup_dir/VM-CA-disks.txt"
+ip -j -4 address show > "$backup_dir/addresses.json"
+ip -j -4 route show > "$backup_dir/routes.json"
+# Ulangi XML/daftar disk untuk lima guest lain; simpan firewall via admin host.
+```
+
+Jangan mengunggah backup atau environment/database. Pastikan backup dapat dibaca,
+checksum cocok dan lokasi disk benar sebelum mengubah apa pun. Jangan restore
+index, serial, crlnumber, CRL atau database keamanan lama saat rollback aplikasi.
 
 ### 4.1 Nyalakan dan periksa VM — HOST
 
@@ -181,12 +224,7 @@ Browser harus mempercayai root CA lab yang fingerprint-nya sudah diverifikasi.
 Impor `state/deployment/root.crt` ke Authorities/CA browser bila diperlukan.
 Jangan menyelesaikan masalah sertifikat dengan menonaktifkan pemeriksaan TLS.
 
-## 5. Pemasangan awal — khusus lingkungan baru
-
-Bab ini adalah pekerjaan teknisi. Jangan menjalankannya pada lab terpasang.
-Panduan detail referensi: [deployment Ubuntu](DEPLOYMENT.md) dan
-[penyiapan Windows](WINDOWS_CLIENT.md). Ikuti urutan berikut; tiap tahap memiliki
-hasil yang harus dipenuhi sebelum lanjut.
+## 5. Instalasi host dan paket Ubuntu — lingkungan kosong saja
 
 ### 5.1 Siapkan host, enam guest, source dan SSH
 
@@ -228,21 +266,64 @@ Installer belum memulai layanan atau menerapkan firewall. Paket berada pada
 `/opt/vanguard/venv`, state pada `/var/lib/vanguard`, konfigurasi pada
 `/etc/vanguard`. Server mendapat key WireGuard dan config tanpa peer statis.
 
-### 5.3 CA, sertifikat, trust dan CRL — panduan rinci
+
+### 5.3 Persiapan konkret pada host baru
+
+**HOST baru**, instal utilitas dari repositori Ubuntu:
+
+```bash
+sudo apt-get update
+sudo apt-get install qemu-kvm libvirt-daemon-system libvirt-clients virtinst \
+  virt-manager virt-viewer cloud-image-utils genisoimage ovmf swtpm swtpm-tools \
+  git python3-venv openssl curl
+virsh -c qemu:///system list --all
+free -h
+df -h /var/lib/libvirt/images
+```
+
+Ambil source `git clone https://github.com/LuiLuiLui886/vanguard-ztna.git`, lalu
+`cd vanguard-ztna` dan `git switch main`. Untuk clone lama gunakan `git pull --ff-only`
+setelah perubahan sendiri disimpan; jangan reset/force. Catat `git rev-parse HEAD`.
+Siapkan key SSH Ed25519 operator tanpa menimpa key yang ada. Media Ubuntu22.04
+cloud image harus berasal dari Ubuntu dan cocok SHA256/signature resmi sebelum
+provisioning. ISO Windows harus berasal dari Microsoft dan cocok hash resmi.
+
+Skrip berikut **hanya host kosong**, membuat lima Ubuntu dan jaringan baru:
+
+```bash
+sudo python3 scripts/create_lab.py --image /PATH/UBUNTU22_IMAGE.img \
+  --public-key /PATH/OPERATOR_KEY.pub --operator NAMA_USER_HOST \
+  --output /PATH/INVENTORY_PRIVAT_BARU
+```
+
+Jika nama VM/jaringan sudah ada, berhenti dan gunakan jalur lab terpasang.
+Periksa output inventory privat dan guest console/SSH sebelum memasang paket.
+Untuk Windows, buat VM tambahan memakai media resmi dan akun admin lokal, selesai
+setup OS dahulu. Alat seed lab memformat disk baru: jangan gunakan pada disk lama.
+Pada PC fisik cukup pakai OS yang sudah terpasang dan installer endpoint Bab10;
+provisioning VM bukan bagian installer PC.
+
+Salin source melalui SSH terverifikasi, misalnya arsip dari commit yang sudah
+review: `git archive --format=tar HEAD -o /PATH/vanguard-source.tar` pada HOST.
+Transfer arsip lalu ekstrak ke folder staging baru di guest. Isi arsip tidak boleh
+mencakup inventaris privat/state/key. Verifikasi OS dengan `cat /etc/os-release`
+dan alamat dengan `ip -br -4 address`; pilih satu role per guest pada tabel5.2.
+
+## 6. Root CA, CSR HTTPS, trust, penerbitan dan CRL
 
 Seluruh materi CA/PKI berada di bagian ini, mulai dari generate root hingga
-backup dan troubleshooting. Bagian 5.3.1–5.3.9 memandu pemasangan CA/HTTPS;
-5.3.10–5.3.13 menjelaskan siklus sertifikat dan pemeliharaan setelah instalasi.
-Lanjutkan bagian 5.4–5.6 untuk token, firewall, layanan dan client Windows,
-lalu bab 6–10 untuk pendaftaran dan pemakaian sistem.
+backup dan troubleshooting. Bagian 6.1–6.9 memandu pemasangan CA/HTTPS;
+6.10–6.13 menjelaskan siklus sertifikat dan pemeliharaan setelah instalasi.
+Lanjutkan Bab7–10 untuk token, firewall, layanan dan client Windows,
+lalu Bab11–16 untuk pendaftaran dan pemakaian sistem.
 
-Contoh mengikuti source VanGuard 0.1.8, terutama `vanguard/ca.py`,
+Contoh mengikuti CLI CA pada source VanGuard0.1.12, terutama `vanguard/ca.py`,
 `vanguard/pki.py`, `vanguard/client.py` dan workflow dashboard. Setiap blok
 menyebutkan tempat menjalankannya. **CA lab yang ada sudah terpasang**;
 gunakan bagian pemeriksaan untuk pemeliharaan. Langkah init/generate/signing
 hanya untuk pemasangan baru atau pekerjaan teknisi yang direncanakan.
 
-#### 5.3.1 CA itu apa dan apa hubungannya dengan VPN?
+### 6.1 CA itu apa dan apa hubungannya dengan VPN?
 
 Certificate Authority (CA) adalah penerbit sertifikat. Sertifikat menyatakan
 identitas pemilik public key dan ditandatangani CA agar pihak lain dapat
@@ -272,7 +353,7 @@ dan sertifikat perangkat untuk admission. Proof perangkat dikirim pada API
 aplikasi; jangan menganggap mekanisme ini otomatis berupa mutual TLS pada setiap
 koneksi. WireGuard tetap memakai keypair terpisah yang diikat pada registry.
 
-#### 5.3.2 Struktur file dan parameter CA yang sebenarnya
+### 6.2 Struktur file dan parameter CA yang sebenarnya
 
 Pada VM-CA, direktori default `/var/lib/vanguard/ca` berisi:
 
@@ -311,7 +392,7 @@ Root pathlen:0 berarti tidak ada rantai intermediate CA dalam desain ini.
 Counter diawali teks heksadesimal 1000 pada init; pembuatan CRL/issuance akan
 mengubah counter. Jangan menuntut nilai awal tetap sama pada CA yang sudah berjalan.
 
-#### 5.3.3 Persiapan sebelum generate CA
+### 6.3 Persiapan sebelum generate CA
 
 **VM-CA (.10), melalui console atau SSH terverifikasi:**
 
@@ -337,7 +418,7 @@ Sebelum setiap perubahan, catat intent, guest sasaran dan lokasi backup pada
 jurnal pekerjaan tanpa nilai secret. Untuk lab saat ini, gunakan direktori
 inventaris privat host yang disebut pada modul ini.
 
-#### 5.3.4 Generate root CA pada VM baru
+### 6.4 Generate root CA pada VM baru
 
 **VM-CA baru saja:**
 
@@ -376,7 +457,7 @@ sudo install -m 0644 /var/lib/vanguard/ca/root.crt /etc/vanguard/root.crt
 
 Perintah ini menyalin **sertifikat publik**, bukan root.key.
 
-#### 5.3.5 Verifikasi root sebelum dipercaya
+### 6.5 Verifikasi root sebelum dipercaya
 
 **VM-CA:**
 
@@ -405,7 +486,7 @@ log. Self-signature OK hanya membuktikan konsistensi root yang diperiksa;
 untuk mempercayai asalnya, cocokkan fingerprint terhadap console CA/jalur
 operator yang sudah dipercaya, bukan dari berkas yang sama tanpa pembanding.
 
-#### 5.3.6 Distribusikan root publik melalui HOST
+### 6.6 Distribusikan root publik melalui HOST
 
 Contoh ini menggunakan konfigurasi SSH lab. Pada instalasi lain, siapkan
 konfigurasi yang setara dengan fingerprint host key yang telah diverifikasi.
@@ -420,7 +501,7 @@ scp -F ~/.ssh/vanguard_lab_config \
 openssl x509 -in "$ca_stage/root.crt" -noout -fingerprint -sha256
 ```
 
-Cocokkan fingerprint dengan hasil bagian 5.3.5 sebelum meneruskan. `$ca_stage` hanya
+Cocokkan fingerprint dengan hasil bagian 6.5 sebelum meneruskan. `$ca_stage` hanya
 menyimpan sertifikat/CSR publik, dan nilainya berlaku pada terminal ini.
 
 Contoh pemasangan trust untuk **VM-SERVER baru** dari HOST:
@@ -443,7 +524,7 @@ transfer tepercaya dan PowerShell Administrator. Browser admin mengimpor root
 publik sebagai Authorities/CA untuk HTTPS. Semua salinan harus berasal dari
 root yang sama. Jangan pernah mengirim private/root.key ke Windows atau browser.
 
-#### 5.3.7 Generate key dan CSR HTTPS pada setiap layanan
+### 6.7 Generate key dan CSR HTTPS pada setiap layanan
 
 HTTPS membutuhkan key milik layanan, bukan root private key. Lakukan pada
 **masing-masing VM-CA, VM-SERVER dan VM-ADMIN yang baru**:
@@ -471,9 +552,9 @@ Root:vanguard 0640 memungkinkan service membaca key. CSR harus menunjukkan
 self-signature verify OK. Nama CN contoh boleh sama, tetapi setiap guest
 membuat key sendiri dan memperoleh SAN IP berbeda saat signing.
 
-#### 5.3.8 Contoh lengkap: tanda tangani HTTPS SERVER lewat CA
+### 6.8 Contoh lengkap: tanda tangani HTTPS SERVER lewat CA
 
-Contoh berikut melanjutkan variabel `$ca_stage` dari bagian 5.3.6, dan mengikuti
+Contoh berikut melanjutkan variabel `$ca_stage` dari bagian 6.6, dan mengikuti
 jalur HOST → guest; tidak mengharuskan SSH guest ke guest.
 
 **HOST:**
@@ -529,7 +610,7 @@ Root CA dan HTTPS CA berbeda: `root.crt` adalah trust anchor, sedangkan
 `/etc/vanguard/tls.crt` pada VM-CA membuktikan endpoint HTTPS .10. Private key
 HTTPS tetap di guest yang membuat CSR; root key tetap dalam direktori CA.
 
-#### 5.3.9 Verifikasi sertifikat HTTPS dan jalankan layanan
+### 6.9 Verifikasi sertifikat HTTPS dan jalankan layanan
 
 **VM-SERVER**, setelah hasil signing dipasang:
 
@@ -551,7 +632,7 @@ openssl x509 -in /etc/vanguard/tls.crt -pubkey -noout | \
   openssl pkey -pubin -outform DER | openssl dgst -sha256
 ```
 
-Isi token pada env sesuai bagian 5.4. `VANGUARD_CA_TOKEN` sama pada CA
+Isi token pada env sesuai Bab7.1. `VANGUARD_CA_TOKEN` sama pada CA
 dan ADMIN; token server independen. Token ini melindungi endpoint issuance/revoke,
 bukan password karyawan. Simpan env root:root 0600 dan jangan tampilkan isinya.
 
@@ -573,9 +654,9 @@ karena firewall CA membatasi sumber ke SERVER/ADMIN. Jangan membuka firewall
 semua sumber hanya agar contoh curl dapat dijalankan dari host.
 Health membuktikan endpoint hidup, bukan seluruh state CA/CRL sehat.
 
-#### 5.3.10 Bagaimana sertifikat perangkat diterbitkan?
+### 6.10 Bagaimana sertifikat perangkat diterbitkan?
 
-1. Pada client baru, jalankan `vanguard-client init` sesuai bab 6–8.
+1. Pada client baru, jalankan `vanguard-client init` sesuai Bab11.
    Client membuat P-256 identity.key, CSR dengan CN device ID, serta key WireGuard
    X25519 independen. request.json memuat CSR, public key WireGuard dan tunnel IP.
 2. Admin membuat akun karyawan lalu mengunggah request.json pada dashboard.
@@ -605,7 +686,7 @@ Target CN device ID, issuer root lab, clientAuth dan tanggal valid. Pengecekan
 OpenSSL ini belum membuktikan binding WireGuard, sesi karyawan, atau proof.
 Sertifikat publik tidak memberikan akses tanpa private key yang cocok.
 
-#### 5.3.11 CRL, pencabutan dan pemeriksaannya
+### 6.11 CRL, pencabutan dan pemeriksaannya
 
 CRL memuat issuer, lastUpdate, nextUpdate, CRL number, serial tercabut dan
 signature root. Source membuat CRL baru pada setiap fetch `/api/ca/crl` di
@@ -658,10 +739,10 @@ menyatakan seluruh workflow berhasil. Gunakan perangkat disposable untuk latihan
 Pencabutan langsung CA dan pencabutan dashboard mempunyai batas pengamatan
 berbeda: dashboard juga menonaktifkan perangkat segera melalui API server,
 sedangkan deteksi CA-only bergantung pemeriksaan server/daemon. Jangan menyamakan
-dua waktu tersebut dalam laporan penelitian. Revocation Windows belum diuji
+dua waktu tersebut dalam laporan penelitian. Catatan historis: revocation Windows saat15Oktober belum diuji
 penuh pada bukti yang dirangkum modul ini.
 
-#### 5.3.12 Backup, kedaluwarsa dan pemulihan
+### 6.12 Backup, kedaluwarsa dan pemulihan
 
 Backup harus menyimpan seluruh state CA, bukan root.crt saja: key root,
 openssl.cnf, index, serial, crlnumber, CRL, arsip sertifikat, konfigurasi layanan,
@@ -711,7 +792,7 @@ dengan backup dan verifikasi bahwa index/key/serial/revocation tetap utuh.
 Jangan memakai perintah reset counter ke 1000 atau mengembalikan index/CRL lama.
 Pemulihan operasional tersebut belum memperbaiki durability penyimpanan source.
 
-#### 5.3.13 Kesalahan umum dan hasil yang harus dicatat
+### 6.13 Kesalahan umum dan hasil yang harus dicatat
 
 | Gejala | Penjelasan dan tindakan |
 |---|---|
@@ -742,7 +823,9 @@ Tidak ada generate CA baru, penggantian trust, atau pencabutan pada VM
 produksi ketika panduan ini ditulis. Bukti uji prosedur dicatat di
 [jurnal 17 Oktober](PROGRESS_2026-10-17.md).
 
-### 5.4 Konfigurasi token dan akun admin awal
+## 7. Token, akun admin, TOTP, firewall dan layanan
+
+### 7.1 Konfigurasi token dan akun admin awal
 
 Buat tiga nilai acak independen dengan `openssl rand -hex 32` dalam terminal
 privat. Isi template env menggunakan `sudoedit`; jangan menaruh nilai literal
@@ -767,7 +850,7 @@ Password minimal 12 karakter, diketik dua kali. Daftarkan URI TOTP yang ditampil
 di terminal privat ke authenticator dan konfirmasi kode. Jangan membuat ulang
 akun admin utama hanya karena sesi login habis.
 
-### 5.5 Firewall dan layanan
+### 7.2 Firewall dan layanan
 
 Jalur yang perlu diizinkan: CA8080 dari SERVER/ADMIN; SERVER8081 dari kedua
 client, ADMIN dan ATTACKER; UDP 51820 dari kedua client dan ATTACKER; ADMIN5000
@@ -777,11 +860,11 @@ lewat `wg0`; trafik ke alamat tunnel yang datang langsung dari LAN ditolak.
 Pasang `nftables` pada Ubuntu yang akan diberi aturan. Salin `deploy/firewall.py`
 ke `/opt/vanguard/firewall.py` pada guest. Di guest masing-masing jalankan
 `sudo python3 /opt/vanguard/firewall.py ROLE --management-ip 192.168.100.1`,
-dengan ROLE `ca`, `server`, `client`, `admin`, atau `attacker`. Khusus SERVER:
+dengan ROLE `ca`, `server`, `client`, `admin`, atau `attacker`. Khusus SERVER (gate aplikasi default-deny, grant menyusul Bab14):
 
 ```bash
 sudo python3 /opt/vanguard/firewall.py server \
-  --management-ip 192.168.100.1 --windows-client
+  --management-ip 192.168.100.1 --windows-client --application-policy
 ```
 
 Simpan ruleset sebelum perubahan. Skrip memasang timer rollback120 detik.
@@ -803,113 +886,398 @@ sudo systemctl enable --now vanguard-admin
 ```
 
 Pada instalasi baru, daftar peer harus kosong sebelum admission client. Setelah
-HTTPS sehat, lanjutkan bab 6. Jangan menambahkan peer manual untuk mempercepat demo.
+HTTPS sehat, lanjutkan Bab8–11. Jangan menambahkan peer manual untuk mempercepat demo.
 
-### 5.6 Pasang aplikasi Windows baru
 
-1. Pasang Python 3.12 atau lebih baru dan WireGuard for Windows dari penerbit resmi;
-   periksa signature installer. Jangan menonaktifkan Windows Firewall.
-2. Atur NIC ke 192.168.100.60/24, gateway/DNS.1, waktu Jakarta. Pastikan koneksi
-   HTTPS ke server tersedia dan sertifikat root cocok fingerprint operator.
-3. Build wheel source di HOST dengan
-   `.venv/bin/python -m pip wheel --no-deps --wheel-dir dist .`, lalu transfer
-   wheel0.1.8 dan `deploy/constraints.txt` ke folder staging privat guest.
-4. Pada PowerShell Administrator, buat virtualenv; sesuaikan path Python dan wheel:
+### 7.3 Verifikasi sebelum pendaftaran perangkat
 
-```powershell
-& 'C:\Program Files\Python313\python.exe' -m venv C:\ProgramData\VanGuard\venv
-$py = 'C:\ProgramData\VanGuard\venv\Scripts\python.exe'
-& $py -m pip install -c C:\VG-Staging\constraints.txt C:\VG-Staging\vanguard_ztna-0.1.8-py3-none-any.whl
-& $py -m pip check
-& $py -m vanguard.client --help
-```
-
-Python313 adalah lokasi instalasi yang dibuktikan pada guest ini; ganti bila
-berbeda. Instalasi pip di atas membutuhkan akses dependensi, atau wheelhouse
-terverifikasi yang disiapkan teknisi. Paket0.1.8 membutuhkan pywin32 di Windows.
-Jika installer memakai autologon/unattend, teknisi harus membersihkan secret
-setup dan mengeluarkan media seed sesudah selesai. Lanjut bab 6 untuk perangkat
-yang belum diinisialisasi. SSH Windows opsional untuk pemeliharaan; pemakaian
-normal bisa melalui console, dengan hak Administrator untuk mengelola tunnel.
-
-## 6. Admin: menyiapkan akun dan perangkat
-
-### 6.1 Login dashboard
-
-1. Di browser HOST buka `https://192.168.100.40:5000` dengan trust CA yang benar.
-2. Masukkan username/password **admin dashboard** dan kode TOTP dari authenticator.
-3. Klik **Masuk**. Halaman **Perangkat & admission** harus terbuka.
-4. Periksa **Kesehatan layanan**: CA dan Server tersedia.
-
-Di lab terpasang, informasi aktivasi privat berada di
-`state/deployment/aktivasi-admin.html`. QR/seed hanya untuk pemilik akun.
-TOTP memakai waktu, SHA-1, enam digit,30 detik. Kode yang sudah dipakai tidak bisa
-dipakai untuk login kedua; tunggu kode berikutnya. Setelah lima kegagalan,
-tunggu lima menit. Sesi dashboard sekitar 30 menit.
-
-### 6.2 Buat akun karyawan
-
-Pada **Akun karyawan**, isi username unik dan password awal minimal 12 karakter,
-lalu klik **Buat akun karyawan**. Serahkan kredensial melalui kanal privat dan
-catat pada inventaris lokal operator. Akun Ubuntu dan Windows lab sudah ada;
-gunakan akun yang terikat pada perangkat masing-masing. Belum ada fitur reset
-password mandiri atau aktivasi ulang akun yang dinonaktifkan.
-
-### 6.3 Buat request hanya pada client baru
-
-**Ubuntu baru**, pada VM-CLIENT:
+Periksa waktu di setiap VM dengan `timedatectl status`, disk dengan `df -h`, serta
+unit terkait dengan `systemctl is-active`. `/healthz` hanya menunjukkan proses hidup;
+`/readyz` memeriksa dependensi tanpa menerbitkan sertifikat atau menambah peer.
 
 ```bash
-sudo /opt/vanguard/venv/bin/vanguard-client init --device-id vm-client
+# VM-ADMIN; menggunakan root yang sudah diverifikasi.
+curl --fail --show-error --connect-timeout 3 --max-time 8 \
+  --cacert /etc/vanguard/root.crt https://192.168.100.20:8081/readyz
+curl --fail --show-error --connect-timeout 3 --max-time 8 \
+  --cacert /etc/vanguard/root.crt https://192.168.100.40:5000/readyz
 ```
 
-Hasilnya `/var/lib/vanguard/client/request.json`. Default alamat Ubuntu.2.
-Pada **Windows baru**, PowerShell Administrator:
+HTTP503/unknown adalah kondisi berhenti untuk onboarding, bukan alasan mengabaikan
+TLS/CRL. Baca log unit secara privat, perbaiki service/waktu/lock/dependensi lalu
+ulang. Jangan membuat sertifikat dummy untuk health check. Server baru harus
+memiliki nol peer sebelum admission. Pada sistem aktif, periksa scope lease sah
+alih-alih menghapus semua peer hanya agar keluaran kosong.
 
-```powershell
-$py = 'C:\ProgramData\VanGuard\venv\Scripts\python.exe'
-& $py -m vanguard.client init --device-id vm-client-windows --tunnel-ip 10.8.0.4
-```
+Pada browser komputer admin, impor **root publik terverifikasi** ke trust store
+yang dipilih kebijakan organisasi. Buka `https://192.168.100.40:5000`; periksa
+issuer/SAN/fingerprint. Jangan menggunakan tombol mengabaikan error sertifikat.
+Login admin/TOTP tidak sama dengan akun karyawan yang akan dibuat pada Bab11.
 
-Hasilnya `C:\ProgramData\VanGuard\client\request.json`. Direktori identitas
-dilindungi ACL SYSTEM/Administrators. `identity.key` dan `wg.key` tetap di guest.
-Salin **request.json saja** ke host operator melalui transfer tepercaya.
-Pada guest yang sudah terdaftar jangan mengulang init atau mengganti request.
+## 8. Jaringan router, host, PC LAN dan laptop Wi-Fi
 
-### 6.4 Daftar, unduh dan pasang sertifikat
+1. Hubungkan host dan PC ke LAN router, laptop ke SSID uji. Operator router
+   menetapkan .50.1/24 dan reservation .50.10/.20/.30; hindari konflik DHCP/static.
+   Default gateway endpoint .50.1. Jangan mengubah jaringan rumah/kantor utama.
+2. Host mendapat .50.10/24 pada Ethernet; backend libvirt tetap .100/24. Pertahankan
+   Wi-Fi administrasi sampai jalur LAN/console teruji. Jangan bridge NIC backend,
+   menghapus NAT libvirt, mengubah kernel atau memasang custom WireGuard.
+3. Setelah backup terverifikasi, nyalakan backend bertahap: CA, server, admin.
+   Windows VM/client/attacker lama tidak wajib hidup untuk pilot ini. Periksa
+   waktu/NTP, service readiness, freshness CRL dan disk/log. CRL kedaluwarsa harus
+   diperbaiki lewat mekanisme CA yang sah; jangan melewati pemeriksaannya.
+4. Pada setiap endpoint, inspeksi adapter; tambahkan host route .100.20/32 melalui
+   .50.10 pada adapter yang benar. Jangan membuat route default ke laptop host.
+5. Tinjau forwarding host/libvirt dan return path, kemudian firewall VM-SERVER.
+   Dua sumber .50.20/.30 hanya boleh ke .100.20 TCP8081 dan UDP51820. Jangan buka
+   CA8080/admin5000 atau aplikasi8082 langsung dari LAN. Admin tetap melalui
+   jalur management host yang sudah ada.
 
-1. Pada **Registrasi perangkat**, pilih request JSON yang sesuai.
-2. Isi **Nama perangkat**, **Departemen**, **Pemilik**, dan **Platform**.
-3. Pilih akun karyawan yang benar. Binding akun-perangkat tidak dapat diganti
-   hanya dengan mengedit metadata; periksa pilihan sebelum mengirim.
-4. Klik **Terbitkan sertifikat & daftarkan binding**.
-5. Pastikan workflow `registered`. Peer perangkat baru harus belum aktif.
-6. Klik **Unduh bundle onboarding** atau **Unduh sertifikat** pada baris tersebut.
-   Bundle berisi device.crt, root.crt, manifest dan petunjuk; tidak berisi key.
-7. Cocokkan device ID, public key/binding pada manifest dan fingerprint root
-   dengan referensi operator sebelum mengimpor. Pasang hanya pada client pembuat CSR.
-
-Pada Ubuntu, salin sertifikat ke staging guest, kemudian:
+Perintah tahap penerapan backend (jalankan satu per satu setelah backup):
 
 ```bash
-sudo install -m 0600 /PATH/STAGING/device.crt /var/lib/vanguard/client/device.crt
+# HOST: perintah ini menyalakan VM; hanya ketika tahap penerapan sudah dimulai.
+virsh -c qemu:///system start VM-CA
+virsh -c qemu:///system start VM-SERVER
+virsh -c qemu:///system start VM-ADMIN
 ```
 
-Trust Ubuntu di `/etc/vanguard/root.crt` sudah disiapkan pada instalasi layanan.
-Pada PowerShell Administrator Windows, setelah bundle publik diekstrak ke staging:
+Jangan menjalankan `start` pada guest yang sudah hidup; cek `virsh list --all`.
+Di setiap guest, periksa service terkait; server juga vanguard-daemon/wg-quick@wg0.
+Tidak ada peer statis pada wg0. TLS/readiness harus diperiksa dari jalur yang
+memang diizinkan, misalnya server menuju CA dan admin menuju server.
+
+```bash
+# VM-ADMIN dengan trust anchor yang sudah dipasang melalui kanal tepercaya.
+curl --fail --show-error --silent --connect-timeout 3 --max-time 8 \
+  --cacert /etc/vanguard/root.crt https://192.168.100.20:8081/readyz
+```
+
+TCP berhasil/ping bukan bukti UDP siap. Rule `backend/server-firewall.candidate.nft`
+adalah bahan review, **jangan langsung apply**. Pastikan management IP .100.1 dan
+aturan layanan lama cocok, buat backup ruleset, jalankan nft syntax check di
+VM-SERVER, dan gunakan rollback terjadwal yang mempertahankan akses console.
+Host firewall belum diketahui backend/chain efektifnya; accept pada chain nft
+baru dapat tetap kalah oleh drop chain libvirt lain. Operator harus memeriksa
+ruleset aktual sebelum menentukan lokasi rule. Rincian matriks ada pada
+[panduan pilot](ENDPOINT_WINDOWS_PILOT.md); tidak ada script host yang menebak
+aturan atau flush firewall global.
+
+Contoh route sementara setelah interface dikonfirmasi, Windows Administrator:
 
 ```powershell
-Copy-Item C:\VG-Staging\device.crt C:\ProgramData\VanGuard\client\device.crt
-Copy-Item C:\VG-Staging\root.crt C:\ProgramData\VanGuard\client\root.crt
+Get-NetIPConfiguration
+Get-NetRoute -AddressFamily IPv4
+# Isi $ifIndex dari adapter LAN/Wi-Fi yang mempunyai IP endpoint yang disetujui.
+New-NetRoute -DestinationPrefix '192.168.100.20/32' -InterfaceIndex $ifIndex `
+  -NextHop '192.168.50.10' -PolicyStore ActiveStore
 ```
 
-Jika file tujuan sudah ada, teknisi membandingkan identitasnya dahulu; jangan
-menimpa sertifikat utama dengan hasil latihan. Client memeriksa kesesuaian
-sertifikat dengan key lokal saat admission. Registrasi dan unduhan bundle
-belum mengaktifkan tunnel. Workflow tertahan dilanjutkan dengan **Ulangi workflow**
-setelah dependency pulih, bukan mengirim registrasi duplikat.
+Jangan menambah jika sudah ada route identik. ActiveStore hilang saat reboot;
+uji ulang preflight setelah boot. Persistensi baru diputuskan setelah pilot lolos.
+Router tidak memerlukan static route backend jika kedua endpoint memakai /32 ini.
 
-## 7. Karyawan Ubuntu: login dan memakai VPN
+Jalankan pemeriksa host dari root repository:
+
+```bash
+python3 scripts/pilot_preflight.py
+```
+
+Script hanya membaca alamat, forwarding flag dan status6VM dengan batas waktu;
+tidak sudo, menyalakan guest, membuka port atau mengubah route. Exit2 berarti
+FAIL/UNKNOWN atau review manual masih diperlukan. Bahkan semua cek otomatis PASS
+belum membuktikan firewall/TLS/UDP/aplikasi. Gunakan report untuk memperbaiki
+prasyarat, bukan menganggap script gagal karena tidak mengembalikan ready.
+
+## 9. Profil publik, trust endpoint dan pembaruan dashboard
+
+Sebelum upgrade, buat profil publik dari root/key server yang diverifikasi.
+Pada HOST di root repository dengan lingkungan Python aplikasi:
+
+```bash
+python3 -m venv .venv
+.venv/bin/python -m pip install -c deploy/constraints.txt .
+.venv/bin/python scripts/prepare_endpoint_pilot.py \
+  --root /PATH/root.crt --server-public-key-file /PATH/server-wg.pub \
+  --output /PATH/PROFIL_PUBLIK_BARU
+```
+
+Generator tidak mengubah jaringan atau menambah peer. Output profile.json,
+root.crt, admin-public.env dan network-plan.json adalah data publik; cocokkan
+fingerprint/public key melalui jalur admin lain. Distribusi ke endpoint harus
+ke folder terlindungi. Jika membangun wheel backend dari source, gunakan
+`.venv/bin/python -m pip wheel --no-deps --wheel-dir dist .`; transfer wheel
+terverifikasi ke lokasi pada langkah berikut. Wheel0.1.12 di ZIP Windows juga
+universal untuk aplikasi, tetapi dependency wheels Windows **bukan** untuk Linux.
+
+Profil kit menggunakan salinan root/public key lokal. **Bandingkan lagi dengan
+layanan aktif**: fingerprint root DER dan server WireGuard public key. Jangan
+membaca/mengirim server private key. Contoh read-only di node yang benar:
+
+```bash
+# VM-ADMIN atau VM-CA: fingerprint trust anchor publik.
+openssl x509 -in /etc/vanguard/root.crt -outform DER | sha256sum
+# VM-SERVER: hanya public key interface, bukan konfigurasi/private key.
+sudo wg show wg0 public-key
+```
+
+Jika berbeda, berhenti dan telusuri asal/root/rotasi. Jangan menimpa trust agar
+cocok kit. Operator membangun ulang profil/kit dari root/key publik yang sah.
+Dengan routing .100.20, SAN HTTPS lama tetap sesuai; tidak perlu membuat CA
+baru atau mengganti sertifikat layanan hanya untuk pilot ini.
+
+Kontrak server0.1.11 sudah mendukung admission/logout/resource gate yang diperlukan.
+Untuk bundle berprofil, **VM-ADMIN perlu aplikasi0.1.12** dan environment baru.
+CA/server tidak perlu di-upgrade untuk sekadar menambah field profil pada bundle.
+Jangan menjalankan deploy/install.sh sebagai upgrade buta terhadap seluruh lab.
+Wheel backend di kit sama hash dengan wheel aplikasi pada paket Windows; dependensi
+aplikasi0.1.11 dan0.1.12 sama. Jika pip check gagal, hentikan upgrade dan tinjau
+runtime, jangan mengunduh/mengganti dependency diam-diam.
+
+Operator menyalin wheel dan config publik ke `/srv/vanguard-pilot/` pada VM-ADMIN,
+direktori milik root yang tidak writable akun biasa. Hash dicek terhadap manifest.
+Contoh urutan pada **VM-ADMIN saja**, setelah jalur pemulihan tersedia:
+
+```bash
+sudo systemctl stop vanguard-admin
+# Pastikan inactive sebelum backup konsisten; jika stop gagal, jangan lanjut.
+sudo systemctl is-active vanguard-admin
+```
+
+`is-active` harus menampilkan inactive (exit nonzero memang diharapkan). Backup
+root-only yang baru harus mencakup `/opt/vanguard/venv`, `/var/lib/vanguard/admin`,
+`/etc/vanguard/admin.env`, profil lama jika ada, dan unit. Hindari memasukkan
+isi environment ke terminal/log. Contoh backup konsisten, setelah admin inactive:
+
+```bash
+# VM-ADMIN: arsip memuat rahasia; hanya root, jangan dikirim bersama kit.
+pilot_backup="/var/backups/vanguard-pilot/$(date +%Y%m%d-%H%M%S)"
+sudo install -d -m 0700 "$pilot_backup"
+sudo tar --acls --xattrs -cpf "$pilot_backup/admin-before.tar" -C / \
+  opt/vanguard/venv var/lib/vanguard/admin etc/vanguard \
+  etc/systemd/system/vanguard-admin.service
+sudo chmod 0600 "$pilot_backup/admin-before.tar"
+sudo tar -tf "$pilot_backup/admin-before.tar" > /dev/null
+sudo sha256sum "$pilot_backup/admin-before.tar"
+```
+
+Jika arsip/checksum gagal, jangan upgrade. Arsip DB menjadi bukti pemulihan yang
+harus direview, bukan bahan rollback rutin. Setelah backup terverifikasi:
+
+```bash
+sudo /opt/vanguard/venv/bin/python -m pip install --no-index --no-deps \
+  /srv/vanguard-pilot/backend/vanguard_ztna-0.1.12-py3-none-any.whl
+sudo /opt/vanguard/venv/bin/python -m pip check
+sudo install -o root -g vanguard -m 0640 \
+  /srv/vanguard-pilot/config/profile.json /etc/vanguard/endpoint-profile.json
+sudoedit /etc/vanguard/admin.env
+```
+
+Tambahkan tepat satu baris `VANGUARD_CLIENT_PROFILE=/etc/vanguard/endpoint-profile.json`;
+pertahankan semua nilai env lain, terutama secret/token. Jangan mengganti env dengan
+file contoh kit. Lalu mulai admin dan periksa readiness/bundle tanpa menerbitkan
+sertifikat uji pada health check:
+
+```bash
+sudo systemctl start vanguard-admin
+sudo systemctl is-active vanguard-admin
+curl --fail --show-error --silent --connect-timeout 3 --max-time 8 \
+  --cacert /etc/vanguard/root.crt https://192.168.100.40:5000/readyz
+```
+
+Jika gagal, pertahankan log yang disaring, hentikan admin dan pulihkan runtime/env/
+profil/unit dari backup kompatibel. Jangan rollback database/CA untuk membatalkan
+upgrade paket. Paket/backup/izin aktual harus diverifikasi operator; contoh di
+atas belum dieksekusi oleh kit.
+
+## 10. Memasang endpoint Windows dari satu paket
+
+Satu folder paket memuat BAT/PowerShell, Python3.13.17, WireGuard1.1.1,
+20wheel aplikasi/dependensi dan salinan manual ini. Seluruh payload pip/runtime
+lokal; pemeriksaan trust Authenticode Windows tetap harus berhasil.
+
+1. Ambil ZIP terbaru dari halaman downloads repo main. Bandingkan SHA256 dengan
+   nilai yang diberikan admin/halaman GitHub tepercaya sebelum menjalankan file.
+2. Ekstrak **seluruh isi** ke folder baru, misalnya
+   `C:\Program Files\VanGuardInstaller`. File BAT, PS1, manifest, folder runtimes
+   dan wheels harus tetap bersama. Windows meminta izin admin saat menyalin.
+   Jangan menjalankan BAT dari dalam tampilan ZIP atau hanya menyalin BAT.
+3. Buka `Install-VanGuard.bat`. Setujui UAC. Jika semua scope policy belum
+   diatur (Undefined), BAT memilih RemoteSigned hanya untuk proses ini; tidak
+   menyimpan policy ke registry. Policy eksplisit tetap dihormati. Jika policy organisasi menolak
+   PowerShell, hubungi admin untuk distribusi/signing yang diizinkan; jangan
+   mengubah execution policy global atau mematikan Defender/SmartScreen.
+4. Installer memeriksa integritas seluruh paket serta Authenticode publisher
+   Python Software Foundation/WireGuard LLC. Python3.13 x64 all-users yang valid
+   dan WireGuard yang sudah terpasang dipakai kembali. Runtime belum ada dipasang
+   dari runtimes. PATH global, DNS, IP LAN dan identitas lama tidak diubah.
+5. Tunggu hingga **Exit code: 0**. Kode1/2 berarti gagal: baca fase dan alasannya;
+   1223 berarti UAC batal;3010 meminta restart manual, lalu jalankan installer lagi.
+   Tidak ada reboot otomatis. Runtime parsial tidak dihapus/ditimpa sembarangan.
+6. Buka PowerShell Administrator dan periksa:
+
+```powershell
+$vg = Join-Path $env:ProgramFiles 'VanGuardEndpoint\VanGuard.bat'
+& $vg status
+```
+
+### 10.1 Contoh ekstraksi dan eksekusi yang lengkap
+
+Pada PowerShell **Administrator**, tentukan ZIP yang diunduh dan hash dari
+halaman downloads GitHub tepercaya/admin. Hash bukan password. Jangan memakai
+hash yang dihitung dari file yang sama sebagai satu-satunya bukti asalnya.
+
+```powershell
+$zip = Join-Path $env:USERPROFILE 'Downloads\vanguard-windows10-11-offline-0.1.12-20261024.zip'
+$expected = Read-Host 'SHA256 ZIP dari sumber proyek tepercaya'
+if ($expected -notmatch '^[a-fA-F0-9]{64}$') { throw 'Format checksum tidak valid.' }
+if ((Get-FileHash -LiteralPath $zip -Algorithm SHA256).Hash -ne $expected) {
+    throw 'Checksum tidak cocok; jangan lanjut.'
+}
+$kit = Join-Path $env:ProgramFiles 'VanGuardInstaller'
+if (Test-Path -LiteralPath $kit) { throw 'Tujuan sudah ada; pilih folder baru, jangan timpa data lama.' }
+Expand-Archive -LiteralPath $zip -DestinationPath $kit -ErrorAction Stop
+& (Join-Path $kit 'Install-VanGuard.bat')
+$vg = Join-Path $env:ProgramFiles 'VanGuardEndpoint\VanGuard.bat'
+& $vg status
+```
+
+Jika ZIP ditandai berasal dari internet, RemoteSigned dapat menolak PS1 unsigned.
+Ini bukan alasan mematikan policy/Defender atau menjalankan Bypass. Administrator
+harus menyiapkan distribusi/signing sesuai kebijakan organisasinya. Pengujian VM
+menggunakan transfer tepercaya; jalur browser dengan MOTW tetap perlu dibuktikan.
+
+Pada instalasi baru, `Terpasang; profil tepercaya belum tersedia` normal.
+Aplikasi di `C:\Program Files\VanGuardEndpoint`; konfigurasi/identitas di
+`C:\Program Files\VanGuardEndpointData`. Installer tidak membuat key, mendaftar
+perangkat, login, memasang peer, atau menyalakan tunnel.
+
+## 11. Konfigurasi endpoint, CSR dan registrasi administrator
+
+### 11.1 Data admin sebelum configure
+
+Sebelum enrollment, admin menyiapkan backend yang sehat, sertifikat HTTPS sesuai
+alamat API, profil publik `profile.json`, `root.crt`, fingerprint SHA256 root,
+public key WireGuard server, device ID unik, IP tunnel kosong dan akun karyawan.
+Konfirmasi fingerprint/key melalui komunikasi admin yang tepercaya, bukan hanya
+karena ada di ZIP. Bundel installer tidak berisi kredensial atau alokasi identitas.
+
+Untuk pilot PC LAN: alamat PC192.168.50.20/24, router192.168.50.1, host Linux
+192.168.50.10. Backend API192.168.100.20:8081 HTTPS dan UDP51820. Operator memeriksa
+routing/firewall sesuai runbook repo; installer tidak mengubahnya. IP tunnel
+berbeda dari IP LAN.10.8.0.2/.3/.4 sudah dicadangkan; .5/.6 hanya boleh dipakai
+setelah admin memeriksa registry. PC dan laptop wajib memiliki identitas berbeda.
+
+Admin memerlukan kandidat0.1.12 dengan VANGUARD_CLIENT_PROFILE yang sesuai untuk
+bundle berprofil. Paket backend/VM lama tidak otomatis di-upgrade oleh installer
+Windows. Hentikan alur jika bundle tidak memiliki profil yang cocok.
+
+Simpan profil/root di folder admin-only, misalnya `C:\Program Files\VanGuardTrust`.
+Dari PowerShell Administrator:
+
+```powershell
+$vg = Join-Path $env:ProgramFiles 'VanGuardEndpoint\VanGuard.bat'
+& $vg configure
+& $vg status
+```
+
+Masukkan lokasi profil/root, fingerprint dan public key saat diminta. Configure
+menolak penimpaan konfigurasi lama. Data rahasia CA tidak pernah disalin ke PC.
+
+### 11.2 Key dan CSR pada endpoint baru
+
+**CA hanya satu, tetap di VM-CA.** Komputer baru membuat private key X.509 dan
+WireGuard sendiri serta permintaan sertifikat (CSR). CA menandatangani CSR setelah
+admin mendaftarkan perangkat. Jangan menjalankan init CA, membuat root pengganti,
+menyalin private key CA atau menyalin identitas komputer lain.
+
+```powershell
+& $vg init
+```
+
+Isi device ID dan IP tunnel yang dialokasikan admin. Hasil request publik ada di:
+`C:\Program Files\VanGuardEndpointData\identity\request.json`.
+Kirim **hanya request.json** ke admin melalui jalur yang disepakati. Private key
+`identity.key`, `wg.key`, sesi/token dan seluruh folder identity jangan dikirim.
+Init hanya untuk perangkat baru; reinstall tidak memerlukan init ulang.
+
+### 11.3 Registrasi akun dan perangkat di dashboard
+
+Pada komputer admin/jalur management yang diizinkan:
+
+1. Buka dashboard HTTPS VanGuard dengan trust root yang telah diverifikasi.
+   Untuk lab, endpoint dashboard192.168.100.40:5000. Jangan membuka CA/dashboard
+   ke seluruh jaringan PC fisik hanya untuk mempermudah enrollment.
+2. Login menggunakan akun administrator dan TOTP dari authenticator admin.
+   Akun administrator berbeda dari akun karyawan untuk VPN.
+3. Pada formulir akun karyawan, buat akun yang disetujui (atau gunakan akun sah
+   yang tersedia), dengan password melalui form. Username/password dibagikan
+   secara privat; jangan memasukkannya ke Git atau dokumentasi publik.
+4. Pada formulir registrasi perangkat, masukkan request.json publik, metadata
+   pemilik/departemen/platform (Windows11) dan pilih akun karyawan. Cocokkan device ID, IP tunnel,
+   public key/CSR dengan permintaan dari PC yang benar.
+5. Proses registrasi meminta sertifikat ke CA dan menyimpan binding sertifikat,
+   public key WireGuard, device ID, IP tunnel serta akun karyawan. Registrasi
+   **tidak menambahkan live peer**. Status harus registered; jika pending_issue/
+   pending_registry, perbaiki dependensi dan gunakan retry, jangan membuat CA baru.
+6. Unduh bundle perangkat dari dashboard. Bundle berisi sertifikat publik,
+   root publik, manifest/profil dan README; tidak berisi private key client.
+   Kirim bundle kembali ke PC asal. Catat waktu/aktor dan lihat audit/history.
+
+Menghasilkan Root CA pertama kali hanya untuk instalasi sistem benar-benar baru,
+bukan langkah onboarding PC. Prosedur inisialisasi lengkap ada pada modul utama
+repo `docs/MODUL_PENGGUNAAN_VANGUARD.html`, Bab6. Sistem yang sedang digunakan
+harus mempertahankan root, index, serial, CRL serta histori pencabutannya.
+
+## 12. Import sertifikat, login, connect, disconnect dan logout Windows
+
+Letakkan bundle publik dari admin di folder terlindungi, lalu:
+
+```powershell
+& $vg import-bundle
+& $vg status
+& $vg diagnose
+& $vg login
+& $vg connect
+```
+
+Import meminta path bundle dan memeriksa binding dengan kedua key asli, profil,
+root dan sertifikat. Login meminta username karyawan serta password interaktif
+tersembunyi. Jangan menaruh password pada argumen terminal. Diagnose memeriksa
+HTTPS/readiness; bukan bukti UDP/tunnel. Enam pemeriksaan perangkat dan sesi
+karyawan tetap wajib sebelum server menambahkan peer.
+
+Biarkan terminal connect terbuka agar lease diperbarui. Dari terminal lain uji
+aplikasi yang diizinkan, misalnya `http://10.8.0.1:8082` jika admin telah menjalankan
+demo dan memberi grant eksplisit identitas/resource/TCP/port8082. Tanpa grant,
+akses seharusnya ditolak. Jangan menambahkan peer statis lewat GUI WireGuard.
+
+### 12.2 Disconnect, logout, repair dan pencabutan
+
+Ctrl+C pada terminal connect meminta cleanup. Alternatif terminal admin kedua:
+
+```powershell
+$vg = Join-Path $env:ProgramFiles 'VanGuardEndpoint\VanGuard.bat'
+& $vg disconnect
+& $vg logout
+```
+
+Disconnect menutup tunnel milik sesi. Logout meminta pencabutan sesi server;
+server tidak terjangkau berarti pencabutan **belum terkonfirmasi**. Jangan menghapus
+config jika penghentian tunnel/kepemilikannya belum pasti. Admin dapat mencabut
+identitas atau menonaktifkan akun melalui dashboard ketika perangkat hilang.
+
+Repair/reinstall: disconnect dahulu, jalankan BAT lagi. Key/config dipertahankan;
+runtime aplikasi baru diuji sebelum dipakai. Uninstall aplikasi:
+
+```powershell
+& "$env:ProgramFiles\VanGuardEndpointData\tools\Uninstall-VanGuard.bat"
+```
+
+Uninstall mempertahankan data identitas, tools maintenance dan Python/WireGuard bersama. Menghapus
+aplikasi bukan revocation server; decommission harus diselesaikan admin.
+
+## 13. Pemakaian client Ubuntu dan Windows lab lama
 
 Prasyarat: perangkat sudah registered, sertifikat/root terpasang, akun terikat
 dan aktif. Di HOST masuk ke VM-CLIENT:
@@ -943,7 +1311,7 @@ Alternatif foreground untuk teknisi: stop service terlebih dahulu, kemudian
 jalankan `sudo /opt/vanguard/venv/bin/vanguard-client connect --server-key
 'PUBLIC_KEY_SERVER'`. Jangan menjalankan service dan foreground bersamaan.
 
-## 8. Karyawan Windows: dari login desktop sampai disconnect
+### 13.2 Karyawan Windows: dari login desktop sampai disconnect
 
 1. Buka console **VM-CLIENT-WINDOWS** melalui virt-viewer/virt-manager.
 2. Masuk memakai **username/password console Windows** pada kartu lokal host.
@@ -992,47 +1360,193 @@ Windows tidak otomatis menyalakan tunnel ketika reboot. Buka PowerShell admin
 dan jalankan connect lagi; login ulang jika sesi sudah expired. Satu siklus
 renewal otomatis sudah dibuktikan, bukan uji kestabilan berjam-jam.
 
-## 9. Memastikan sistem sudah dapat digunakan
+## 14. Resource aplikasi dan pembuktian default-deny
 
-Gunakan daftar penerimaan berikut. Isi hasil aktual dan tanggal, bukan menyalin
-PASS dari hasil historis.
-
-| Pemeriksaan | Bukti yang dicatat | Kriteria lulus |
-|---|---|---|
-| Mesin tersedia | Daftar VM dan tanggal | VM yang dipakai running dan selesai boot |
-| Kepercayaan HTTPS | Fingerprint publik dan health | Root cocok; tidak menonaktifkan TLS |
-| Admin | Login TOTP, halaman dashboard | Masuk dengan kode yang sah; CA/Server tersedia |
-| Registry baru | Baris perangkat + peer server | Registered, key baru belum menjadi peer |
-| Login karyawan | Hasil login tanpa token | Sesi sah; login saja belum membuka peer |
-| Admission/tunnel | Output connect + wg show | ACCEPT, alamat benar, handshake ada |
-| Akses user | Hasil ping10.8.0.1 | Balasan melalui tunnel |
-| Dua client | Dua handshake dan allowed IP | Ubuntu.2 dan Windows.4 tidak bertabrakan |
-| Selesai sesi | Service/interface/config client | Tunnel berhenti dan config sementara dibersihkan |
-| Audit admin | Waktu WIB, pelaku, tindakan | Catatan sesuai tindakan yang dilakukan |
-| Arsip | ZIP + checksum | Dapat dibuka dan cocok hash |
-
-Di SERVER gunakan `sudo wg show wg0` atau `sudo wg show wg0 peers`.
-**Jangan gunakan format dump untuk laporan**, karena dapat memuat private key.
-Peer server bisa bertahan hingga lease habis sesudah client berhenti; ini
-berbeda dari service tunnel lokal yang sudah dibersihkan. Pencabutan/disable
-menjalankan penghapusan peer sesuai workflow server.
-
-Runner `scripts/health_lab.py` bergantung pada client Ubuntu utama yang aktif;
-bukan tes Windows. Bila diperlukan oleh teknisi di HOST:
+Pilot hanya mencakup HTTP uji10.8.0.1 TCP8082. Tidak menyediakan internet penuh
+atau aplikasi bisnis otomatis. Operator menjalankan demo sementara pada server
+melalui service yang dikelola; jangan menaruh data sensitif atau bind demo sebagai
+jalan pintas LAN. Admin/server menetapkan kebijakan tuple:
+`device_id + username + internal-demo + 10.8.0.1 + tcp + 8082`.
+Contoh demo sementara pada VM-SERVER setelah firewall gate terverifikasi. Salin
+hanya `backend/demo/index.html` publik dari kit ke staging operator. Gunakan
+folder baru milik pilot; jangan menimpa service/folder aplikasi yang sudah ada.
 
 ```bash
-module_run="state/deployment/module-$(date +%Y%m%d-%H%M%S)"
-.venv/bin/python scripts/health_lab.py state/lab/inventory.json \
-  --state "$module_run/health" --samples 3 --interval 10
+# VM-SERVER: mulai service demo hanya saat pilot; bukan bagian otomatis installer.
+sudo install -d -o root -g root -m 0755 /srv/vanguard-pilot-demo
+sudo install -o root -g root -m 0644 \
+  /srv/vanguard-pilot/backend/demo/index.html /srv/vanguard-pilot-demo/index.html
+sudo systemd-run --unit=vanguard-pilot-demo --uid=vanguard \
+  --property=NoNewPrivileges=yes --property=ProtectSystem=strict \
+  --property=ProtectHome=yes /usr/bin/python3 -m http.server 8082 \
+  --bind 10.8.0.1 --directory /srv/vanguard-pilot-demo
 ```
 
-Gunakan direktori baru per run. Jika hanya Windows yang aktif, periksa melalui
-bab 8 dan SERVER; jangan mengartikan health runner Ubuntu gagal sebagai bukti
-tunnel Windows gagal.
+Service berjalan sebagai user non-root dan hanya bind alamat tunnel. Jangan
+menyimpulkan aman dari bind saja; gate aplikasi juga wajib menolak ingress LAN.
+Jika nama unit/folder sudah dipakai, inspeksi ownership sebelum menggunakan nama
+lain. Hentikan dengan `sudo systemctl stop vanguard-pilot-demo` setelah pengujian.
 
-## 10. Admin: aktivitas, arsip, dan penghentian akses
+File kebijakan server mengikuti path `VANGUARD_RESOURCE_POLICY` yang dikonfigurasi
+pada server (umumnya `/etc/vanguard/resource-policy.json`), bukan profil client. Pertahankan grant lain yang masih sah; lakukan perubahan dengan validator
+kebijakan/prosedur server. Nilai karyawan aktual hanya inventaris privat.
 
-### 10.1 Mencari tindakan berdasarkan waktu
+Format satu grant (placeholder, bukan akun yang otomatis dibuat):
+
+```json
+{"grants":[{"device_id":"ID_PERANGKAT","username":"AKUN_KARYAWAN","resource":"internal-demo","address":"10.8.0.1","protocol":"tcp","port":8082}]}
+```
+
+Siapkan kandidat file kebijakan privat yang mempertahankan grant sah lainnya.
+Validasi dengan loader aplikasi sebelum operator menerapkannya; output cukup
+jumlah grant, jangan cetak isi akun:
+
+```bash
+# VM-SERVER: validasi kandidat lokal, tidak memasang grant/peer.
+sudo /opt/vanguard/venv/bin/python -c \
+  "from vanguard.resource_policy import load_policy; print('policy valid; grants:',len(load_policy('/etc/vanguard/resource-policy.candidate.json')))"
+```
+
+Operator mempublikasikan file tervalidasi secara atomic pada path kebijakan yang
+sudah dikonfirmasi, mode0600/root. Daemon/renewal menyinkronkan set akses dari
+kebijakan+sesi/lease; jangan menambahkan elemen nft manual untuk melewati admission.
+Jika gate/env belum aktif, berhenti dan selesaikan rollout gate dengan backup;
+keberadaan file JSON saja tidak mengaktifkan enforcement.
+
+Uji HTTP dari endpoint setelah admission dan grant:
+
+```powershell
+curl.exe --connect-timeout 3 --max-time 8 http://10.8.0.1:8082/
+```
+
+Syarat minimum penerimaan pilot:
+
+| Pengujian | Hasil wajib |
+|---|---|
+| Install/enrollment/login saja | Belum ada peer otomatis |
+| Perangkat sah+akun sah+enam cek lolos | Lease dan peer sesuai, handshake teramati |
+| HTTP dengan grant tepat | Berhasil lewat tunnel |
+| Tanpa grant/port lain/LAN langsung .100.20:8082 | Ditolak |
+| Identitas tidak terdaftar/expired/revoked/akun nonaktif | Ditolak, akses terkait dibersihkan |
+| Renewal berulang | Lease diperbarui; validity sertifikat tidak berubah |
+| Logout/revoke PC saat TCP aktif | Akses PC terputus; laptop tetap bekerja |
+| Tukar peran PC/laptop | Isolasi sama, tanpa menghidupkan identitas revoked |
+| Wi-Fi putus/sambung/reboot | Tidak reconnect dengan akses statis; fresh admission wajib |
+| Cleanup gagal | Config dipertahankan sampai ownership/tunnel down pasti |
+| Repair/upgrade/uninstall | Key/config dipertahankan; komponen shared tidak dihapus |
+
+Salin ACCEPTANCE.csv keluar kit. Catat PASS/FAIL/BELUM_DIJALANKAN, waktu UTC/WIB,
+versi, ID uji, lease/handshake/transfer, hasil HTTP dan lokasi bukti tersaring.
+Jangan mengisi PASS hanya karena checklist tersedia. Tes Linux sebelumnya260/1
+bukan bukti kedua endpoint fisik.
+
+## 15. Checklist penerimaan dan hasil yang harus dibuktikan
+
+| Tahap / penanggung jawab | Tindakan dan rujukan | Hasil yang harus terlihat | Berhenti jika |
+|---|---|---|---|
+| T0 Operator | Inventaris, hash kit, backup, console; Bab1–4 | Paket cocok manifest; backup checksum benar; keenam VM tercatat | Hash berbeda/backup tidak terbaca/console tidak tersedia |
+| T1 Operator jaringan | Router, IP, route host/endpoint; Bab8 | .50/24 sesuai rencana, tidak overlap, backend .100/24 tetap | IP duplikat, Wi-Fi terisolasi, interface salah |
+| T2 Operator backend | CA → server → admin, clock/CRL/readiness | Service terkait active dan readiness200 melalui jalur sah |503, CRL invalid/stale, trust tidak cocok |
+| T3 Operator firewall | Review forwarding/NAT/return path dan kandidat VM | Hanya TCP8081/UDP51820 dari dua endpoint; management tetap | API/CA/admin terbuka salah scope, bypass LAN atau akses admin hilang |
+| T4 Operator admin | Backup konsisten dan upgrade admin0.1.12; Bab9 | pip check PASS, service/readiness sehat, profil terbaca | Env hilang, dependency gagal, root/key berbeda |
+| T5 Operator PC | Runtime, preflight, UAC/install, status; Bab10 | Runtime terpasang, tanpa peer/identitas otomatis | Signature/path/hash/UAC/state gagal |
+| T6 Admin+karyawan PC | Init/request/binding/import/login; Bab11 | Binding cocok original key/request, login belum menambah peer | Key hilang/ID reused/akun salah/bundle tidak cocok |
+| T7 Penguji PC | Connect/admission/grant/demo, deny tests; Bab14 | Lease/peer/handshake benar, hanya resource berizin yang lolos | Bypass admission/grant, LAN langsung lolos, cleanup tidak pasti |
+| T8 Laptop | Ulang T5–T7 via Wi-Fi dengan identitas berbeda | Bukti laptop sendiri; SSID/adapter benar | Menggunakan key/ID PC, guest isolation, runtime tidak cocok |
+| T9 Bersama | Renewal, logout/revoke satu sisi, tukar peran | Akses satu sisi terputus sesuai scope; sisi lain tetap | Sesi/perangkat lain ikut terputus atau TCP dicabut tetap berjalan |
+| T10 Operator+admin | Cleanup, arsip audit, serah terima; Bab15–18 | Disposable dicabut, demo berhenti bila selesai, bukti tersimpan | Peer/grant/tunnel/config ownership belum jelas |
+
+### 15.1 Perintah observasi yang tidak menampilkan private key
+
+Di VM-SERVER, gunakan output terarah; **jangan** memakai `wg showconf` atau dump
+konfigurasi/environment ke laporan karena dapat membawa rahasia.
+
+```bash
+# VM-SERVER: public key dan bukti tunnel, bukan private key.
+sudo wg show wg0 peers
+sudo wg show wg0 latest-handshakes
+sudo wg show wg0 transfer
+sudo wg show wg0 allowed-ips
+systemctl is-active vanguard-server vanguard-daemon wg-quick@wg0
+```
+
+Public key tetap metadata identitas; batasi penyebaran laporan sesuai kebutuhan.
+Handshake0 berarti belum pernah terlihat; waktu lama bukan bukti aktif sekarang.
+Byte kumulatif harus dibandingkan sebelum/sesudah request demo, bukan dipakai
+sendiri sebagai bukti akses aplikasi. Server/API/dashboard menyediakan lease dan
+status registered terpisah; nilai unknown harus tetap dicatat unknown.
+
+Jika perlu log untuk kegagalan, operator membacanya pada node privat dalam rentang
+waktu kejadian. Jangan menyalin request lengkap, header Authorization, OTP, password,
+token, key atau environment. Arsip administrator dilakukan melalui dashboard
+agar field kejadian/alasan yang aman tetap konsisten dengan sistem.
+
+### 15.2 Langkah native installer yang wajib dibuktikan
+
+Lakukan pada identitas disposable, setelah baseline/backup. Rekam hash identitas
+sebelum/sesudah secara privat, bukan isi key.
+
+1. Fresh install di path terlindungi: exit0, runtime lengkap, belum ada peer/key
+   yang dibuat installer. Configure/init adalah tahap terpisah.
+2. UAC dibatalkan: exit1223, tidak melanjutkan instalasi. Salah hash manifest:
+   proses gagal, existing identity tidak berubah.
+3. Reinstall/repair: runtime baru lolos check sebelum pointer berganti; key/config
+   tetap. Interupsi: status tidak boleh terlihat INSTALLED jika belum selesai.
+4. Upgrade ketika tunnel aktif: ditolak sampai pemilik menyelesaikan cleanup.
+   Jangan menutup paksa aplikasi lain atau menghapus config.
+5. Path berspasi dan ACL: package/runtime terlindungi; reparse/junction ditolak;
+   pengguna biasa tidak dapat membaca key atau menulis kode elevated.
+6. Uninstall setelah service absent: binary milik aplikasi hilang, data/key/config
+   serta Python/WireGuard shared tetap. Decommission server diuji terpisah.
+
+Checklist ini belum merupakan bukti bahwa hasil di atas sudah tercapai. Linux
+unit tests dan parse PowerShell tidak menggantikan eksekusi Windows native.
+
+Salin ACCEPTANCE.csv dari kit ke folder bukti privat. Matriks template mencakup PC,
+laptop dan bersama; skenario yang tidak berlaku (misalnya putus Wi-Fi pada PC LAN)
+ditandai TIDAK_BERLAKU dengan alasan, bukan PASS. Setiap hasil memerlukan bukti
+waktu dan versi yang sama dengan eksekusi. Jangan menjumlahkan suite overlap atau
+menyalin hasil VM lama menjadi hasil perangkat fisik.
+
+Contoh catatan satu kasus (template, **bukan hasil uji**):
+
+```text
+ID kasus       : PC-ADMISSION-01
+Perangkat      : PC-LAN
+Waktu UTC/WIB  : BELUM_DIISI
+Versi/hash kit : BELUM_DIISI
+Prasyarat      : root/key cocok, akun aktif/binding sah, tanpa peer statis
+Tindakan       : login, buktikan belum ada peer; connect, lakukan request demo
+Hasil harapan  : admission wajib; peer/lease sesuai; HTTP hanya dengan grant
+Hasil aktual   : BELUM_DIJALANKAN
+Bukti aman     : lokasi laporan tersaring; jangan lampirkan token/private key
+Cleanup        : BELUM_DIJALANKAN
+Keputusan      : BELUM_DINILAI
+```
+
+Untuk revoke TCP aktif, koneksi harus benar-benar terbuka sebelum revocation;
+catat waktu revocation, penghentian transfer, status peer/grant dan kondisi endpoint
+lain. Satu request HTTP baru setelah revoke tidak membuktikan sesi TCP lama terputus.
+Untuk renewal, rekam beberapa pembaruan lease beserta sertifikat yang tidak berubah.
+Untuk pengujian expired, gunakan identitas/sesi disposable dan skenario terkontrol;
+jangan mengubah jam CA utama untuk memaksa hasil.
+
+Hasil minimal yang diserahkan:
+
+- Inventaris versi, topologi aktual, root/public key yang diverifikasi, tanpa key privat.
+- Hash kit dan baseline backup yang tersimpan privat, catatan perubahan per tahap.
+- Hasil PC, laptop dan bersama, termasuk denial/bypass/renewal/cleanup/isolasi logout.
+- Arsip aktivitas admin beserta filter waktu dan checksum; simpan bukti kegagalan.
+- Daftar disposable yang dicabut, grant/service/route pilot yang dibersihkan.
+- Keterbatasan yang belum diuji, pemilik tindak lanjut dan keputusan pilot diterima/ditunda.
+
+Arsip dashboard adalah snapshot yang dapat diverifikasi, bukan ledger yang tahan
+perubahan oleh root VM. Jika perlu retensi/off-site, salin arsip ke penyimpanan
+terkontrol sesuai kebijakan, tanpa menghapus bukti lama otomatis.
+
+## 16. Audit, arsip, pencabutan dan penggantian identitas
+
+### 16.1 Mencari tindakan berdasarkan waktu
 
 1. Klik **Aktivitas admin**.
 2. Pilih tanggal mulai/akhir dalam WIB, lalu filter pelaku, ID perangkat atau
@@ -1045,7 +1559,7 @@ Satu tindakan dapat memiliki tahap diminta, gagal, retry dan selesai.
 aktor otomatis dengan admin yang sedang login. Waktu sumber disimpan Unix/UTC,
 sedangkan tampilan dan CSV menggunakan WIB.
 
-### 10.2 Menyimpan arsip yang dapat diverifikasi
+### 16.2 Menyimpan arsip yang dapat diverifikasi
 
 1. Setelah filter sesuai, klik **Simpan arsip aktivitas**.
 2. Snapshot memuat seluruh hasil filter, bukan hanya halaman yang sedang tampil.
@@ -1060,7 +1574,7 @@ Arsip tidak menghapus log asal. Arsip tersimpan dalam database VM-ADMIN, sehingg
 backup database tetap diperlukan. Checksum bukan tanda tangan digital dan tidak
 menjamin ketahanan terhadap root VM yang dapat mengubah database.
 
-### 10.3 Mencabut akses
+### 16.3 Mencabut akses
 
 Pada perangkat yang memang hendak dihentikan, pilih alasan dan klik
 **Cabut akses & sertifikat**. Tunggu status `revoked`, periksa peer hilang dan
@@ -1073,159 +1587,7 @@ device ID dan key baru untuk pemakaian berikutnya; bukan edit metadata.
 Gunakan identitas disposable untuk latihan, bukan `vm-client` atau
 `vm-client-windows` yang sedang dipakai.
 
-## 11. Praktikum dan penilaian
-
-Praktikum dilakukan pada lab yang diotorisasi. Alokasi waktu berikut hanya
-perkiraan untuk sesi pembelajaran, bukan hasil benchmark.
-
-| Praktikum | Waktu | Tugas dan keluaran |
-|---|---|---|
-| A: orientasi | 20 menit | Gambar enam node dan jelaskan tiga jenis akun |
-| B: kesiapan | 20 menit | Periksa VM, waktu, trust dan health; catat kendala |
-| C: pemakaian | 30 menit | Login client yang dipilih, handshake/ping, disconnect |
-| D: administrator | 25 menit | Login TOTP, cari aktivitas WIB, buat/cek arsip |
-| E: enrollment latihan | 45 menit | Identitas disposable → registered → admission → revoke → cleanup |
-
-Praktikum E memakai prosedur terpisah pada
-[tutorial bab 7](TUTORIAL_PENGGUNAAN.md). Prosedur tersebut mengikuti client
-Ubuntu 0.1.5 yang terpasang dan memakai alamat eksperimen.3. Pastikan tidak ada
-eksperimen lain aktif. Latihan `admit` tidak membuktikan trafik; pengujian ping
-tetap dilakukan pada client utama. Jangan menyalin key ke attacker.
-
-Contoh penilaian: kesiapan20 poin, penjelasan akun/admission20, koneksi dan
-disconnect30, audit/arsip20, pencatatan aman10. Lulus minimal 80/100 dan tidak
-memasukkan kredensial/private key pada bukti. Rubrik ini usulan pembelajaran.
-
-Pertanyaan evaluasi:
-
-1. Mengapa password karyawan yang benar belum cukup untuk mendapatkan tunnel?
-2. Apa perbedaan `registered`, peer aktif, handshake dan ping berhasil?
-3. Mengapa login karyawan harus diulang meskipun renewal perangkat berjalan?
-4. Apa perbedaan disable akun, revoke sertifikat dan logout dashboard?
-5. Mengapa checksum arsip belum membuktikan bahwa root VM tidak mengubah isinya?
-
-Jawaban inti: akun dan perangkat diperiksa terpisah; registry bukan akses;
-lease dibatasi sesi login; tindakan penghentian memiliki sasaran berbeda;
-checksum tidak memiliki penandatangan independen.
-
-## 12. Mengakhiri sesi dan mematikan lab
-
-1. Karyawan Windows: Ctrl+C pada connect dan periksa cleanup sesuai bab 8.
-2. Karyawan Ubuntu: `sudo systemctl stop vanguard-client`; pastikan `wg0`
-   tidak aktif pada client. Perintah ini tidak mematikan interface server.
-3. Admin: simpan arsip bila perlu, kemudian klik **Keluar**.
-4. Jika seluruh lab hendak dimatikan, dari HOST kirim shutdown normal:
-
-```bash
-virsh -c qemu:///system shutdown VM-CLIENT-WINDOWS
-virsh -c qemu:///system shutdown VM-CLIENT
-virsh -c qemu:///system shutdown VM-ATTACKER
-virsh -c qemu:///system shutdown VM-ADMIN
-virsh -c qemu:///system shutdown VM-SERVER
-virsh -c qemu:///system shutdown VM-CA
-virsh -c qemu:///system list --all
-```
-
-Kirim hanya pada VM running. Tunggu seluruh target `shut off` sebelum mematikan
-host. Respons shutdown sukses berarti permintaan terkirim, bukan guest pasti
-sudah mati. Jika Windows tidak merespons ACPI, gunakan Start → Power → Shut down
-di console. Hindari force-off saat CA menulis state.
-
-Backup oleh teknisi: hentikan layanan penulis terkait atau gunakan backup SQLite
-konsisten, lalu simpan konfigurasi `/etc/vanguard`, state `/var/lib/vanguard`,
-WireGuard `/etc/wireguard` dan versi paket sebelumnya di lokasi privat. Backup
-CA berisi key sensitif; batasi akses. Pemulihan tidak boleh mengembalikan index/CRL
-lama sehingga sertifikat tercabut menjadi berlaku kembali. Catat tanggal,
-hash backup, layanan yang dihentikan/dimulai, dan pemeriksaan setelah pemulihan.
-
-## 13. Pemecahan masalah
-
-| Gejala | Pemeriksaan dan langkah berikutnya |
-|---|---|
-| VM running tetapi SSH gagal | Tunggu boot; periksa NIC/IP dan console; jangan hapus known_hosts sembarangan |
-| Windows meminta password | Gunakan akun console pada kartu lokal; autologon sengaja dinonaktifkan |
-| Dashboard tidak terbuka | Periksa VM-ADMIN, service, port 5000 dari host dan root CA; gunakan HTTPS |
-| TOTP ditolak | Periksa waktu HP/VM, gunakan kode baru, tunggu lockout bila tercapai |
-| CA/Server tidak tersedia | Periksa service, waktu, HTTPS antarlayanan dan log unit; jangan menganggap peer pasti mati/aktif |
-| Login karyawan gagal | Pastikan memakai akun VPN yang tepat, akun aktif, password benar; bukan akun console/admin |
-| Session expired | Login karyawan ulang kemudian restart/connect; renewal tidak memperpanjang delapan jam |
-| Certificate/key mismatch | Cocokkan device ID dan sertifikat dengan CSR asli; jangan menyalin key client lain |
-| Tunnel config exists | Pastikan proses lama berhenti, inspect interface/service; simpan config sebelum pemulihan oleh teknisi |
-| Windows meminta elevation | Buka PowerShell Run as administrator; hak akun saja belum selalu membuat terminal elevated |
-| Windows cleanup timeout | Inspect service WireGuard khusus; config sengaja dipertahankan; jangan hapus semua direktori client |
-| Handshake/ping gagal | Periksa peer, UDP 51820, endpoint, alamat.2/.4, firewall wg0 dan trust; jangan tambah peer manual |
-| registered tetapi peer tidak aktif | Login dan jalankan connect; registrasi saja memang belum membuka akses |
-| revoking belum selesai | Periksa CA/server kemudian retry workflow pada identitas yang sama |
-| Arsip melebihi batas | Perkecil tanggal/filter, lalu buat beberapa snapshot |
-| Host reboot mendadak | Periksa state/log aktual sebelum resume; log IN_PROGRESS bukan PASS |
-| CRL counter kosong setelah shutdown | Hentikan perubahan CA, backup, eskalasi ke teknisi; jangan init CA atau rollback index |
-
-Untuk diagnosis layanan Ubuntu, gunakan `sudo journalctl -u NAMA_UNIT -n 50
---no-pager`. Tinjau hasil secara privat sebelum menyalin ke laporan. Pemulihan
-counter CA15 Oktober menjaga signature, monotonic counter dan seluruh revocation;
-ini tindakan teknisi berdasarkan bukti, bukan perintah rutin pengguna.
-
-## 14. Bukti yang tersedia dan pekerjaan berikutnya
-
-| Bukti historis | Status yang dapat diklaim |
-|---|---|
-| Source0.1.8 commit 78ff14e, CI 38692866340 | Linux3.10/3.12 masing-masing163 PASS +1 SKIP; Windows 23 PASS |
-| Guest Windows 15 Oktober | Login console/SSH, enrollment tanpa peer, sesi/proof invalid ditolak, admission, handshake, ping dan cleanup PASS |
-| Dua client 15 Oktober | Ubuntu.2 dan Windows.4 aktif bersamaan, dua handshake dan ping PASS |
-| Renewal otomatis Windows | Satu siklus normal sekitar 61,83 detik dan cleanup PASS; bukan soak test |
-| Boot sesudah host restart | SSH pulih; tunnel idle tidak otomatis aktif; bukan uji reboot saat tunnel aktif |
-| Penghapusan peer setelah lease habis | Bukti terakhir IN_PROGRESS; belum dinyatakan PASS |
-| Revocation Windows, reboot saat tunnel aktif | Belum diverifikasi |
-| Benchmark formal tiga konfigurasi ×10 | Belum selesai; jangan memakai pilot n=1 sebagai hasil statistik |
-| Pemeriksaan17 Oktober | Enam VM shut off; dokumen disusun dari source/bukti, bukan uji live ulang |
-
-Untuk proposal, uraikan enam node dan dua platform client secara eksplisit.
-Pisahkan hasil admission, handshake dan trafik. S-01 menggunakan kredensial
-**karyawan** yang dicuri pada perangkat tidak dipercaya. MTTD/MTTR aplikasi
-mengikuti definisi yang terdokumentasi; MTTR berarti **Mean Time to Respond**.
-Pemakaian sistem oleh user berarti akses lab yang diizinkan, bukan otomatis
-memenuhi semua target penelitian. Lihat [matriks proposal](PROPOSAL_ALIGNMENT.md)
-dan [catatan revisi proposal](SARAN_REVISI_PROPOSAL_2026-10-12.md).
-
-## 15. Lembar kerja dan serah terima
-
-Salin tabel ini ke catatan praktikum. Jangan mengisi password/token/private key.
-
-| Isian | Hasil peserta |
-|---|---|
-| Tanggal/jam WIB dan operator | … |
-| Versi/modul/commit yang digunakan | … |
-| VM/client dan device ID | … |
-| Status layanan dan waktu | … |
-| Login admin/karyawan berhasil atau kendala | … |
-| Status registry sebelum admission | … |
-| Handshake, alamat tunnel dan hasil ping | … |
-| Penghentian tunnel dan hasil cleanup | … |
-| Filter audit, nama arsip dan checksum | … |
-| Lokasi bukti privat | … |
-| Masalah tersisa, status terakhir, langkah berikutnya | … |
-
-Serah terima selesai bila pengguna dapat login, memakai tunnel sesuai haknya,
-memverifikasi akses, dan menutup koneksi; admin dapat menelusuri/menyimpan audit;
-teknisi memiliki backup serta catatan kendala. Kredensial diserahkan terpisah
-melalui inventaris lokal, dengan folder0700 dan file0600.
-
-Dokumen pendukung: [checkpoint](CHECKPOINT.md), [panduan Windows](WINDOWS_CLIENT.md),
-[aktivitas admin](DASHBOARD_0.1.6.md), [akses karyawan](EMPLOYEE_ACCESS.md),
-[deployment](DEPLOYMENT.md), [definisi metrik](RESPONSE_METRICS.md).
-
-Untuk menghasilkan ulang HTML di HOST, renderer memakai paket `markdown-it-py`
-yang sudah tersedia pada Python sistem di komputer ini:
-
-```bash
-python3 scripts/render_module.py docs/MODUL_PENGGUNAAN_VANGUARD.md \
-  docs/MODUL_PENGGUNAAN_VANGUARD.html
-```
-
-HTML tidak memuat script, font eksternal atau kredensial. Buka di browser dan
-pilih Ctrl+P → Simpan sebagai PDF → A4 untuk salinan cetak.
-
-### 15.1 VanGuard0.1.9: logout, status dan penggantian identitas
+### 16.4 VanGuard0.1.9: logout, status dan penggantian identitas
 
 Paket **0.1.9** dari branch `hardening/2026-10-18-resilience` sudah dipasang pada
 lima Ubuntu dan satu Windows20 Oktober, dengan backup serta verifikasi identitas.
@@ -1293,116 +1655,173 @@ pendaftaran perangkat saja tidak memberi grant. Rincian backup, rollout, recover
 CA tanpa rollback index/CRL dan matriks pengujian ada pada
 [panduan hardening 0.1.9](HARDENING_0.1.9.md).
 
-### 15.2 Windows lambat terbuka
 
-Konfigurasi VM Windows diperbaiki19 Oktober dengan clock/timer Hyper-V.
-Secure Boot,TPM dan file identitas tetap terverifikasi. Pada pengukuran tunggal
-sesudah perubahan, SSH siap27,49detik; ini bukan jaminan waktu desktop/VPN.
-Tunggu tampilan login merespons sebelum memasukkan password. Jangan mengulang
-instalasi atau reset password hanya karena layar belum merespons.
+### 16.5 Batas audit yang harus dipahami admin
 
-Pengujian clock native menunjukkan perbaikan, tetapi waktu tunggu login,
-aktivitas startup dan beban disk/RAM host juga berpengaruh. Lima Ubuntu tetap
-ada; nyalakan hanya layanan yang diperlukan secara bertahap. Rincian bukti,
-keterbatasan dan pemulihan XML ada di [panduan Windows](WINDOWS_CLIENT.md).
+Snapshot menyimpan seluruh hasil filter, source tidak dihapus. Pembuatan arsip
+dicatat setelah isi snapshot sehingga event pembuatannya sendiri tidak ada di ZIP.
+CSV UTF-8 BOM menetralkan formula; filter tanggal inklusif WIB dan pagination50.
+Unduhan memeriksa checksum terlebih dahulu. Audit dashboard dan audit server
+berbeda database/VM; bukan transaksi terdistribusi atau ledger tahan root.
+Backup admin.db mencakup arsip, tetapi bukan salinan off-site. Jangan menghapus
+bukti lama default; ukur pertumbuhan database/log/disk melalui halaman Operations.
+Alasan revoke: device_lost, suspected_compromise, retired, access_change,
+test_cleanup, operator_request. Pending_issue/pending_registry/revoking memerlukan
+retry setelah dependensi pulih; jangan membuat CA/key baru untuk retry yang sama.
 
-### 15.3 Pilot PC Windows LAN dan laptop Windows Wi-Fi
+## 17. Operasi harian, shutdown, backup dan pemulihan
 
-**Tambahan22 Oktober2026: kandidat lokal0.1.12, belum dipasang atau dipublikasikan.**
-Enam VM lab tetap ada; PC dan laptop fisik menggunakan identitas tambahan. Jangan
-memakai bootstrap VM pada perangkat fisik atau membuat ulang CA. Panduan langkah
-terperinci, rencana rule/route, paket dan matriks hasil tersedia pada
-[pilot endpoint Windows](ENDPOINT_WINDOWS_PILOT.md). Persiapan22Oktober telah
-dilanjutkan dengan otorisasi pengguna24Oktober untuk uji installer VM dan push.
-Gunakan [paket lengkap terbaru](../downloads/README.md) dan
-[panduan Windows](../deploy/endpoint/windows/SETUP_WINDOWS.md); jaringan fisik belum diterapkan.
+### 17.1 Sebelum dipakai
 
-Rencana router192.168.50.1/24 menghubungkan host Linux .50.10 melalui Ethernet,
-PC .50.20 melalui LAN, laptop .50.30 melalui Wi-Fi. Backend tetap .100/24, tunnel
-10.8/24. Endpoint memakai route /32 menuju server .100.20 melalui host .50.10;
-host/libvirt/VM firewall harus ditinjau bersama. Hanya HTTPS8081 dan WG UDP51820,
-bukan akses langsung aplikasi8082/CA/admin. IP tunnel .5/.6 baru usulan; admin
-harus memastikan registry sebelum alokasi, jangan menyimpulkan kosong dari ping.
+Operator memastikan host mendapat daya dan tidak sleep, tiga backend tersedia,
+waktu sinkron, disk/log cukup, readiness dependency sehat serta CRL aktual.
+Admin meninjau sertifikat mendekati expiry dan akun/perangkat nonaktif. Karyawan
+memeriksa profil yang disetujui, login dan connect melalui launcher. Tidak perlu
+init, enrollment ulang atau generate CA setiap hari.
 
-Urutan pilot setelah izin penerapan dan verifikasi native:
+Jika certificate hampir kedaluwarsa, rencanakan penggantian immutable: siapkan key/
+request baru pada client, ikuti alur replace admin setelah pencabutan lama sesuai
+prosedur, preserve histori/binding. Lease renewal tidak memperpanjang sertifikat.
+Jangan menimpa direktori identitas lama sebelum tunnel down terkonfirmasi.
 
-1. Operator menyiapkan jaringan, prasyarat Windows11x64/Python3.13x64/WireGuard,
-   backup dan paket offline lengkap Python/WireGuard pada path admin-only. Cocokkan hash ZIP dan
-   publisher runtime lewat kanal tepercaya. Paket unsigned belum siap distribusi.
-2. Install-VanGuard.bat menjalankan installer PowerShell/UAC. Aplikasi terpasang
-   belum berarti enrolled/login/VPN. Installer tidak mengubah NIC, membuat key,
-   menambah peer atau mengunduh runtime otomatis.
-3. Launcher `VanGuard.bat configure` meminta profil/root tepercaya beserta
-   fingerprint root dan public key server. Config tidak ditimpa. `init`
-   meminta ID/IP yang dialokasikan admin; kedua private key dibuat pada endpoint.
-4. Kirim request.json ke admin, daftar dan bind akun. Bundle publik hasil admin
-   diimpor dengan `import-bundle`, cocok dengan root/profil/key/request
-   asli. Tidak ada private key dikirim balik atau akses otomatis saat import.
-5. `diagnose` memeriksa readiness HTTPS; UDP/aplikasi masih unknown.
-   `login` meminta password tersembunyi, lalu `connect` menjalankan
-   preflight, admission dan renewal. Terminal pemilik harus tetap terbuka.
-6. Admin memeriksa lease/peer/handshake/transfer dan memberi grant explicit
-   internal-demo TCP8082. Buktikan HTTP lewat10.8.0.1:8082 berhasil dengan grant
-   serta ditolak tanpa grant/LAN langsung. Ping bukan syarat pilot fisik.
-7. Ulangi pada laptop Wi-Fi, kemudian kedua endpoint bersamaan. Logout/revoke
-   satu endpoint harus memutus aksesnya tanpa memutus yang lain. Catat renewal,
-   Wi-Fi putus/sambung, active TCP revocation, expiry/reboot dan cleanup sebenarnya.
-8. Ctrl+C atau `disconnect` meminta cleanup lokal; `logout`
-   mencabut sesi server. Jika server tidak terjangkau, revocation belum
-   terkonfirmasi. Jangan menghapus config jika ownership/tunnel down belum pasti.
-9. Setelah pilot, cabut identitas/sesi/grant disposable, hentikan demo sementara
-   dan pulihkan hanya route/rule pilot. Preserve identitas utama dan histori CA.
+### 17.2 Selama layanan dipakai
 
-Runtime berada di Program Files/VanGuardEndpoint, sedangkan identity/config/log
-terpisah di Program Files/VanGuardEndpointData dengan akses SYSTEM/Administrators.
-Reinstall/repair membangun runtime baru tanpa rotasi key; uninstall mempertahankan
-data serta Python/WireGuard bersama. Pemulihan parsial otomatis, shortcut GUI,
-ARM64 dan signing organisasi belum tersedia. Native installer VM24Oktober sudah
-diuji: runtime kosong/reuse, ACL/policy dan uninstall/reinstall. Lihat
-[hasil per run](VALIDASI_INSTALLER_2026-10-24.md). UAC interaktif dan pilot PC/laptop
-**BELUM_TERUJI**. WIN-CLEANUP-02 tetap perlu uji target terpisah.
+Bedakan domain running, service active, liveness, readiness, lease, peer, handshake
+serta transfer. Masing-masing menjawab pertanyaan berbeda. Pantau halaman
+penyimpanan operasional, pertumbuhan database/audit dan ruang disk; jangan menghapus
+log/database untuk membuat grafik terlihat baik. Rekam alasan gagal yang aman.
 
-### 15.4 Persiapan pemasangan pada perangkat nyata
+Untuk perubahan profil/port/trust atau upgrade runtime, buat window, backup dan
+uji kompatibilitas baru. Signing/hash paket harus diperbarui ketika isi berubah;
+jangan mengedit ZIP terverifikasi lalu memakai checksum sebelumnya. Hindari
+mengubah interface/IP aktif di tengah sesi tanpa rencana kehilangan koneksi.
 
-Topologi dikonfirmasi22 Oktober: router khusus192.168.50.1/24, host Linux.50.10,
-PC LAN.50.20 dan laptop Wi-Fi.50.30; backend/enam VM lama tetap. Kit penerapan
-menggabungkan installer Windows r3, profil publik, wheel admin0.1.12, pemeriksa
-read-only, demo publik dan template acceptance. Baca
-[panduan pemasangan nyata](INSTALL_REALWORLD.html) untuk langkah rinci dan
-perintah yang dijalankan pada host/VM/Windows yang benar.
+### 17.3 Mengakhiri hari atau pilot
 
-Urutannya: backup dan runtime tepercaya; jaringan/backend; periksa root/key;
-upgrade aplikasi admin untuk bundle berprofil; install PC; generate request dan
-enrollment; login/admission/demo; ulangi laptop; uji isolasi dua endpoint dan
-rollback. Aplikasi admin perlu0.1.12 untuk field profil; server0.1.11 tetap memakai
-kontrak admission/logout/resource gate yang sudah ada. Jangan membuat ulang CA.
+1. Karyawan menutup akses aplikasi, disconnect lalu logout ketika server masih
+   terjangkau. Admin memastikan lease/peer/grant terkait sudah dibersihkan.
+2. Selesaikan akun/identitas disposable dan hentikan demo sementara jika pilot
+   selesai. Jangan mencabut identitas utama hanya untuk mematikan mesin.
+3. Simpan arsip audit dan laporan hasil. Backup terbaru mengikuti konsistensi
+   aplikasi dan lokasi privat; tidak menggantikan histori backup sebelumnya.
+4. Operator menghentikan backend secara normal setelah memastikan tidak ada user
+   aktif. Shutdown admin, server, lalu CA; konfirmasi keadaan guest sebelum host
+   dimatikan. Hindari forced power-off sebagai rutinitas.
+5. Pada pemakaian berikutnya, urutan startup CA → server → admin dan verifikasi
+   readiness diulang. Reboot bukan bukti revocation; fresh admission tetap wajib.
 
-Pemeriksa host aktual masih BLOCKED karena Ethernet pilot belum siap dan backend
-mati. Unit tests Linux bukan bukti UAC/ACL/installer native atau koneksi fisik.
-Kit sistem22Oktober dipertahankan sebagai arsip; gunakan installer24Oktober yang
-menyertakan runtime Python/WireGuard terverifikasi. Script aplikasi unsigned;
-tidak ada credential/private key di kit. Pemeriksa integritas PASS
-hanya membuktikan file cocok manifest dari kanal tepercaya, bukan siap produksi.
+1. Karyawan Windows: Ctrl+C pada connect dan periksa cleanup sesuai Bab12.
+2. Karyawan Ubuntu: `sudo systemctl stop vanguard-client`; pastikan `wg0`
+   tidak aktif pada client. Perintah ini tidak mematikan interface server.
+3. Admin: simpan arsip bila perlu, kemudian klik **Keluar**.
+4. Jika seluruh lab hendak dimatikan, dari HOST kirim shutdown normal:
 
+```bash
+virsh -c qemu:///system shutdown VM-CLIENT-WINDOWS
+virsh -c qemu:///system shutdown VM-CLIENT
+virsh -c qemu:///system shutdown VM-ATTACKER
+virsh -c qemu:///system shutdown VM-ADMIN
+virsh -c qemu:///system shutdown VM-SERVER
+virsh -c qemu:///system shutdown VM-CA
+virsh -c qemu:///system list --all
+```
 
-### 15.5 Runbook penerapan lengkap dan serah terima
+Kirim hanya pada VM running. Tunggu seluruh target `shut off` sebelum mematikan
+host. Respons shutdown sukses berarti permintaan terkirim, bukan guest pasti
+sudah mati. Jika Windows tidak merespons ACPI, gunakan Start → Power → Shut down
+di console. Hindari force-off saat CA menulis state.
 
-Revisi dokumentasi2 melengkapi [panduan penerapan nyata](INSTALL_REALWORLD.html)
-dengan17bab bernomor serta daftar isi. Dokumen menyediakan pembagian tugas,
-prasyarat perangkat/runtime, jaringan, backup, upgrade admin, PC dahulu/laptop
-kemudian, enrollment, demo, denial tests, recovery dan operasi harian.
+Backup oleh teknisi: hentikan layanan penulis terkait atau gunakan backup SQLite
+konsisten, lalu simpan konfigurasi `/etc/vanguard`, state `/var/lib/vanguard`,
+WireGuard `/etc/wireguard` dan versi paket sebelumnya di lokasi privat. Backup
+CA berisi key sensitif; batasi akses. Pemulihan tidak boleh mengembalikan index/CRL
+lama sehingga sertifikat tercabut menjadi berlaku kembali. Catat tanggal,
+hash backup, layanan yang dihentikan/dimulai, dan pemeriksaan setelah pemulihan.
 
-| Kebutuhan | Bagian panduan penerapan |
+### 17.4 Urutan rollback yang harus dipahami sebelum mulai
+
+Tetapkan siapa yang boleh menghentikan pilot dan di mana console tersedia.
+Rollback dimulai ketika kehilangan jalur administrasi, trust/key tidak cocok,
+default-deny gagal, identitas lain terputus oleh logout scoped, atau cleanup
+kepemilikan tidak pasti. Hentikan tahap berikutnya; simpan bukti tersaring.
+
+1. Cabut sesi/grant pilot melalui server/admin yang sah; verifikasi peer/aplikasi
+   endpoint terkait terputus, pertahankan scope endpoint lain.
+2. Hentikan proses connect milik pilot. Konfirmasi teardown; jika gagal, tangani
+   WIN-CLEANUP-02 dengan ownership terverifikasi sebelum menyentuh config.
+3. Hapus hanya route /32 dan rule bertanda pilot yang baru dibuat, memakai interface,
+   next-hop atau handle yang dicatat. Jangan flush tabel global/libvirt.
+4. Bila upgrade admin gagal, pulihkan runtime/env/unit/profil kompatibel yang
+   di-backup; pertahankan database/CA terkini dan histori pencabutan.
+5. Periksa lagi akses console/management, readiness, nol akses disposable dan
+   identitas utama tetap. Catat hasil rollback, bukan hanya perintah yang dijalankan.
+
+Jika tidak bisa memastikan restore runtime kompatibel, biarkan layanan terkait
+berhenti/fail-closed dan eskalasi ke operator. Jangan mengembalikan CA/database
+lama untuk mengejar hasil hijau.
+
+## 18. Troubleshooting dan serah terima
+
+| Gejala | Pemeriksaan pertama | Tindakan aman / kriteria selesai |
+|---|---|---|
+| Preflight host BLOCKED | Alamat Ethernet .50.10/24 dan status CA/server/admin | Selesaikan jaringan/startup sesuai window; exit2 tetap perlu review manual |
+| PC dapat menghubungi API, laptop tidak | SSID/guest isolation/IP/route /32/adapter Wi-Fi | Betulkan SSID/rute yang disetujui; jangan membuka CA/admin |
+| Timeout HTTPS sebelum tunnel | Route .100.20/32, host forwarding efektif, libvirt filter, firewall VM, listener | Telusuri jalur satu per satu; TCP8081 harus berhasil dengan TLS valid |
+| TLS certificate verify failed | Waktu, URL/SAN, root fingerprint independen | Cocokkan ke layanan aktif; jangan verify=False atau mengganti trust dari ZIP semata |
+| Readiness503 | Detail dependency unknown/not_ready, waktu/CRL/daemon/disk | Atasi dependency; liveness200 tidak cukup, jangan memperpanjang timeout tanpa bukti |
+| Installer gagal sebelum UAC | Hash paket, sumber admin-only, ACL/reparse, execution policy organisasi | Tempatkan lewat operator pada path terlindungi; signing bila wajib, bukan bypass policy |
+| Python tidak ditemukan/tidak cocok | Path absolut, 3.13,64bit,pip/venv, lokasi terlindungi | Pasang runtime resmi yang sesuai; jangan menimpa runtime aplikasi lain |
+| WireGuard signature/publisher ditolak | Hash sesuai runtime-lock dan Authenticode publisher WireGuard LLC valid | Periksa asal paket dan waktu/trust store; jangan menonaktifkan verifikasi |
+| Config sudah ada | Ownership instalasi, file profil/root lama, setup-state | Bandingkan konfigurasi; jangan hapus config/key agar configure dapat berjalan |
+| Init menolak direktori tidak kosong | Apakah identitas sudah pernah dibuat | Lanjutkan identitas yang sah; init bukan reset atau repair key |
+| Import bundle ditolak | Original request/ID/IP/WGkey, root/profil, cert/key, validity | Minta bundle yang benar; tidak menyalin private key dari perangkat lain |
+| Login gagal | Akun karyawan aktif dan binding perangkat yang benar | Admin memeriksa akun; username/password tidak diunggah ke laporan |
+| Login berhasil tetapi connect ditolak | Enam cek perangkat, sesi, CRL, revocation, clock | Perbaiki sebab terkonfirmasi; kredensial valid bukan izin melewati admission |
+| Peer ada tetapi handshake belum terlihat | Endpoint UDP51820, server public key, route/NAT/filter balasan | Buktikan lalu lintas UDP; ping/TCP/API saja belum cukup |
+| Handshake ada tetapi HTTP demo gagal | Demo aktif/bind10.8.0.1, grant identity+akun, lease valid, gate aktif | Benahi grant/listener yang benar; jangan membuka LAN atau menambah peer statis |
+| HTTP LAN langsung justru berhasil | Ingress interface, gate sebelum established, target/port pengujian | Hentikan pilot; enforcement gagal sampai bypass ditutup dan diuji ulang |
+| Renewal terhenti/lease habis | Terminal connect, sesi8jam, clock/CA/daemon/koneksi | Fresh login bila sesi expired; lease renewal tidak memperpanjang sertifikat |
+| Disconnect timeout / service hang | Pemilik proses/service, marker, config, status server | Cabut akses server; pastikan teardown sebelum mengarsipkan config; WIN-CLEANUP-02 |
+| Logout server tidak terjangkau | Jalur API/layanan | Pencabutan belum terkonfirmasi; retry/admin revoke, bukan tampilkan sukses |
+| Setelah reboot tidak terhubung | Route ActiveStore hilang, terminal renewal tidak hidup | Periksa route/preflight lalu login/admission baru; jangan autostart peer statis |
+| Kit integrity gagal setelah mengisi checklist | File acceptance diedit di dalam kit atau ada file tambahan | Gunakan salinan checklist di luar kit; kembalikan kit dari ZIP terverifikasi |
+
+Jangan mengubah banyak lapisan sekaligus. Catat gejala, waktu, dugaan, satu perubahan,
+hasil pengukuran ulang dan keputusan lanjut/rollback. Jika belum diuji, gunakan
+BELUM_DIJALANKAN; jika pemeriksaan tidak bisa dilakukan, gunakan UNKNOWN beserta
+alasan. Catat kegagalan sekalipun percobaan berikutnya berhasil.
+
+### 18.1 Formulir serah terima
+
+| Item serah terima | Isi/keputusan |
 |---|---|
-| Instalasi per host/VM/Windows | Bab1–10; baca label lokasi eksekusi setiap perintah |
-| Rencana topologi, window dan rollback | Bab12 |
-| Syarat lanjut/berhenti dan hasil yang harus terlihat | Bab13 |
-| Diagnosis berdasarkan gejala | Bab14 |
-| Format bukti pengujian dan penerimaan | Bab15 |
-| Operasi rutin, expiry, shutdown | Bab16 |
-| Serah terima dan hubungan dengan CA | Bab17 |
+| Tanggal, operator, admin penerima | BELUM_DIISI; identitas personal rinci disimpan privat |
+| Versi/hash kit dan aplikasi terpasang per node | BELUM_DIISI; jangan menganggap versi kandidat sudah terpasang |
+| Diagram jaringan dan rule/route aktual | BELUM_DIISI; rencana tidak sama dengan hasil diterapkan |
+| Hasil PC LAN/laptop Wi-Fi/bersama | BELUM_DIJALANKAN |
+| Bukti default-deny dan scoped logout/revoke | BELUM_DIJALANKAN |
+| Backup, checksum, lokasi dan akses pemulihan | BELUM_DIISI; lokasi privat, bukan password |
+| Sertifikat expiry, prosedur replace dan CRL | BELUM_DIISI |
+| Penanggung jawab operasi/audit/insiden | BELUM_DIISI |
+| Daftar masalah terbuka dan rencana penyelesaian | WIN-CLEANUP-02/native/fisik/soak/power-loss sesuai bukti aktual |
+| Keputusan penerimaan | DITUNDA sampai kriteria target terpenuhi; jangan tanda tangan hasil fiktif |
 
-Cetak HTML ke PDF A4 dengan Ctrl+P bila diperlukan. Isi formulir/bukti di salinan
-terpisah dari kit agar manifest tidak berubah. Dokumen adalah panduan, bukan
-pernyataan native Windows atau endpoint fisik sudah lulus. Paket aplikasi tetap
-0.1.12r3; revisi dokumentasi tidak memasang perangkat atau memperbarui CA.
+
+### 18.2 Catatan status dan bukti
+
+Catat nomor commit, versi OS/build/arsitektur, checksum ZIP, waktu UTC/WIB,
+mesin, skenario, PASS/FAIL/BELUM_TERUJI dan lokasi bukti privat. Hasil mock/Linux,
+Windows helper CI, Windows11 VM, Windows10 VM dan PC fisik harus terpisah.
+Laporan hasil tersedia pada CHECKPOINT.md dan VALIDASI_INSTALLER_2026-10-24.md;
+manual ini adalah instruksi, bukan pengganti laporan eksekusi.
+
+Gap lama: power-loss media CA, soak panjang, Windows immediate-interrupt cleanup
+WIN-CLEANUP-02. Jangan memulihkan index/CRL lama, menebak counter, atau menghapus
+config tunnel sebelum ownership/penghentian dipastikan. Contoh latihan menggunakan
+identitas baru dengan alokasi admin, bukan key client utama atau alamat yang
+masih dipakai. Setelah latihan cabut identitas, disable akun disposable, hapus
+grant scoped dan pastikan peer/tunnel hilang sebelum menyatakan cleanup selesai.
+
+Serah terima admin: demonstrasikan urutan Bab10–16, verifikasi akses tanpa grant
+ditolak, simpan arsip aman, jelaskan perbedaan Root CA dan CSR endpoint. Username/
+password disampaikan hanya kanal privat dan inventaris lokal, bukan manual ini.

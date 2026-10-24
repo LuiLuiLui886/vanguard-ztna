@@ -1,5 +1,16 @@
 # Lanjutkan proyek VanGuard
 
+**IN_PROGRESS — manual tunggal dan Windows10,24Oktober:** source pada branch
+feature, belum dipush.14tutorial digabung menjadi manual18bab MD/HTML; link dan
+builder sudah disesuaikan. Installer baru mengizinkan Windows10x64 build19044/19045,
+namun native10 belum terbukti. VM-CLIENT-WINDOWS10 baru .100.70/disk40GiB didefinisikan
+belum boot; enam node asli terjaga, seluruh VM saat entry ini shut off. Media ISO
+Microsoft sedang diunduh/range-resume di state/manual-win10-20261024/, jangan
+menjalankan provisioning/seed credential ulang. Setelah hash resmi cocok jalankan
+start_vm10.py sekali, periksa marker instalasi; jangan format ulang bila terinterupsi.
+Full Linux suite sedang berjalan; paket-r1/seed privat sudah siap. Catatan di bawah
+merupakan hasil installer Windows11 sebelumnya, bukan hasil Windows10.
+
 **24 Oktober: installer native selesai dan ZIP sudah di main.**
 Baca [checkpoint](docs/CHECKPOINT.md) dan [hasil installer](docs/VALIDASI_INSTALLER_2026-10-24.md).
 Paket r6 satu ZIP memuat Python/WireGuard/wheel/BAT/panduan. Missing-runtime native
@@ -47,7 +58,7 @@ remote.10tes lokal PASS; tanpa merge main/rollout/CI baru. ZIP/state/credential
 tetap lokal. Hasil dicatat di [jurnal23Oktober](docs/PROGRESS_2026-10-23.md).
 Catatan belum-push di bawah merupakan histori22Oktober, bukan larangan terbaru.
 
-**Dokumentasi penerapan revisi2:** [runbook17bab](docs/INSTALL_REALWORLD.html)
+**Dokumentasi penerapan revisi2:** [runbook17bab](docs/MODUL_PENGGUNAAN_VANGUARD.md)
 mencakup instalasi, topologi, syarat lanjut, troubleshooting, operasi harian dan
 serah terima. Modul utama Bab15.5 sudah terhubung. Hasil native/fisik tetap belum
 diuji; source aplikasi0.1.12r3 tidak berubah. ZIP dokumen:
@@ -56,7 +67,7 @@ diuji; source aplikasi0.1.12r3 tidak berubah. ZIP dokumen:
 hash dan hasil lengkap ada pada checkpoint/jurnal.
 
 **Persiapan pemasangan nyata22 Oktober:** topologi lama dikonfirmasi pengguna.
-Baca [panduan langkah instalasi](docs/INSTALL_REALWORLD.html) dan checkpoint
+Baca [panduan langkah instalasi](docs/MODUL_PENGGUNAAN_VANGUARD.md) dan checkpoint
 terbaru. Kit menggabungkan Windows r3/profil publik/wheel admin/checklist/pemeriksa
 read-only.10tes lokal tambahan PASS; native Windows dan pilot masih belum diuji.
 Preflight host BLOCKED: Ethernet pilot belum siap dan tiga backend mati. Belum
@@ -201,8 +212,8 @@ Langkah berikutnya praktik memakai modul dan lanjutkan gap operasional checkpoin
 
 **17 Oktober 2026 — rincian CA/PKI selesai disusun dan divalidasi.**
 Bab 5.3 modul sekarang menjelaskan generate CA dan tahapan terkait. Baca
-[panduan CA/PKI lengkap](docs/PANDUAN_CA_PKI.md) atau
-[HTML siap cetak](docs/PANDUAN_CA_PKI.html), mencakup 13 bagian dari konsep
+[panduan CA/PKI lengkap](docs/MODUL_PENGGUNAAN_VANGUARD.md) atau
+[HTML siap cetak](docs/MODUL_PENGGUNAAN_VANGUARD.md), mencakup 13 bagian dari konsep
 hingga backup dan troubleshooting. Uji CA sementara di host PASS, termasuk
 signing TLS/perangkat dan penolakan sertifikat setelah revoke. Struktur kedua
 dokumen, sintaks contoh Bash, tautan dan scan rahasia PASS. Bukti di
@@ -301,9 +312,9 @@ Baca AGENTS.md, VANGUARD_CONTEXT.md, [checkpoint](docs/CHECKPOINT.md) dan
 
 - [Catatan revisi proposal per bagian](docs/SARAN_REVISI_PROPOSAL_2026-10-12.md)
   memuat konflik arsitektur, contoh redaksi, metrik dan perbaikan daftar pustaka.
-- [Tutorial dari awal sampai akhir](docs/TUTORIAL_PENGGUNAAN.md),
-  [aktivitas dan arsip 0.1.6](docs/DASHBOARD_0.1.6.md), serta
-  [fitur dashboard 0.1.5](docs/DASHBOARD_0.1.5.md).
+- [Tutorial dari awal sampai akhir](docs/MODUL_PENGGUNAAN_VANGUARD.md),
+  [aktivitas dan arsip 0.1.6](docs/MODUL_PENGGUNAAN_VANGUARD.md), serta
+  [fitur dashboard 0.1.5](docs/MODUL_PENGGUNAAN_VANGUARD.md).
 - [Hasil pilot dan batas kesimpulan](docs/BENCHMARK_PILOT_2026-10-12.md);
   seri formal tiga konfigurasi × 10 belum dijalankan.
 - Kredensial hanya di komputer ini:

@@ -40,7 +40,7 @@ Lima node/alamat tetap: CA `.10`, SERVER `.20`, CLIENT `.30`, ADMIN `.40`, ATTAC
 `.50`, subnet `192.168.100.0/24`; client tunnel `10.8.0.2`, server `10.8.0.1`.
 
 **Sesi karyawan berlaku delapan jam.** Jika sudah habis, login ulang pada VM-CLIENT
-lalu restart layanan sesuai [panduan akun](EMPLOYEE_ACCESS.md). Akun lab
+lalu restart layanan sesuai [panduan akun](MODUL_PENGGUNAAN_VANGUARD.md). Akun lab
 `USERNAME_LOKAL` terikat ke `vm-client`; kredensial bootstrap ada dalam file privat
 `state/deployment/proposal-2026-10-09/employee-onboarding.json`. Jangan cetak atau
 unggah isinya. TOTP admin terpisah dari login karyawan.
@@ -58,8 +58,8 @@ dan pemulihan tersedia. Gap Windows/lifecycle/notifikasi/resource ada di
   `state/deployment/security-2026-10-09/`. Bukti pilot gagal tetap dipertahankan.
 - Backup privat sebelum upgrade: `state/backups/before-0.1.3-2026-10-09/`.
 - Source/wheel/checksum: `dist/`; arsip terdahulu tidak ditimpa.
-- [Laporan aktif](IMPLEMENTATION_REPORT.md), [panduan demo](DEMO_TA.md),
-  [panduan aktivasi admin](AKTIVASI_ADMIN.md).
+- [Laporan aktif](IMPLEMENTATION_REPORT.md), [panduan demo](MODUL_PENGGUNAAN_VANGUARD.md),
+  [panduan aktivasi admin](MODUL_PENGGUNAAN_VANGUARD.md).
 - Branch `main`, remote `origin`; CLI lokal `state/tooling/github/cli/usr/bin/gh`.
 
 Catat rencana sebelum setiap kelompok perubahan dan hasil/validasi/sisa pekerjaan

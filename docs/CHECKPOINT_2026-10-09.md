@@ -41,7 +41,7 @@ CI terbaru: [run 37895229707](https://github.com/LuiLuiLui886/vanguard-ztna/acti
 pada commit instrumentasi `f29ff67` yang telah dipush. Aplikasi tetap 0.1.3.
 Ruff, pip check, shell, build/checksum dan checksum artefak unduhan PASS.
 Detail: [laporan implementasi](IMPLEMENTATION_REPORT.md),
-[jurnal 9 Oktober](PROGRESS_2026-10-09.md), [panduan akun](EMPLOYEE_ACCESS.md).
+[jurnal 9 Oktober](PROGRESS_2026-10-09.md), [panduan akun](https://github.com/LuiLuiLui886/vanguard-ztna/blob/31c6981/docs/EMPLOYEE_ACCESS.md).
 
 ## Melanjutkan sesi berikutnya
 
@@ -97,7 +97,7 @@ meniadakan enforcement akun; jangan digunakan sebagai recovery otomatis.
 
 ## Belum terverifikasi / belum selesai
 
-- TOTP HP dan login pribadi operator belum dikonfirmasi; lihat [aktivasi admin](AKTIVASI_ADMIN.md).
+- TOTP HP dan login pribadi operator belum dikonfirmasi; lihat [aktivasi admin](https://github.com/LuiLuiLui886/vanguard-ztna/blob/31c6981/docs/AKTIVASI_ADMIN.md).
 - Reboot workstation belum diuji; autostart VM nonaktif, jaringan libvirt autostart.
 - MTTD/MTTR, benchmark, Windows serta fitur lifecycle/provisioning/notifikasi
   dan kebijakan resource belum lengkap. S-03 adalah observasi jalur underlay;

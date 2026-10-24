@@ -43,4 +43,4 @@ if [[ "$role" = client ]]; then
     install -m 0644 "$source_dir/deploy/systemd/vanguard-client.service" /etc/systemd/system/
 fi
 systemctl daemon-reload
-echo "Installed $role. Complete TLS, tokens, ownership and firewall using docs/DEPLOYMENT.md before starting."
+echo "Installed $role. Complete TLS, tokens, ownership and firewall using docs/MODUL_PENGGUNAAN_VANGUARD.md before starting."

@@ -61,14 +61,14 @@ backing image, CA, private key, atau identitas utama yang dibuat ulang.
 - Reboot lengkap: `state/deployment/operations-reboot.json`.
 - Backup privat sebelum rollout: `state/backups/2026-10-08-2154/`.
 - Laporan: [IMPLEMENTATION_REPORT.md](IMPLEMENTATION_REPORT.md).
-- Akses: [LAB_ACCESS.md](LAB_ACCESS.md), [AKTIVASI_ADMIN.md](AKTIVASI_ADMIN.md).
+- Akses: [LAB_ACCESS.md](MODUL_PENGGUNAAN_VANGUARD.md), [AKTIVASI_ADMIN.md](MODUL_PENGGUNAAN_VANGUARD.md).
 
 Backup state berisi rahasia: jangan unggah ke laporan/arsip source. Jangan rollback
 index CA/CRL yang bisa menghidupkan sertifikat dicabut. Penyimpanan ini bukan snapshot
 disk VM. Autostart guest pada boot host tetap nonaktif; jaringan libvirt autostart.
 
 Langkah operator yang belum terkonfirmasi: TOTP di HP dan login dashboard. Reboot
-workstation belum diuji dalam sesi ini. Gunakan [panduan demo](DEMO_TA.md).
+workstation belum diuji dalam sesi ini. Gunakan [panduan demo](MODUL_PENGGUNAAN_VANGUARD.md).
 
 ## Status penyimpanan Git
 

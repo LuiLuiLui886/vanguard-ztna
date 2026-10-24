@@ -1,7 +1,7 @@
 # Sistem VanGuard
 
 Untuk **endpoint Windows**, mulai dari [download installer](downloads/README.md)
-dan [panduan instalasi → CSR → admin → login](deploy/endpoint/windows/SETUP_WINDOWS.md).
+dan [panduan instalasi → CSR → admin → login](docs/MODUL_PENGGUNAAN_VANGUARD.md).
 Paket terbaru menyertakan Python/WireGuard dan wheel offline. Gunakan `main` sebagai
 pintu masuk proyek; branch endpoint dipakai untuk pekerjaan lanjutan. Hasil tes
 aktual serta batas bukti ada pada [checkpoint](docs/CHECKPOINT.md).
@@ -10,7 +10,7 @@ aktual serta batas bukti ada pada [checkpoint](docs/CHECKPOINT.md).
 tersedia juga sebagai [HTML siap dibaca/dicetak](docs/MODUL_PENGGUNAAN_VANGUARD.html).
 Modul mencakup pemasangan awal serta pemakaian Ubuntu dan Windows pada lab terpasang.
 Materi generate root CA, CSR, sertifikat HTTPS/perangkat, CRL dan backup sudah
-digabung secara rinci di bab 5.3 modul yang sama, dengan daftar isi subbagian.
+digabung secara rinci di Bab6 modul yang sama, dengan daftar isi subbagian.
 
 ## Pembimbing
 
@@ -63,26 +63,18 @@ sequenceDiagram
 Implementasi tersedia dalam `vanguard/`, pengujian dalam `tests/`, dan installer/unit systemd
 dalam `deploy/`. Baca:
 
-- [Panduan deployment lima VM](docs/DEPLOYMENT.md)
-- [Cara mengakses VM dan dashboard yang sudah terpasang](docs/LAB_ACCESS.md)
+- [Manual admin tunggal: persiapan, CA, backend, endpoint dan operasi](docs/MODUL_PENGGUNAAN_VANGUARD.md)
 - [Kontrak endpoint API](docs/API.md)
 - [Keputusan keamanan dan batas operasional](docs/SECURITY.md)
 - [Skenario uji Tugas Akhir](docs/TEST_PLAN.md)
 - [Hasil verifikasi dan status deployment](docs/IMPLEMENTATION_REPORT.md)
-- [Tutorial penggunaan dari awal sampai akhir](docs/TUTORIAL_PENGGUNAAN.md)
-- [Panduan aktivitas dan arsip admin 0.1.6](docs/DASHBOARD_0.1.6.md)
 - [Saran revisi proposal dan hasil audit fitur](docs/SARAN_REVISI_PROPOSAL_2026-10-12.md)
-- [Riwayat dan arsip aktivitas admin 0.1.6](docs/DASHBOARD_0.1.6.md)
-- [Perubahan dashboard 0.1.5](docs/DASHBOARD_0.1.5.md)
 - [Checkpoint untuk melanjutkan pekerjaan](docs/CHECKPOINT.md)
 - [Jurnal perubahan 8 Oktober 2026](docs/PROGRESS_2026-10-08.md)
 - [Jurnal perubahan 9 Oktober 2026](docs/PROGRESS_2026-10-09.md)
 - [Jurnal perubahan 10 Oktober 2026](docs/PROGRESS_2026-10-10.md)
 - [Jurnal perubahan 12 Oktober 2026](docs/PROGRESS_2026-10-12.md)
-- [Aktivasi admin dan authenticator](docs/AKTIVASI_ADMIN.md)
-- [Urutan demo Tugas Akhir](docs/DEMO_TA.md)
 - [Pengujian otomatis dan artefak GitHub](docs/CI.md)
-- [Akun karyawan dan pengujian S-01](docs/EMPLOYEE_ACCESS.md)
 - [Kesesuaian implementasi dengan proposal](docs/PROPOSAL_ALIGNMENT.md)
 - [Protokol capture dan pencabutan berulang S-03/S-04](docs/SECURITY_EXPERIMENTS.md)
 - [Hasil eksperimen S-03/S-04](docs/SECURITY_RESULTS_2026-10-09.md)

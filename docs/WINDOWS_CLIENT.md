@@ -1,7 +1,10 @@
-# Client Windows tambahan — VanGuard0.1.9
+# Bukti operasional client Windows VanGuard
+
+Dokumen ini menyimpan bukti dan pemulihan historis VM, bukan tutorial aktif.
+Seluruh langkah penggunaan terbaru ada dalam [manual admin tunggal](MODUL_PENGGUNAAN_VANGUARD.md).
 
 **Pembaruan installer24 Oktober:** paket Windows baru menyertakan Python/WireGuard
-dan dependensi dalam satu ZIP. Ikuti [panduan Windows terbaru](../deploy/endpoint/windows/SETUP_WINDOWS.md).
+dan dependensi dalam satu ZIP. Ikuti [panduan Windows terbaru](MODUL_PENGGUNAAN_VANGUARD.md).
 Bagian prasyarat manual/kandidat22Oktober di bawah tetap menjadi riwayat paket lama;
 lihat checkpoint untuk hasil native aktual. Arsitektur, jaringan, CA dan admission
 tidak berubah.
@@ -84,28 +87,6 @@ Paket GitHub dipelihara manual; jangan menyebutnya capability bawaan Windows.
 Script fallback dan manifest tetap pada direktori bukti privat. Kedua media CD
 sudah dikeluarkan; jangan menjalankan ulang seed instalasi OS.
 
-## Memakai Windows yang sudah terpasang
-
-1. Nyalakan CA, SERVER, ADMIN dan VM-CLIENT-WINDOWS yang ada. Buka VM melalui
-   `virt-viewer --connect qemu:///system VM-CLIENT-WINDOWS`.
-2. Login menggunakan bagian VM-CLIENT-WINDOWS pada inventaris privat komputer
-   host. Akun console berbeda dari akun karyawan VPN Windows.
-3. Buka PowerShell **Run as administrator**. Gunakan virtualenv yang terpasang:
-
-```powershell
-$py = 'C:\ProgramData\VanGuard\venv\Scripts\python.exe'
-& $py -m vanguard.client login --username USERNAME_KARYAWAN_WINDOWS
-& $py -m vanguard.client connect --server-key PUBLIC_KEY_SERVER
-```
-
-Username karyawan tersedia di inventaris privat; password dimasukkan pada prompt
-tersembunyi. Public key server diambil dari `/etc/vanguard/server-wg.pub` pada
-VM-SERVER melalui koneksi yang terverifikasi. Sertifikat/root/key Windows sudah
-ada pada `C:\ProgramData\VanGuard\client`; **jangan ulangi init atau enrollment**.
-Biarkan terminal connect aktif. Dari terminal lain jalankan `ping 10.8.0.1`.
-Hentikan connect dengan Ctrl+C, lalu pastikan service khusus dan config hilang.
-Jika config tertinggal, inspeksi service terlebih dahulu; jangan hapus key.
-
 ## VM dan kebutuhan host
 
 Rencana Windows 11: 2 vCPU, 4096 MiB RAM, disk sparse 80 GiB, UEFI Secure Boot
@@ -153,7 +134,7 @@ otomatis. Status INSTALLING_GUEST_VALIDATION_PENDING belum berarti setup selesai
 Sesudah setup, keluarkan kedua CDROM, verifikasi login dan hapus salinan unattended
 di guest yang masih menyimpan password; simpan seed/backup host secara privat.
 
-## Melanjutkan setelah instalasi terputus
+## Riwayat pemulihan instalasi terputus
 
 Jangan menyamakan laporan `INSTALLER_STARTED` dengan OS siap pakai. Periksa
 console dan disk lebih dahulu. Pada 14 Oktober ditemukan partisi EFI kosong dan
@@ -175,51 +156,6 @@ penyalinan image kemarin terhenti 90%; mengulang seed awal akan memformat disk.
 Bukti pemulihan hari ini: [jurnal](PROGRESS_2026-10-14.md). Petunjuk diagnosis:
 [log Windows Setup](https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/deployment-troubleshooting-and-log-files?view=windows-11).
 
-## Instalasi aplikasi di Windows
-
-1. Pasang Python 3.12 atau lebih baru dari [python.org](https://www.python.org/downloads/windows/)
-   dan [WireGuard for Windows resmi](https://www.wireguard.com/install/).
-   Periksa tanda tangan installer. Jalankan PowerShell sebagai Administrator.
-2. Atur LAN `192.168.100.60/24`, gateway/DNS `192.168.100.1`, dan sinkronkan jam.
-   Jangan mematikan firewall Windows. Akses administrasi guest dibatasi host.
-3. Pasang wheel VanGuard 0.1.8 yang sudah lulus CI pada virtualenv Python lokal.
-   Dependensi Windows memakai pywin32; Gunicorn hanya untuk Linux.
-4. Jalankan client sebagai Administrator. Default direktori adalah
-   `C:\ProgramData\VanGuard\client`, dengan ACL SYSTEM/Administrators.
-   Mode POSIX 0600 bukan pengganti ACL Windows. Path reparse point ditolak.
-
-```powershell
-python -m vanguard.client init --device-id vm-client-windows --tunnel-ip 10.8.0.4
-```
-
-`request.json` memuat CSR, public key WireGuard, device ID dan tunnel address.
-Daftarkan request publik melalui dashboard, buat akun karyawan terpisah, dan
-ikat akun itu ke `vm-client-windows`. Dokumentasikan nilai akun/password hanya
-di inventaris privat komputer host. Registrasi ini belum menambahkan peer hidup.
-
-Salin sertifikat hasil CA sebagai `device.crt` dan root CA yang telah diverifikasi
-sebagai `root.crt` ke direktori client; keduanya publik. Simpan key privat hasil
-init di guest. Root ini menjadi trust HTTPS sekaligus identitas CA lab.
-
-```powershell
-python -m vanguard.client login --username USERNAME_LOKAL
-python -m vanguard.client admit
-python -m vanguard.client connect --server-key PUBLIC_KEY_SERVER
-```
-
-Ganti placeholder dengan inventaris lokal/public key server terverifikasi.
-Login meminta password tersembunyi dan menyimpan token sesi, bukan password.
-Biarkan proses `connect` berjalan selama akses dibutuhkan. Ctrl+C membersihkan
-tunnel. Setelah restart, login ulang jika sesi expired lalu jalankan `connect`.
-
-Backend menggunakan [WireGuard tunnel service resmi](https://git.zx2c4.com/wireguard-windows/about/docs/enterprise.md),
-`WireGuardTunnel$vanguard-client`. Service diubah ke demand start agar boot tidak
-otomatis memulai konfigurasi lama. Lease server tetap membatasi akses jika proses
-client mati mendadak. Kegagalan renewal memicu pelepasan tunnel. Bila pelepasan
-gagal, konfigurasi dipertahankan agar retry menolak mengambil alih tanpa inspeksi.
-Untuk pemulihan setelah crash, pastikan proses lama sudah berhenti, lalu uninstall
-service khusus ini sebelum menghapus `vanguard-client.conf`; jangan hapus key.
-
 ## Server dan validasi wajib
 
 Firewall server memerlukan perluasan eksplisit:
@@ -229,7 +165,7 @@ sudo python3 deploy/firewall.py server --management-ip 192.168.100.1 --windows-c
 ```
 
 Gunakan source yang disalin ke VM-SERVER dan prosedur rollback timer yang sama
-seperti [deployment](DEPLOYMENT.md). Konfirmasi akses lewat SSH baru sebelum
+seperti [deployment](MODUL_PENGGUNAAN_VANGUARD.md). Konfirmasi akses lewat SSH baru sebelum
 mematikan timer rollback. Flag ini membuka API 8081/UDP 51820 dari .60 dan ICMP
 dari .4 **hanya pada wg0**. Drop bypass LAN dan forward default drop tetap berlaku.
 Default tanpa flag mempertahankan firewall lima VM lama. Deployment firewall ini

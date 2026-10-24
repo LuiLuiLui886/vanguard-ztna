@@ -2,14 +2,17 @@
 param([switch]$Elevated, [switch]$Preview, [string]$ExpectedManifestSha256='')
 $ErrorActionPreference = 'Stop'
 . (Join-Path $PSScriptRoot 'Common.ps1')
+. (Join-Path $PSScriptRoot 'Platform.ps1')
 $phase = 'preflight'
 $guard = $null
 $owned = $false
 try {
     # The package must be staged by the operator under an administrator-only path.
     Assert-SafePath $PSScriptRoot
+    $os = Get-CimInstance Win32_OperatingSystem
+    Assert-SupportedWindows $os ([Environment]::Is64BitOperatingSystem) $env:PROCESSOR_ARCHITECTURE
     if ($Preview) {
-        Write-Host 'Preview: Windows 11 x64. Paket menyertakan Python/WireGuard; runtime yang cocok dipertahankan.'
+        Write-Host 'Preview: Windows 10 21H2/22H2 atau Windows 11 x64. Paket menyertakan Python/WireGuard; runtime yang cocok dipertahankan.'
         Write-Host 'Offline. Tidak mengubah jaringan, key, CA, login atau tunnel.'
         Write-Host "Runtime: $AppRoot ; config/identity/log: $DataRoot"
         exit 0
@@ -28,9 +31,6 @@ try {
         } catch { Write-Host 'UAC dibatalkan atau tidak tersedia.'; exit 1223 }
     }
     Assert-Administrator
-    $os = Get-CimInstance Win32_OperatingSystem
-    if ($os.ProductType -ne 1 -or -not [Environment]::Is64BitOperatingSystem -or $env:PROCESSOR_ARCHITECTURE -ne 'AMD64' -or
-        [int]$os.BuildNumber -lt 22000) { throw 'Kandidat hanya untuk Windows 11 x64.' }
     Assert-SafePath $AppRoot
     Assert-SafePath $DataRoot
     $guard = New-Object Threading.Mutex($false,'Global\VanGuardEndpointSetup')

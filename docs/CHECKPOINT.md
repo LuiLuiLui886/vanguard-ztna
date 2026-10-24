@@ -1,5 +1,16 @@
 # Checkpoint VanGuard — 24 Oktober 2026
 
+**IN_PROGRESS — manual tunggal dan Windows10,24Oktober:** source pada branch
+feature, belum dipush.14tutorial digabung menjadi manual18bab MD/HTML; link dan
+builder sudah disesuaikan. Installer baru mengizinkan Windows10x64 build19044/19045,
+namun native10 belum terbukti. VM-CLIENT-WINDOWS10 baru .100.70/disk40GiB didefinisikan
+belum boot; enam node asli terjaga, seluruh VM saat entry ini shut off. Media ISO
+Microsoft sedang diunduh/range-resume di state/manual-win10-20261024/, jangan
+menjalankan provisioning/seed credential ulang. Setelah hash resmi cocok jalankan
+start_vm10.py sekali, periksa marker instalasi; jangan format ulang bila terinterupsi.
+Full Linux suite sedang berjalan; paket-r1/seed privat sudah siap. Catatan di bawah
+merupakan hasil installer Windows11 sebelumnya, bukan hasil Windows10.
+
 ## Installer Windows lengkap — native selesai dan ZIP sudah di main
 
 Source5aa6e9f memperbaiki BAT default-policy, ACL SID native dan uninstall yang
@@ -438,8 +449,8 @@ lama menjadi penunjuk ke modul; riwayat materi tetap ada dalam Git.
 
 ## Terbaru: penjelasan generate CA secara rinci
 
-Bab 5.3 modul diperluas dan ditautkan ke [panduan CA/PKI](PANDUAN_CA_PKI.md)
-serta [HTML siap cetak](PANDUAN_CA_PKI.html). Panduan 13 bagian menjelaskan
+Bab 5.3 modul diperluas dan ditautkan ke [panduan CA/PKI](MODUL_PENGGUNAAN_VANGUARD.md)
+serta [HTML siap cetak](MODUL_PENGGUNAAN_VANGUARD.md). Panduan 13 bagian menjelaskan
 root/key, CSR, signing HTTPS, trust, issuance perangkat, CRL/revoke, backup,
 masa berlaku dan troubleshooting dengan lokasi eksekusi/hasil setiap langkah.
 
@@ -557,9 +568,9 @@ Catatan running 12 Oktober di bawah merupakan bukti historis, bukan status hari 
 - Rollout/integritas COMPLETE: 14 berkas aplikasi per VM cocok source saat rollout,
   config/CA/key/identitas utama cocok backup. Tidak reenrollment utama.
 - Dashboard baru: health, audit admin, alasan/waktu revoke, validity/history,
-  bundle publik. [Panduan](DASHBOARD_0.1.5.md).
+  bundle publik. [Panduan](MODUL_PENGGUNAAN_VANGUARD.md).
 - VM-ADMIN: 0.1.6 mencatat tindakan dengan waktu WIB, uraian Indonesia, filter
-  50/halaman dan arsip CSV/JSON/manifest. [Panduan](DASHBOARD_0.1.6.md).
+  50/halaman dan arsip CSV/JSON/manifest. [Panduan](MODUL_PENGGUNAAN_VANGUARD.md).
 - 137 tes lokal PASS; HTTPS/TOTP archive workflow live PASS. Bukti dan ZIP 0600:
   `state/deployment/activity-0.1.6/live/`.
 - Backup konsisten admin sebelum migrasi:
@@ -602,7 +613,7 @@ tersimpan lokal pada `state/deployment/ci-49dd332/`. Jangan jalankan eksperimen
 1. Baca AGENTS.md, VANGUARD_CONTEXT.md, checkpoint dan jurnal terbaru.
 2. Periksa lima domain lama; jangan recreate lab/CA. Autostart VM masih nonaktif.
 3. Preflight lalu health dengan direktori bukti baru. Login ulang karyawan secara
-   privat jika expired, sesuai [panduan](EMPLOYEE_ACCESS.md).
+   privat jika expired, sesuai [panduan](MODUL_PENGGUNAAN_VANGUARD.md).
 4. Lanjutkan gap [matriks proposal](PROPOSAL_ALIGNMENT.md) dan
    [saran revisi](SARAN_REVISI_PROPOSAL_2026-10-12.md). Baseline WG tanpa admission
    belum diotorisasi; [rencana isolasi/cleanup](BENCHMARK_PLAN.md) sudah tersedia.
@@ -610,7 +621,7 @@ tersimpan lokal pada `state/deployment/ci-49dd332/`. Jangan jalankan eksperimen
    tetap lokal. GitHub private; CLI `state/tooling/github/cli/usr/bin/gh`.
 
 S-01 kuantitatif tetap bukti 0.1.4; S-03/S-04 ICMP tetap bukti 0.1.3, tidak diulang
-penuh. [Laporan aktif](IMPLEMENTATION_REPORT.md), [tutorial](TUTORIAL_PENGGUNAAN.md),
+penuh. [Laporan aktif](IMPLEMENTATION_REPORT.md), [tutorial](MODUL_PENGGUNAAN_VANGUARD.md),
 [checkpoint lama](CHECKPOINT_2026-10-10.md). Login HP pribadi,
 reboot workstation, serta penyebab shutdown belum terverifikasi.
 Tindak lanjut operasional: ketahanan counter CA saat shutdown mendadak dan warning
