@@ -1,11 +1,20 @@
 # Lanjutkan proyek VanGuard
 
-**24 Oktober — IN_PROGRESS installer Windows lengkap dan konsolidasi branch.**
-Baca checkpoint24Oktober/jurnal. CI terbaru268PASS/1SKIP Linux3.10/3.12,
-28PASS/2SKIP helper Windows; native installer masih menunggu backup disk selesai.
-Paket runtimes+BAT r2 dan runner native tersedia di state/installer-20261024/.
-Tidak menyalakan Windows selama vol-clone masih berlangsung. Main sudah digabung
-ke branch kerja, tetapi remote main/cleanup branch masih pending.
+**24 Oktober: uji native installer lengkap selesai; publikasi sedang ditutup.**
+Baca [checkpoint](docs/CHECKPOINT.md) dan [hasil installer](docs/VALIDASI_INSTALLER_2026-10-24.md).
+Paket r6 satu ZIP memuat Python/WireGuard/wheel/BAT/panduan. Missing-runtime native
+5PASS, uninstall/reinstall3PASS, guards5PASS, policy PASS. Lokal41PASS/1SKIP.
+
+VM Windows sudah kembali ke XML/disk utama (byte-identik); hash identitas/runtime/SecureBoot/TPM
+cocok snapshot awal sesudah boot. Lima Ubuntu tidak diubah/shut off. Jangan boot overlay
+lagi. Source5aa6e9f dipush feature; ZIP/docs terbaru belum commit pada entry ini.
+Lanjut push artefak/main, hapus dua refs yang terintegrasi,
+periksa CI final, catat SHA/status remote. User mengotorisasi dua branch maksimal.
+Panduan [downloads](downloads/README.md) memakai main sebagai tujuan akhir.
+
+UAC interaktif, PC fisik, MOTW/GPO, soak/power-loss CA dan WIN-CLEANUP-02 tetap
+BELUM_TERUJI. Jangan ulang init CA/identitas lama atau membuat peer statis.
+Kredensial tetap inventaris lokal. Riwayat di bawah bukan status operasional baru.
 
 Panduan dan hasil CI telah dipush pada **c76c8f0**, branch
 `feature/2026-10-22-physical-endpoints`; SHA remote terverifikasi.

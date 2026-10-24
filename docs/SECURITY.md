@@ -145,13 +145,18 @@ menolak anggota ZIP/path tambahan dan binding berbeda; hanya device.crt baru yan
 dipublikasikan, tidak mengganti key/root/profile/sesi. Idempotent untuk PEM identik.
 CRL/akun/lease aktual tetap diperiksa admission server; import tidak memberi peer.
 
-Installer native kandidat tidak mengunduh, membuat key, membuka jaringan atau
-mengubah trust Windows/global PATH. Paket, runtime dan sumber profil harus pada
+Installer endpoint tidak mengunduh paket, membuat key, membuka akses VPN atau
+mengubah trust Windows/global PATH. Pemeriksaan Authenticode Windows tetap wajib
+dan dapat memerlukan layanan trust sistem. Paket, runtime dan sumber profil harus pada
 path admin-only tanpa reparse point; data identitas dipisahkan. Hash manifest
 harus berasal dari kanal tepercaya, bukan dihitung sendiri dari unduhan lalu
-dianggap autentik. Kandidat unsigned dan native ACL/UAC belum diuji; jangan bypass
-kebijakan eksekusi. Runtime Python3.13x64/WireGuard resmi terverifikasi harus sudah
-tersedia. Launcher memeriksa konflik subnet/route sebelum admission; snapshot
+dianggap autentik. Skrip aplikasi unsigned; native ACL/policy telah diuji pada
+VM Windows, UAC interaktif tetap BELUM_TERUJI. BAT memilih RemoteSigned proses
+hanya jika semua scope Undefined; policy eksplisit tidak diubah. Jangan bypass
+kebijakan organisasi. Runtime Python3.13x64/WireGuard resmi disertakan dengan
+pin SHA256 dan Authenticode publisher, dipasang jika belum ada. Runtime parsial
+ditolak dan runtime bersama yang sesuai dipertahankan. Lihat
+[hasil installer](VALIDASI_INSTALLER_2026-10-24.md). Launcher memeriksa konflik subnet/route sebelum admission; snapshot
 bukan proof firewall/UDP. Pemulihan service yang belum terkonfirmasi tetap manual.
 
 `CA.sign_tls` tambahan DNS/IP memerlukan allowlist operator eksplisit. Sanitasi

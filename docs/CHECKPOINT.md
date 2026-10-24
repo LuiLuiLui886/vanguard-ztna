@@ -1,22 +1,42 @@
 # Checkpoint VanGuard — 24 Oktober 2026
 
-## Installer lengkap dan konsolidasi — IN_PROGRESS24 Oktober
+## Installer Windows lengkap — native selesai, publikasi dalam proses
 
-Permintaan pengguna: Python/WireGuard satu paket, perbaikan BAT, uji VM Windows,
-panduan CSR/admin dan dua branch maksimal. Source562b0b0 + merge827c664;
-perubahan tambahan sedang diuji. CI39994146862 pada827c664 SUCCESS: Linux3.10/
-3.12 masing-masing268PASS/1SKIP; Windows helpers28PASS/2SKIP. Bukan uji installer.
-Baseline39PASS/1SKIP; regresi lokal41PASS/1SKIP. Rincian jurnal24Oktober.
+Source5aa6e9f memperbaiki BAT default-policy, ACL SID native dan uninstall yang
+menghapus script-nya sendiri. ZIP r6 **44.649.724byte** memuat Python3.13.17,
+WireGuard1.1.1,20wheel dan panduan setup→CSR→admin→import→login/connect.
+[Download/petunjuk](../downloads/README.md), [hasil lengkap](VALIDASI_INSTALLER_2026-10-24.md).
 
-Backup Git --all valid. Backup disk Windows melalui virsh vol-clone masih
-berjalan saat entry ini (volume vanguard-windows-before-installer-20261024.qcow2);
-jangan menyalakan Windows sampai proses selesai. Semua VM masih mati. Native
-installer BELUM_DIJALANKAN, runner/tests/windows/installer_smoke.ps1 sudah siap.
-Paket-r2 di state/installer-20261024/; credential tetap inventaris privat.
+- Native Windows11 build26300: reuse runtime7kasus lulus sebelum bug uninstall
+  ditutup; r6 uninstall/reinstall3PASS; guards5PASS; default/explicit policy PASS.
+- Native disk overlay dengan runtime absent: **5PASS**, BAT exit0, Python3.13.17,
+  WireGuard1.1.1, VanGuard0.1.12; pip check/status PASS, tanpa identitas/tunnel.
+- Overlay sudah shutdown normal dan XML disk utama dikembalikan **byte-identik**.
+  Hash identitas utama, Python3.13.16, WG1.1.1, client0.1.9 dan SecureBoot/TPM
+  cocok snapshot awal setelah boot disk utama. Lima Ubuntu
+  tetap shut off. Backup dan overlay dipertahankan, tidak memulihkan state CA.
+- Linux lokal41PASS/1SKIP0,38detik; Ruff PASS. CI39998238177 pada2e6ec76 SUCCESS:
+  Linux3.10 **268PASS/1SKIP288,229s**,3.12 **268PASS/1SKIP292,874s**;
+  Windows helpers **28PASS/2SKIP0,429s**. CI ini mendahului fix uninstall5aa6e9f.
+- ZIP identik yang diuji: SHA256
+  `91b551183f1f197d7390e32b31ff4de3da33ef62261e73fba572784b05b396dd`.
+ 36anggota/20wheel/25file aplikasi cocok source, hash/secret scan nested PASS.
+- Kredensial tidak diubah dan tetap hanya inventaris privat. Identitas utama
+  tidak dipakai untuk enrollment tes; installer0.1.12 terpisah dari client0.1.9.
 
-Main sudah digabung ke branch endpoint dengan histori/atribusi pembimbing utuh;
-remote main belum dipindahkan dan branch lama belum dihapus. Lanjutkan native,
-perbaikan terbukti, paket final/scan, push main dan hapus hanya branch terintegrasi.
+**Publikasi belum selesai pada entry ini:** feature berisi merge main827c664;
+remote main/dua branch lama belum diubah. Primary Windows sudah terverifikasi. Berikutnya
+commit/push ZIP+docs, fast-forward main dan hapus hanya refs hardening/fix yang
+sudah ancestor. Backup semua refs ada pada Git bundle lokal terverifikasi.
+
+**BELUM_TERUJI:** UAC interaktif/cancel, PC LAN/laptop Wi-Fi fisik, distribusi
+MOTW/GPO, reboot-required/runtime1618 nyata, soak panjang, power-loss media CA,
+WIN-CLEANUP-02. Jangan menyatakan production ready. Backend/jaringan pilot belum
+diaplikasikan pada tugas installer. Admin0.1.12+profil/trust/alokasi ID/IP dan
+resource grant perlu disiapkan sebelum enrollment/koneksi fisik.
+
+Bukti privat `state/installer-20261024/`, jurnal `PROGRESS_2026-10-24.md`.
+Pemulihan disk sudah selesai; jangan menjalankan prepare_overlay.py lagi.
 
 ## Lanjutan PC LAN dan validasi CI — 23 Oktober 15:48 WIB
 

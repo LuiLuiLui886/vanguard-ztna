@@ -1,5 +1,9 @@
 # Sistem VanGuard
 
+**Windows:** ambil [ZIP installer lengkap](downloads/README.md) berisi Python,
+WireGuard dan aplikasi. Baca [setup PC sampai registrasi admin](deploy/endpoint/windows/SETUP_WINDOWS.md)
+dan [hasil pengujian native](docs/VALIDASI_INSTALLER_2026-10-24.md).
+
 Untuk **endpoint Windows**, mulai dari [download installer](downloads/README.md)
 dan [panduan instalasi → CSR → admin → login](deploy/endpoint/windows/SETUP_WINDOWS.md).
 Paket terbaru menyertakan Python/WireGuard dan wheel offline. Gunakan `main` sebagai
