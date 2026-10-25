@@ -94,3 +94,14 @@ membuktikan semua edisi Windows10. Skenario VPN Windows11 terdahulu bukan hasil
 VPN Windows10 atau PC fisik.
 Tidak menjumlahkan suite yang overlap. Semua log/backup/credential tetap lokal
 pada `state/manual-win10-20261024/` dan inventaris privat di luar repository.
+
+## Publikasi
+
+Source/manual/ZIP dipush sebagai **e77e0eb** ke main dan feature. Hanya dua
+branch dipertahankan; main fast-forward, tanpa force. ZIP raw GitHub dari commit
+tersebut diunduh ulang dan byte-identik dengan r3 yang diuji (SHA256 di atas).
+CI [40171300671](https://github.com/LuiLuiLui886/vanguard-ztna/actions/runs/40171300671)
+**SUCCESS** pada e77e0eb: Linux3.10 **268PASS/1SKIP278,016s**, Linux3.12
+**268PASS/1SKIP284,573s**, Windows helpers **28PASS/2SKIP0,372s**.
+JUnit aktual diunduh; hasil kandidat29b7afb di atas tetap terpisah.
+Penutupan hanya dokumentasi, source/ZIP tidak berubah setelah CI ini.

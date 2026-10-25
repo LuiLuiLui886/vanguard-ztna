@@ -1,6 +1,6 @@
 # Checkpoint VanGuard — 25 Oktober 2026
 
-**25 Oktober — installer Windows10/11 dan manual tunggal tervalidasi; siap publikasi.**
+**25 Oktober — installer Windows10/11 dan manual tunggal tervalidasi dan sudah di main.**
 
 [Manual admin18bab](MODUL_PENGGUNAAN_VANGUARD.md) adalah satu sumber resmi; HTML/isi ZIP berasal dari
 Markdown yang sama.14tutorial dan3ZIP lama dikeluarkan dari tree aktif, histori
@@ -28,8 +28,12 @@ CA power-loss/soak/WIN-CLEANUP-02 tetap terbuka; keberhasilan installer bukan
 bukti backend sehat. Pilot membutuhkan admin0.1.12, profil/trust/routing dan
 alokasi identitas sebelum enrollment/connect; jangan ulang init CA.
 
-Berikutnya: commit/push biasa ke feature dan fast-forward main, periksa byte ZIP
-remote/CI dan dua branch. Bukti privat `state/manual-win10-20261024/`;
+Publikasi **e77e0eb** selesai pada main+feature (dua branch, fast-forward).
+ZIP unduhan ulang GitHub byte-identik paket native. **CI40171300671 SUCCESS**:
+Linux3.10 268PASS/1SKIP278,016s; Linux3.12 268PASS/1SKIP284,573s;
+Windows helpers28PASS/2SKIP0,372s. JUnit aktual diunduh. Penutupan berikutnya
+hanya dokumentasi; source/ZIP tetap e77e0eb. Berikutnya pilot fisik sesuai
+manual setelah backend/trust/routing siap. Bukti privat `state/manual-win10-20261024/`;
 jurnal aktif25Oktober. Catatan di bawah merupakan riwayat sebelumnya.
 
 
