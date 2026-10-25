@@ -287,3 +287,16 @@ and3old ZIPs leave the active tree, with Git history preserved. Native10 LTSC
 is not evidence for Home/Pro22H2, Windows10 VPN, physical endpoints or UAC/MOTW.
 Windows11 running, other six guests shut off; Windows10 setup media ejected,
 credentials unchanged/private. See newest checkpoint for publication status.
+
+
+Windows interrupted configuration recovery — 25 October 2026, evening:
+Source/package307b86a corrects proven WIN-CONFIG-01: stage public profile/root,
+validate administrator pins and crypto before publication, reject conflicting
+existing files, and complete identical partial pairs without overwrite. Root-only
+status reports incomplete/exit1. Two file renames are not a multi-file transaction;
+physical power-loss/concurrent configure remain untested. No CA/identity/admission
+change. Final fix1 BAT reinstall/status plus10configuration cases passed on both
+Windows10LTSC19044 and Windows11build26300. Primary Windows11 identity hashes,
+legacy runtime and all six original domain definitions remain unchanged. See
+current checkpoint for actual CI results and publication; earlier r3 evidence is
+retained as history. Windows11 running; Windows10/five Ubuntu shut off.

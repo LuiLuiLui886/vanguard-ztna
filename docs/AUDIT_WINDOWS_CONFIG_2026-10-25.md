@@ -41,8 +41,9 @@ root untuk mengatasi konflik. Tidak ada private key yang dibuat oleh konfigurasi
 | VM Windows 10 LTSC Evaluation x64 build 19044, fixture source | 10 PASS; status parsial exit 1; dua retry launcher exit 0 | Filesystem dan validasi crypto nyata; input prompt/runtime lookup dan kegagalan copy diinjeksi untuk isolasi |
 | VM Windows 10, ZIP fix1 melalui BAT | Reinstall exit 0, status exit 0; 10 PASS menggunakan Common.ps1 terpasang | Konfigurasi lama hash-identik, release baru, launcher identik ZIP, tidak membuat identitas atau tunnel |
 | Paket fix1 | Manifest, runtime pins, 20 wheel, 25 file aplikasi, scan credential nested PASS | Integritas paket, bukan keberhasilan VPN |
-| VM Windows 11 build 26300, fix1 | SEDANG_DIUJI | Hasil r3 sebelumnya tidak dianggap bukti fix1 |
-| CI source fix1 | BELUM_SELESAI | Akan diperbarui setelah run aktual |
+| VM Windows 11 build 26300, ZIP fix1 melalui BAT | Reinstall/status exit 0; 10 PASS dari launcher terpasang | Konfigurasi endpoint dan 6 hash identitas utama tetap; runtime legacy 0.1.9/Python 3.13.16/WG 1.1.1 serta SecureBoot/TPM tidak berubah |
+| CI 40212688642, source `307b86a` | **SUCCESS**; Linux 3.10: 268 PASS / 1 SKIP, 277.415 detik; Linux 3.12: 268 PASS / 1 SKIP, 290.527 detik | JUnit aktual diunduh; bukan hasil VM backend |
+| CI Windows Server 2022 / Python 3.12 | 28 PASS / 2 SKIP, 0,380 detik; konfigurasi 10 PASS | Runner hosted Windows, berbeda dari Windows 10/11 desktop |
 
 Sepuluh regresi native: pasangan baru valid; retry tanpa overwrite; pemulihan
 root saja; pemulihan profil saja; penolakan root berbeda; penolakan profil berbeda;
@@ -52,7 +53,7 @@ file lama tidak diubah. Sertifikat disposable dibuat di memory; private key tida
 ditulis. Runner `tests/windows/installer_configure.ps1` juga ditambahkan ke CI
 Windows; CI Windows Server harus dibedakan dari Windows 10/11 desktop native.
 
-ZIP yang diuji dan akan diterbitkan memakai nama tunggal di `downloads/`:
+ZIP yang diuji dan diterbitkan memakai nama tunggal di `downloads/`:
 `vanguard-windows10-11-offline-0.1.12-20261025.zip`, **44.675.510 byte**, SHA256
 `26ba30082b2c21da3a0d81d9670f5ae7e2eb5157cca566b662fbafb2d1790515`.
 Paket lama r3 dipertahankan dalam histori Git serta state lokal. Versi aplikasi
@@ -67,3 +68,25 @@ Windows 10 berada pada direktori guest terlindungi
 Tidak ada password di laporan, paket, atau Git. Invokasi tes dengan nama file
 salah sempat menghasilkan no-tests/exit 4; invokasi dikoreksi dan hasil aktual di
 atas digunakan. Bukti percobaan awal yang tidak selesai tetap dipertahankan.
+
+## Publikasi dan handoff
+
+Source dan paket commit `307b86a17b2d9a15146abba7270cf88f06edd7c7` sudah dipush.
+ZIP diunduh ulang dari GitHub commit tersebut dan byte-identik dengan paket yang
+lulus di kedua VM. CI `40212688642` selesai SUCCESS untuk source yang sama.
+Commit penutupan hanya memperbarui bukti/dokumentasi; tidak mengganti paket.
+Distribusi memakai `main`; branch kerja tetap
+`feature/2026-10-22-physical-endpoints`, tanpa penambahan branch atau force-push.
+
+Enam definisi VM asli cocok hash baseline. Windows 11 running; Windows 10 serta
+lima Ubuntu shut off. Backup konfigurasi/pointer dan identitas utama Windows 11
+dibuat sebelum reinstall pada direktori terlindungi yang sama dengan Windows 10;
+kedua arsip Windows 11 berhasil dibaca seluruhnya. Tidak ada CA atau kredensial
+operasional yang diganti. Manual HTML hasil render ulang identik dengan sumber
+HTML yang diterbitkan. Pemeriksaan tautan, sintaks contoh bash, Ruff, checksum,
+manifest dan secret scan lulus.
+
+Berikutnya: pilot PC Windows fisik setelah backend/trust/routing siap, uji Windows
+10 Home/Pro build 19045, VPN Windows 10, UAC/MOTW/GPO, serta backlog lifecycle/CA
+yang tercatat pada checkpoint. Semua itu tetap **BELUM_TERUJI** oleh audit ini.
+Jangan menyimpulkan sistem bebas bug atau siap produksi dari keberhasilan installer.

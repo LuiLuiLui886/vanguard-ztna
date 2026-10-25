@@ -1,15 +1,30 @@
 # Checkpoint VanGuard — 25 Oktober 2026
 
-## 25 Oktober malam — perbaikan konfigurasi Windows, publikasi berlangsung
+## 25 Oktober malam — perbaikan konfigurasi Windows tervalidasi
 
-WIN-CONFIG-01 terbukti dan diperbaiki: retry root/profil identik memulihkan
-konfigurasi parsial tanpa overwrite trust berbeda. [Laporan audit](AUDIT_WINDOWS_CONFIG_2026-10-25.md).
-ZIP fix1 44.675.510 byte/hash `26ba30082b2c21da3a0d81d9670f5ae7e2eb5157cca566b662fbafb2d1790515`;
-BAT reinstall/status Windows10 build19044 exit0, config tetap,10regresi dari
-launcher terpasang PASS. Linux41PASS/1SKIP0,29s; paket/scan/Ruff PASS.
-Windows11 fix1 dan CI masih berlangsung; jangan menganggap hasil r3 sebagai
-bukti fix1. Branch feature dipakai, target main setelah validasi. Backup dan
-credential hanya lokal. Catatan di bawah adalah bukti r3 sebelumnya.
+WIN-CONFIG-01 diperbaiki pada source/paket **307b86a**: retry pasangan root/profil
+identik memulihkan state parsial tanpa menimpa trust berbeda. Status parsial exit1
+dengan penjelasan. [Laporan audit dan batas bukti](AUDIT_WINDOWS_CONFIG_2026-10-25.md).
+
+- ZIP fix1 **44.675.510 byte**, SHA256 `26ba30082b2c21da3a0d81d9670f5ae7e2eb5157cca566b662fbafb2d1790515`.
+  Unduhan ulang GitHub byte-identik paket yang diuji. Gunakan ZIP tunggal di main;
+  versi aplikasi Python tetap0.1.12, launcher PowerShell diperbaiki.
+- Windows10 LTSC19044 **dan** Windows11 build26300: BAT reinstall/status exit0,
+  config tetap, **10regresi per VM** dari launcher terpasang PASS; tanpa identitas
+  endpoint/tunnel baru.6hash identitas utama Windows11/runtime legacy tetap.
+- Linux lokal41PASS/1SKIP0,29s. **CI40212688642 SUCCESS** pada307b86a:
+  Linux3.10 268 PASS / 1 SKIP, 277.415 detik; Linux3.12 268 PASS / 1 SKIP, 290.527 detik;
+  Windows Server helpers28PASS/2SKIP0,380s +10regresi konfigurasi PASS.
+  JUnit/report aktual diunduh; bukti CI tidak menggantikan VM desktop/backend.
+- Enam XML original hash-identik. Windows11 running; Windows10/lima Ubuntu
+  shut off. Backup sebelum mutasi/credential tetap privat; tidak mengganti CA.
+  Bukti lokal `state/bug-review-20261025/`. Commit penutupan hanya dokumentasi;
+  source/paket tetap307b86a, main dan feature tetap dua branch.
+
+Tersisa **BELUM_TERUJI**: PC fisik, Windows10 Home/Pro19045, VPN10, UAC/MOTW/GPO,
+configure serentak/power-loss serta backlog CA soak/WIN-CLEANUP-02. Lanjut pilot
+sesudah backend/trust/routing siap. Tidak ada klaim bebas bug/production-ready.
+Catatan berikut adalah riwayat paket r3 sebelum perbaikan ini.
 
 **25 Oktober — installer Windows10/11 dan manual tunggal tervalidasi dan sudah di main.**
 
