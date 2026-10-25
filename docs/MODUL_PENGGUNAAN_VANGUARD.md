@@ -1182,7 +1182,12 @@ $vg = Join-Path $env:ProgramFiles 'VanGuardEndpoint\VanGuard.bat'
 ```
 
 Masukkan lokasi profil/root, fingerprint dan public key saat diminta. Configure
-menolak penimpaan konfigurasi lama. Data rahasia CA tidak pernah disalin ke PC.
+menolak penggantian konfigurasi lama dengan data berbeda. Jika proses terputus,
+ulangi configure memakai file profil/root serta fingerprint/key yang sama dan
+terverifikasi. File identik dipertahankan; file yang belum ada dilengkapi setelah
+validasi. Jika status menyatakan konfigurasi belum lengkap, jangan init/connect
+sebelum configure selesai. Jangan menghapus root lama untuk melewati konflik.
+Data rahasia CA tidak pernah disalin ke PC.
 
 ### 11.2 Key dan CSR pada endpoint baru
 

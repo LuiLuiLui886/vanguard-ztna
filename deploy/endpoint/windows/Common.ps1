@@ -65,6 +65,47 @@ function Write-State([string]$Path, $Value) {
     if (Test-Path -LiteralPath $Path) { [IO.File]::Replace($temp,$Path,$Path+'.previous') }
     else { [IO.File]::Move($temp,$Path) }
 }
+function Install-TrustedProfile([string]$Python, [string]$Source, [string]$Root,
+                               [string]$ExpectedRoot, [string]$ExpectedKey, [string]$Config) {
+    Assert-SafePath $Source
+    Assert-SafePath $Root
+    Assert-SafePath $Config
+    # Validate a private snapshot, not source files that may change between reads.
+    $stage = Join-Path $Config ('.configure-' + [Guid]::NewGuid().ToString('N'))
+    Protect-Directory $stage
+    Copy-Item -LiteralPath $Source -Destination (Join-Path $stage 'profile.json')
+    Copy-Item -LiteralPath $Root -Destination (Join-Path $stage 'root.crt')
+    $public = Get-Content -LiteralPath (Join-Path $stage 'profile.json') -Raw | ConvertFrom-Json
+    if ($public.root_sha256 -ne $ExpectedRoot -or $public.server_public_key -cne $ExpectedKey) {
+        throw 'Binding trust/profile tidak cocok.'
+    }
+    Invoke-Checked $Python @('-c','from vanguard.profile import load_profile; import sys; load_profile(sys.argv[1],sys.argv[2])',
+        (Join-Path $stage 'profile.json'),(Join-Path $stage 'root.crt'))
+    # Check BOTH targets before publishing either; never replace existing trust.
+    foreach ($name in @('root.crt','profile.json')) {
+        $target = Join-Path $Config $name
+        Assert-SafePath $target
+        if ((Test-Path -LiteralPath $target) -and
+            (Get-FileHash -LiteralPath $target).Hash -ne (Get-FileHash -LiteralPath (Join-Path $stage $name)).Hash) {
+            throw 'Config berbeda sudah ada; tidak ditimpa. Inspeksi operator diperlukan.'
+        }
+    }
+    # Two renames are NOT a multi-file transaction. A crash may leave one file;
+    # the same verified inputs can complete it on retry. Conflicts stay closed.
+    foreach ($name in @('root.crt','profile.json')) {
+        $target = Join-Path $Config $name
+        if (-not (Test-Path -LiteralPath $target)) {
+            [IO.File]::Move((Join-Path $stage $name),$target)
+        }
+    }
+    # Only a fully successful operation removes its own public staging files.
+    # Failed attempts stay available for inspection; never remove target files.
+    foreach ($name in @('root.crt','profile.json')) {
+        $file = Join-Path $stage $name
+        if (Test-Path -LiteralPath $file) { [IO.File]::Delete($file) }
+    }
+    [IO.Directory]::Delete($stage)
+}
 function Get-Installation {
     Assert-SafePath $AppRoot
     $state = Get-Content -LiteralPath (Join-Path $AppRoot 'current.json') -Raw | ConvertFrom-Json

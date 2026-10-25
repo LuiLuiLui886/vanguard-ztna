@@ -38,13 +38,16 @@ jobs:
           Get-ChildItem deploy/pilot/*.ps1 | ForEach-Object { [scriptblock]::Create((Get-Content -Raw $_.FullName)) | Out-Null }
           Get-ChildItem tests/windows/*.ps1 | ForEach-Object { [scriptblock]::Create((Get-Content -Raw $_.FullName)) | Out-Null }
           & tests/windows/installer_platform.ps1 -Platform deploy/endpoint/windows/Platform.ps1
+          & tests/windows/installer_configure.ps1 -Common deploy/endpoint/windows/Common.ps1 -Python (Get-Command python).Source -Report build-configure.json
           python -m pytest -q tests/test_client_platform.py --junitxml=build/reports/windows-client.xml
       - name: Save client report
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: junit-windows-client
-          path: build/reports/windows-client.xml
+          path: |
+            build/reports/windows-client.xml
+            build-configure.json
           if-no-files-found: warn
           retention-days: 14
   test:

@@ -1271,7 +1271,12 @@ Dari PowerShell Administrator:</p>
 &amp; $vg status
 </code></pre>
 <p>Masukkan lokasi profil/root, fingerprint dan public key saat diminta. Configure
-menolak penimpaan konfigurasi lama. Data rahasia CA tidak pernah disalin ke PC.</p>
+menolak penggantian konfigurasi lama dengan data berbeda. Jika proses terputus,
+ulangi configure memakai file profil/root serta fingerprint/key yang sama dan
+terverifikasi. File identik dipertahankan; file yang belum ada dilengkapi setelah
+validasi. Jika status menyatakan konfigurasi belum lengkap, jangan init/connect
+sebelum configure selesai. Jangan menghapus root lama untuk melewati konflik.
+Data rahasia CA tidak pernah disalin ke PC.</p>
 <h3 id="bagian-11-2">11.2 Key dan CSR pada endpoint baru</h3>
 <p><strong>CA hanya satu, tetap di VM-CA.</strong> Komputer baru membuat private key X.509 dan
 WireGuard sendiri serta permintaan sertifikat (CSR). CA menandatangani CSR setelah

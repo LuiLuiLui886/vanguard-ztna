@@ -1,5 +1,16 @@
 # Lanjutkan proyek VanGuard
 
+## 25 Oktober malam — perbaikan konfigurasi Windows, publikasi berlangsung
+
+WIN-CONFIG-01 terbukti dan diperbaiki: retry root/profil identik memulihkan
+konfigurasi parsial tanpa overwrite trust berbeda. [Laporan audit](docs/AUDIT_WINDOWS_CONFIG_2026-10-25.md).
+ZIP fix1 44.675.510 byte/hash `26ba30082b2c21da3a0d81d9670f5ae7e2eb5157cca566b662fbafb2d1790515`;
+BAT reinstall/status Windows10 build19044 exit0, config tetap,10regresi dari
+launcher terpasang PASS. Linux41PASS/1SKIP0,29s; paket/scan/Ruff PASS.
+Windows11 fix1 dan CI masih berlangsung; jangan menganggap hasil r3 sebagai
+bukti fix1. Branch feature dipakai, target main setelah validasi. Backup dan
+credential hanya lokal. Catatan di bawah adalah bukti r3 sebelumnya.
+
 **25 Oktober — installer Windows10/11 dan manual tunggal tervalidasi dan sudah di main.**
 
 [Manual admin18bab](docs/MODUL_PENGGUNAAN_VANGUARD.md) adalah satu sumber resmi; HTML/isi ZIP berasal dari

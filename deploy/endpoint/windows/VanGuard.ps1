@@ -20,6 +20,10 @@ try {
     Assert-SafePath $profile
     Assert-SafePath $trust
     if ($Action -eq 'status' -and -not (Test-Path -LiteralPath $profile)) {
+        if (Test-Path -LiteralPath $trust) {
+            Write-Host 'Konfigurasi belum lengkap. Ulangi configure dengan profil/root dan fingerprint/key yang sama dari admin.'
+            exit 1
+        }
         Write-Host 'Terpasang; profil tepercaya belum tersedia. Jalankan -Action configure. Belum enrollment/admission.'
         exit 0
     }
@@ -30,12 +34,7 @@ try {
         Assert-SafePath $root
         $expectedRoot = Read-Host 'Fingerprint SHA256 Root CA yang dikonfirmasi admin'
         $expectedKey = Read-Host 'Public key WireGuard server yang dikonfirmasi admin'
-        $public = Get-Content -LiteralPath $source -Raw | ConvertFrom-Json
-        if ($public.root_sha256 -ne $expectedRoot -or $public.server_public_key -cne $expectedKey) { throw 'Binding trust/profile tidak cocok.' }
-        Invoke-Checked $python @('-c','from vanguard.profile import load_profile; import sys; load_profile(sys.argv[1],sys.argv[2])',$source,$root)
-        if ((Test-Path -LiteralPath $profile) -or (Test-Path -LiteralPath $trust)) { throw 'Config sudah ada; tidak ditimpa. Inspeksi operator untuk perubahan.' }
-        Copy-Item -LiteralPath $root -Destination $trust
-        Copy-Item -LiteralPath $source -Destination $profile
+        Install-TrustedProfile $python $source $root $expectedRoot $expectedKey (Join-Path $DataRoot 'config')
         Write-Host 'Profil tersimpan. Belum ada identitas baru, login, peer atau tunnel.'
         exit 0
     }
