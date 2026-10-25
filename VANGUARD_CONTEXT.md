@@ -272,3 +272,18 @@ an additional Windows10 test VM. Preserve the original six domains, use separate
 blank disk/MAC/IP192.168.100.70 and credentials stored only in private inventory.
 Do not replace Windows11 or reenroll primary identities. Test OS compatibility
 separately from VPN lifecycle and from Windows security servicing status.
+
+
+Windows10 native validation and single-manual completion — 25 October 2026:
+Windows10 LTSC2021 Evaluation x64 build19044 installed on additional test node
+.100.70, preserving all six originals. Native installer from absent runtimes:
+9smoke/5guards/policy passed; final r3 ZIP reinstall/status/config preservation
+passed. Windows11 build26300 final r3 passed preview/two reinstalls/status,
+5guards and policy while primary identity hashes/runtime0.1.9 remained unchanged.
+Windows11 retains its existing separate endpoint0.1.12; Python3.13.16 reused.
+Windows10 has Python3.13.17/WG1.1.1; no VPN identity/admission was created.
+One18chapter manual is the source for MD/HTML/package;14overlapping tutorials
+and3old ZIPs leave the active tree, with Git history preserved. Native10 LTSC
+is not evidence for Home/Pro22H2, Windows10 VPN, physical endpoints or UAC/MOTW.
+Windows11 running, other six guests shut off; Windows10 setup media ejected,
+credentials unchanged/private. See newest checkpoint for publication status.

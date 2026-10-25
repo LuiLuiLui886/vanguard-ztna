@@ -1,15 +1,38 @@
-# Checkpoint VanGuard — 24 Oktober 2026
+# Checkpoint VanGuard — 25 Oktober 2026
 
-**IN_PROGRESS — manual tunggal dan Windows10,24Oktober:** source pada branch
-feature, belum dipush.14tutorial digabung menjadi manual18bab MD/HTML; link dan
-builder sudah disesuaikan. Installer baru mengizinkan Windows10x64 build19044/19045,
-namun native10 belum terbukti. VM-CLIENT-WINDOWS10 baru .100.70/disk40GiB didefinisikan
-belum boot; enam node asli terjaga, seluruh VM saat entry ini shut off. Media ISO
-Microsoft sedang diunduh/range-resume di state/manual-win10-20261024/, jangan
-menjalankan provisioning/seed credential ulang. Setelah hash resmi cocok jalankan
-start_vm10.py sekali, periksa marker instalasi; jangan format ulang bila terinterupsi.
-Full Linux suite sedang berjalan; paket-r1/seed privat sudah siap. Catatan di bawah
-merupakan hasil installer Windows11 sebelumnya, bukan hasil Windows10.
+**25 Oktober — installer Windows10/11 dan manual tunggal tervalidasi; siap publikasi.**
+
+[Manual admin18bab](MODUL_PENGGUNAAN_VANGUARD.md) adalah satu sumber resmi; HTML/isi ZIP berasal dari
+Markdown yang sama.14tutorial dan3ZIP lama dikeluarkan dari tree aktif, histori
+Git tetap. [Paket lengkap](../downloads/README.md) memuat BAT, Python3.13.17, WireGuard1.1.1,
+20wheel offline dan manual. File ZIP25Oktober44.674.789byte, SHA256
+`d0b724f09b82a1684ee80cda09cb7ed86e35b4761675c6a7593fa6fcf7a7ee6f`.
+
+- Windows10 LTSC2021 Evaluation x64 build19044:9smoke/5guards/policy PASS;
+  runtime absent→installed terbukti. ZIP final r3 reinstall/status0, config tetap,
+  tanpa identity/tunnel. Wrapper policy awal tidak selesai; retry terpisah PASS.
+- Windows11 Enterprise Evaluation build26300: r3 preview/reinstall dua kali/status
+  **4PASS**, guards5PASS, policy PASS.6hash identitas utama/runtime lama tetap;
+  endpoint0.1.12 terpisah dari client legacy0.1.9. Fresh11 tetap bukti24Oktober.
+- Linux lokal25Oktober **268PASS/1SKIP795,98s**, builder12PASS0,19s, Ruff/tautan/
+  secret scan/paket PASS. Run full24Oktober TERPUTUS, bukan bukti lulus.
+  CI40074650339 source29b7afb: Linux3.10/3.12 masing-masing268PASS/1SKIP,
+  Windows helpers28PASS/2SKIP; berbeda dari tes VM native.
+- Enam XML asli identik; Windows11 running, Windows10 dan lima Ubuntu shut off.
+  ISO/seed Windows10 sudah ejected; tidak ada runner/tunnel uji aktif. Backup/key/
+  credential hanya lokal. Jangan provisioning/format VM10 atau reset credential.
+
+[Laporan dan batas bukti](VALIDASI_WINDOWS10_2026-10-25.md): Windows10 Home/Pro22H2 native, VPN Windows10,
+UAC interaktif/cancel, browser/MOTW/GPO, PC LAN/laptop Wi-Fi tetap BELUM_TERUJI.
+CA power-loss/soak/WIN-CLEANUP-02 tetap terbuka; keberhasilan installer bukan
+bukti backend sehat. Pilot membutuhkan admin0.1.12, profil/trust/routing dan
+alokasi identitas sebelum enrollment/connect; jangan ulang init CA.
+
+Berikutnya: commit/push biasa ke feature dan fast-forward main, periksa byte ZIP
+remote/CI dan dua branch. Bukti privat `state/manual-win10-20261024/`;
+jurnal aktif25Oktober. Catatan di bawah merupakan riwayat sebelumnya.
+
+
 
 ## Installer Windows lengkap — native selesai dan ZIP sudah di main
 
@@ -67,7 +90,7 @@ Panduan dan hasil CI telah dipush pada **c76c8f0**, branch
 `feature/2026-10-22-physical-endpoints`; SHA remote terverifikasi.
 
 Pengguna mengonfirmasi ZIP belum diekstrak/installer belum dijalankan. Panduan
-[Mulai di PC Windows LAN](../downloads/README.md#mulai-di-pc-windows-lan)
+[Mulai di PC Windows LAN](https://github.com/LuiLuiLui886/vanguard-ztna/blob/31c69816f4860869f3483dab86d3452bdb54333c/downloads/README.md#mulai-di-pc-windows-lan)
 kini memuat urutan runtime, ekstraksi/checksum, tiga input installer, exit code,
 dan status normal sebelum configure/enrollment. Kedua ZIP lama tetap identik.
 

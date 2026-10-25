@@ -113,6 +113,9 @@ def build(wheelhouse, output, runtime_directory=None):
         return 'href="https://github.com/LuiLuiLui886/vanguard-ztna/blob/main/' + target + '"'
     manual = re.sub(r'href="([^"]+)"', published_link, manual)
     (output / 'MODUL_PENGGUNAAN_VANGUARD.html').write_text(manual)
+    (output / 'README.md').write_text('# VanGuard Windows10/11 x64\n\n'
+        'Buka MODUL_PENGGUNAAN_VANGUARD.html; Bab10 untuk instalasi dan Bab11–12 untuk endpoint.\n'
+        'Manual ini berasal dari satu sumber resmi repository. Hasil native ada pada checkpoint.\n')
     (output / 'requirements.lock').write_text('\n'.join(lines) + '\n')
     hashes = {p.relative_to(output).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
               for p in sorted(output.rglob('*')) if p.is_file()}

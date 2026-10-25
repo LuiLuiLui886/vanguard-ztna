@@ -242,8 +242,8 @@ Endpoint installer terpisah0.1.12 tidak menimpa client lab lama di ProgramData.
 VM Windows10 uji tambahan .100.70 diizinkan pengguna, bukan pengganti enam node
 utama; tidak mendapat identitas VPN otomatis.</p>
 <p>Target installer: Windows10 x64 build19044/19045 (21H2/22H2) dan Windows11 x64
-build≥22000. Windows Server/x86/ARM64 ditolak. Windows10 native masih BELUM_TERUJI
-saat edisi ini disusun; lihat laporan validasi/checkpoint untuk hasil akhir.
+build≥22000. Windows Server/x86/ARM64 ditolak. Target build pada installer bukan bukti semua edisi Windows telah diuji; lihat
+matriks per OS/build pada laporan validasi dan checkpoint untuk hasil native.
 Dukungan aplikasi tidak memperpanjang dukungan keamanan OS. Windows10 reguler
 berakhir dukungan14Oktober2025; administrator memerlukan status servicing/ESU yang
 sesuai atau edisi LTSC yang masih didukung. Media evaluation hanya untuk pengujian.
@@ -1228,7 +1228,7 @@ Tidak ada reboot otomatis. Runtime parsial tidak dihapus/ditimpa sembarangan.</l
 <p>Pada PowerShell <strong>Administrator</strong>, tentukan ZIP yang diunduh dan hash dari
 halaman downloads GitHub tepercaya/admin. Hash bukan password. Jangan memakai
 hash yang dihitung dari file yang sama sebagai satu-satunya bukti asalnya.</p>
-<pre><code class="language-powershell">$zip = Join-Path $env:USERPROFILE 'Downloads\vanguard-windows10-11-offline-0.1.12-20261024.zip'
+<pre><code class="language-powershell">$zip = Join-Path $env:USERPROFILE 'Downloads\vanguard-windows10-11-offline-0.1.12-20261025.zip'
 $expected = Read-Host 'SHA256 ZIP dari sumber proyek tepercaya'
 if ($expected -notmatch '^[a-fA-F0-9]{64}$') { throw 'Format checksum tidak valid.' }
 if ((Get-FileHash -LiteralPath $zip -Algorithm SHA256).Hash -ne $expected) {
@@ -1296,7 +1296,7 @@ Akun administrator berbeda dari akun karyawan untuk VPN.</li>
 yang tersedia), dengan password melalui form. Username/password dibagikan
 secara privat; jangan memasukkannya ke Git atau dokumentasi publik.</li>
 <li>Pada formulir registrasi perangkat, masukkan request.json publik, metadata
-pemilik/departemen/platform (Windows11) dan pilih akun karyawan. Cocokkan device ID, IP tunnel,
+pemilik/departemen/platform (Windows10 atau Windows11 sesuai endpoint) dan pilih akun karyawan. Cocokkan device ID, IP tunnel,
 public key/CSR dengan permintaan dari PC yang benar.</li>
 <li>Proses registrasi meminta sertifikat ke CA dan menyimpan binding sertifikat,
 public key WireGuard, device ID, IP tunnel serta akun karyawan. Registrasi
