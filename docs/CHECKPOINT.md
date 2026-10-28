@@ -1,11 +1,13 @@
 # Checkpoint VanGuard — 28 Oktober 2026
 
-## 28 Oktober — regresi akhir selesai; kandidat siap dicatat di Git
+## 28 Oktober — regresi akhir selesai; kandidat dipush ke GitHub
 
 Suite fokus terakhir selesai: **120 lulus, 1 dilewati dalam 348,18 detik**
 (Linux lokal; sebagian memakai mock OS). Ruff dan pemeriksaan whitespace PASS.
 Hasil ini melengkapi bukti native Windows10 tanggal 27 Oktober, bukan pengganti
-pengujian Windows11 atau endpoint fisik. Lihat jurnal 28 Oktober untuk publikasi.
+pengujian Windows11 atau endpoint fisik. Commit source `f861464` sudah dipush
+ke origin feature dan SHA remote terverifikasi. Tidak ada klaim hasil CI baru;
+workflow push hanya main. Lihat jurnal 28 Oktober untuk rincian publikasi.
 
 Saat resume 28 Oktober 13:37 WIB, seluruh tujuh VM **shut off**; status running
 pada catatan di bawah adalah histori. Tidak ada rollout produksi pada sesi ini.
