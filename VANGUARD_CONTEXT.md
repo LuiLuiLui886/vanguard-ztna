@@ -355,3 +355,15 @@ Original config/identity hashes, legacy runtime, SecureBoot/TPM, VM definition a
 110 inbound rules preserved; temporary policy recovered, account disabled and
 certificate revoked. Test namespaces stopped, CA/history retained. Main/stable
 ZIP unchanged; no general Windows edition/physical endpoint guarantee.
+
+
+User choice and candidate setup — 28–29 October 2026:
+Use one offline folder and one main Setup-VanGuard.bat entrypoint. Candidate0.1.14
+orchestrates existing runtime installer, public pinned profile, local key creation,
+public request export, validated administrator bundle import and employee login/
+connect. Admin approval and six device checks remain required; no management token
+or private key in provisioning package. Resume verifies files, preserves existing
+keys and rejects conflicts. Template needs explicit per-device admin preparation;
+never distribute the disposable lab profile as production configuration.
+Windows11 BAT preparation/resume passed; see latest checkpoint for final connection,
+cleanup, publication and untested interactive/Windows10/physical scenarios.

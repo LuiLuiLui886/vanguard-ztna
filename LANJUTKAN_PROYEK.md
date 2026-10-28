@@ -1,5 +1,31 @@
 # Lanjutkan proyek VanGuard
 
+## 29 Oktober — setup terpadu0.1.14, validasi dan pemulihan selesai
+
+Pengguna memilih satu folder offline+satu BAT. Source menambah Setup-VanGuard.bat,
+Setup-VanGuard.ps1, vanguard.provision dan builder per-device. Manual Bab14.0
+menjelaskan admin menyiapkan profil/alokasi, user menjalankan BAT, menunggu
+approval bundle, lalu login/connect. Tidak ada token management/private key dalam
+paket; key lokal tidak dibuat ulang saat resume. Dua patch audit ikut0.1.14.
+
+Suite Linux110PASS/1SKIP215,74detik. R1 pending approval/resume9PASS dan r2
+approval/resume9PASS melalui PS1. R3 repacked BAT langsung9PASS: exit0,
+READY_FOR_LOGIN, key/runtime sama, no tunnel. ZIP r3 awal mengalami CRC rusak,
+checksum installer menolak dengan benar; repack dari direktori tervalidasi
+mempertahankan manifest/pin. Penyebab kerusakan byte belum diketahui, bukti FAIL
+retained. Laporan [validasi setup terpadu](docs/VALIDASI_SETUP_TERPADU_2026-10-29.md) dan jurnal29Oktober membedakan bukti.
+
+Login/admission/handshake, default-deny/grant TCP+DNS baru,2renewal, logout dan
+owner cleanup PASS memakai client kandidat dan fixture login. Recovery selesai:
+110inbound asli terjaga,0LocalGPO/0task test; config/primary identity/legacy runtime/
+SecureBoot/TPM/VM XML sama. Test identity1003 revoked dan akun disabled; namespace
+serta unit transient dihentikan, CA/DB/histori tetap. Credential staging dibuang.
+Windows11+SERVER running,5guest lain shut off. Template offline0.1.14 untuk admin
+ada pada downloads tanpa profil/alokasi fixture. Main/ZIP0.1.12 tetap. Source dan
+ZIP kandidat menunggu publikasi terakhir; hasil push dicatat di jurnal.
+Sisa: UAC/login interaktif default, Windows10 wizard, OS fresh/reboot3010,
+PC fisik, serta lifecycle/readiness internet yang sebelumnya belum diuji.
+
 ## 28 Oktober — audit bug lanjutan dan patch source
 
 Patch `ff59047` sudah dipush ke origin feature; SHA remote terverifikasi.

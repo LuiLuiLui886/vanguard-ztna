@@ -1445,6 +1445,96 @@ versi, ID uji, lease/handshake/transfer, hasil HTTP dan lokasi bukti tersaring.
 Jangan mengisi PASS hanya karena checklist tersedia. Tes Linux sebelumnya260/1
 bukan bukti kedua endpoint fisik.
 
+### 14.0. Setup terpadu: satu folder offline, satu BAT utama (kandidat0.1.14)
+
+Untuk endpoint baru, admin dapat membuat paket **per perangkat** yang sudah berisi
+Python, WireGuard, aplikasi, profil server, Root CA publik dan alokasi device/IP.
+Pengguna hanya menjalankan **Setup-VanGuard.bat**. BAT/script lain di folder adalah
+komponen internal atau alat maintenance; pengguna tidak perlu menjalankannya satu
+per satu. Ini kandidat baru; lihat checkpoint untuk hasil native versi paket.
+ZIP stabil0.1.12 tidak otomatis memiliki wizard ini.
+Template kandidat offline untuk admin tersedia di
+[downloads](../downloads/README.md). Template belum memiliki identitas/profil
+per-device; gunakan folder `wheels` dan `runtimes` di dalamnya pada perintah
+builder berikut. User akhir mendapat folder hasil builder, bukan template kosong.
+
+**Yang tetap membutuhkan manusia:** persetujuan UAC administrator Windows,
+persetujuan pendaftaran oleh admin VanGuard, serta login karyawan. Paket tidak
+boleh memuat password, OTP, token management, private key CA atau private key
+perangkat. CA utama tidak dibuat ulang pada setiap endpoint. Kunci perangkat
+dibuat di endpoint, lalu CA yang sudah ada menerbitkan sertifikat dari CSR.
+
+**Persiapan satu kali oleh admin Linux:**
+
+1. Siapkan layanan CA/server/admin, HTTPS tepercaya dan alokasi IP tunnel unik.
+   Pilih profil schema1 untuk aplikasi internal atau schema2 untuk internet
+   terkelola. Profil schema2 akan mengaktifkan lockdown pada endpoint: internet
+   langsung diblok sebelum enrollment. Pastikan gateway/admission bisa dijangkau
+   dan console/recovery admin tersedia. Izin internet gateway tetap terpisah.
+2. Siapkan `profile.json` dan `root.crt` publik yang benar. Konfirmasi fingerprint
+   root serta public key WireGuard server dari sumber admin tepercaya. Gunakan
+   wheel aplikasi0.1.14 terbaru bersama wheel dependensi dan runtime offline
+   terverifikasi; jangan mencampur wheel r8/0.1.13 dengan source wizard baru.
+3. Bangun paket per-device; ganti nilai contoh sesuai alokasi:
+
+   ```bash
+   .venv/bin/python scripts/build_endpoint_package.py \
+     --wheelhouse /path/windows-wheels \
+     --runtime-directory /path/runtime-installers \
+     --output /path/paket-pc-karyawan-01 \
+     --profile /path/profile.json --root /path/root.crt \
+     --device-id pc-karyawan-01 --tunnel-ip 10.8.0.10 \
+     --expected-root-sha256 FINGERPRINT_ROOT_64_HEX \
+     --expected-server-key PUBLIC_KEY_WIREGUARD_SERVER
+   ```
+
+   Output menyertakan `provision.json`, `profile.json` dan `root.crt` dalam
+   checksum manifest. Bagikan seluruh folder/ZIP dan checksum melalui jalur
+   admin tepercaya. Pin di dalam folder tidak menggantikan verifikasi asal
+   paket. Satu alokasi tidak boleh digunakan untuk dua komputer.
+
+**Langkah pada Windows:**
+
+1. Ekstrak seluruh paket terverifikasi ke folder admin di `C:\Program Files`.
+   Jalankan `Setup-VanGuard.bat` dan setujui UAC. Wizard memasang prasyarat yang
+   belum tersedia, aplikasi, profil, serta policy internet bila schema2.
+2. Wizard membuat kunci lokal dan berkas publik
+   `C:\Program Files\VanGuardEndpointData\enrollment-request.json`.
+   Kirim **hanya berkas ini** kepada admin melalui cara transfer yang disetujui.
+   Jika lockdown membatasi transfer jaringan, gunakan console/USB admin; jangan
+   membuka firewall secara sembarang atau mengirim seluruh folder `identity`.
+3. Admin mendaftarkan request melalui dashboard seperti Bab11–12: isi metadata,
+   ikat akun karyawan, terbitkan sertifikat, lalu unduh bundle publik untuk
+   perangkat itu. Registrasi ini belum membuat peer. Admin memberi izin resource
+   dan, untuk schema2, izin internet sesuai kebijakan.
+4. Pada wizard yang sama, masukkan path bundle ZIP saat diminta. Bila admin belum
+   selesai, tekan Enter: wizard keluar dengan kode20, **menunggu persetujuan**.
+   Jalankan BAT yang sama lagi setelah bundle diterima. Kunci/config yang sama
+   digunakan; konflik/identitas parsial ditolak dan dipertahankan untuk inspeksi.
+   Admin juga dapat menaruh bundle pada
+   `C:\Program Files\VanGuardEndpointData\approval.zip`; wizard memvalidasi
+   binding sebelum import dan tidak percaya nama file sebagai bukti persetujuan.
+5. Masukkan username karyawan dan password ketika diminta. Password tidak disimpan
+   oleh wizard. Sesudah login, proses connect menjalankan enam pemeriksaan,
+   menambah peer hanya setelah admission, lalu melakukan renewal. Terminal harus
+   tetap terbuka. Gunakan Ctrl+C untuk menghentikan koneksi; logout tetap melalui
+   launcher VanGuard agar sesi server dicabut seperti Bab12.
+
+`wizard-state.json` menyimpan tahap terakhir tanpa rahasia; bukan sumber izin.
+Setiap resume memeriksa fakta runtime/config/key/policy lagi. Tahap
+`WAITING_APPROVAL` berarti belum ada sertifikat; `READY_FOR_LOGIN` belum berarti
+ada akses VPN; `CONNECTING` bukan bukti handshake; cek hasil koneksi dan gateway.
+Kode3010 berarti runtime meminta restart: simpan pekerjaan, restart sendiri,
+lalu jalankan BAT yang sama. Kode1 berarti tahap gagal; jangan menghapus kunci
+atau konfigurasi untuk memaksa lanjut. Tidak ada autologin setelah reboot.
+
+Untuk pengujian admin tanpa prompt login, `Setup-VanGuard.ps1 -PrepareOnly`
+menyiapkan endpoint dan memproses `approval.zip` bila tersedia; hasil20 menunggu
+bundle, hasil0 siap login **tanpa membuat tunnel**. Opsi ini tetap memerlukan
+hak admin dan paket tepercaya. Paket berbeda/upgrade saat lockdown aktif harus
+melalui recovery maintenance yang terdokumentasi; wizard tidak membuka internet
+secara otomatis saat error. Lihat Bab14.1 untuk batas dan pemulihan policy.
+
 ### 14.1. Kandidat internet terkelola tanpa mengubah router pengguna
 
 Mode ini terpisah dari pilot aplikasi Bab14 di atas. Source kandidat0.1.13
