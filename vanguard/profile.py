@@ -55,12 +55,15 @@ def validate_profile(value):
         wg_key(value['server_public_key'])
         if not re.fullmatch(r'[0-9a-f]{64}', value['root_sha256']):
             raise ValueError()
+        if any(not isinstance(value[field], str) for field in ('backend_network', 'tunnel_network')):
+            raise ValueError()
         backend = ipaddress.IPv4Network(value['backend_network'])
         tunnel = ipaddress.IPv4Network(value['tunnel_network'])
         # Server registry currently enforces this network; no hidden incompatible migration.
         if tunnel != ipaddress.IPv4Network('10.8.0.0/24') or backend.overlaps(tunnel):
             raise ValueError()
-        if not isinstance(value['allowed_ips'], list) or not 1 <= len(value['allowed_ips']) <= 16:
+        if (not isinstance(value['allowed_ips'], list) or not 1 <= len(value['allowed_ips']) <= 16
+                or any(not isinstance(route, str) for route in value['allowed_ips'])):
             raise ValueError()
         routes = [ipaddress.IPv4Network(x) for x in value['allowed_ips']]
         if value['schema'] == 2:
@@ -78,7 +81,7 @@ def validate_profile(value):
                 if address in tunnel:
                     raise ValueError()
             for resolver in internet['dns']:
-                if not ipaddress.IPv4Address(resolver).is_global:
+                if not isinstance(resolver, str) or not ipaddress.IPv4Address(resolver).is_global:
                     raise ValueError()
         elif len(set(routes)) != len(routes) or any(x.prefixlen != 32 or not x.subnet_of(tunnel) for x in routes):
             raise ValueError()

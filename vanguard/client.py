@@ -310,9 +310,9 @@ def _connect(directory, remote, server_key, backend, profile=None):
                 time.sleep(1)
                 if stop_request.exists() and json.loads(stop_request.read_text()).get('owner') == owner:
                     return
-            admitted = check_admission(admit(directory, remote), address)
             if profile and profile['schema'] == 2:
                 backend.require_internet(profile)
+            admitted = check_admission(admit(directory, remote), address)
     finally:
         # Also clean up a partially successful install. Keep config if cleanup fails
         # so the next invocation refuses rather than taking ownership blindly.

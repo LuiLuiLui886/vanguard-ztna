@@ -259,3 +259,53 @@ def test_detach_failure_stops_owned_tunnel_but_preserves_config(lab, monkeypatch
     assert events[-1][1] == '/uninstalltunnelservice'
     assert (lab['directory'] / 'vanguard-client.conf').exists()
     assert (lab['directory'] / '.connection.json').exists()
+
+
+@pytest.mark.parametrize('field,value', [
+    ('dns', [16843009]),  # ipaddress accepts this integer as 1.1.1.1.
+    ('dns', ['1.1.1.1', 134744072]),
+    ('allowed_ips', [168296449]),  # Integer representation of 10.8.0.1/32.
+    ('backend_network', 3232235520),
+    ('backend_network', True),
+    ('tunnel_network', ['10.8.0.0', 24]),
+])
+def test_profile_rejects_non_text_network_values(field, value):
+    p = profile() if field == 'allowed_ips' else managed()
+    if field == 'dns':
+        p['internet']['dns'] = value
+    else:
+        p[field] = value
+    with pytest.raises(Rejected, match='Invalid endpoint profile'):
+        validate_profile(p)
+
+
+@pytest.mark.parametrize('failed_check', [2, 4])
+def test_failed_lockdown_recheck_never_requests_new_lease(lab, monkeypatch, failed_check):
+    events = []
+    class Backend:
+        name = 'test-renewal'
+        def require_internet(self, p):
+            events.append('guard')
+            if events.count('guard') == failed_check:
+                raise Rejected('Managed firewall inspection failed')
+        def preflight(self):
+            pass
+        def up(self, config):
+            events.append('up')
+        def down(self, config):
+            events.append('down')
+    def admit(*args):
+        events.append('admit')
+        return {'decision': 'ACCEPT', 'tunnel_ip': '10.8.0.2', 'lease_until': 9999999999}
+    monkeypatch.setattr(client, 'admit', admit)
+    monkeypatch.setattr(client.time, 'sleep', lambda seconds: None)
+    p = managed()
+    with pytest.raises(Rejected, match='firewall inspection failed'):
+        client.connect(lab['directory'], SimpleNamespace(url=p['api_url']),
+                       p['server_public_key'], Backend(), p)
+    assert events.count('admit') == failed_check - 1, 'Failed policy check must not request a new lease'
+    assert events[:3] == ['guard', 'admit', 'up']
+    assert events[3:-2] == ['guard', 'admit'] * (failed_check - 2)
+    assert events[-2] == 'guard'
+    assert events[-1] == 'down'
+    assert not (lab['directory'] / 'test-renewal.conf').exists()

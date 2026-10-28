@@ -186,3 +186,10 @@ memakai gate terpisah. Mode ini memberi internet IPv4 TCP/UDP/ICMP umum setelah
 izin, bukan filter kategori/domain. Admission enam cek dan private key client
 tidak berubah. Pemeriksaan CA gagal tidak memakai CRL usang. Endpoint public IP
 harus reachable; fitur tidak otomatis mengekspos alamat privat di internet.
+
+Audit source28Oktober memperketat tipe DNS/route/network profil menjadi string
+JSON dan memeriksa policy lokal **sebelum** setiap permintaan renewal. Guard yang
+gagal masuk jalur cleanup tanpa meminta lease baru. Ini bukan attestation remote
+atau jaminan policy tidak berubah setelah pemeriksaan. Lease lama tetap dibatasi
+server; tidak menganggap cleanup lokal sebagai konfirmasi revocation server.
+Bukti patch Linux/mock dan batas native tercatat di [audit bug](AUDIT_BUG_2026-10-28.md).

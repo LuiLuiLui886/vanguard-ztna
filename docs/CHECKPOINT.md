@@ -1,5 +1,24 @@
 # Checkpoint VanGuard — 28 Oktober 2026
 
+## 28 Oktober — audit bug lanjutan dan patch source
+
+Dua bug dibuktikan dengan tes gagal sebelum patch: profil menerima DNS/route
+integer, dan renewal meminta lease sebelum pemeriksaan firewall lokal. Source
+sekarang menolak tipe network non-string dan memeriksa guard sebelum renewal;
+cleanup tetap berjalan saat guard gagal. Lihat [audit bug](AUDIT_BUG_2026-10-28.md) untuk file/fungsi,
+prioritas, bukti dan kriteria selesai. Baseline84PASS/1SKIP; reproduksi4FAIL;
+regresi patch awal5PASS. Suite diperluas **98PASS/1SKIP162,45detik**; Ruff,
+pip check dan diff PASS. Ini Linux/mock OS, bukan rerun native Windows.
+
+Semua tujuh VM **shut off** saat audit15:37; tidak dinyalakan/diubah. Patch belum
+masuk paket r8 atau VM, sehingga hasil native Windows11 di bawah tetap historis
+sebelum patch ini. Branch feature sama; main/ZIP stabil tetap. Langkah berikut:
+commit/push source dan dokumen, kemudian build/reinstall
+kandidat baru dan native renewal/input invalid Windows10/11 sebelum distribusi.
+Readiness internet, native expiry/daemon-stop/reboot tunnel aktif, PC fisik dan
+Windows10 active-TCP certificate-revoke tetap pekerjaan tersisa. Jangan menyebut
+sistem bebas bug hanya karena tes yang tersedia lulus.
+
 ## 28 Oktober — Windows11 native kandidat internet tervalidasi
 
 Laporan/manual dipush pada commit `3c70fee` ke branch feature; SHA remote
