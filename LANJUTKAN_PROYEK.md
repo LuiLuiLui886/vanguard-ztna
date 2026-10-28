@@ -2,6 +2,8 @@
 
 ## 29 Oktober — wizard Windows10 dan pencabutan TCP aktif terverifikasi
 
+Dokumentasi/hasil dipush pada `2d6c2db`; SHA origin feature terverifikasi.
+
 Kandidat0.1.14 yang sama diuji pada Windows10 Enterprise LTSC19044/Python3.13.17.
 BAT langsung `/prepare-only /nopause`:9kasus pending approval dan9kasus
 import/resume PASS; key/runtime/request terjaga, no tunnel sebelum admission.
