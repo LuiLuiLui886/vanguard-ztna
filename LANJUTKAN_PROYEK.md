@@ -1,5 +1,32 @@
 # Lanjutkan proyek VanGuard
 
+## 29 Oktober — wizard Windows10 dan pencabutan TCP aktif terverifikasi
+
+Kandidat0.1.14 yang sama diuji pada Windows10 Enterprise LTSC19044/Python3.13.17.
+BAT langsung `/prepare-only /nopause`:9kasus pending approval dan9kasus
+import/resume PASS; key/runtime/request terjaga, no tunnel sebelum admission.
+Client native: login tanpa peer, handshake, default-deny/grant TCP+freshDNS,
+2renewal, logout/owner cleanup, login ulang/reconnect PASS. Revoke CA serial1004
+menghentikan TCP aktif dan menghapus peer; fresh admission403 dan TCP/DNS baru
+ditolak. Batas observasi8,541detik mencakup polling/SSH/CA/timeout TCP, bukan
+jaminan latency. Gap pengukuran Windows10 pada27Oktober ditutup eksperimen baru;
+log FAIL lama serta kegagalan alat bantu sesi ini tetap disimpan.
+
+Recovery PASS:89inbound asli,0LocalGPO/0task fixture; config dan identitas lama
+hash-identik; XML inactive Windows10 tetap. Sertifikat revoked, akun/device
+disabled, grant/peer kosong;3unit/2namespace dihentikan. CA check_state/root pin
+PASS, histori1001–1004 retained; firewall root server sama selain counter.
+Credential hanya inventaris privat, staging VM dibuang, status CLEANED.
+Windows10+SERVER running,5guest lain off; kandidat endpoint0.1.14 tetap terpasang.
+
+Laporan: [validasi setup terpadu](docs/VALIDASI_SETUP_TERPADU_2026-10-29.md); manual tunggal Bab14.0 diperjelas.
+Source produk/ZIP kandidat tidak berubah; tidak perlu membangun ulang ZIP atau
+mengulang suite Linux110PASS/1SKIP hanya untuk dokumentasi. Tidak mengklaim CI baru.
+Bukti lokal `state/setup-win10-20261029/`. Branch tetap feature/2026-10-22-physical-endpoints;
+main/ZIP stabil0.1.12 tidak diganti. Sisa: UAC/login default interaktif penuh,
+fresh OS/reboot3010, PC fisik, lifecycle/readiness internet, edisi/build lain.
+Jangan memakai ulang serial revoked untuk eksperimen berikutnya.
+
 ## 29 Oktober — setup terpadu0.1.14, validasi dan pemulihan selesai
 
 Pengguna memilih satu folder offline+satu BAT. Source menambah Setup-VanGuard.bat,

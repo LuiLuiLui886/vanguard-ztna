@@ -1521,6 +1521,11 @@ Template kandidat offline untuk admin tersedia di
 <a href="../downloads/README.md">downloads</a>. Template belum memiliki identitas/profil
 per-device; gunakan folder <code>wheels</code> dan <code>runtimes</code> di dalamnya pada perintah
 builder berikut. User akhir mendapat folder hasil builder, bukan template kosong.</p>
+<p>BAT <code>/prepare-only /nopause</code> sudah diuji pada VM Windows10 LTSC19044 dan
+Windows11 build26300: persiapan/impor dan resume menjaga kunci, tanpa tunnel
+sebelum login. Rincian <a href="VALIDASI_SETUP_TERPADU_2026-10-29.md">bukti setup terpadu</a>
+membedakan pengujian BAT otomatis, client native, dan jalur UAC/login interaktif
+yang masih <strong>BELUM_TERUJI</strong>. Hasil ini tidak mewakili semua edisi Windows atau PC fisik.</p>
 <p><strong>Yang tetap membutuhkan manusia:</strong> persetujuan UAC administrator Windows,
 persetujuan pendaftaran oleh admin VanGuard, serta login karyawan. Paket tidak
 boleh memuat password, OTP, token management, private key CA atau private key
@@ -1592,7 +1597,9 @@ ada akses VPN; <code>CONNECTING</code> bukan bukti handshake; cek hasil koneksi 
 Kode3010 berarti runtime meminta restart: simpan pekerjaan, restart sendiri,
 lalu jalankan BAT yang sama. Kode1 berarti tahap gagal; jangan menghapus kunci
 atau konfigurasi untuk memaksa lanjut. Tidak ada autologin setelah reboot.</p>
-<p>Untuk pengujian admin tanpa prompt login, <code>Setup-VanGuard.ps1 -PrepareOnly</code>
+<p>Untuk pengujian admin tanpa prompt login, jalankan
+<code>Setup-VanGuard.bat /prepare-only /nopause</code> dari terminal administrator.
+Padanan PowerShell adalah <code>Setup-VanGuard.ps1 -PrepareOnly</code>. Keduanya
 menyiapkan endpoint dan memproses <code>approval.zip</code> bila tersedia; hasil20 menunggu
 bundle, hasil0 siap login <strong>tanpa membuat tunnel</strong>. Opsi ini tetap memerlukan
 hak admin dan paket tepercaya. Paket berbeda/upgrade saat lockdown aktif harus
@@ -1607,7 +1614,9 @@ aktual sebelum rollout. Jangan menerapkan pada PC kerja hanya dari contoh ini.</
 build26300 (28 Oktober): installer kandidat, lockdown sebelum enrollment dan
 sesudah reboot, admission/handshake, grant/default-deny, renewal, logout dan
 reconnect. Windows11 juga memiliki bukti pemutusan TCP aktif saat sertifikat
-dicabut; rincian koreksi kriteria alat ukur ada di
+dicabut; Windows10 mengonfirmasinya pada kandidat0.1.14 tanggal29Oktober
+(<a href="VALIDASI_SETUP_TERPADU_2026-10-29.md">bukti wizard dan koneksi</a>).
+Rincian koreksi kriteria alat ukur Windows11 ada di
 <a href="VALIDASI_WINDOWS11_INTERNET_2026-10-28.md">laporan validasi Windows11</a>.
 Gunakan paket kandidat yang telah diverifikasi, bukan mengasumsikan ZIP stabil
 memuat perubahan ini. Bukti dua VM tersebut tidak menjamin seluruh edisi/build,

@@ -1458,6 +1458,12 @@ Template kandidat offline untuk admin tersedia di
 per-device; gunakan folder `wheels` dan `runtimes` di dalamnya pada perintah
 builder berikut. User akhir mendapat folder hasil builder, bukan template kosong.
 
+BAT `/prepare-only /nopause` sudah diuji pada VM Windows10 LTSC19044 dan
+Windows11 build26300: persiapan/impor dan resume menjaga kunci, tanpa tunnel
+sebelum login. Rincian [bukti setup terpadu](VALIDASI_SETUP_TERPADU_2026-10-29.md)
+membedakan pengujian BAT otomatis, client native, dan jalur UAC/login interaktif
+yang masih **BELUM_TERUJI**. Hasil ini tidak mewakili semua edisi Windows atau PC fisik.
+
 **Yang tetap membutuhkan manusia:** persetujuan UAC administrator Windows,
 persetujuan pendaftaran oleh admin VanGuard, serta login karyawan. Paket tidak
 boleh memuat password, OTP, token management, private key CA atau private key
@@ -1528,7 +1534,9 @@ Kode3010 berarti runtime meminta restart: simpan pekerjaan, restart sendiri,
 lalu jalankan BAT yang sama. Kode1 berarti tahap gagal; jangan menghapus kunci
 atau konfigurasi untuk memaksa lanjut. Tidak ada autologin setelah reboot.
 
-Untuk pengujian admin tanpa prompt login, `Setup-VanGuard.ps1 -PrepareOnly`
+Untuk pengujian admin tanpa prompt login, jalankan
+`Setup-VanGuard.bat /prepare-only /nopause` dari terminal administrator.
+Padanan PowerShell adalah `Setup-VanGuard.ps1 -PrepareOnly`. Keduanya
 menyiapkan endpoint dan memproses `approval.zip` bila tersedia; hasil20 menunggu
 bundle, hasil0 siap login **tanpa membuat tunnel**. Opsi ini tetap memerlukan
 hak admin dan paket tepercaya. Paket berbeda/upgrade saat lockdown aktif harus
@@ -1546,7 +1554,9 @@ Bukti native tersedia untuk Windows10 LTSC build19044 (27 Oktober) dan Windows11
 build26300 (28 Oktober): installer kandidat, lockdown sebelum enrollment dan
 sesudah reboot, admission/handshake, grant/default-deny, renewal, logout dan
 reconnect. Windows11 juga memiliki bukti pemutusan TCP aktif saat sertifikat
-dicabut; rincian koreksi kriteria alat ukur ada di
+dicabut; Windows10 mengonfirmasinya pada kandidat0.1.14 tanggal29Oktober
+([bukti wizard dan koneksi](VALIDASI_SETUP_TERPADU_2026-10-29.md)).
+Rincian koreksi kriteria alat ukur Windows11 ada di
 [laporan validasi Windows11](VALIDASI_WINDOWS11_INTERNET_2026-10-28.md).
 Gunakan paket kandidat yang telah diverifikasi, bukan mengasumsikan ZIP stabil
 memuat perubahan ini. Bukti dua VM tersebut tidak menjamin seluruh edisi/build,

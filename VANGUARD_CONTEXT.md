@@ -367,3 +367,15 @@ keys and rejects conflicts. Template needs explicit per-device admin preparation
 never distribute the disposable lab profile as production configuration.
 Windows11 BAT preparation/resume passed; see latest checkpoint for final connection,
 cleanup, publication and untested interactive/Windows10/physical scenarios.
+
+
+Windows10 setup evidence — 29 October 2026:
+Candidate0.1.14 BAT preparation/import/resume passed18assertions on Windows10
+LTSC19044. Native client admission/handshake, default-deny/grant TCP/freshDNS,
+two renewals, logout/cleanup and reconnect passed. Temporary certificate1004
+revocation stopped active TCP, removed the peer and rejected fresh admission403;
+this closes the older Windows10 measurement gap, not the earlier failed log.
+Original config/identity/firewall and VM definition restored/preserved; temporary
+CA history retained and consistency checked, account disabled and fixture stopped.
+Interactive UAC/default login-to-launcher path, fresh wizard install/reboot3010,
+physical endpoints and wider builds remain untested. No product source change.
