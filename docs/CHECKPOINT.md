@@ -2,6 +2,9 @@
 
 ## 28 Oktober — Windows11 native kandidat internet tervalidasi
 
+Laporan/manual dipush pada commit `3c70fee` ke branch feature; SHA remote
+terverifikasi. Tidak ada perubahan source produk atau klaim CI baru.
+
 VM Windows11 build26300: installer r8 exit0;9kasus lockdown awal dan6kasus
 sesudah reboot PASS. Admission/handshake, default-deny/grant TCP+DNS baru,
 3renewal, pencabutan grant saat TCP aktif, logout/cleanup dan reconnect PASS.
