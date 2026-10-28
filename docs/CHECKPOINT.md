@@ -2,6 +2,9 @@
 
 ## 28 Oktober — audit bug lanjutan dan patch source
 
+Patch `ff59047` sudah dipush ke origin feature; SHA remote terverifikasi.
+Tidak ada hasil CI baru yang diklaim.
+
 Dua bug dibuktikan dengan tes gagal sebelum patch: profil menerima DNS/route
 integer, dan renewal meminta lease sebelum pemeriksaan firewall lokal. Source
 sekarang menolak tipe network non-string dan memeriksa guard sebelum renewal;
@@ -13,8 +16,7 @@ pip check dan diff PASS. Ini Linux/mock OS, bukan rerun native Windows.
 Semua tujuh VM **shut off** saat audit15:37; tidak dinyalakan/diubah. Patch belum
 masuk paket r8 atau VM, sehingga hasil native Windows11 di bawah tetap historis
 sebelum patch ini. Branch feature sama; main/ZIP stabil tetap. Langkah berikut:
-commit/push source dan dokumen, kemudian build/reinstall
-kandidat baru dan native renewal/input invalid Windows10/11 sebelum distribusi.
+build/reinstall kandidat baru dan native renewal/input invalid Windows10/11 sebelum distribusi.
 Readiness internet, native expiry/daemon-stop/reboot tunnel aktif, PC fisik dan
 Windows10 active-TCP certificate-revoke tetap pekerjaan tersisa. Jangan menyebut
 sistem bebas bug hanya karena tes yang tersedia lulus.
