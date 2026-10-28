@@ -1,6 +1,6 @@
 # Manual admin Sistem VanGuard
 
-Edisi24 Oktober2026 · satu sumber resmi untuk pemasangan dan operasi.
+Edisi27 Oktober2026 · satu sumber resmi untuk pemasangan dan operasi.
 HTML dengan nama yang sama dihasilkan dari Markdown ini; keduanya satu manual,
 bukan panduan berbeda. Salinan manual di ZIP juga dihasilkan dari sumber ini.
 Tutorial lama telah digabung dan dihapus dari tree terbaru; histori Git tetap ada.
@@ -1444,6 +1444,132 @@ Salin ACCEPTANCE.csv keluar kit. Catat PASS/FAIL/BELUM_DIJALANKAN, waktu UTC/WIB
 versi, ID uji, lease/handshake/transfer, hasil HTTP dan lokasi bukti tersaring.
 Jangan mengisi PASS hanya karena checklist tersedia. Tes Linux sebelumnya260/1
 bukan bukti kedua endpoint fisik.
+
+### 14.1. Kandidat internet terkelola tanpa mengubah router pengguna
+
+Mode ini terpisah dari pilot aplikasi Bab14 di atas. Source kandidat0.1.13
+menambahkan gateway internet IPv4 dan policy Windows persisten; **ZIP stabil
+25 Oktober0.1.12 belum memuat fitur ini**. Periksa checkpoint untuk hasil native
+aktual sebelum rollout. Jangan menerapkan pada PC kerja hanya dari contoh ini.
+
+Linux memutuskan izin dan meneruskan internet; Windows mencegah jalur langsung
+melalui Wi-Fi/LAN. Tanpa policy endpoint aktif, Linux tidak bisa memblokir trafik
+yang langsung menuju router. Hak administrator lokal penuh tetap dapat mengubah
+firewall. Ini memerlukan endpoint terkelola, bukan kontrol mutlak atas komputer
+pribadi. Mode sekarang memblokir IPv6; tidak menyediakan internet IPv6.
+
+Urutan admin untuk pilot terisolasi:
+
+1. **Operator Linux:** catat interface uplink, alamat HTTPS/WireGuard yang dapat
+   dijangkau endpoint, route, firewall, unit dan versi. Backup konfigurasi serta
+   database tanpa memulihkan histori CA lama. Sediakan console/pemulihan lokal.
+   Gunakan namespace/VM uji sebelum gateway aktif. Jangan membuat ulang Root CA.
+2. **Operator Linux:** pasang versi kandidat server dan admin yang sama. Pertahankan
+   admission HTTPS, enam cek, sesi karyawan, watchdog dan kebijakan aplikasi.
+   Server perlu koneksi WAN dan IPv4 forwarding. NAT harus berada pada gateway
+   Linux; tidak ada perubahan konfigurasi router milik pengguna. Alamat privat
+   lab tidak otomatis dapat dijangkau dari rumah/jaringan lain. Untuk penggunaan
+   lintas jaringan, sediakan alamat server/transport yang benar-benar reachable.
+3. **Operator Linux:** hasilkan aturan kandidat, bukan langsung apply:
+
+   ```bash
+   # Ganti eth0 dengan uplink gateway yang telah diperiksa.
+   python3 deploy/firewall.py server --management-ip 192.168.100.1 \
+     --windows-client --application-policy --internet-uplink eth0 --print-only \
+     > gateway-internet.candidate.nft
+   sudo nft --check --file gateway-internet.candidate.nft
+   ```
+
+   Generator masih mengikuti topologi lab untuk akses management/layanan internal.
+   Review alamat tersebut terhadap target nyata; jangan menyalin ke server lain
+   tanpa penyesuaian dan pemeriksaan. Terapkan hanya setelah backup, rencana
+   pemulihan dan jalur management kedua tersedia. Tabel `inet vanguard` akan
+   diganti oleh kandidat; jangan menimpa grant aktif tanpa maintenance yang jelas.
+   Jangan aktifkan flow offloading yang dapat melewati pemeriksaan setiap paket.
+4. **Operator Linux:** siapkan file kosong `{"grants":[]}` privat0600 pada
+   `/var/lib/vanguard/server/internet-policy.json`, tanpa menimpa file yang sudah
+   ada. Pasang `VANGUARD_INTERNET_POLICY` menunjuk path itu pada environment server
+   **dan daemon**. Path harus diizinkan ReadWritePaths unit server; jangan menaruh
+   file yang perlu ditulis API di `/etc` yang read-only. Validasi melalui
+   `vanguard.internet.load_internet_policy`. Gate default-deny tetap kosong sampai
+   identitas+sesi+lease+peer+grant semuanya sah. Nilai timeout grant tidak boleh
+   melampaui lease/sesi. Setelah restart, periksa liveness, readiness, nft dan
+   akses langsung; HTTP200 liveness sendiri bukan bukti forwarding aman.
+5. **Admin:** buat profil publik **schema2** melalui kanal tepercaya seperti Bab9.
+   Pertahankan root fingerprint, key server dan resource eksplisit. Perbedaannya:
+
+   ```json
+   {
+     "schema": 2,
+     "allowed_ips": ["0.0.0.0/1", "128.0.0.0/1"],
+     "internet": {"mode": "managed-ipv4", "dns": ["1.1.1.1"]}
+   }
+   ```
+
+   Ini hanya potongan perubahan, bukan profil lengkap siap impor. HTTPS/WG host
+   harus literal IPv4; DNS internet hanya melalui tunnel setelah izin. Jangan
+   membuka DNS umum sebelum admission. Resource aplikasi tetap dibatasi tuple
+   sendiri. Renewal lease tidak memperpanjang sertifikat. Root CA dipercaya
+   bukan berarti perangkat sudah mempunyai sertifikat identitas atau akses.
+6. **Windows admin:** install kandidat lengkap secara offline mengikuti Bab10;
+   konfigurasi profil/root sesuai Bab11. Siapkan backup OS/firewall dan console.
+   Jalankan dari folder aplikasi dengan PowerShell administrator:
+
+   ```powershell
+   & 'C:\Program Files\VanGuardEndpoint\VanGuard.ps1' -Action internet-preview
+   & 'C:\Program Files\VanGuardEndpoint\VanGuard.ps1' -Action internet-enable
+   & 'C:\Program Files\VanGuardEndpoint\VanGuard.ps1' -Action internet-status
+   ```
+
+   Hormati execution policy organisasi; jangan memakai Bypass. Enable mengambil
+   alih outbound pada seluruh profile Windows: menggunakan Local GPO milik VanGuard, menolak penggabungan rule lokal tambahan,
+   default block, pengecualian HTTPS admission, UDP WireGuard dan DHCP,
+   serta blok IPv6. Policy firewall GPO yang sudah ada atau endpoint domain ditolak, perlu integrasi pengelola.
+   Rule inbound lokal yang aktif disalin dengan nama milik VanGuard supaya akses masuk
+   yang sebelumnya diizinkan tetap tersedia. Rule asli tidak dihapus. Jangan menganggap
+   semua Windows Home mendukung mode ini; validasi target diperlukan.
+   Rule tunnel awal disabled sampai adaptor nyata terkonfirmasi sesudah admission.
+   Backup/state berada di `VanGuardEndpointData\internet-lockdown`; jangan hapus.
+   Jika gagal sebagian, quarantine tetap memblokir dan hasil bukan ACTIVE.
+   Cleanup menonaktifkan pengecualian tunnel sebelum adaptor dihapus. Jika
+   penghentian tunnel atau cleanup policy belum pasti, config dipertahankan;
+   jangan menghapusnya untuk memaksa reconnect.
+7. **Windows/admin dashboard:** buat key+CSR di endpoint, transfer request publik
+   ke dashboard, terbitkan sertifikat dari CA yang **sudah ada**, bind karyawan,
+   unduh dan import bundle seperti Bab11. Sebelum langkah ini, internet sudah
+   terblokir setelah enable berhasil. Transfer publik dapat melalui media lokal
+   terkelola; browser dashboard tidak otomatis dikecualikan oleh lockdown endpoint.
+8. **Admin dashboard:** pada perangkat registered yang mempunyai gateway aktif,
+   pilih **Izinkan setelah admission** pada **Izin internet melalui gateway**.
+   Tindakan perlu login/TOTP dan CSRF serta dicatat dengan aktor/waktu. Grant ini
+   tidak menambahkan peer. **Karyawan:** login lalu connect (Bab12). Terminal
+   connect tetap hidup untuk renewal; mode ini belum layanan auto-login Windows.
+   Periksa status policy, lease, handshake dan TCP internet secara terpisah.
+9. **Admin:** uji cabut izin internet saat TCP aktif; paket berikutnya harus
+   ditolak, sementara identitas VPN internal tetap ada. Untuk mencabut identitas,
+   gunakan Revoke beserta alasan; server menghapus peer dan CA merekam revocation.
+   Uji logout, sesi/lease habis, CA gagal, daemon berhenti, tunnel berhenti dan
+   reboot. Jangan menyebut socket langsung tertutup: firewall drop menghentikan
+   data; aplikasi mungkin menunggu timeout. Ukur waktu trafik terakhir.
+
+**Pemulihan admin lokal:** disconnect melalui proses pemilik; pastikan service
+hilang dan cleanup terkonfirmasi sebelum recovery. Jalankan `internet-recover`
+dan ketik `PULIHKAN`. Ini mengembalikan profile Local GPO sebelum lockdown (atau allow rule/profile
+legacy untuk state kandidat lama),
+menghapus hanya nama rule yang dimiliki VanGuard, dan mempertahankan backup
+historis. Ini membuka kembali kebijakan internet lama dan **bukan** revoke server.
+Jika server tidak terjangkau, logout belum terkonfirmasi. Jangan menghapus config
+atau menghentikan service milik proses lain untuk melewati guard recovery.
+Installer/uninstaller menolak perubahan runtime selama state lockdown masih ada;
+rencanakan maintenance terkontrol. Tidak ada auto-recovery membuka internet pada
+produk; task pemulihan berwaktu pada VM uji hanya pengaman eksperimen.
+
+Kriteria penerimaan mode ini: TCP langsung diblokir sebelum identitas, bootstrap
+HTTPS tetap bisa, authorized internet+DNS berhasil, renewal berulang, revoke dan
+pencabutan grant menghentikan data TCP aktif, perangkat lain tidak terdampak,
+cleanup/reboot tidak membuka fallback, serta recovery admin terbukti. Catat setiap
+OS/build dan metode nyata/mock; hasil Windows10 LTSC tidak membuktikan semua edisi
+Windows10/11, PC fisik, Wi-Fi berpindah, GPO atau IPv6 internet.
 
 ## 15. Checklist penerimaan dan hasil yang harus dibuktikan
 

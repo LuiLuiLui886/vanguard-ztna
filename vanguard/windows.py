@@ -1,6 +1,7 @@
 """Native Windows client helpers; WireGuard itself remains unmodified."""
 
 import ctypes
+import json
 import os
 import stat
 import subprocess
@@ -54,6 +55,7 @@ class WindowsTunnel:
 
     def __init__(self):
         self.owns_service = False
+        self.internet_required = False
         self.executable = str(Path(os.environ.get('ProgramFiles', r'C:\Program Files'))
                               / 'WireGuard' / 'wireguard.exe')
 
@@ -73,11 +75,31 @@ class WindowsTunnel:
         if result.returncode != 1060:
             raise Rejected('Tunnel service exists or cannot be inspected; stop and inspect it first')
 
+    def require_internet(self, profile):
+        from .profile import load_profile
+        base = Path(os.environ.get('ProgramFiles', r'C:\Program Files'))
+        data = base / 'VanGuardEndpointData'
+        installed = load_profile(data / 'config' / 'profile.json', data / 'config' / 'root.crt')
+        if installed != profile:
+            raise Rejected('Managed profile differs from installed lockdown profile')
+        state = json.loads((data / 'internet-lockdown' / 'state.json').read_text(encoding='utf-8-sig'))
+        if state.get('schema') != 2 or state.get('phase') != 'ACTIVE':
+            raise Rejected('Managed internet lockdown is not active')
+        script = base / 'VanGuardEndpoint' / 'Internet-Lockdown.ps1'
+        check_private_path(script)
+        run(['powershell.exe', '-NoProfile', '-ExecutionPolicy', 'RemoteSigned',
+             '-File', str(script), '-Action', 'status'], timeout=30)
+        self.internet_required = True
+
     def up(self, config):
         run([self.executable, '/installtunnelservice', str(config)])
         self.owns_service = True
         # Boot must not reconnect from a stored config without a new client process.
         run(['sc.exe', 'config', 'WireGuardTunnel$' + self.name, 'start=', 'demand'])
+        if self.internet_required:
+            script = Path(os.environ.get('ProgramFiles', r'C:\Program Files')) / 'VanGuardEndpoint' / 'Internet-Lockdown.ps1'
+            run(['powershell.exe', '-NoProfile', '-ExecutionPolicy', 'RemoteSigned',
+                 '-File', str(script), '-Action', 'attach'], timeout=45)
 
     def down(self, config):
         if not self.owns_service:
@@ -86,6 +108,14 @@ class WindowsTunnel:
             if result.returncode == 1060:
                 return
             raise Rejected('Tunnel ownership unconfirmed; configuration retained for inspection')
+        policy_error = None
+        if self.internet_required:
+            script = Path(os.environ.get('ProgramFiles', r'C:\Program Files')) / 'VanGuardEndpoint' / 'Internet-Lockdown.ps1'
+            try:
+                run(['powershell.exe', '-NoProfile', '-ExecutionPolicy', 'RemoteSigned',
+                     '-File', str(script), '-Action', 'detach'], timeout=45)
+            except Rejected as exc:
+                policy_error = exc
         run([self.executable, '/uninstalltunnelservice', self.name])
         # Windows service deletion can finish after wireguard.exe exits. Keep the
         # config until absence is confirmed, so another process cannot take over.
@@ -94,6 +124,8 @@ class WindowsTunnel:
             result = subprocess.run(['sc.exe', 'query', 'WireGuardTunnel$' + self.name],
                                     capture_output=True, timeout=3)
             if result.returncode == 1060:
+                if policy_error is not None:
+                    raise Rejected('Tunnel removed but policy cleanup unconfirmed; configuration retained') from policy_error
                 return
             # 1072 means the service is still marked for deletion.
             if result.returncode not in (0, 1072):

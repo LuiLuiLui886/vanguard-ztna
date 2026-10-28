@@ -38,7 +38,9 @@ def port(value):
 
 def validate_profile(value):
     try:
-        if not isinstance(value, dict) or set(value) != FIELDS or type(value['schema']) is not int or value['schema'] != 1:
+        if (not isinstance(value, dict) or type(value.get('schema')) is not int
+                or value['schema'] not in (1, 2)
+                or set(value) != FIELDS | ({'internet'} if value['schema'] == 2 else set())):
             raise ValueError()
         api = urlsplit(value['api_url'])
         if (api.scheme != 'https' or api.username is not None or api.password is not None
@@ -61,7 +63,24 @@ def validate_profile(value):
         if not isinstance(value['allowed_ips'], list) or not 1 <= len(value['allowed_ips']) <= 16:
             raise ValueError()
         routes = [ipaddress.IPv4Network(x) for x in value['allowed_ips']]
-        if len(set(routes)) != len(routes) or any(x.prefixlen != 32 or not x.subnet_of(tunnel) for x in routes):
+        if value['schema'] == 2:
+            internet = value['internet']
+            if (not isinstance(internet, dict) or set(internet) != {'mode', 'dns'}
+                    or internet['mode'] != 'managed-ipv4'
+                    or value['allowed_ips'] != ['0.0.0.0/1', '128.0.0.0/1']
+                    or not isinstance(internet['dns'], list) or not 1 <= len(internet['dns']) <= 2):
+                raise ValueError()
+            # Literal endpoints avoid an unrestricted pre-authentication DNS path.
+            for endpoint in (api_host, result['wireguard_host']):
+                address = ipaddress.IPv4Address(endpoint)
+                if not address.is_global and not address.is_private:
+                    raise ValueError()
+                if address in tunnel:
+                    raise ValueError()
+            for resolver in internet['dns']:
+                if not ipaddress.IPv4Address(resolver).is_global:
+                    raise ValueError()
+        elif len(set(routes)) != len(routes) or any(x.prefixlen != 32 or not x.subnet_of(tunnel) for x in routes):
             raise ValueError()
         if not isinstance(value['resources'], list) or not 1 <= len(value['resources']) <= 16:
             raise ValueError()
@@ -69,7 +88,8 @@ def validate_profile(value):
             if (not isinstance(resource, dict) or set(resource) != {'name', 'address', 'protocol', 'port'}
                     or not re.fullmatch(r'[a-zA-Z0-9_-]{1,64}', resource['name'])
                     or resource['protocol'] not in ('tcp', 'udp')
-                    or ipaddress.IPv4Network(resource['address'] + '/32') not in routes):
+                    or (ipaddress.IPv4Network(resource['address'] + '/32') not in routes
+                        if value['schema'] == 1 else ipaddress.IPv4Address(resource['address']) not in tunnel)):
                 raise ValueError()
             port(resource['port'])
         return result

@@ -24,8 +24,8 @@ code { font-size:.9em; } blockquote { border-left:4px solid #1c7088; margin-left
  pre,tr { break-inside:avoid; } thead { display:table-header-group; }
  a { color:inherit; } .print-note { display:none; }
 }
-</style></head><body><main><p class="print-note">Modul dapat dibaca tanpa internet. Untuk PDF, tekan Ctrl+P, pilih Simpan sebagai PDF, ukuran A4. Tautan dokumen pendukung memerlukan folder docs dari repository yang sama.</p><h1>Manual admin Sistem VanGuard</h1><nav aria-label="Daftar isi"><h2>Daftar isi</h2><ol><li class="toc-h2"><a href="#bab-1">1. Urutan kerja administrator dan syarat selesai</a></li><li class="toc-h2"><a href="#bab-2">2. Arsitektur, akun dan batas akses</a></li><li class="toc-h2"><a href="#bab-3">3. Inventaris, topologi dan perangkat lunak</a></li><li class="toc-h2"><a href="#bab-4">4. Baseline, backup dan membuka lab yang sudah ada</a></li><li class="toc-h3"><a href="#bagian-4-1">4.1 Nyalakan dan periksa VM — HOST</a></li><li class="toc-h3"><a href="#bagian-4-2">4.2 Verifikasi layanan — HOST, lalu guest yang dipilih</a></li><li class="toc-h2"><a href="#bab-5">5. Instalasi host dan paket Ubuntu — lingkungan kosong saja</a></li><li class="toc-h3"><a href="#bagian-5-1">5.1 Siapkan host, enam guest, source dan SSH</a></li><li class="toc-h3"><a href="#bagian-5-2">5.2 Pasang aplikasi Ubuntu pada role yang benar</a></li><li class="toc-h3"><a href="#bagian-5-3">5.3 Persiapan konkret pada host baru</a></li><li class="toc-h2"><a href="#bab-6">6. Root CA, CSR HTTPS, trust, penerbitan dan CRL</a></li><li class="toc-h3"><a href="#bagian-6-1">6.1 CA itu apa dan apa hubungannya dengan VPN?</a></li><li class="toc-h3"><a href="#bagian-6-2">6.2 Struktur file dan parameter CA yang sebenarnya</a></li><li class="toc-h3"><a href="#bagian-6-3">6.3 Persiapan sebelum generate CA</a></li><li class="toc-h3"><a href="#bagian-6-4">6.4 Generate root CA pada VM baru</a></li><li class="toc-h3"><a href="#bagian-6-5">6.5 Verifikasi root sebelum dipercaya</a></li><li class="toc-h3"><a href="#bagian-6-6">6.6 Distribusikan root publik melalui HOST</a></li><li class="toc-h3"><a href="#bagian-6-7">6.7 Generate key dan CSR HTTPS pada setiap layanan</a></li><li class="toc-h3"><a href="#bagian-6-8">6.8 Contoh lengkap: tanda tangani HTTPS SERVER lewat CA</a></li><li class="toc-h3"><a href="#bagian-6-9">6.9 Verifikasi sertifikat HTTPS dan jalankan layanan</a></li><li class="toc-h3"><a href="#bagian-6-10">6.10 Bagaimana sertifikat perangkat diterbitkan?</a></li><li class="toc-h3"><a href="#bagian-6-11">6.11 CRL, pencabutan dan pemeriksaannya</a></li><li class="toc-h3"><a href="#bagian-6-12">6.12 Backup, kedaluwarsa dan pemulihan</a></li><li class="toc-h3"><a href="#bagian-6-13">6.13 Kesalahan umum dan hasil yang harus dicatat</a></li><li class="toc-h2"><a href="#bab-7">7. Token, akun admin, TOTP, firewall dan layanan</a></li><li class="toc-h3"><a href="#bagian-7-1">7.1 Konfigurasi token dan akun admin awal</a></li><li class="toc-h3"><a href="#bagian-7-2">7.2 Firewall dan layanan</a></li><li class="toc-h3"><a href="#bagian-7-3">7.3 Verifikasi sebelum pendaftaran perangkat</a></li><li class="toc-h2"><a href="#bab-8">8. Jaringan router, host, PC LAN dan laptop Wi-Fi</a></li><li class="toc-h2"><a href="#bab-9">9. Profil publik, trust endpoint dan pembaruan dashboard</a></li><li class="toc-h2"><a href="#bab-10">10. Memasang endpoint Windows dari satu paket</a></li><li class="toc-h3"><a href="#bagian-10-1">10.1 Contoh ekstraksi dan eksekusi yang lengkap</a></li><li class="toc-h2"><a href="#bab-11">11. Konfigurasi endpoint, CSR dan registrasi administrator</a></li><li class="toc-h3"><a href="#bagian-11-1">11.1 Data admin sebelum configure</a></li><li class="toc-h3"><a href="#bagian-11-2">11.2 Key dan CSR pada endpoint baru</a></li><li class="toc-h3"><a href="#bagian-11-3">11.3 Registrasi akun dan perangkat di dashboard</a></li><li class="toc-h2"><a href="#bab-12">12. Import sertifikat, login, connect, disconnect dan logout Windows</a></li><li class="toc-h3"><a href="#bagian-12-2">12.2 Disconnect, logout, repair dan pencabutan</a></li><li class="toc-h2"><a href="#bab-13">13. Pemakaian client Ubuntu dan Windows lab lama</a></li><li class="toc-h3"><a href="#bagian-13-2">13.2 Karyawan Windows: dari login desktop sampai disconnect</a></li><li class="toc-h2"><a href="#bab-14">14. Resource aplikasi dan pembuktian default-deny</a></li><li class="toc-h2"><a href="#bab-15">15. Checklist penerimaan dan hasil yang harus dibuktikan</a></li><li class="toc-h3"><a href="#bagian-15-1">15.1 Perintah observasi yang tidak menampilkan private key</a></li><li class="toc-h3"><a href="#bagian-15-2">15.2 Langkah native installer yang wajib dibuktikan</a></li><li class="toc-h2"><a href="#bab-16">16. Audit, arsip, pencabutan dan penggantian identitas</a></li><li class="toc-h3"><a href="#bagian-16-1">16.1 Mencari tindakan berdasarkan waktu</a></li><li class="toc-h3"><a href="#bagian-16-2">16.2 Menyimpan arsip yang dapat diverifikasi</a></li><li class="toc-h3"><a href="#bagian-16-3">16.3 Mencabut akses</a></li><li class="toc-h3"><a href="#bagian-16-4">16.4 VanGuard0.1.9: logout, status dan penggantian identitas</a></li><li class="toc-h3"><a href="#bagian-16-5">16.5 Batas audit yang harus dipahami admin</a></li><li class="toc-h2"><a href="#bab-17">17. Operasi harian, shutdown, backup dan pemulihan</a></li><li class="toc-h3"><a href="#bagian-17-1">17.1 Sebelum dipakai</a></li><li class="toc-h3"><a href="#bagian-17-2">17.2 Selama layanan dipakai</a></li><li class="toc-h3"><a href="#bagian-17-3">17.3 Mengakhiri hari atau pilot</a></li><li class="toc-h3"><a href="#bagian-17-4">17.4 Urutan rollback yang harus dipahami sebelum mulai</a></li><li class="toc-h2"><a href="#bab-18">18. Troubleshooting dan serah terima</a></li><li class="toc-h3"><a href="#bagian-18-1">18.1 Formulir serah terima</a></li><li class="toc-h3"><a href="#bagian-18-2">18.2 Catatan status dan bukti</a></li></ol></nav>
-<p>Edisi24 Oktober2026 · satu sumber resmi untuk pemasangan dan operasi.
+</style></head><body><main><p class="print-note">Modul dapat dibaca tanpa internet. Untuk PDF, tekan Ctrl+P, pilih Simpan sebagai PDF, ukuran A4. Tautan dokumen pendukung memerlukan folder docs dari repository yang sama.</p><h1>Manual admin Sistem VanGuard</h1><nav aria-label="Daftar isi"><h2>Daftar isi</h2><ol><li class="toc-h2"><a href="#bab-1">1. Urutan kerja administrator dan syarat selesai</a></li><li class="toc-h2"><a href="#bab-2">2. Arsitektur, akun dan batas akses</a></li><li class="toc-h2"><a href="#bab-3">3. Inventaris, topologi dan perangkat lunak</a></li><li class="toc-h2"><a href="#bab-4">4. Baseline, backup dan membuka lab yang sudah ada</a></li><li class="toc-h3"><a href="#bagian-4-1">4.1 Nyalakan dan periksa VM — HOST</a></li><li class="toc-h3"><a href="#bagian-4-2">4.2 Verifikasi layanan — HOST, lalu guest yang dipilih</a></li><li class="toc-h2"><a href="#bab-5">5. Instalasi host dan paket Ubuntu — lingkungan kosong saja</a></li><li class="toc-h3"><a href="#bagian-5-1">5.1 Siapkan host, enam guest, source dan SSH</a></li><li class="toc-h3"><a href="#bagian-5-2">5.2 Pasang aplikasi Ubuntu pada role yang benar</a></li><li class="toc-h3"><a href="#bagian-5-3">5.3 Persiapan konkret pada host baru</a></li><li class="toc-h2"><a href="#bab-6">6. Root CA, CSR HTTPS, trust, penerbitan dan CRL</a></li><li class="toc-h3"><a href="#bagian-6-1">6.1 CA itu apa dan apa hubungannya dengan VPN?</a></li><li class="toc-h3"><a href="#bagian-6-2">6.2 Struktur file dan parameter CA yang sebenarnya</a></li><li class="toc-h3"><a href="#bagian-6-3">6.3 Persiapan sebelum generate CA</a></li><li class="toc-h3"><a href="#bagian-6-4">6.4 Generate root CA pada VM baru</a></li><li class="toc-h3"><a href="#bagian-6-5">6.5 Verifikasi root sebelum dipercaya</a></li><li class="toc-h3"><a href="#bagian-6-6">6.6 Distribusikan root publik melalui HOST</a></li><li class="toc-h3"><a href="#bagian-6-7">6.7 Generate key dan CSR HTTPS pada setiap layanan</a></li><li class="toc-h3"><a href="#bagian-6-8">6.8 Contoh lengkap: tanda tangani HTTPS SERVER lewat CA</a></li><li class="toc-h3"><a href="#bagian-6-9">6.9 Verifikasi sertifikat HTTPS dan jalankan layanan</a></li><li class="toc-h3"><a href="#bagian-6-10">6.10 Bagaimana sertifikat perangkat diterbitkan?</a></li><li class="toc-h3"><a href="#bagian-6-11">6.11 CRL, pencabutan dan pemeriksaannya</a></li><li class="toc-h3"><a href="#bagian-6-12">6.12 Backup, kedaluwarsa dan pemulihan</a></li><li class="toc-h3"><a href="#bagian-6-13">6.13 Kesalahan umum dan hasil yang harus dicatat</a></li><li class="toc-h2"><a href="#bab-7">7. Token, akun admin, TOTP, firewall dan layanan</a></li><li class="toc-h3"><a href="#bagian-7-1">7.1 Konfigurasi token dan akun admin awal</a></li><li class="toc-h3"><a href="#bagian-7-2">7.2 Firewall dan layanan</a></li><li class="toc-h3"><a href="#bagian-7-3">7.3 Verifikasi sebelum pendaftaran perangkat</a></li><li class="toc-h2"><a href="#bab-8">8. Jaringan router, host, PC LAN dan laptop Wi-Fi</a></li><li class="toc-h2"><a href="#bab-9">9. Profil publik, trust endpoint dan pembaruan dashboard</a></li><li class="toc-h2"><a href="#bab-10">10. Memasang endpoint Windows dari satu paket</a></li><li class="toc-h3"><a href="#bagian-10-1">10.1 Contoh ekstraksi dan eksekusi yang lengkap</a></li><li class="toc-h2"><a href="#bab-11">11. Konfigurasi endpoint, CSR dan registrasi administrator</a></li><li class="toc-h3"><a href="#bagian-11-1">11.1 Data admin sebelum configure</a></li><li class="toc-h3"><a href="#bagian-11-2">11.2 Key dan CSR pada endpoint baru</a></li><li class="toc-h3"><a href="#bagian-11-3">11.3 Registrasi akun dan perangkat di dashboard</a></li><li class="toc-h2"><a href="#bab-12">12. Import sertifikat, login, connect, disconnect dan logout Windows</a></li><li class="toc-h3"><a href="#bagian-12-2">12.2 Disconnect, logout, repair dan pencabutan</a></li><li class="toc-h2"><a href="#bab-13">13. Pemakaian client Ubuntu dan Windows lab lama</a></li><li class="toc-h3"><a href="#bagian-13-2">13.2 Karyawan Windows: dari login desktop sampai disconnect</a></li><li class="toc-h2"><a href="#bab-14">14. Resource aplikasi dan pembuktian default-deny</a></li><li class="toc-h3"><a href="#bagian-14-1">14.1. Kandidat internet terkelola tanpa mengubah router pengguna</a></li><li class="toc-h2"><a href="#bab-15">15. Checklist penerimaan dan hasil yang harus dibuktikan</a></li><li class="toc-h3"><a href="#bagian-15-1">15.1 Perintah observasi yang tidak menampilkan private key</a></li><li class="toc-h3"><a href="#bagian-15-2">15.2 Langkah native installer yang wajib dibuktikan</a></li><li class="toc-h2"><a href="#bab-16">16. Audit, arsip, pencabutan dan penggantian identitas</a></li><li class="toc-h3"><a href="#bagian-16-1">16.1 Mencari tindakan berdasarkan waktu</a></li><li class="toc-h3"><a href="#bagian-16-2">16.2 Menyimpan arsip yang dapat diverifikasi</a></li><li class="toc-h3"><a href="#bagian-16-3">16.3 Mencabut akses</a></li><li class="toc-h3"><a href="#bagian-16-4">16.4 VanGuard0.1.9: logout, status dan penggantian identitas</a></li><li class="toc-h3"><a href="#bagian-16-5">16.5 Batas audit yang harus dipahami admin</a></li><li class="toc-h2"><a href="#bab-17">17. Operasi harian, shutdown, backup dan pemulihan</a></li><li class="toc-h3"><a href="#bagian-17-1">17.1 Sebelum dipakai</a></li><li class="toc-h3"><a href="#bagian-17-2">17.2 Selama layanan dipakai</a></li><li class="toc-h3"><a href="#bagian-17-3">17.3 Mengakhiri hari atau pilot</a></li><li class="toc-h3"><a href="#bagian-17-4">17.4 Urutan rollback yang harus dipahami sebelum mulai</a></li><li class="toc-h2"><a href="#bab-18">18. Troubleshooting dan serah terima</a></li><li class="toc-h3"><a href="#bagian-18-1">18.1 Formulir serah terima</a></li><li class="toc-h3"><a href="#bagian-18-2">18.2 Catatan status dan bukti</a></li></ol></nav>
+<p>Edisi27 Oktober2026 · satu sumber resmi untuk pemasangan dan operasi.
 HTML dengan nama yang sama dihasilkan dari Markdown ini; keduanya satu manual,
 bukan panduan berbeda. Salinan manual di ZIP juga dihasilkan dari sumber ini.
 Tutorial lama telah digabung dan dihapus dari tree terbaru; histori Git tetap ada.</p>
@@ -1510,6 +1510,136 @@ keberadaan file JSON saja tidak mengaktifkan enforcement.</p>
 versi, ID uji, lease/handshake/transfer, hasil HTTP dan lokasi bukti tersaring.
 Jangan mengisi PASS hanya karena checklist tersedia. Tes Linux sebelumnya260/1
 bukan bukti kedua endpoint fisik.</p>
+<h3 id="bagian-14-1">14.1. Kandidat internet terkelola tanpa mengubah router pengguna</h3>
+<p>Mode ini terpisah dari pilot aplikasi Bab14 di atas. Source kandidat0.1.13
+menambahkan gateway internet IPv4 dan policy Windows persisten; <strong>ZIP stabil
+25 Oktober0.1.12 belum memuat fitur ini</strong>. Periksa checkpoint untuk hasil native
+aktual sebelum rollout. Jangan menerapkan pada PC kerja hanya dari contoh ini.</p>
+<p>Linux memutuskan izin dan meneruskan internet; Windows mencegah jalur langsung
+melalui Wi-Fi/LAN. Tanpa policy endpoint aktif, Linux tidak bisa memblokir trafik
+yang langsung menuju router. Hak administrator lokal penuh tetap dapat mengubah
+firewall. Ini memerlukan endpoint terkelola, bukan kontrol mutlak atas komputer
+pribadi. Mode sekarang memblokir IPv6; tidak menyediakan internet IPv6.</p>
+<p>Urutan admin untuk pilot terisolasi:</p>
+<ol>
+<li>
+<p><strong>Operator Linux:</strong> catat interface uplink, alamat HTTPS/WireGuard yang dapat
+dijangkau endpoint, route, firewall, unit dan versi. Backup konfigurasi serta
+database tanpa memulihkan histori CA lama. Sediakan console/pemulihan lokal.
+Gunakan namespace/VM uji sebelum gateway aktif. Jangan membuat ulang Root CA.</p>
+</li>
+<li>
+<p><strong>Operator Linux:</strong> pasang versi kandidat server dan admin yang sama. Pertahankan
+admission HTTPS, enam cek, sesi karyawan, watchdog dan kebijakan aplikasi.
+Server perlu koneksi WAN dan IPv4 forwarding. NAT harus berada pada gateway
+Linux; tidak ada perubahan konfigurasi router milik pengguna. Alamat privat
+lab tidak otomatis dapat dijangkau dari rumah/jaringan lain. Untuk penggunaan
+lintas jaringan, sediakan alamat server/transport yang benar-benar reachable.</p>
+</li>
+<li>
+<p><strong>Operator Linux:</strong> hasilkan aturan kandidat, bukan langsung apply:</p>
+<pre><code class="language-bash"># Ganti eth0 dengan uplink gateway yang telah diperiksa.
+python3 deploy/firewall.py server --management-ip 192.168.100.1 \
+  --windows-client --application-policy --internet-uplink eth0 --print-only \
+  &gt; gateway-internet.candidate.nft
+sudo nft --check --file gateway-internet.candidate.nft
+</code></pre>
+<p>Generator masih mengikuti topologi lab untuk akses management/layanan internal.
+Review alamat tersebut terhadap target nyata; jangan menyalin ke server lain
+tanpa penyesuaian dan pemeriksaan. Terapkan hanya setelah backup, rencana
+pemulihan dan jalur management kedua tersedia. Tabel <code>inet vanguard</code> akan
+diganti oleh kandidat; jangan menimpa grant aktif tanpa maintenance yang jelas.
+Jangan aktifkan flow offloading yang dapat melewati pemeriksaan setiap paket.</p>
+</li>
+<li>
+<p><strong>Operator Linux:</strong> siapkan file kosong <code>{&quot;grants&quot;:[]}</code> privat0600 pada
+<code>/var/lib/vanguard/server/internet-policy.json</code>, tanpa menimpa file yang sudah
+ada. Pasang <code>VANGUARD_INTERNET_POLICY</code> menunjuk path itu pada environment server
+<strong>dan daemon</strong>. Path harus diizinkan ReadWritePaths unit server; jangan menaruh
+file yang perlu ditulis API di <code>/etc</code> yang read-only. Validasi melalui
+<code>vanguard.internet.load_internet_policy</code>. Gate default-deny tetap kosong sampai
+identitas+sesi+lease+peer+grant semuanya sah. Nilai timeout grant tidak boleh
+melampaui lease/sesi. Setelah restart, periksa liveness, readiness, nft dan
+akses langsung; HTTP200 liveness sendiri bukan bukti forwarding aman.</p>
+</li>
+<li>
+<p><strong>Admin:</strong> buat profil publik <strong>schema2</strong> melalui kanal tepercaya seperti Bab9.
+Pertahankan root fingerprint, key server dan resource eksplisit. Perbedaannya:</p>
+<pre><code class="language-json">{
+  &quot;schema&quot;: 2,
+  &quot;allowed_ips&quot;: [&quot;0.0.0.0/1&quot;, &quot;128.0.0.0/1&quot;],
+  &quot;internet&quot;: {&quot;mode&quot;: &quot;managed-ipv4&quot;, &quot;dns&quot;: [&quot;1.1.1.1&quot;]}
+}
+</code></pre>
+<p>Ini hanya potongan perubahan, bukan profil lengkap siap impor. HTTPS/WG host
+harus literal IPv4; DNS internet hanya melalui tunnel setelah izin. Jangan
+membuka DNS umum sebelum admission. Resource aplikasi tetap dibatasi tuple
+sendiri. Renewal lease tidak memperpanjang sertifikat. Root CA dipercaya
+bukan berarti perangkat sudah mempunyai sertifikat identitas atau akses.</p>
+</li>
+<li>
+<p><strong>Windows admin:</strong> install kandidat lengkap secara offline mengikuti Bab10;
+konfigurasi profil/root sesuai Bab11. Siapkan backup OS/firewall dan console.
+Jalankan dari folder aplikasi dengan PowerShell administrator:</p>
+<pre><code class="language-powershell">&amp; 'C:\Program Files\VanGuardEndpoint\VanGuard.ps1' -Action internet-preview
+&amp; 'C:\Program Files\VanGuardEndpoint\VanGuard.ps1' -Action internet-enable
+&amp; 'C:\Program Files\VanGuardEndpoint\VanGuard.ps1' -Action internet-status
+</code></pre>
+<p>Hormati execution policy organisasi; jangan memakai Bypass. Enable mengambil
+alih outbound pada seluruh profile Windows: menggunakan Local GPO milik VanGuard, menolak penggabungan rule lokal tambahan,
+default block, pengecualian HTTPS admission, UDP WireGuard dan DHCP,
+serta blok IPv6. Policy firewall GPO yang sudah ada atau endpoint domain ditolak, perlu integrasi pengelola.
+Rule inbound lokal yang aktif disalin dengan nama milik VanGuard supaya akses masuk
+yang sebelumnya diizinkan tetap tersedia. Rule asli tidak dihapus. Jangan menganggap
+semua Windows Home mendukung mode ini; validasi target diperlukan.
+Rule tunnel awal disabled sampai adaptor nyata terkonfirmasi sesudah admission.
+Backup/state berada di <code>VanGuardEndpointData\internet-lockdown</code>; jangan hapus.
+Jika gagal sebagian, quarantine tetap memblokir dan hasil bukan ACTIVE.
+Cleanup menonaktifkan pengecualian tunnel sebelum adaptor dihapus. Jika
+penghentian tunnel atau cleanup policy belum pasti, config dipertahankan;
+jangan menghapusnya untuk memaksa reconnect.</p>
+</li>
+<li>
+<p><strong>Windows/admin dashboard:</strong> buat key+CSR di endpoint, transfer request publik
+ke dashboard, terbitkan sertifikat dari CA yang <strong>sudah ada</strong>, bind karyawan,
+unduh dan import bundle seperti Bab11. Sebelum langkah ini, internet sudah
+terblokir setelah enable berhasil. Transfer publik dapat melalui media lokal
+terkelola; browser dashboard tidak otomatis dikecualikan oleh lockdown endpoint.</p>
+</li>
+<li>
+<p><strong>Admin dashboard:</strong> pada perangkat registered yang mempunyai gateway aktif,
+pilih <strong>Izinkan setelah admission</strong> pada <strong>Izin internet melalui gateway</strong>.
+Tindakan perlu login/TOTP dan CSRF serta dicatat dengan aktor/waktu. Grant ini
+tidak menambahkan peer. <strong>Karyawan:</strong> login lalu connect (Bab12). Terminal
+connect tetap hidup untuk renewal; mode ini belum layanan auto-login Windows.
+Periksa status policy, lease, handshake dan TCP internet secara terpisah.</p>
+</li>
+<li>
+<p><strong>Admin:</strong> uji cabut izin internet saat TCP aktif; paket berikutnya harus
+ditolak, sementara identitas VPN internal tetap ada. Untuk mencabut identitas,
+gunakan Revoke beserta alasan; server menghapus peer dan CA merekam revocation.
+Uji logout, sesi/lease habis, CA gagal, daemon berhenti, tunnel berhenti dan
+reboot. Jangan menyebut socket langsung tertutup: firewall drop menghentikan
+data; aplikasi mungkin menunggu timeout. Ukur waktu trafik terakhir.</p>
+</li>
+</ol>
+<p><strong>Pemulihan admin lokal:</strong> disconnect melalui proses pemilik; pastikan service
+hilang dan cleanup terkonfirmasi sebelum recovery. Jalankan <code>internet-recover</code>
+dan ketik <code>PULIHKAN</code>. Ini mengembalikan profile Local GPO sebelum lockdown (atau allow rule/profile
+legacy untuk state kandidat lama),
+menghapus hanya nama rule yang dimiliki VanGuard, dan mempertahankan backup
+historis. Ini membuka kembali kebijakan internet lama dan <strong>bukan</strong> revoke server.
+Jika server tidak terjangkau, logout belum terkonfirmasi. Jangan menghapus config
+atau menghentikan service milik proses lain untuk melewati guard recovery.
+Installer/uninstaller menolak perubahan runtime selama state lockdown masih ada;
+rencanakan maintenance terkontrol. Tidak ada auto-recovery membuka internet pada
+produk; task pemulihan berwaktu pada VM uji hanya pengaman eksperimen.</p>
+<p>Kriteria penerimaan mode ini: TCP langsung diblokir sebelum identitas, bootstrap
+HTTPS tetap bisa, authorized internet+DNS berhasil, renewal berulang, revoke dan
+pencabutan grant menghentikan data TCP aktif, perangkat lain tidak terdampak,
+cleanup/reboot tidak membuka fallback, serta recovery admin terbukti. Catat setiap
+OS/build dan metode nyata/mock; hasil Windows10 LTSC tidak membuktikan semua edisi
+Windows10/11, PC fisik, Wi-Fi berpindah, GPO atau IPv6 internet.</p>
 <h2 id="bab-15">15. Checklist penerimaan dan hasil yang harus dibuktikan</h2>
 <table>
 <thead>

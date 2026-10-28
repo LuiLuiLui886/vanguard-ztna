@@ -300,3 +300,43 @@ Windows10LTSC19044 and Windows11build26300. Primary Windows11 identity hashes,
 legacy runtime and all six original domain definitions remain unchanged. See
 current checkpoint for actual CI results and publication; earlier r3 evidence is
 retained as history. Windows11 running; Windows10/five Ubuntu shut off.
+
+
+User constraint — 27 October 2026, internet access control design:
+The user wants deployment without configuring each user's router; heterogeneous
+home routers must not become an integration prerequisite. Central policy/admin
+and internet gateway belong on Linux. This supersedes the earlier proposal to
+require per-router WAN filtering, not the existing lab topology or six-check
+admission. Server-only cannot control traffic that bypasses the server. Proposed
+managed Windows agent with persistent endpoint enforcement plus a full-tunnel
+Linux gateway remains NOT IMPLEMENTED/NOT TESTED; no live network changes are
+authorized merely by discussing this design. Before agent/policy installation,
+there is no control over the endpoint. Full local administrator tampering is
+outside an unconditional guarantee. Reachable HTTPS/WireGuard services are still
+required; the private lab IP is not publicly reachable by assumption. Preserve
+client-generated keys, all VMs and current identities. See 27 October journal.
+
+
+User implementation authorization — 27 October 2026:
+“Coba lakukan” authorizes candidate managed Internet implementation and backed-up
+Windows10 testing. Router configuration remains unchanged. Candidate0.1.13 uses
+opt-in schema2, persistent Windows outbound enforcement and Linux nft per-identity
+Internet grants bounded by employee session/lease. Temporary CA/namespace only;
+production identities/services are not implicitly migrated. Native test failures
+and corrections are in 27 October journal. This supersedes NOT IMPLEMENTED above
+for candidate source only, not release/readiness claims. Follow latest checkpoint.
+
+Native managed Internet candidate — 27 October 2026:
+Windows10 testing showed OS updates can add outbound local allow rules despite
+default block. Candidate uses owned Local GPO rules with local rule merging
+disabled, preserving original local policy and copying enabled inbound rules.
+Existing organizational/domain firewall policy is rejected, not overwritten.
+Nine initial and six post-reboot native cases passed, including new local allow
+injection. Detach disables the owned tunnel exception before adapter removal;
+failed policy cleanup retains config after attempting tunnel shutdown. Native
+admission, grant/default-deny, renewals, logout and reconnect passed. Active TCP
+grant-removal passed; active TCP certificate-revocation timing remains unconfirmed
+due to a failed fixture, although revoke/peer removal/fresh denial passed.
+Temporary account/identity disabled, CA revocation retained, namespace transport
+stopped and Windows policy explicitly recovered. Production not rolled out.
+Source/package0.1.13 remains candidate; published stable ZIP0.1.12 unchanged.

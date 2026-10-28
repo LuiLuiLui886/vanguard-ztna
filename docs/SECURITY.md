@@ -163,3 +163,26 @@ bukan proof firewall/UDP. Pemulihan service yang belum terkonfirmasi tetap manua
 host mencegah injeksi ekstensi; default tetap alamat layanan lab. Perubahan ini
 diuji pada CA sementara, bukan penerbitan/rotasi sertifikat utama. Riwayat CA dan
 revocation tidak dipulihkan saat rollback paket. Baca [rencana pilot](ENDPOINT_WINDOWS_PILOT.md).
+
+## Kandidat0.1.13 — internet terkelola tanpa konfigurasi router
+
+Mode opt-in memerlukan enforcement Windows persisten **dan** gateway Linux;
+Linux tidak mengendalikan jalur langsung pada endpoint yang belum dikelola.
+Lockdown memakai Local GPO milik sendiri dengan local rule merging disabled,
+default-block semua profile, hanya
+mengecualikan IP/port API, WireGuard dan DHCP. Tunnel exception dibuka setelah
+admission membentuk adaptor nyata; IPv6 diblok. Pending/error mempertahankan
+quarantine; recovery eksplisit admin lokal membuka kebijakan lama dan bukan
+logout server. Backup/history tetap ada. Domain/policy firewall GPO yang sudah ada ditolak; Local GPO milik VanGuard
+dan salinan inbound dibuat/dipulihkan dengan backup. Local-admin tampering
+bukan jaminan yang ditangani sistem ini. OS firewall inspection bukan remote
+attestation. Windows11/PC fisik perlu bukti sendiri, bukan asumsi dari Windows10.
+
+Gateway tidak percaya route full-tunnel sebagai izin. Internet memerlukan grant
+identitas+karyawan, akun/sesi/lease sah dan peer aktif; timeout nft tidak melebihi
+lease. Forwarding untuk established TCP tetap melewati gate; flow offload tidak
+boleh digunakan. Private/reserved destination ditolak di WAN; resource internal
+memakai gate terpisah. Mode ini memberi internet IPv4 TCP/UDP/ICMP umum setelah
+izin, bukan filter kategori/domain. Admission enam cek dan private key client
+tidak berubah. Pemeriksaan CA gagal tidak memakai CRL usang. Endpoint public IP
+harus reachable; fitur tidak otomatis mengekspos alamat privat di internet.

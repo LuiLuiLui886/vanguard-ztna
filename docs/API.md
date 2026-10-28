@@ -234,3 +234,22 @@ file sesi bukan bukti token valid. `diagnose` hanya HTTPS `/readyz`, UDP/aplikas
 unknown. `disconnect` meminta connect pemilik melakukan cleanup, terpisah dari
 logout server. Timeout teardown tidak berarti sukses; config tetap disimpan.
 Lihat [pilot Windows](ENDPOINT_WINDOWS_PILOT.md) untuk prasyarat dan batas bukti.
+
+## Kandidat0.1.13 — izin internet terkelola (opt-in)
+
+Server `POST /api/devices/<id>/internet` memerlukan bearer management dan JSON
+`{"enabled":true}` atau `{"enabled":false}` (boolean, bukan string). Gateway
+harus dikonfigurasi melalui VANGUARD_INTERNET_POLICY; perangkat enabled dan
+binding karyawan aktif wajib. Response berisi device_id, internet_granted dan
+admission_required=true. Perubahan policy tidak membuat peer. Pencabutan izin
+internet saja tidak mencabut identitas/akses aplikasi internal. Bila enforcement
+gagal, lease diinvalidasi dan peer terkait dihapus; hasil tidak boleh dinyatakan
+berhasil. Riwayat grant/revoke dicatat tanpa request/credential lengkap.
+
+Dashboard `POST /devices/<id>/internet` memakai sesi admin/TOTP dan CSRF; field
+form enabled hanya `true`/`false`. Listing server menambahkan internet_configured
+serta internet_granted (null jika policy tidak dapat diperiksa). Nilai ini izin
+terkonfigurasi, bukan bukti akses, handshake atau trafik internet aktual. Gate
+memeriksa tuple device+karyawan dan lease/sesi/peer pada setiap sinkronisasi;
+firewall memeriksa grant untuk setiap paket, termasuk TCP established. Profil
+schema2 diuraikan pada Bab14.1 manual tunggal. Lihat checkpoint sebelum rollout.

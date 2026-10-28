@@ -1,4 +1,158 @@
-# Checkpoint VanGuard — 25 Oktober 2026
+# Checkpoint VanGuard — 28 Oktober 2026
+
+## 28 Oktober — regresi akhir selesai; kandidat siap dicatat di Git
+
+Suite fokus terakhir selesai: **120 lulus, 1 dilewati dalam 348,18 detik**
+(Linux lokal; sebagian memakai mock OS). Ruff dan pemeriksaan whitespace PASS.
+Hasil ini melengkapi bukti native Windows10 tanggal 27 Oktober, bukan pengganti
+pengujian Windows11 atau endpoint fisik. Lihat jurnal 28 Oktober untuk publikasi.
+
+Saat resume 28 Oktober 13:37 WIB, seluruh tujuh VM **shut off**; status running
+pada catatan di bawah adalah histori. Tidak ada rollout produksi pada sesi ini.
+Branch tetap `feature/2026-10-22-physical-endpoints`, kandidat0.1.13; main dan
+ZIP stabil0.1.12 tetap. Sisa pengujian dan batasan kandidat tercatat di bagian
+27 Oktober serta laporan validasi. Credential dan backup hanya disimpan lokal.
+
+## 27 Oktober — hasil native mode internet dan penutupan fixture
+
+Kandidat0.1.13 berada pada `feature/2026-10-22-physical-endpoints`; main/ZIP stabil
+0.1.12 belum diganti. Implementasi memakai gateway Linux dan Local GPO Windows
+terkelola tanpa perubahan router. [Laporan bukti](VALIDASI_INTERNET_2026-10-27.md) dan [manual tunggal
+Bab14.1](MODUL_PENGGUNAAN_VANGUARD.md) memisahkan status kandidat dari rilis.
+
+Hasil Windows10 LTSC19044 native:9kasus lockdown PASS;6kasus setelah reboot
+PASS termasuk local-allow tambahan tidak membuka internet. Admission/handshake,
+izin internet default-deny, TCP+DNS baru setelah grant,7renewal, pencabutan grant
+saat TCP aktif, logout, cleanup dan reconnect PASS. Pencabutan grant menghentikan
+trafik dengan batas observasi2,4306detik (bukan latency kernel presisi). Fault
+fetch CRL menghapus peer ≤5,4001detik; ini injeksi fungsi, bukan outage produksi.
+Revocation OpenSSL CA sementara menghapus peer, menolak TCP/DNS dan fresh connect
+403. **Pengukuran TCP aktif saat revoke sertifikat belum terkonfirmasi** karena
+runner stream exit1; laporan FAIL dipertahankan, jangan menyebutnya PASS.
+
+R8 memperbaiki reconnect: pengecualian tunnel disabled sebelum adaptor dihapus.
+Jika cleanup policy gagal, tunnel tetap diupayakan stop dan config dipertahankan.
+Final reinstall r8 exit0,4file identitas hash-identik dan policy script sesuai
+paket. Recovery lokal selesai, Local GPO rule0, state lockdown tidak ada, TCP
+internet biasa kembali hanya setelah recovery admin eksplisit.
+
+Identitas/akun uji dinonaktifkan, sertifikat dicabut, grant/peer kosong; kedua
+namespace serta3unit transient dihentikan. CA/database/CRL/backup uji tetap ada.
+Firewall root server sama setelah normalisasi counter trafik. Windows10 dan
+SERVER masih running; lima guest lain shut off. Produksi belum di-rollout.
+
+Bukti source: suite awal280PASS/1SKIP; fokus sebelum detach117PASS/1SKIP;
+platform+internet setelah detach46PASS/1SKIP; fault detach1PASS. Suite fokus
+terakhir sedang berjalan; lihat jurnal untuk hasil akhir. Jangan menjumlahkan
+suite yang tumpang-tindih. Tidak ada hasil Windows11/fisik mode baru.
+
+Sisa prioritas: perbaiki runner/pastikan active-TCP certificate revocation,
+uji native expiry/daemon-stop/active-reboot untuk mode internet, Windows11 dan
+PC fisik, readiness dependensi internet yang spesifik, paket final distribusi.
+Paket r8 lokal tersimpan di `state/internet-20261027/`, belum menggantikan ZIP
+GitHub. Jangan memakai generator kit pilot lama untuk schema2 (masih khusus
+0.1.12/schema1). Credential hanya inventaris privat; backup disk/XML tidak di-Git.
+
+
+## 27 Oktober23:34 — uji ketahanan policy Windows dilanjutkan
+
+Dua guest uji (Windows10 dan SERVER) running lagi setelah seluruh VM mati pada
+awal resume23:22. Gateway namespace/WAN direkonstruksi memakai CA sementara,
+key dan database uji yang sama; produksi tidak di-rollout. Tidak ada identity
+Windows uji yang dibuat sampai checkpoint ini.
+
+**Temuan penting:** reboot yang menyelesaikan update OS menambahkan5allow lokal;
+TCP probe Python tetap diblok, namun status policy menolak rule asing. Karena
+itu jangan memakai r4/r5 sebagai bukti fail-closed menyeluruh setelah reboot.
+Kandidat kini memakai Local GPO milik VanGuard, local rule merging disabled,
+89inbound rule lama disalin agar akses masuk tetap, backup/recovery kedua store.
+Endpoint domain/policy GPO yang sudah ada ditolak. Legacy schema1 hanya untuk
+recovery; connect memerlukan policy schema2. R6 gagal pada duplikasi quarantine
+transisi; cache dibetulkan tanpa mengabaikan duplicate aturan izin final.
+
+R7 sedang diuji native, termasuk penambahan local allow yang harus tetap tidak
+membuka internet. Recovery legacy dan Local GPO r6 berhasil sebelum retry.
+State/task/pemulihan lab perlu diperiksa sebelum tindakan berikutnya; jangan
+menimpa CA, profile, identitas atau backup. Laporan/jurnal tetap memisahkan
+historis PASS/FAIL. Suite terbaru platform+internet46PASS/1SKIP115,28detik;
+17regresi internet sebelumnya PASS, termasuk isolasi grant perangkat kedua.
+Sisa: hasilr7, reboot baru, admission/grant/renewal/revoke TCP aktif, cleanup,
+rebuild/reinstall paket final dan Windows11/fisik. Belum commit/push kandidat.
+
+
+## 27 Oktober — mode internet terkelola kandidat0.1.13, pengujian berlangsung
+
+Pengguna meminta implementasi tanpa konfigurasi router. Source opt-in schema2,
+gateway nft grant per perangkat+karyawan+sesi+lease, API/dashboard izin internet,
+lockdown Windows persisten dan recovery admin telah dibuat di branch feature.
+**Belum rilis; ZIP stabil25Oktober tetap0.1.12. Jangan menyimpulkan siap produksi.**
+
+- Baseline lokal69PASS/1SKIP; suite luas kandidat280PASS/1SKIP659,17detik.
+  Perbaikan native/status sesudah awal suite mempunyai regresi terpisah; suite
+  fokus terbaru sedang berjalan. Hasil Linux/mocks bukan bukti VM.
+- Windows10 tambahan dan SERVER running; lima VM lain shut off. Produksi tetap
+  tidak di-rollout. Gateway uji dalam namespace `vanguard-internet-test` .100.80,
+  memakai CA sementara dan database terpisah; bukan CA utama. HTTPS uji/nft
+  syntax/native WAN TCP gateway PASS. Windows10 installer kandidat berhasil.
+- Preview/enable native menemukan3bug: kutip Python, alias adaptor belum ada,
+  prefix IPv6 /0. Perbaikan tersedia; percobaan r4 sedang berjalan, belum dinyatakan
+  PASS. Kegagalan mempertahankan quarantine. Recovery eksplisit dua kali PASS;
+  ada task pemulihan **khusus lab**. Jangan membiarkan task/identity uji tanpa cleanup.
+- Backup disk offline `vanguard-windows10-before-internet-20261027.qcow2` dan XML,
+  backup endpoint/policy guest dipertahankan. Credential uji hanya inventaris
+  privat host; source/log publik tidak memuat nilainya.
+- Manual tunggal Bab14.1 + HTML menjelaskan mode kandidat dan batasnya. User
+  masih harus mendapat internet hanya setelah grant/admission; pengujian
+  authorized/revoked/reboot/Windows11 belum selesai, jangan mengklaim PASS.
+
+Bukti/runner lanjutan lokal `state/internet-20261027/`; periksa task
+VanGuardInternetTestPhase1/Recovery di Windows10 dan hasil `phase1.json` dalam
+`C:\Program Files\VanGuardInternetTest`. Runtime r3 dengan policy r4 yang
+tercatat; paket final harus dibangun ulang dan diuji. Jurnal27Oktober berisi
+intent, kegagalan dan perbaikan. Selanjutnya selesaikan lockdown/reboot,
+enrollment disposable10.8.0.3, grant/revocation/TCP aktif, cleanup, lalu paket/tes.
+
+
+## 27 Oktober — desain berikutnya tanpa konfigurasi router pengguna
+
+Arahan terbaru pengguna: hindari konfigurasi router setiap client; kendali pusat
+pada Linux server/admin. Model router bukan prasyarat berikutnya. Usulan teknis
+memerlukan agent Windows dengan pemblokiran persisten di endpoint dan gateway
+internet Linux; Linux saja tidak dapat memblokir jalur yang melewati router
+langsung. Sebelum agent terpasang, perangkat belum dapat dikendalikan. Server
+HTTPS/WireGuard harus reachable dari jaringan client. Full-tunnel, enforcement
+persisten dan fail-closed internet masih FITUR_BELUM_TERSEDIA/BELUM_TERUJI.
+Tidak ada rollout atau perubahan jaringan pada diskusi ini. Arahan ini mengganti
+usulan wajib konfigurasi router pada catatan sebelumnya. Jurnal: [27 Oktober](PROGRESS_2026-10-27.md).
+
+
+## 27 Oktober — batas kontrol internet diklarifikasi
+
+Audit tujuh gambar Sharing/Dokumentasi TA menunjukkan enrollment, bukan bukti
+akses VPN atau pencabutan internet. Profil publik hanya10.8.0.1/32 dan resource
+TCP8082. Revoke saat ini memutus peer/akses aplikasi VanGuard; tidak mengendalikan
+jalur internet langsung melalui router. Pemblokiran internet sebelum admission
+dan setelah revoke adalah FITUR_BELUM_TERSEDIA untuk kebutuhan baru tersebut.
+Rancangan berikutnya memerlukan gateway/firewall jaringan terkelola, larangan
+WAN langsung, pengecualian bootstrap/manajemen, serta pengujian IPv4/IPv6 dan
+koneksi aktif. Model router belum diketahui; jangan mengganti route/firewall
+aktif hanya dengan menyalin contoh full-tunnel. Semua VM sekarang shut off;
+audit ini read-only, tanpa uji live atau perubahan jaringan. Rincian: [jurnal27Oktober](PROGRESS_2026-10-27.md).
+Status running pada26Oktober di bawah adalah riwayat, bukan keadaan terkini.
+
+
+## 26 Oktober — seluruh VM dinyalakan dan konsol dibuka
+
+Sesuai permintaan pengguna, tujuh VM running: CA, SERVER, ADMIN, CLIENT,
+ATTACKER, Windows11, dan Windows10. Lima Ubuntu terbuka pada konsol teks
+gnome-terminal/virsh; dua Windows terbuka di virt-viewer. Ketujuh jendela
+terverifikasi pada desktop. Windows10 sempat shutdown normal pada start pertama;
+start kedua dan pemeriksaan akhir berhasil. Penyebab shutdown belum diuji.
+Tidak mengubah source, definisi/disk VM, identitas atau credential; tidak login
+otomatis. Readiness aplikasi belum diuji pada tindakan ini. Bukti lokal
+`state/vm-start-20261026/final.json`; jurnal `docs/PROGRESS_2026-10-26.md`.
+Catatan keadaan VM di bawah adalah riwayat sebelum startup26Oktober.
+
 
 ## 25 Oktober malam — perbaikan konfigurasi Windows tervalidasi
 
