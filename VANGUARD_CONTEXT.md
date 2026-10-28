@@ -340,3 +340,18 @@ due to a failed fixture, although revoke/peer removal/fresh denial passed.
 Temporary account/identity disabled, CA revocation retained, namespace transport
 stopped and Windows policy explicitly recovered. Production not rolled out.
 Source/package0.1.13 remains candidate; published stable ZIP0.1.12 unchanged.
+
+
+Windows11 managed Internet evidence — 28 October 2026:
+The same candidate0.1.13 r8 package passed native installation, nine initial
+lockdown and six post-reboot cases on Windows11 build26300. Admission/handshake,
+default-deny/granted TCP and fresh DNS, three renewals, grant removal during TCP,
+logout/owner cleanup and reconnect passed. Real temporary-CA revocation reset
+active TCP, removed the peer and rejected fresh admission403. A timeout-only
+fixture assertion failed; independent review of the recorded reset/denial evidence
+passed network-stop criteria, not a claimed rerun. Windows10's earlier incomplete
+revocation-stream measurement remains unconfirmed. No product source changes.
+Original config/identity hashes, legacy runtime, SecureBoot/TPM, VM definition and
+110 inbound rules preserved; temporary policy recovered, account disabled and
+certificate revoked. Test namespaces stopped, CA/history retained. Main/stable
+ZIP unchanged; no general Windows edition/physical endpoint guarantee.

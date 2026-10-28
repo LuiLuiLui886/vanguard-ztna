@@ -1452,6 +1452,17 @@ menambahkan gateway internet IPv4 dan policy Windows persisten; **ZIP stabil
 25 Oktober0.1.12 belum memuat fitur ini**. Periksa checkpoint untuk hasil native
 aktual sebelum rollout. Jangan menerapkan pada PC kerja hanya dari contoh ini.
 
+Bukti native tersedia untuk Windows10 LTSC build19044 (27 Oktober) dan Windows11
+build26300 (28 Oktober): installer kandidat, lockdown sebelum enrollment dan
+sesudah reboot, admission/handshake, grant/default-deny, renewal, logout dan
+reconnect. Windows11 juga memiliki bukti pemutusan TCP aktif saat sertifikat
+dicabut; rincian koreksi kriteria alat ukur ada di
+[laporan validasi Windows11](VALIDASI_WINDOWS11_INTERNET_2026-10-28.md).
+Gunakan paket kandidat yang telah diverifikasi, bukan mengasumsikan ZIP stabil
+memuat perubahan ini. Bukti dua VM tersebut tidak menjamin seluruh edisi/build,
+endpoint fisik, atau jaringan organisasi dengan GPO. Reboot saat tunnel aktif
+pada mode baru dan pengujian IPv6 nyata masih belum dilakukan.
+
 Linux memutuskan izin dan meneruskan internet; Windows mencegah jalur langsung
 melalui Wi-Fi/LAN. Tanpa policy endpoint aktif, Linux tidak bisa memblokir trafik
 yang langsung menuju router. Hak administrator lokal penuh tetap dapat mengubah

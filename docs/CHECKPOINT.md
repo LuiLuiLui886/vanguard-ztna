@@ -1,5 +1,28 @@
 # Checkpoint VanGuard — 28 Oktober 2026
 
+## 28 Oktober — Windows11 native kandidat internet tervalidasi
+
+VM Windows11 build26300: installer r8 exit0;9kasus lockdown awal dan6kasus
+sesudah reboot PASS. Admission/handshake, default-deny/grant TCP+DNS baru,
+3renewal, pencabutan grant saat TCP aktif, logout/cleanup dan reconnect PASS.
+Revoke sertifikat1002 memutus TCP aktif dengan reset dan menghapus peer;
+fresh admission403. Assertion alat ukur awal hanya menerima timeout sehingga
+FAIL; pemeriksaan ulang bukti reset+peer absent+fresh denial PASS perilaku
+jaringan, tanpa mengklaim rerun. Lihat [laporan Windows11](VALIDASI_WINDOWS11_INTERNET_2026-10-28.md).
+
+Recovery selesai:110inbound rule asli terjaga,0rule LocalGPO/0task test, config
+awal serta primary identity hash-identik. Legacy runtime0.1.9, SecureBoot/TPM dan
+XML Windows11 tetap. Endpoint kandidat0.1.13 terpasang terpisah. Akun/identitas
+uji disabled, serial revoked, grant/peer kosong; gateway namespace/unit dihentikan,
+CA/DB/CRL/histori/backup dipertahankan. Root firewall sama selain counter.
+
+Windows11 dan SERVER sekarang running; lima guest lain shut off. Tidak ada
+rollout produksi. Source tidak berubah; main/ZIP stabil0.1.12 tetap. Sisa:
+Windows10 active-TCP certificate-revoke belum terkonfirmasi oleh bukti Windows11;
+expiry/daemon-stop/active-tunnel reboot mode baru, IPv6 nyata, edisi/build lain,
+PC fisik, readiness gate dan paket distribusi final. Jangan mengaktifkan kembali
+identitas uji revoked; buat identitas disposable baru bila pengujian dilanjutkan.
+
 ## 28 Oktober — regresi akhir selesai; kandidat dipush ke GitHub
 
 Suite fokus terakhir selesai: **120 lulus, 1 dilewati dalam 348,18 detik**
