@@ -22,7 +22,8 @@ SecureBoot/TPM/VM XML sama. Test identity1003 revoked dan akun disabled; namespa
 serta unit transient dihentikan, CA/DB/histori tetap. Credential staging dibuang.
 Windows11+SERVER running,5guest lain shut off. Template offline0.1.14 untuk admin
 ada pada downloads tanpa profil/alokasi fixture. Main/ZIP0.1.12 tetap. Source dan
-ZIP kandidat menunggu publikasi terakhir; hasil push dicatat di jurnal.
+ZIP kandidat dipush pada commit `e0dd7eb`; SHA origin feature terverifikasi.
+Tidak ada CI baru yang diklaim. Hasil native/tes lokal dan batasnya ada di laporan.
 Sisa: UAC/login interaktif default, Windows10 wizard, OS fresh/reboot3010,
 PC fisik, serta lifecycle/readiness internet yang sebelumnya belum diuji.
 
