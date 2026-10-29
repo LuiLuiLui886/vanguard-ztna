@@ -31,10 +31,11 @@ backup/evidence dan disk VM tetap. Manifest relokasi lokal media-relocation.json
 Host kini~4,1GiB free; Windows10 running, enam VM lain off. Kredensial tidak berubah.
 
 BELUM_TERUJI untuk wrapper: UAC klik/browser/SmartScreen, Windows11, fresh OS
-without runtime, reboot3010, login interaktif penuh, physical endpoint dan
+tanpa runtime, reboot3010, login interaktif penuh, physical endpoint dan
 power-loss. R1 installer runtime existing tidak membuktikan instalasi prasyarat
 pada OS kosong. Signing produksi belum tersedia. Main/stable ZIP tidak diganti.
-Status publikasi: siap push feature; SHA remote dicatat di jurnal sesudah push.
+Source/EXE/manual dipush sebagai `48d184e`; SHA origin feature cocok.
+Main tetap. Tidak ada hasil CI baru yang diklaim.
 
 ## 29 Oktober — bug resume wizard diperbaiki, kandidat0.1.14-fix1
 
