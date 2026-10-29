@@ -13,7 +13,7 @@ lama belum memuat gambar baru. Source aplikasi/VM tidak berubah dalam tugas ini.
 Validasi5SVG parse/render dan inspeksi visual, gambar embedded+anchor HTML,
 Ruff dan diff PASS. Bukti lokal `state/flows-20261029/`.
 Sisa pengujian EXE Windows11/schema2/UAC/fresh OS/PC fisik tetap pada catatan bawah.
-Siap publikasi pada branch feature; hasil push dicatat di jurnal.
+Flowchart/manual dipush sebagai `feac013` ke origin feature; SHA remote cocok.
 
 ## 29 Oktober — EXE offline dibuat dan diuji di Windows10
 
