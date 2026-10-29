@@ -1551,6 +1551,78 @@ hak admin dan paket tepercaya. Paket berbeda/upgrade saat lockdown aktif harus
 melalui recovery maintenance yang terdokumentasi; wizard tidak membuka internet
 secara otomatis saat error. Lihat Bab14.1 untuk batas dan pemulihan policy.
 
+#### 14.0.1. Alternatif satu file EXE offline (installer0.1.14-fix1)
+
+EXE membungkus paket offline dan menjalankan installer/wizard yang sama. Python,
+WireGuard, dependensi Python dan aplikasi ada di dalamnya; tidak membutuhkan
+GitHub CLI, Python yang sudah terpasang, atau unduhan saat instalasi. Target
+tetap Windows10 21H2/22H2 atau Windows11 **x64**, dengan .NET Framework bawaan
+Windows. ARM64/x86 bukan target paket ini. Pendaftaran/login tetap membutuhkan
+koneksi ke layanan VanGuard yang sudah disiapkan admin.
+
+Ada dua jenis paket yang perlu dibedakan:
+
+| EXE | Isi dan tindakan |
+|---|---|
+| `Setup-VanGuard-0.1.14-fix1.exe` dari downloads | Paket umum: memasang prasyarat/aplikasi. Belum berisi profil server, CA publik atau alokasi perangkat; admin melanjutkan konfigurasi Bab11–12 atau menyediakan EXE per-device. |
+| EXE per-device buatan admin | Profil, CA publik dan alokasi sudah disiapkan. Menjalankan seluruh wizard Bab14.0 sampai request, approval dan login/connect. Satu alokasi hanya untuk satu komputer. |
+
+**Admin menyiapkan EXE per-device:** bangun folder paket dengan perintah Linux
+di Bab14.0 terlebih dahulu. Salin seluruh folder hasilnya dan tiga berkas source
+`deploy/endpoint/exe/Build-Exe.ps1`, `VanGuardSetup.cs`, `app.manifest` dari commit
+repo tepercaya ke Windows build milik admin. Tidak perlu mengubah CA atau
+menambahkan password/private key ke folder. Jalankan PowerShell sesuai kebijakan
+organisasi; contoh lokasi setelah disalin ke `C:\Program Files\VanGuardBuild`:
+
+```powershell
+& 'C:\Program Files\VanGuardBuild\source\Build-Exe.ps1' `
+  -Package 'C:\Program Files\VanGuardBuild\paket-pc-karyawan-01' `
+  -Output 'C:\Program Files\VanGuardBuild\Setup-PC-Karyawan-01.exe'
+Get-FileHash 'C:\Program Files\VanGuardBuild\Setup-PC-Karyawan-01.exe' -Algorithm SHA256
+```
+
+Builder menggunakan compiler .NET Framework yang sudah ada di Windows x64 dan
+menolak output lama, anggota tambahan serta checksum input salah. Simpan folder
+`.exe.build` dan metadata `.exe.json` sebagai bukti build privat admin; bagikan
+**EXE saja beserta SHA256** melalui jalur tepercaya. Gunakan nama output baru
+untuk build ulang. EXE proyek ini **belum ditandatangani Authenticode**. Hash
+internal mendeteksi kerusakan, bukan membuktikan penerbit; konfirmasikan asal dan
+SHA256 sebelum mengeksekusi. Jika SmartScreen/kebijakan organisasi memblokir,
+minta pemeriksaan admin; jangan menonaktifkan proteksi atau execution policy.
+
+**Pada endpoint:** cocokkan SHA256 dengan yang diberikan admin, klik dua kali
+EXE dan setujui UAC. EXE mengekstrak paket ke
+`C:\Program Files\VanGuardPackages\<SHA256-payload>` yang dibatasi untuk
+administrator/SYSTEM. Manual HTML tersedia di folder tersebut. Untuk EXE
+per-device, ikuti langkah request→approval→login pada Bab14.0. Jalankan EXE yang
+sama lagi setelah admin memberi bundle; kunci yang sudah ada dipertahankan.
+Jangan mengubah profil atau menambahkan approval ke cache paket; tempatkan bundle
+pada `VanGuardEndpointData\approval.zip` atau gunakan prompt wizard.
+
+Opsi terminal administrator:
+
+```powershell
+# Per-device: persiapan/import tanpa prompt login; exit20 menunggu approval.
+& '.\Setup-PC-Karyawan-01.exe' /prepare-only /nopause
+# Kedua jenis: hanya periksa dan ekstrak, tanpa instalasi atau konfigurasi.
+& '.\Setup-VanGuard-0.1.14-fix1.exe' /extract-only /nopause
+```
+
+Kode keluar installer diteruskan:0 tahap selesai,20 menunggu approval,3010 restart
+manual diperlukan,1 gagal. Pada EXE umum,0 hanya berarti aplikasi terpasang;
+bukan bukti enrollment/VPN. Cache diperiksa ulang setiap peluncuran. Jika cache
+tidak lengkap/diubah, EXE berhenti dan mempertahankan bukti; admin memeriksa serta
+mengarsipkan folder bermasalah sebelum mencoba lagi. Jangan menghapus identitas,
+config atau state firewall untuk memaksa lanjut. Folder `pending-*` yang tersisa
+bukan bukti instalasi sukses. Rename folder tidak menjamin ketahanan power-loss.
+
+Kandidat EXE tersedia pada branch `feature/2026-10-22-physical-endpoints`.
+Lihat [validasi EXE](https://github.com/LuiLuiLui886/vanguard-ztna/blob/feature/2026-10-22-physical-endpoints/docs/VALIDASI_EXE_2026-10-29.md)
+untuk pengujian Windows10 native.
+UAC klik langsung, SmartScreen dari browser, EXE pada Windows11, Windows baru
+tanpa runtime, reboot3010, login interaktif penuh dan PC fisik **BELUM_TERUJI**
+untuk wrapper ini. Bukti BAT/runtime sebelumnya dicatat terpisah.
+
 ### 14.1. Kandidat internet terkelola tanpa mengubah router pengguna
 
 Mode ini terpisah dari pilot aplikasi Bab14 di atas. Source kandidat0.1.13

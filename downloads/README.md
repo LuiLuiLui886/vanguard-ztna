@@ -1,5 +1,21 @@
 # Installer VanGuard Windows10/11 x64
 
+## EXE offline0.1.14-fix1 — kandidat pada branch feature
+
+[Unduh Setup-VanGuard-0.1.14-fix1.exe](Setup-VanGuard-0.1.14-fix1.exe)
+melalui **Download raw file**, lalu cocokkan [SHA256](SHA256SUMS).
+Python, WireGuard, dependensi dan aplikasi sudah dibundel. EXE umum ini memasang
+prasyarat/aplikasi; **profil server, CA publik dan alokasi perangkat tetap perlu
+disiapkan admin**. Untuk satu EXE yang juga menjalankan wizard pendaftaran,
+admin membangun EXE per-device sesuai [manual tunggal Bab14.0.1](../docs/MODUL_PENGGUNAAN_VANGUARD.md).
+Kunci dibuat di endpoint; approval admin dan login karyawan tetap wajib.
+
+EXE belum ditandatangani Authenticode. Jangan menonaktifkan proteksi Windows jika
+policy menolak; konfirmasikan origin/checksum dan minta pemeriksaan admin.
+[Hasil uji dan keterbatasan](../docs/VALIDASI_EXE_2026-10-29.md) membedakan Windows10
+native dari UAC/browser, Windows11 wrapper, OS fresh dan PC fisik yang belum diuji.
+Branch: **feature/2026-10-22-physical-endpoints**; paket stabil/main tidak diganti.
+
 ## Kandidat setup terpadu0.1.14-fix1 — untuk persiapan admin
 
 [Template offline satu folder](vanguard-windows10-11-setup-template-0.1.14-fix1-20261029.zip)
@@ -17,7 +33,8 @@ Cocokkan [checksum](SHA256SUMS) sebelum ekstraksi/eksekusi.
 Fix1 memperbaiki resume setelah pemasangan ulang terputus.
 [Laporan bug dan uji repair](../docs/AUDIT_WIZARD_2026-10-29.md):6kasus kontrol
 alur native dan7kasus installer/runtime nyata terisolasi lulus di Windows10.
-Wheel tetap0.1.14; ini revisi script installer. Paket belum berbentuk EXE.
+Wheel tetap0.1.14; ini revisi script installer. EXE alternatif tersedia di atas;
+ZIP tetap berguna sebagai input admin untuk membangun paket per-device.
 
 ## Paket sebelumnya0.1.12
 

@@ -1,5 +1,41 @@
 # Checkpoint VanGuard — 29 Oktober 2026
 
+## 29 Oktober — EXE offline dibuat dan diuji di Windows10
+
+Kandidat `downloads/Setup-VanGuard-0.1.14-fix1.exe` (44.718.592byte) membundel
+Python/WireGuard/wheel aplikasi0.1.14. SHA256:
+`f74a3b7b72373dbe55c1cc5b771938108cc683e930949c861cea7422415c7f69`.
+Paket umum memasang runtime/aplikasi; profil/CA publik/alokasi belum disertakan.
+Admin dapat build EXE per-device untuk wizard lengkap memakai source C#/.NET
+Framework dan Build-Exe.ps1. Key tetap dibuat di client; approval/login serta
+enam pemeriksaan admission tetap wajib. EXE unsigned, origin/hash wajib dicek.
+Manual tunggal MD/HTML Bab14.0.1 mencakup kedua alur, build dan recovery.
+
+Windows10 LTSC19044:13tes extractor/ACL PASS,6bootstrap EXE final PASS,
+6postflight native PASS. Generic EXE menjalankan installer offline sungguhan
+hingga exit0; pip check/clienthelp, hash config/key utama dan release lama
+terjaga. Device EXE schema1 fixture prepare/resume exit20 menjaga key/config/
+request/runtime. Runner awal terinterupsi shutdown sebelum menulis report;
+postflight terpisah sesudah boot membuktikan hasilnya, bukan menimpa bukti lama.
+Probe final pertama ditolak mutex karena installer lain aktif; retry berurutan
+6PASS. Linux paket6PASS0,08detik. Binary terunduh: SHA native cocok, embeddedZIP
+CRC+manifest39anggota+kesamaan payload lokal PASS; scan rahasia dan diff PASS.
+Lihat [validasi EXE](VALIDASI_EXE_2026-10-29.md); bukti privat `state/exe-20261029/`.
+
+Task uji dihapus,0EXE aktif, service tunnel1060, no managed-policy marker;
+backup dan release lama retained. VM Windows10 mengalami event1074 wlms.exe
+shutdown dan TrustedInstaller.exe restart; aktivasi/update tidak diubah.
+Host sempat414MiB free sehingga VM di-pause sementara;4fragmen ISO publik lama
+dipindah ke partisi lokal lain dengan SHA256+fsync+symlink path lama. ISO lengkap,
+backup/evidence dan disk VM tetap. Manifest relokasi lokal media-relocation.json.
+Host kini~4,1GiB free; Windows10 running, enam VM lain off. Kredensial tidak berubah.
+
+BELUM_TERUJI untuk wrapper: UAC klik/browser/SmartScreen, Windows11, fresh OS
+without runtime, reboot3010, login interaktif penuh, physical endpoint dan
+power-loss. R1 installer runtime existing tidak membuktikan instalasi prasyarat
+pada OS kosong. Signing produksi belum tersedia. Main/stable ZIP tidak diganti.
+Status publikasi: siap push feature; SHA remote dicatat di jurnal sesudah push.
+
 ## 29 Oktober — bug resume wizard diperbaiki, kandidat0.1.14-fix1
 
 Source, tes, manual dan template dipush pada `3104030`; SHA origin feature cocok.

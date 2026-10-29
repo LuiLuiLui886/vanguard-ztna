@@ -390,3 +390,19 @@ issuance, firewall change, main VM rollout or Python wheel change. Full interact
 UAC/login, Windows11 fix1, fresh OS and physical power loss remain untested. User
 asked about EXE packaging; feasible with the same admission/key/login boundaries,
 but no EXE has been built in this session. See checkpoint for publication status.
+
+
+Offline EXE candidate — 29 October 2026:
+The user explicitly requests EXE packaging. A .NET Framework x64 bootstrapper
+embeds the existing0.1.14-fix1 offline package, requires administrator elevation,
+checks payload/hash/paths/ACL/cache, and runs the original installer or per-device
+wizard. Public template has no profile/allocation; per-device approval/employee
+login and client-generated keys remain required. No admission or CA change.
+Native Windows10:13extractor cases,6final bootstrap cases,6postflight cases PASS;
+real existing-prerequisite installation exit0 and device resume exit20 verified.
+Initial observer was interrupted by guest shutdown; separate postflight checked
+backup hashes and actual installed runtime. Unsigned EXE and fresh OS/Windows11/
+interactive UAC/login/power-loss limits remain. See latest checkpoint/report.
+Four unused public ISO download fragments were relocated with verified hashes and
+original-path symlinks to another local filesystem to recover host space; no
+backup, full ISO or VM disk removed. Earlier EXE-not-built statements are history.
