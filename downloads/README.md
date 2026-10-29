@@ -1,8 +1,8 @@
 # Installer VanGuard Windows10/11 x64
 
-## Kandidat setup terpadu0.1.14 — untuk persiapan admin
+## Kandidat setup terpadu0.1.14-fix1 — untuk persiapan admin
 
-[Template offline satu folder](vanguard-windows10-11-setup-template-0.1.14-20261029.zip)
+[Template offline satu folder](vanguard-windows10-11-setup-template-0.1.14-fix1-20261029.zip)
 menyertakan Python/WireGuard, wheel aplikasi dan `Setup-VanGuard.bat`.
 **Template ini belum berisi profil CA/server atau alokasi perangkat.** Admin
 menyiapkan paket per-device dengan builder dan input publik tepercaya menurut
@@ -13,6 +13,11 @@ Pendaftaran tetap menunggu persetujuan admin dan password dimasukkan saat login.
 Tidak membagikan paket fixture lab. Kandidat berada pada branch feature; lihat
 [hasil native dan batas bukti](../docs/VALIDASI_SETUP_TERPADU_2026-10-29.md).
 Cocokkan [checksum](SHA256SUMS) sebelum ekstraksi/eksekusi.
+
+Fix1 memperbaiki resume setelah pemasangan ulang terputus.
+[Laporan bug dan uji repair](../docs/AUDIT_WIZARD_2026-10-29.md):6kasus kontrol
+alur native dan7kasus installer/runtime nyata terisolasi lulus di Windows10.
+Wheel tetap0.1.14; ini revisi script installer. Paket belum berbentuk EXE.
 
 ## Paket sebelumnya0.1.12
 

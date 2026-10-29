@@ -1591,7 +1591,14 @@ tetap terbuka. Gunakan Ctrl+C untuk menghentikan koneksi; logout tetap melalui
 launcher VanGuard agar sesi server dicabut seperti Bab12.</li>
 </ol>
 <p><code>wizard-state.json</code> menyimpan tahap terakhir tanpa rahasia; bukan sumber izin.
-Setiap resume memeriksa fakta runtime/config/key/policy lagi. Tahap
+Revisi installer0.1.14-fix1 memperbaiki kasus pemasangan ulang terputus: jika
+metadata masih menunjuk paket yang sama tetapi runtime belum lengkap, BAT masuk
+kembali ke installer terverifikasi untuk membuat release baru. Kunci/config dan
+release sebelumnya tetap disimpan. Bila policy internet terkelola aktif, guard
+maintenance tetap menolak sampai recovery admin terencana dilakukan; lihat
+Bab14.1. Metadata rusak/ambigu tetap membutuhkan inspeksi operator. Lihat
+<a href="AUDIT_WIZARD_2026-10-29.md">audit resume wizard</a> untuk bukti dan batas uji.</p>
+<p>Setiap resume memeriksa fakta runtime/config/key/policy lagi. Tahap
 <code>WAITING_APPROVAL</code> berarti belum ada sertifikat; <code>READY_FOR_LOGIN</code> belum berarti
 ada akses VPN; <code>CONNECTING</code> bukan bukti handshake; cek hasil koneksi dan gateway.
 Kode3010 berarti runtime meminta restart: simpan pekerjaan, restart sendiri,

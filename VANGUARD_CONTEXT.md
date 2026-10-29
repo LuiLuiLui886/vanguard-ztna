@@ -379,3 +379,14 @@ Original config/identity/firewall and VM definition restored/preserved; temporar
 CA history retained and consistency checked, account disabled and fixture stopped.
 Interactive UAC/default login-to-launcher path, fresh wizard install/reboot3010,
 physical endpoints and wider builds remain untested. No product source change.
+
+
+Wizard repair correction — 29 October 2026:
+Installer revision0.1.14-fix1 fixes same-package reuse after interrupted reinstall.
+An incomplete runtime now goes through the verified installer; ownership/tunnel/
+managed-policy guards remain. Native Windows10 control-flow tests6PASS and actual
+isolated venv installation/repair7PASS; original endpoint state retained. No CA
+issuance, firewall change, main VM rollout or Python wheel change. Full interactive
+UAC/login, Windows11 fix1, fresh OS and physical power loss remain untested. User
+asked about EXE packaging; feasible with the same admission/key/login boundaries,
+but no EXE has been built in this session. See checkpoint for publication status.

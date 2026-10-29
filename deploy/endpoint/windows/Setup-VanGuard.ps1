@@ -51,7 +51,13 @@ try {
     $current=Join-Path $AppRoot 'current.json';$reuse=$false
     if(Test-Path -LiteralPath $current){
         $record=Get-Content -Raw -LiteralPath $current|ConvertFrom-Json
-        if($record.release -like ($manifestHash+'-*')){$null=Get-Installation;$reuse=$true}
+        if($record.release -like ($manifestHash+'-*')){
+            # A previous current.json can survive an interrupted reinstall.
+            # Reuse only a complete runtime; otherwise let the verified installer
+            # enforce ownership/tunnel/policy guards and create a new release.
+            try{$null=Get-Installation;$reuse=$true}
+            catch{Write-Host 'Runtime sebelumnya belum lengkap; mencoba repair melalui installer terverifikasi.'}
+        }
     }
     if(-not $reuse){
         $phase='install-runtime'

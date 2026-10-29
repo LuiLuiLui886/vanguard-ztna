@@ -1,5 +1,33 @@
 # Lanjutkan proyek VanGuard
 
+## 29 Oktober — bug resume wizard diperbaiki, kandidat0.1.14-fix1
+
+Audit03f33c9 membuktikan wizard berhenti ketika paket sama tetapi setup-state
+IN_PROGRESS/hilang atau python.exe hilang: native3FAIL sebelum patch. Blok reuse
+sekarang memilih installer tepercaya jika runtime belum lengkap; guard ownership,
+tunnel dan policy tetap. Tidak menghapus key/config atau menebak metadata rusak.
+
+Baseline Linux55PASS163,42detik; regresi paket6PASS; native PowerShell6PASS memakai
+installer sentinel, lalu7PASS installer/venv offline sungguhan pada root fixture
+terisolasi di Windows10 LTSC19044. Repair memakai release baru, key/config/request
+serta release lama/parsial terjaga; retry lengkap tidak reinstall. Kegagalan awal
+fixture akibat path panjang serta timeout observasi tetap dicatat, bukan PASS.
+Instalasi utama tetap; no CA issuance, no tunnel/policy, task fixture dihapus.
+
+Laporan: [audit wizard](docs/AUDIT_WIZARD_2026-10-29.md). Template admin0.1.14-fix1 menggantikan template
+kandidat sebelumnya di downloads, wheel tetap0.1.14. Admin perlu build ulang
+paket per-device supaya checksum mencakup script terbaru. Stable0.1.12/main tetap.
+Manual MD/HTML, jurnal dan tes regresi ditambahkan; tidak mengklaim CI baru.
+Bukti lokal `state/audit-wizard-20261029/`; backup/fixture lama retained.
+
+Windows10 running, enam VM lain off. Host sempat tersisa2,1GiB disk; periksa
+kapasitas sebelum build/VM tambahan, jangan menghapus backup otomatis. Sisa:
+fix1 native Windows11, UAC/login default penuh, fresh OS/3010, power-loss,
+repair managed policy (tetap memerlukan recovery admin), lifecycle/readiness
+internet dan PC fisik. Pengguna bertanya kemungkinan EXE: bisa membungkus alur
+offline yang sama, tetapi EXE BELUM_DIBUAT/BELUM_TERUJI; UAC/approval/login dan
+key yang dibuat di client harus tetap dipertahankan.
+
 ## 29 Oktober — wizard Windows10 dan pencabutan TCP aktif terverifikasi
 
 Dokumentasi/hasil dipush pada `2d6c2db`; SHA origin feature terverifikasi.

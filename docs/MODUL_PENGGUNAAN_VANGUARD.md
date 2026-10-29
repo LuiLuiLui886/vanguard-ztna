@@ -1527,6 +1527,14 @@ dibuat di endpoint, lalu CA yang sudah ada menerbitkan sertifikat dari CSR.
    launcher VanGuard agar sesi server dicabut seperti Bab12.
 
 `wizard-state.json` menyimpan tahap terakhir tanpa rahasia; bukan sumber izin.
+Revisi installer0.1.14-fix1 memperbaiki kasus pemasangan ulang terputus: jika
+metadata masih menunjuk paket yang sama tetapi runtime belum lengkap, BAT masuk
+kembali ke installer terverifikasi untuk membuat release baru. Kunci/config dan
+release sebelumnya tetap disimpan. Bila policy internet terkelola aktif, guard
+maintenance tetap menolak sampai recovery admin terencana dilakukan; lihat
+Bab14.1. Metadata rusak/ambigu tetap membutuhkan inspeksi operator. Lihat
+[audit resume wizard](AUDIT_WIZARD_2026-10-29.md) untuk bukti dan batas uji.
+
 Setiap resume memeriksa fakta runtime/config/key/policy lagi. Tahap
 `WAITING_APPROVAL` berarti belum ada sertifikat; `READY_FOR_LOGIN` belum berarti
 ada akses VPN; `CONNECTING` bukan bukti handshake; cek hasil koneksi dan gateway.
