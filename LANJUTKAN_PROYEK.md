@@ -1,5 +1,20 @@
 # Lanjutkan proyek VanGuard
 
+## 29 Oktober — flowchart lengkap sistem sampai EXE
+
+Manual tunggal [Bab1.1](docs/MODUL_PENGGUNAAN_VANGUARD.md) kini memuat5diagram:
+backend/CA, distribusi+EXE, policy+enrollment, login/admission+izin, lifecycle+audit.
+SVG tampil langsung di GitHub; HTML menyematkan gambar untuk penggunaan offline.
+Source generator `scripts/render_system_flows.py`; renderer HTML diperbarui.
+Batas template/schema1/schema2, blok setelah policy sukses, key di client,
+registrasi tanpa peer, enam cek, grant dan lease dijelaskan. Diagram bukan bukti
+semua jalur telah diuji. EXE/ZIP publik tetap byte-identik; manual di dalam artefak
+lama belum memuat gambar baru. Source aplikasi/VM tidak berubah dalam tugas ini.
+Validasi5SVG parse/render dan inspeksi visual, gambar embedded+anchor HTML,
+Ruff dan diff PASS. Bukti lokal `state/flows-20261029/`.
+Sisa pengujian EXE Windows11/schema2/UAC/fresh OS/PC fisik tetap pada catatan bawah.
+Siap publikasi pada branch feature; hasil push dicatat di jurnal.
+
 ## 29 Oktober — EXE offline dibuat dan diuji di Windows10
 
 Kandidat `downloads/Setup-VanGuard-0.1.14-fix1.exe` (44.718.592byte) membundel

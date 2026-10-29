@@ -1,6 +1,6 @@
 # Manual admin Sistem VanGuard
 
-Edisi27 Oktober2026 · satu sumber resmi untuk pemasangan dan operasi.
+Edisi29 Oktober2026 · satu sumber resmi untuk pemasangan dan operasi.
 HTML dengan nama yang sama dihasilkan dari Markdown ini; keduanya satu manual,
 bukan panduan berbeda. Salinan manual di ZIP juga dihasilkan dari sumber ini.
 Tutorial lama telah digabung dan dihapus dari tree terbaru; histori Git tetap ada.
@@ -38,6 +38,91 @@ Perintah **HOST** dijalankan di laptop Linux, **VM-ROLE** di guest yang ditulis,
 dan **WINDOWS ADMIN** di PowerShell Run as administrator. Satu terminal per mesin
 mencegah salah target. Hak admin lokal diperlukan untuk pengelolaan tunnel; akun
 VPN sendiri tidak memberi hak admin Windows. Uji satu PC dahulu sebelum laptop.
+
+### 1.1. Flowchart sistem lengkap: dari CA sampai EXE dan penggunaan
+
+Diagram berikut menggambarkan implementasi kandidat0.1.14-fix1 pada branch
+`feature/2026-10-22-physical-endpoints`. Baca berurutan 1→5. Gambar dapat dibuka
+untuk diperbesar di GitHub; salinan HTML menyertakan gambar dan bisa dibaca offline.
+**Setiap panah lanjut mensyaratkan tahap sebelumnya berhasil.** Bila gagal,
+berhenti pada tahap tersebut dan periksa alasan/state; jangan menganggap tahap
+berikutnya sudah selesai. Kotak merah menunjukkan penolakan atau pembatasan,
+bukan selalu bug. Kotak kuning adalah keputusan.
+
+#### 1.1.1. Persiapan layanan Linux dan otoritas sertifikat
+
+![Flowchart persiapan CA, server, dashboard dan profil](assets/flows/01-backend.svg)
+
+CA menerbitkan sertifikat dan CRL; server mengambil data CA yang diperlukan untuk
+validasi lewat jalur backend yang diizinkan. Dashboard mengelola registrasi,
+revocation, akun/binding dan kebijakan. Endpoint tidak menerima private key CA.
+Gunakan CA yang sudah ada pada lab ini. Rincian pemasangan dan trust ada di Bab5–9.
+
+#### 1.1.2. Distribusi paket dan instalasi EXE Windows
+
+![Flowchart EXE umum dan paket per perangkat](assets/flows/02-installer.svg)
+
+EXE umum di downloads belum memuat profil/root/alokasi. Admin membuat paket
+perangkat dengan input publik tepercaya, lalu membungkusnya menjadi EXE menurut
+Bab14.0.1. Pengguna menerima satu EXE; bagian dalamnya tetap menjalankan BAT/wizard.
+Kotak catatan di bagian bawah diagram menjelaskan kondisi batal/error/restart.
+Tidak ada GUI form Login/Connect saat ini; interaksi menggunakan terminal.
+
+#### 1.1.3. Kapan internet diblok dan bagaimana perangkat didaftarkan
+
+![Flowchart policy internet dan enrollment perangkat](assets/flows/03-enrollment.svg)
+
+**Klik EXE belum memblokir internet.** Pada pemasangan baru schema2, blok akses
+internet langsung berlaku setelah penerapan policy dikonfirmasi berhasil. Jalur
+kontrol terbatas untuk mencapai layanan tetap diperlukan. Jika penerapan policy
+gagal/parsial, hasil blok belum dapat dipastikan: wizard berhenti dan mempertahankan
+state/backup untuk inspeksi admin. Policy yang sebelumnya aktif tidak otomatis
+dibuka karena error. Schema1 tidak mengaktifkan lockdown internet.
+
+Diagram memperlihatkan pendaftaran pertama. Saat resume, key lama dipakai ulang;
+sertifikat yang sudah tersedia melewati langkah meminta bundle lalu tetap harus
+lolos admission. Bila belum disetujui, kode20 berarti menunggu admin. Request
+publik dapat dipindah lewat media admin yang disetujui; jangan mengirim folder
+identity. Admin mengikat akun/perangkat, menerbitkan sertifikat dan mengatur izin
+resource/internet. Pemberian izin atau sertifikat belum memasang peer.
+
+#### 1.1.4. Login, pemeriksaan perangkat dan akses yang diizinkan
+
+![Flowchart login, enam pemeriksaan dan kebijakan akses](assets/flows/04-access.svg)
+
+Admission terjadi melalui HTTPS sebelum peer ditambahkan. Sertifikat X.509 tidak
+disisipkan ke handshake WireGuard. Login gagal atau pemeriksaan perangkat gagal
+menghentikan alur. Setelah peer terpasang, handshake/konektivitas perlu diamati;
+status registered, lease valid, peer, handshake dan transfer merupakan fakta berbeda.
+Cabang aplikasi dan internet menunjukkan dua jenis tujuan trafik, bukan keharusan
+mengakses keduanya secara berurutan. Aplikasi memakai izin identitas/resource/
+protokol/port; internet terkelola memakai gateway serta grant internet eksplisit.
+Keduanya tetap dibatasi sesi dan lease. Bab11–14 memuat langkah operasionalnya.
+
+#### 1.1.5. Renewal, logout, pencabutan dan pemulihan
+
+![Flowchart penghentian akses dan audit operasional](assets/flows/05-lifecycle.svg)
+
+Revoke sertifikat mencabut identitas terkait; logout mencabut sesi yang diminta
+beserta akses yang dimilikinya, tanpa memutus sesi lain di luar cakupan. Penghapusan
+grant internet menutup izin internet, tidak otomatis berarti sertifikat dicabut
+atau seluruh izin aplikasi dihapus. CA/renewal gagal tidak memberi lease baru;
+akses lama dibatasi lease dan pemantauan, sehingga kegagalan tidak boleh diklaim
+selalu memutus trafik pada detik yang sama. Logout saat server tidak terjangkau
+harus menampilkan pencabutan server belum terkonfirmasi.
+
+Lockdown schema2 tetap aktif setelah disconnect dan reboot; koneksi ulang butuh
+pemeriksaan baru. Recovery policy merupakan tindakan admin lokal terencana,
+bukan efek otomatis logout atau uninstall. Audit dilakukan sepanjang alur,
+walaupun ditampilkan di bagian bawah diagram. Rincian operasi ada di Bab12 dan16–18.
+
+**Batas bukti:** flowchart menjelaskan source, bukan laporan seluruh pengujian
+end-to-end. EXE umum dan resume EXE per-device schema1 diuji di Windows10;
+EXE per-device schema2, EXE Windows11, UAC interaktif penuh dan PC fisik belum
+dibuktikan oleh uji wrapper. Policy internet dan client native punya bukti VM
+terpisah pada Windows10/11. Lihat [validasi EXE](VALIDASI_EXE_2026-10-29.md) dan
+[checkpoint](CHECKPOINT.md). EXE/ZIP yang sudah diterbitkan masih menyertakan
+salinan manual saat build; flowchart baru tersedia di manual repo dan HTML terbaru.
 
 ## 2. Arsitektur, akun dan batas akses
 

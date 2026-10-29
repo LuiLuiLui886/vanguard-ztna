@@ -1,5 +1,7 @@
 # Installer VanGuard Windows10/11 x64
 
+Lihat **flowchart seluruh sistem** pada [manual Bab1.1](../docs/MODUL_PENGGUNAAN_VANGUARD.md#11-flowchart-sistem-lengkap-dari-ca-sampai-exe-dan-penggunaan): CA/backend → installer → enrollment → akses → pencabutan dan audit.
+
 ## EXE offline0.1.14-fix1 — kandidat pada branch feature
 
 [Unduh Setup-VanGuard-0.1.14-fix1.exe](Setup-VanGuard-0.1.14-fix1.exe)

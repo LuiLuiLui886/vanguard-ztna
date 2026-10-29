@@ -2,6 +2,7 @@
 """Render the usage module to a standalone, printable HTML document."""
 
 import argparse
+import base64
 import re
 from html import escape
 from pathlib import Path
@@ -36,6 +37,11 @@ def main():
         for anchor, label, level in contents) + '</ol></nav>'
     # Keep relative documentation links valid when HTML is beside the Markdown.
     body = renderer.renderer.render(tokens, renderer.options, {})
+    # Embed the manual's static flowcharts so copied HTML stays fully offline.
+    def embed_flow(match):
+        data = (args.source.parent / match[1]).read_bytes()
+        return 'src="data:image/svg+xml;base64,' + base64.b64encode(data).decode('ascii') + '"'
+    body = re.sub(r'src="(assets/flows/[a-z0-9-]+\.svg)"', embed_flow, body)
     body = body.replace('</h1>', '</h1>' + navigation, 1)
     title = escape(source.splitlines()[0].lstrip('# '))
     css = '''
@@ -52,6 +58,7 @@ a { color:#075b83; } table { width:100%; border-collapse:collapse; margin:1rem 0
 th,td { border:1px solid #ccd7dd; padding:.5rem; text-align:left; vertical-align:top; }
 th { background:#edf5f6; } pre { background:#f1f5f7; padding:1rem;
                              white-space:pre-wrap; overflow-wrap:anywhere; }
+img { max-width:100%; height:auto; }
 code { font-size:.9em; } blockquote { border-left:4px solid #1c7088; margin-left:0;
                                     padding-left:1rem; }
 .print-note { border:1px solid #c7dbe4; padding:1rem; background:#f3f8fa; }
