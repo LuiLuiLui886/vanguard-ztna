@@ -2,6 +2,8 @@
 
 ## 29 Oktober — bug resume wizard diperbaiki, kandidat0.1.14-fix1
 
+Source, tes, manual dan template dipush pada `3104030`; SHA origin feature cocok.
+
 Audit03f33c9 membuktikan wizard berhenti ketika paket sama tetapi setup-state
 IN_PROGRESS/hilang atau python.exe hilang: native3FAIL sebelum patch. Blok reuse
 sekarang memilih installer tepercaya jika runtime belum lengkap; guard ownership,
