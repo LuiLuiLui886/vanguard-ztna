@@ -1,6 +1,6 @@
 # Manual admin Sistem VanGuard
 
-Edisi29 Oktober2026 · satu sumber resmi untuk pemasangan dan operasi.
+Edisi30 Oktober2026 · satu sumber resmi untuk pemasangan dan operasi.
 HTML dengan nama yang sama dihasilkan dari Markdown ini; keduanya satu manual,
 bukan panduan berbeda. Salinan manual di ZIP juga dihasilkan dari sumber ini.
 Tutorial lama telah digabung dan dihapus dari tree terbaru; histori Git tetap ada.
@@ -117,8 +117,8 @@ bukan efek otomatis logout atau uninstall. Audit dilakukan sepanjang alur,
 walaupun ditampilkan di bagian bawah diagram. Rincian operasi ada di Bab12 dan16–18.
 
 **Batas bukti:** flowchart menjelaskan source, bukan laporan seluruh pengujian
-end-to-end. EXE umum dan resume EXE per-device schema1 diuji di Windows10;
-EXE per-device schema2, EXE Windows11, UAC interaktif penuh dan PC fisik belum
+end-to-end. EXE umum diuji di Windows10 dan Windows11; resume EXE per-device
+schema1 diuji di Windows10. EXE per-device schema2, UAC interaktif penuh dan PC fisik belum
 dibuktikan oleh uji wrapper. Policy internet dan client native punya bukti VM
 terpisah pada Windows10/11. Lihat [validasi EXE](VALIDASI_EXE_2026-10-29.md) dan
 [checkpoint](CHECKPOINT.md). EXE/ZIP yang sudah diterbitkan masih menyertakan
@@ -1704,9 +1704,158 @@ bukan bukti instalasi sukses. Rename folder tidak menjamin ketahanan power-loss.
 Kandidat EXE tersedia pada branch `feature/2026-10-22-physical-endpoints`.
 Lihat [validasi EXE](https://github.com/LuiLuiLui886/vanguard-ztna/blob/feature/2026-10-22-physical-endpoints/docs/VALIDASI_EXE_2026-10-29.md)
 untuk pengujian Windows10 native.
-UAC klik langsung, SmartScreen dari browser, EXE pada Windows11, Windows baru
+Uji30Oktober menambahkan EXE umum pada Windows11 build26300: ekstraksi/resume,
+penolakan payload rusak dan instalasi sungguhan exit0 lulus, dengan key/config
+utama serta profil firewall tetap sama. Lihat laporan kelayakan30Oktober untuk
+lingkup lengkap; hasil ini memakai runtime yang sudah tersedia.
+UAC klik langsung, SmartScreen dari browser, Windows baru
 tanpa runtime, reboot3010, login interaktif penuh dan PC fisik **BELUM_TERUJI**
 untuk wrapper ini. Bukti BAT/runtime sebelumnya dicatat terpisah.
+
+##### 14.0.1.1. Langkah dari nol memakai EXE yang tersedia di GitHub
+
+Alur ini khusus **EXE umum** `Setup-VanGuard-0.1.14-fix1.exe`. Setelah installer
+selesai, konfigurasi dan enrollment dilakukan dengan launcher di bawah. Jika admin
+sudah memberikan EXE per-device, gunakan alur wizard pada Bab14.0; jangan menjalankan
+`init` kedua kali pada identitas yang sudah dibuat wizard. Antarmuka saat ini berupa
+terminal dengan pertanyaan teks, belum berupa formulir GUI.
+
+**1. Admin menyiapkan sistem dan data endpoint.** Nyalakan CA/server/admin dan
+pastikan HTTPS/readiness serta jalur WireGuard dapat dijangkau PC. Instalasi EXE
+di PC tidak memasang backend Linux. Admin menyediakan:
+
+- `profile.json` dan `root.crt` publik dari sistem yang akan dipakai.
+- Fingerprint SHA256 root dan public key WireGuard server yang dikonfirmasi lewat
+  kanal tepercaya; jangan menggunakan pin milik fixture pengujian.
+- Device ID unik, IP tunnel yang belum dipakai, serta akun karyawan aktif.
+- Hak akses aplikasi; untuk internet terkelola, gateway Linux dan grant internet
+  juga harus sudah disiapkan. Schema2 memerlukan persiapan dan recovery Bab14.1.
+
+CA utama tetap dipakai. **Tidak membuat Root CA baru untuk setiap komputer.**
+Alamat lab `192.168.100.x` hanya bisa dipakai jika jaringan PC memiliki jalur ke
+lab; keberhasilan memasang EXE tidak membuktikan jalur tersebut tersedia.
+
+**2. Unduh dan periksa installer.** Buka branch
+`feature/2026-10-22-physical-endpoints`, folder `downloads`, lalu unduh
+[Setup-VanGuard-0.1.14-fix1.exe](../downloads/Setup-VanGuard-0.1.14-fix1.exe)
+melalui tombol **Download raw file** GitHub. Git/GitHub CLI tidak diperlukan.
+Di PowerShell, dari folder unduhan:
+
+```powershell
+Get-FileHash '.\Setup-VanGuard-0.1.14-fix1.exe' -Algorithm SHA256
+```
+
+Untuk artefak ini hasilnya harus:
+`f74a3b7b72373dbe55c1cc5b771938108cc683e930949c861cea7422415c7f69`.
+Pastikan nilai tersebut juga cocok dengan salinan/checksum tepercaya dari admin.
+EXE per-device memiliki hash berbeda yang diberikan pembuatnya. Bila berbeda,
+berhenti sebelum menjalankan installer. Paket belum memiliki tanda tangan
+Authenticode; blokir organisasi/SmartScreen perlu ditinjau admin, bukan diatasi
+dengan mematikan proteksi.
+
+**3. Pasang di Windows.** Simpan pekerjaan, klik kanan EXE → **Run as administrator**
+dan setujui UAC. Tunggu terminal menyatakan aplikasi terpasang/exit0. Installer
+memasang Python, WireGuard dan dependensi bila diperlukan; runtime yang sesuai
+dan sudah ada digunakan kembali. Jika keluar3010, restart Windows lalu jalankan
+EXE yang sama. Jika keluar1, simpan pesan kegagalan untuk admin dan jangan
+menghapus key/config. Jangan menjalankan beberapa installer bersamaan.
+
+Hasil normal EXE umum: aplikasi terpasang, **belum ada sertifikat perangkat,
+login, tunnel atau lockdown baru**. Kebijakan yang sudah terpasang sebelumnya
+tetap berlaku. Simpan EXE dan checksum untuk maintenance.
+
+**4. Konfigurasi alamat server dan root.** Buka **PowerShell → Run as administrator**.
+Letakkan dua file publik dari admin di `C:\Program Files\VanGuardTrust`, lalu:
+
+```powershell
+$vg = Join-Path $env:ProgramFiles 'VanGuardEndpoint\VanGuard.bat'
+& $vg configure
+& $vg status
+& $vg diagnose
+```
+
+Pada pertanyaan configure masukkan path `profile.json`, path `root.crt`, fingerprint
+root dan public key server dari admin. Lanjutkan hanya jika konfigurasi lengkap dan
+diagnose dapat menjangkau layanan yang benar. Jika konflik subnet, trust tidak cocok
+atau server tidak siap, minta admin memperbaikinya sebelum init/connect. Jangan
+mengganti root lama atau mematikan verifikasi TLS agar proses lolos.
+
+Khusus profil **schema2/internet terkelola**, admin menjalankan langkah berikut
+sesudah configure dan sebelum enrollment, setelah memeriksa Bab14.1 serta
+menyiapkan console/recovery dan jalur transfer request/bundle:
+
+```powershell
+& $vg internet-preview
+& $vg internet-enable
+& $vg internet-status
+```
+
+Internet langsung mulai diblok **setelah internet-enable berhasil**, bukan saat
+klik EXE umum. Jika pemeriksaan gagal, jangan menganggap blok sudah aktif atau
+melanjutkan connect. Langkah ini tidak diperlukan untuk profil schema1.
+
+**5. Buat permintaan sertifikat pada PC baru.** Di PowerShell yang sama:
+
+```powershell
+& $vg init
+```
+
+Isi device ID dan IP tunnel sesuai alokasi admin. Kirim **hanya**
+`C:\Program Files\VanGuardEndpointData\identity\request.json` kepada admin.
+Private key dibuat di PC; `identity.key`, `wg.key`, password, token dan seluruh
+folder identity tidak boleh dikirim. Langkah init cukup sekali untuk identitas
+baru; reinstall/resume mempertahankan identitas yang sudah ada.
+
+**6. Admin mendaftarkan dan menyetujui.** Admin membuka dashboard HTTPS pada jalur
+management, login dengan akun admin + TOTP, menyiapkan akun karyawan, lalu mengunggah
+request pada formulir perangkat. Pastikan akun, device ID dan IP cocok. Tunggu
+status registered; pending_issue/pending_registry harus diselesaikan melalui retry
+setelah dependensi pulih. Unduh bundle ZIP publik untuk perangkat itu dan kirim
+kembali ke PC asal. Registrasi belum membuka akses. Berikan grant aplikasi yang
+diperlukan; grant internet terpisah pada mode schema2. Rincian formulir ada di Bab11.3.
+
+**7. Import sertifikat dan login.** Simpan bundle pada folder tepercaya di PC:
+
+```powershell
+& $vg import-bundle
+& $vg status
+& $vg diagnose
+& $vg login
+```
+
+Masukkan path bundle ketika diminta. Import memeriksa sertifikat terhadap root,
+profil dan key PC ini. Pada login gunakan **akun karyawan**, bukan akun admin atau
+password login Windows. Password diketik pada prompt tersembunyi; jangan menaruhnya
+pada command line. Import/login saja belum membuat peer.
+
+**8. Hubungkan dan buktikan akses.**
+
+```powershell
+& $vg connect
+```
+
+Biarkan terminal terbuka untuk renewal. Server memeriksa sesi karyawan dan enam
+pemeriksaan perangkat sebelum menambahkan peer. Coba resource yang benar-benar
+diizinkan admin, misalnya `http://10.8.0.1:8082` jika layanan demo tersedia dan
+grant TCP8082 sudah diberikan. Admin memeriksa lease, peer, handshake serta transfer
+sebagai indikator terpisah. Pesan instalasi berhasil atau status registered saja
+tidak cukup untuk menyatakan koneksi berhasil.
+
+**9. Selesai memakai atau komputer dimulai ulang.** Ctrl+C pada terminal connect
+meminta penutupan tunnel. Untuk mencabut sesi, buka PowerShell administrator:
+
+```powershell
+$vg = Join-Path $env:ProgramFiles 'VanGuardEndpoint\VanGuard.bat'
+& $vg disconnect
+& $vg logout
+```
+
+Jika server tidak terjangkau, pencabutan server belum terkonfirmasi; simpan state
+untuk retry. Setelah reboot gunakan `status`, `diagnose`, `login` bila sesi berakhir,
+lalu `connect`; tidak perlu install/init ulang. Sertifikat yang kedaluwarsa atau
+dicabut membutuhkan penggantian identitas oleh admin, bukan sekadar login/renewal.
+Pada schema2, disconnect/logout tetap mempertahankan blok internet langsung;
+pemulihan kebijakan memerlukan prosedur admin Bab14.1.
 
 ### 14.1. Kandidat internet terkelola tanpa mengubah router pengguna
 

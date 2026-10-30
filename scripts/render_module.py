@@ -21,7 +21,7 @@ def main():
     contents = []
     chapter = 0
     for index, token in enumerate(tokens):
-        if token.type == 'heading_open' and token.tag in ('h2', 'h3', 'h4'):
+        if token.type == 'heading_open' and token.tag in ('h2', 'h3', 'h4', 'h5'):
             label = tokens[index + 1].content
             if token.tag == 'h2':
                 chapter += 1
@@ -48,10 +48,11 @@ def main():
 body { font: 16px/1.65 system-ui,sans-serif; color:#172536; background:#eef2f6;
        margin:0; padding:2rem; }
 main { max-width:980px; margin:auto; padding:3rem; background:white; }
-h1,h2,h3,h4 { line-height:1.25; color:#12465a; }
+h1,h2,h3,h4,h5 { line-height:1.25; color:#12465a; }
 nav ol { list-style:none; padding-left:0; }
 .toc-h2 { margin-top:.5rem; font-weight:600; }
 .toc-h3 { margin-left:1rem; } .toc-h4 { margin-left:2rem; }
+.toc-h5 { margin-left:3rem; } h5 { font-size:1rem; }
 h1 { font-size:2.2rem; } h2 { margin-top:2.8rem; border-bottom:2px solid #dae5e9;
                             padding-bottom:.5rem; }
 a { color:#075b83; } table { width:100%; border-collapse:collapse; margin:1rem 0; }

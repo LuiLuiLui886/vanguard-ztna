@@ -12,10 +12,14 @@ disiapkan admin**. Untuk satu EXE yang juga menjalankan wizard pendaftaran,
 admin membangun EXE per-device sesuai [manual tunggal Bab14.0.1](../docs/MODUL_PENGGUNAAN_VANGUARD.md).
 Kunci dibuat di endpoint; approval admin dan login karyawan tetap wajib.
 
+**Baru pertama memakai EXE?** Ikuti [langkah dari nol sampai connect, Bab14.0.1.1](../docs/MODUL_PENGGUNAAN_VANGUARD.md#14011-langkah-dari-nol-memakai-exe-yang-tersedia-di-github):
+unduh/periksa hash → install → configure → request → persetujuan admin → import → login/connect.
+
 EXE belum ditandatangani Authenticode. Jangan menonaktifkan proteksi Windows jika
 policy menolak; konfirmasikan origin/checksum dan minta pemeriksaan admin.
-[Hasil uji dan keterbatasan](../docs/VALIDASI_EXE_2026-10-29.md) membedakan Windows10
-native dari UAC/browser, Windows11 wrapper, OS fresh dan PC fisik yang belum diuji.
+[Uji kelayakan30Oktober](../docs/UJI_KELAYAKAN_2026-10-30.md) mencatat EXE native
+Windows10/11, termasuk instalasi umum sungguhan Windows11. UAC/browser, fresh OS,
+EXE per-device schema2 dan PC fisik tetap belum diuji untuk wrapper ini.
 Branch: **feature/2026-10-22-physical-endpoints**; paket stabil/main tidak diganti.
 
 ## Kandidat setup terpadu0.1.14-fix1 — untuk persiapan admin

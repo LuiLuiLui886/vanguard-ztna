@@ -406,3 +406,18 @@ interactive UAC/login/power-loss limits remain. See latest checkpoint/report.
 Four unused public ISO download fragments were relocated with verified hashes and
 original-path symlinks to another local filesystem to recover host space; no
 backup, full ISO or VM disk removed. Earlier EXE-not-built statements are history.
+
+
+Qualification evidence — 30 October 2026:
+Source307PASS/1SKIP Linux, live HTTPS30/30 and firewall40/40; native generic EXE
+now additionally passed Windows11 installation/identity-preserving postflight.
+Windows10/11 helpers/configuration/extractor/bootstrap checks passed; detailed
+scopes and harness failures remain in UJI_KELAYAKAN_2026-10-30.md. Isolated
+HTTPS/WireGuard/nft16-case run passed with a fresh client peer after startup
+reconcile; this is not proof of automatic recovery for stale tunnel state.
+Main Ubuntu client certificate expired24October and its session is expired;
+fail-closed verified, no identity replaced. Primary services remain0.1.11;
+managed Internet candidate not rolled out by this qualification. Host disk
+capacity, physical endpoints, EXE schema2/UAC/fresh OS, power-loss CA and soak
+remain acceptance gaps. Preserve original topology, keys and revocation history.
+Single manual now includes a complete generic EXE walkthrough in14.0.1.1.

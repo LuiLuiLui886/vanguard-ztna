@@ -1,5 +1,45 @@
 # Lanjutkan proyek VanGuard
 
+## 30 Oktober — uji kelayakan dan panduan EXE dari nol
+
+**Keputusan: layak untuk uji lab terkontrol, belum penerimaan produksi penuh.**
+[Laporan lengkap](docs/UJI_KELAYAKAN_2026-10-30.md) memisahkan scope/bukti dan8temuan.
+Source baseline7fa2e7c: Linux307PASS/1SKIP919,32detik; Ruff/pip/Bash/build/hash
+artefak PASS. HTTPS utama30/30HTTP200, firewall40/40, negative API/LAN7/7;
+CA invariant/CRL dan DB server/admin OK. Resource nft/veth7perilaku PASS.
+Kandidat namespace HTTPS+WireGuard+nft16record PASS exit0; lease uji12detik,
+2renewal manual, CAoutage/startup reconcile, logoutscope dan active TCP revoke.
+Run1 gagal membentuk stream sebelum revoke dengan peer client lama; run2observer
+terinterupsi; run3fresh client peer lulus. Jangan klaim recovery otomatis state lama.
+
+Windows11 build26300 dan Windows10LTSC19044 masing-masing helper28PASS/2SKIP,
+9gate sintetis,6resume sentinel,10configure,13extractor dan6EXE native PASS.
+EXE umum Windows11 juga install asli exit0, runtime0.1.14/pip/help PASS;
+key/config/profil firewall tetap, old release retained, no new tunnel/lockdown.
+Windows10 tidak reinstall kali ini. EXE masih Authenticode NotSigned.
+Runner awal stderr/path/ACL gagal; koreksi harness dan postflight terdokumentasi,
+bukan hasil fail yang dibuang. Tidak ada source aplikasi atau binary publik diubah.
+
+**Penghalang:** client Ubuntu utama cert expired24Oktober dan sesi expired,
+service auto-restart/fail-closed; CA/server/admin utama0.1.11 belum fitur gateway/
+profil kandidat. Disk host99% (~3,2GiB free akhir sampel). EXE schema2/UAC/browser,
+fresh OS/3010/login interaktif, PC fisik, power-loss CA dan soak masih BELUM_TERUJI.
+Bukti native/lifecycle Windows20–29Oktober tetap historis, bukan seluruhnya diulang.
+
+Manual tunggal [Bab14.0.1.1](docs/MODUL_PENGGUNAAN_VANGUARD.md) kini9langkah EXE:
+unduh/hash → install → configure (+internet-enable bila schema2) → request →
+approval admin → import → login/connect → logout. TOC HTML mendukung subbagian ini.
+EXE/ZIP tetap byte-identik; salinan manual di artefak lama belum berisi revisi ini.
+Semua3fixture CA/akun dibersihkan (cert revoked/account disabled/invariant OK),
+namespace/tunnel uji hilang, unit uji inactive; semua7XML domain cocok baseline.
+Inventaris testcredential hanya lokal privat, tidak dipublikasikan.
+Bukti lokal `state/qualification-20261030/`; backup Windows11 `VGQual30/before-install`.
+Semua7VM kembali shut off melalui shutdown normal; tidak ada runner uji tersisa.
+Publikasi dicatat pada jurnal30Oktober setelah verifikasi.
+
+Berikutnya: kapasitas host, penggantian identitas expired tanpa mengubah root/
+histori, rollout kandidat terencana, lalu matriks EXEper-device/physical yang tersisa.
+
 ## 29 Oktober — flowchart lengkap sistem sampai EXE
 
 Manual tunggal [Bab1.1](docs/MODUL_PENGGUNAAN_VANGUARD.md) kini memuat5diagram:
