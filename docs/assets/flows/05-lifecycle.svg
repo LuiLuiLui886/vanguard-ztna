@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1060" height="1140" viewBox="0 0 1060 1140" role="img" aria-labelledby="title">
+<title id="title">5. Penghentian akses, pemulihan dan audit</title>
+<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L9,5 L0,10" fill="#40576c"/></marker></defs>
+<rect width="1060" height="1140" fill="white"/>
+<text x="40" y="38" font-family="sans-serif" font-size="23" font-weight="bold" fill="#173d5a">5. Penghentian akses, pemulihan dan audit</text>
+<polyline points="250,185 250,230" fill="none" stroke="#40576c" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="155" y="213" font-family="sans-serif" font-size="15" fill="#273e52">Revoke</text>
+<polyline points="250,185 250,208 810,208 810,230" fill="none" stroke="#40576c" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="460" y="200" font-family="sans-serif" font-size="15" fill="#273e52">Pemicu lain</text>
+<polyline points="250,330 250,375" fill="none" stroke="#40576c" stroke-width="2" marker-end="url(#arrow)"/>
+<polyline points="810,330 810,353 250,353 250,375" fill="none" stroke="#40576c" stroke-width="2" marker-end="url(#arrow)"/>
+<polyline points="250,475 250,520" fill="none" stroke="#40576c" stroke-width="2" marker-end="url(#arrow)"/>
+<polyline points="250,620 250,665" fill="none" stroke="#40576c" stroke-width="2" marker-end="url(#arrow)"/>
+<polyline points="250,765 250,810" fill="none" stroke="#40576c" stroke-width="2" marker-end="url(#arrow)"/>
+<polyline points="430,860 630,860" fill="none" stroke="#40576c" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="460" y="850" font-family="sans-serif" font-size="15" fill="#273e52">Recovery lokal</text>
+<polyline points="250,910 250,955" fill="none" stroke="#40576c" stroke-width="2" marker-end="url(#arrow)"/>
+<polyline points="810,910 810,955" fill="none" stroke="#40576c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="70" y="85" width="360" height="100" rx="12" fill="#edf5ff" stroke="#245a8d" stroke-width="2"/>
+<text x="250" y="120" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Koneksi aktif dan renewal berkala</text>
+<text x="250" y="140" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Pantau sesi, lease, CA/CRL dan policy</text>
+<text x="250" y="160" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Status gagal diperiksa = tidak diketahui</text>
+<rect x="70" y="230" width="360" height="100" rx="12" fill="#fff0ed" stroke="#a33e32" stroke-width="2"/>
+<text x="250" y="265" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Admin revoke sertifikat</text>
+<text x="250" y="285" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">CA mencatat serial dan menerbitkan CRL</text>
+<text x="250" y="305" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Server/daemon mencabut akses terkait</text>
+<rect x="630" y="230" width="360" height="100" rx="12" fill="#fff0ed" stroke="#a33e32" stroke-width="2"/>
+<text x="810" y="265" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Pemicu lain: logout, akun nonaktif,</text>
+<text x="810" y="285" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">lease/sesi habis atau renewal gagal</text>
+<text x="810" y="305" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Scope pemutusan sesuai sesi/identitas</text>
+<rect x="70" y="375" width="360" height="100" rx="12" fill="#fff0ed" stroke="#a33e32" stroke-width="2"/>
+<text x="250" y="410" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Peer/izin terkait dihentikan</text>
+<text x="250" y="430" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Akses baru ditolak sesuai policy</text>
+<text x="250" y="450" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Tidak menjanjikan pemutusan nol detik</text>
+<rect x="70" y="520" width="360" height="100" rx="12" fill="#edf5ff" stroke="#245a8d" stroke-width="2"/>
+<text x="250" y="555" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Client menghentikan tunnel miliknya</text>
+<text x="250" y="575" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Cleanup gagal: pertahankan config</text>
+<text x="250" y="595" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Logout offline: server belum terkonfirmasi</text>
+<rect x="70" y="665" width="360" height="100" rx="12" fill="#fff0ed" stroke="#a33e32" stroke-width="2"/>
+<text x="250" y="700" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Schema2: lockdown tetap aktif</text>
+<text x="250" y="720" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Disconnect/reboot tidak otomatis</text>
+<text x="250" y="740" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">membuka kembali internet langsung</text>
+<rect x="70" y="810" width="360" height="100" rx="12" fill="#edf5ff" stroke="#245a8d" stroke-width="2"/>
+<text x="250" y="845" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Operator periksa penyebab dan state</text>
+<text x="250" y="865" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Revoke perlu identitas pengganti sah</text>
+<text x="250" y="885" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Koneksi baru wajib login/admission valid</text>
+<rect x="630" y="810" width="360" height="100" rx="12" fill="#edf5ff" stroke="#245a8d" stroke-width="2"/>
+<text x="810" y="845" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Recovery policy oleh admin lokal</text>
+<text x="810" y="865" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Pastikan ownership dan tunnel berhenti</text>
+<text x="810" y="885" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Pulihkan backup policy secara terencana</text>
+<rect x="70" y="955" width="360" height="100" rx="12" fill="#e3f5ea" stroke="#246744" stroke-width="2"/>
+<text x="250" y="990" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Audit sepanjang proses: waktu, aktor,</text>
+<text x="250" y="1010" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">aksi, hasil dan alasan yang aman</text>
+<text x="250" y="1030" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Arsip tanpa membuang bukti lama</text>
+<rect x="630" y="955" width="360" height="100" rx="12" fill="#edf5ff" stroke="#245a8d" stroke-width="2"/>
+<text x="810" y="990" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Rekam terpisah: registered, lease,</text>
+<text x="810" y="1010" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">peer, handshake dan transfer</text>
+<text x="810" y="1030" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Jangan mencatat password/token/key</text>
+</svg>

@@ -172,6 +172,20 @@ def local_lock(path):
 
 def _login_employee(directory, remote, username, password):
     result = remote.call('POST', '/api/employee/login', {'username': username, 'password': password})
+    if not isinstance(result, dict):
+        raise Rejected('Unexpected employee login response')
+    token, expires = result.get('session_token'), result.get('expires_at')
+    try:
+        valid_expiry = (type(expires) in (int, float) and math.isfinite(expires)
+                        and expires > time.time())
+    except OverflowError:
+        valid_expiry = False
+    if (not isinstance(result.get('username'), str) or result['username'] != username
+            or not isinstance(token, str) or not 32 <= len(token) <= 128 or not valid_expiry):
+        raise Rejected('Unexpected employee login response')
+    # A malformed response must not replace a usable token, and extra upstream
+    # fields (including credentials) must never be copied to the session file.
+    result = {key: result[key] for key in ('username', 'session_token', 'expires_at')}
     target = directory / 'employee-session.json'
     temporary = None
     try:
@@ -198,7 +212,8 @@ def logout_employee(directory, remote):
         try:
             result = remote.call('POST', '/api/employee/logout',
                                  {'employee_session': saved['session_token']})
-            if result.get('revoked') is not True or result.get('peer_removal_confirmed') is not True:
+            if (not isinstance(result, dict) or result.get('revoked') is not True
+                    or result.get('peer_removal_confirmed') is not True):
                 raise Rejected('Unexpected logout result')
         except Rejected as exc:
             raise Rejected('Pencabutan server belum terkonfirmasi; token disimpan untuk retry',
@@ -276,6 +291,7 @@ def _connect(directory, remote, server_key, backend, profile=None):
     if config.exists():
         raise Rejected('Tunnel config exists; ensure old tunnel is down before removing it')
     endpoint, routes = '192.168.100.20:51820', '10.8.0.1/32'
+    dns = ''
     if profile is not None:
         from .profile import validate_profile
         profile = validate_profile(profile)
@@ -283,11 +299,16 @@ def _connect(directory, remote, server_key, backend, profile=None):
             raise Rejected('Endpoint profile differs from API or server key')
         endpoint = f"{profile['wireguard_host']}:{profile['wireguard_port']}"
         routes = ', '.join(profile['allowed_ips'])
+        if profile['schema'] == 2:
+            if not hasattr(backend, 'require_internet'):
+                raise Rejected('Managed internet requires a verified Windows lockdown backend')
+            backend.require_internet(profile)
+            dns = 'DNS = ' + ', '.join(profile['internet']['dns']) + '\n'
     backend.preflight()
     admitted = check_admission(admit(directory, remote), address)
     write_private(
         config,
-        f"[Interface]\nAddress = {address}/32\n"
+        f"[Interface]\nAddress = {address}/32\n{dns}"
         f"PrivateKey = {(directory / 'wg.key').read_text().strip()}\n\n"
         f"[Peer]\nPublicKey = {server_key}\nEndpoint = {endpoint}\n"
         f"AllowedIPs = {routes}\nPersistentKeepalive = 25\n",
@@ -304,6 +325,8 @@ def _connect(directory, remote, server_key, backend, profile=None):
                 time.sleep(1)
                 if stop_request.exists() and json.loads(stop_request.read_text()).get('owner') == owner:
                     return
+            if profile and profile['schema'] == 2:
+                backend.require_internet(profile)
             admitted = check_admission(admit(directory, remote), address)
     finally:
         # Also clean up a partially successful install. Keep config if cleanup fails

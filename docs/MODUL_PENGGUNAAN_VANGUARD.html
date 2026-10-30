@@ -3,16 +3,18 @@
 body { font: 16px/1.65 system-ui,sans-serif; color:#172536; background:#eef2f6;
        margin:0; padding:2rem; }
 main { max-width:980px; margin:auto; padding:3rem; background:white; }
-h1,h2,h3,h4 { line-height:1.25; color:#12465a; }
+h1,h2,h3,h4,h5 { line-height:1.25; color:#12465a; }
 nav ol { list-style:none; padding-left:0; }
 .toc-h2 { margin-top:.5rem; font-weight:600; }
 .toc-h3 { margin-left:1rem; } .toc-h4 { margin-left:2rem; }
+.toc-h5 { margin-left:3rem; } h5 { font-size:1rem; }
 h1 { font-size:2.2rem; } h2 { margin-top:2.8rem; border-bottom:2px solid #dae5e9;
                             padding-bottom:.5rem; }
 a { color:#075b83; } table { width:100%; border-collapse:collapse; margin:1rem 0; }
 th,td { border:1px solid #ccd7dd; padding:.5rem; text-align:left; vertical-align:top; }
 th { background:#edf5f6; } pre { background:#f1f5f7; padding:1rem;
                              white-space:pre-wrap; overflow-wrap:anywhere; }
+img { max-width:100%; height:auto; }
 code { font-size:.9em; } blockquote { border-left:4px solid #1c7088; margin-left:0;
                                     padding-left:1rem; }
 .print-note { border:1px solid #c7dbe4; padding:1rem; background:#f3f8fa; }
@@ -24,8 +26,8 @@ code { font-size:.9em; } blockquote { border-left:4px solid #1c7088; margin-left
  pre,tr { break-inside:avoid; } thead { display:table-header-group; }
  a { color:inherit; } .print-note { display:none; }
 }
-</style></head><body><main><p class="print-note">Modul dapat dibaca tanpa internet. Untuk PDF, tekan Ctrl+P, pilih Simpan sebagai PDF, ukuran A4. Tautan dokumen pendukung memerlukan folder docs dari repository yang sama.</p><h1>Manual admin Sistem VanGuard</h1><nav aria-label="Daftar isi"><h2>Daftar isi</h2><ol><li class="toc-h2"><a href="#bab-1">1. Urutan kerja administrator dan syarat selesai</a></li><li class="toc-h2"><a href="#bab-2">2. Arsitektur, akun dan batas akses</a></li><li class="toc-h2"><a href="#bab-3">3. Inventaris, topologi dan perangkat lunak</a></li><li class="toc-h2"><a href="#bab-4">4. Baseline, backup dan membuka lab yang sudah ada</a></li><li class="toc-h3"><a href="#bagian-4-1">4.1 Nyalakan dan periksa VM — HOST</a></li><li class="toc-h3"><a href="#bagian-4-2">4.2 Verifikasi layanan — HOST, lalu guest yang dipilih</a></li><li class="toc-h2"><a href="#bab-5">5. Instalasi host dan paket Ubuntu — lingkungan kosong saja</a></li><li class="toc-h3"><a href="#bagian-5-1">5.1 Siapkan host, enam guest, source dan SSH</a></li><li class="toc-h3"><a href="#bagian-5-2">5.2 Pasang aplikasi Ubuntu pada role yang benar</a></li><li class="toc-h3"><a href="#bagian-5-3">5.3 Persiapan konkret pada host baru</a></li><li class="toc-h2"><a href="#bab-6">6. Root CA, CSR HTTPS, trust, penerbitan dan CRL</a></li><li class="toc-h3"><a href="#bagian-6-1">6.1 CA itu apa dan apa hubungannya dengan VPN?</a></li><li class="toc-h3"><a href="#bagian-6-2">6.2 Struktur file dan parameter CA yang sebenarnya</a></li><li class="toc-h3"><a href="#bagian-6-3">6.3 Persiapan sebelum generate CA</a></li><li class="toc-h3"><a href="#bagian-6-4">6.4 Generate root CA pada VM baru</a></li><li class="toc-h3"><a href="#bagian-6-5">6.5 Verifikasi root sebelum dipercaya</a></li><li class="toc-h3"><a href="#bagian-6-6">6.6 Distribusikan root publik melalui HOST</a></li><li class="toc-h3"><a href="#bagian-6-7">6.7 Generate key dan CSR HTTPS pada setiap layanan</a></li><li class="toc-h3"><a href="#bagian-6-8">6.8 Contoh lengkap: tanda tangani HTTPS SERVER lewat CA</a></li><li class="toc-h3"><a href="#bagian-6-9">6.9 Verifikasi sertifikat HTTPS dan jalankan layanan</a></li><li class="toc-h3"><a href="#bagian-6-10">6.10 Bagaimana sertifikat perangkat diterbitkan?</a></li><li class="toc-h3"><a href="#bagian-6-11">6.11 CRL, pencabutan dan pemeriksaannya</a></li><li class="toc-h3"><a href="#bagian-6-12">6.12 Backup, kedaluwarsa dan pemulihan</a></li><li class="toc-h3"><a href="#bagian-6-13">6.13 Kesalahan umum dan hasil yang harus dicatat</a></li><li class="toc-h2"><a href="#bab-7">7. Token, akun admin, TOTP, firewall dan layanan</a></li><li class="toc-h3"><a href="#bagian-7-1">7.1 Konfigurasi token dan akun admin awal</a></li><li class="toc-h3"><a href="#bagian-7-2">7.2 Firewall dan layanan</a></li><li class="toc-h3"><a href="#bagian-7-3">7.3 Verifikasi sebelum pendaftaran perangkat</a></li><li class="toc-h2"><a href="#bab-8">8. Jaringan router, host, PC LAN dan laptop Wi-Fi</a></li><li class="toc-h2"><a href="#bab-9">9. Profil publik, trust endpoint dan pembaruan dashboard</a></li><li class="toc-h2"><a href="#bab-10">10. Memasang endpoint Windows dari satu paket</a></li><li class="toc-h3"><a href="#bagian-10-1">10.1 Contoh ekstraksi dan eksekusi yang lengkap</a></li><li class="toc-h2"><a href="#bab-11">11. Konfigurasi endpoint, CSR dan registrasi administrator</a></li><li class="toc-h3"><a href="#bagian-11-1">11.1 Data admin sebelum configure</a></li><li class="toc-h3"><a href="#bagian-11-2">11.2 Key dan CSR pada endpoint baru</a></li><li class="toc-h3"><a href="#bagian-11-3">11.3 Registrasi akun dan perangkat di dashboard</a></li><li class="toc-h2"><a href="#bab-12">12. Import sertifikat, login, connect, disconnect dan logout Windows</a></li><li class="toc-h3"><a href="#bagian-12-2">12.2 Disconnect, logout, repair dan pencabutan</a></li><li class="toc-h2"><a href="#bab-13">13. Pemakaian client Ubuntu dan Windows lab lama</a></li><li class="toc-h3"><a href="#bagian-13-2">13.2 Karyawan Windows: dari login desktop sampai disconnect</a></li><li class="toc-h2"><a href="#bab-14">14. Resource aplikasi dan pembuktian default-deny</a></li><li class="toc-h2"><a href="#bab-15">15. Checklist penerimaan dan hasil yang harus dibuktikan</a></li><li class="toc-h3"><a href="#bagian-15-1">15.1 Perintah observasi yang tidak menampilkan private key</a></li><li class="toc-h3"><a href="#bagian-15-2">15.2 Langkah native installer yang wajib dibuktikan</a></li><li class="toc-h2"><a href="#bab-16">16. Audit, arsip, pencabutan dan penggantian identitas</a></li><li class="toc-h3"><a href="#bagian-16-1">16.1 Mencari tindakan berdasarkan waktu</a></li><li class="toc-h3"><a href="#bagian-16-2">16.2 Menyimpan arsip yang dapat diverifikasi</a></li><li class="toc-h3"><a href="#bagian-16-3">16.3 Mencabut akses</a></li><li class="toc-h3"><a href="#bagian-16-4">16.4 VanGuard0.1.9: logout, status dan penggantian identitas</a></li><li class="toc-h3"><a href="#bagian-16-5">16.5 Batas audit yang harus dipahami admin</a></li><li class="toc-h2"><a href="#bab-17">17. Operasi harian, shutdown, backup dan pemulihan</a></li><li class="toc-h3"><a href="#bagian-17-1">17.1 Sebelum dipakai</a></li><li class="toc-h3"><a href="#bagian-17-2">17.2 Selama layanan dipakai</a></li><li class="toc-h3"><a href="#bagian-17-3">17.3 Mengakhiri hari atau pilot</a></li><li class="toc-h3"><a href="#bagian-17-4">17.4 Urutan rollback yang harus dipahami sebelum mulai</a></li><li class="toc-h2"><a href="#bab-18">18. Troubleshooting dan serah terima</a></li><li class="toc-h3"><a href="#bagian-18-1">18.1 Formulir serah terima</a></li><li class="toc-h3"><a href="#bagian-18-2">18.2 Catatan status dan bukti</a></li></ol></nav>
-<p>Edisi24 Oktober2026 · satu sumber resmi untuk pemasangan dan operasi.
+</style></head><body><main><p class="print-note">Modul dapat dibaca tanpa internet. Untuk PDF, tekan Ctrl+P, pilih Simpan sebagai PDF, ukuran A4. Tautan dokumen pendukung memerlukan folder docs dari repository yang sama.</p><h1>Manual admin Sistem VanGuard</h1><nav aria-label="Daftar isi"><h2>Daftar isi</h2><ol><li class="toc-h2"><a href="#bab-1">1. Urutan kerja administrator dan syarat selesai</a></li><li class="toc-h3"><a href="#bagian-1-1">1.1. Flowchart sistem lengkap: dari CA sampai EXE dan penggunaan</a></li><li class="toc-h4"><a href="#bagian-1-1-1">1.1.1. Persiapan layanan Linux dan otoritas sertifikat</a></li><li class="toc-h4"><a href="#bagian-1-1-2">1.1.2. Distribusi paket dan instalasi EXE Windows</a></li><li class="toc-h4"><a href="#bagian-1-1-3">1.1.3. Kapan internet diblok dan bagaimana perangkat didaftarkan</a></li><li class="toc-h4"><a href="#bagian-1-1-4">1.1.4. Login, pemeriksaan perangkat dan akses yang diizinkan</a></li><li class="toc-h4"><a href="#bagian-1-1-5">1.1.5. Renewal, logout, pencabutan dan pemulihan</a></li><li class="toc-h2"><a href="#bab-2">2. Arsitektur, akun dan batas akses</a></li><li class="toc-h2"><a href="#bab-3">3. Inventaris, topologi dan perangkat lunak</a></li><li class="toc-h2"><a href="#bab-4">4. Baseline, backup dan membuka lab yang sudah ada</a></li><li class="toc-h3"><a href="#bagian-4-1">4.1 Nyalakan dan periksa VM — HOST</a></li><li class="toc-h3"><a href="#bagian-4-2">4.2 Verifikasi layanan — HOST, lalu guest yang dipilih</a></li><li class="toc-h2"><a href="#bab-5">5. Instalasi host dan paket Ubuntu — lingkungan kosong saja</a></li><li class="toc-h3"><a href="#bagian-5-1">5.1 Siapkan host, enam guest, source dan SSH</a></li><li class="toc-h3"><a href="#bagian-5-2">5.2 Pasang aplikasi Ubuntu pada role yang benar</a></li><li class="toc-h3"><a href="#bagian-5-3">5.3 Persiapan konkret pada host baru</a></li><li class="toc-h2"><a href="#bab-6">6. Root CA, CSR HTTPS, trust, penerbitan dan CRL</a></li><li class="toc-h3"><a href="#bagian-6-1">6.1 CA itu apa dan apa hubungannya dengan VPN?</a></li><li class="toc-h3"><a href="#bagian-6-2">6.2 Struktur file dan parameter CA yang sebenarnya</a></li><li class="toc-h3"><a href="#bagian-6-3">6.3 Persiapan sebelum generate CA</a></li><li class="toc-h3"><a href="#bagian-6-4">6.4 Generate root CA pada VM baru</a></li><li class="toc-h3"><a href="#bagian-6-5">6.5 Verifikasi root sebelum dipercaya</a></li><li class="toc-h3"><a href="#bagian-6-6">6.6 Distribusikan root publik melalui HOST</a></li><li class="toc-h3"><a href="#bagian-6-7">6.7 Generate key dan CSR HTTPS pada setiap layanan</a></li><li class="toc-h3"><a href="#bagian-6-8">6.8 Contoh lengkap: tanda tangani HTTPS SERVER lewat CA</a></li><li class="toc-h3"><a href="#bagian-6-9">6.9 Verifikasi sertifikat HTTPS dan jalankan layanan</a></li><li class="toc-h3"><a href="#bagian-6-10">6.10 Bagaimana sertifikat perangkat diterbitkan?</a></li><li class="toc-h3"><a href="#bagian-6-11">6.11 CRL, pencabutan dan pemeriksaannya</a></li><li class="toc-h3"><a href="#bagian-6-12">6.12 Backup, kedaluwarsa dan pemulihan</a></li><li class="toc-h3"><a href="#bagian-6-13">6.13 Kesalahan umum dan hasil yang harus dicatat</a></li><li class="toc-h2"><a href="#bab-7">7. Token, akun admin, TOTP, firewall dan layanan</a></li><li class="toc-h3"><a href="#bagian-7-1">7.1 Konfigurasi token dan akun admin awal</a></li><li class="toc-h3"><a href="#bagian-7-2">7.2 Firewall dan layanan</a></li><li class="toc-h3"><a href="#bagian-7-3">7.3 Verifikasi sebelum pendaftaran perangkat</a></li><li class="toc-h2"><a href="#bab-8">8. Jaringan router, host, PC LAN dan laptop Wi-Fi</a></li><li class="toc-h2"><a href="#bab-9">9. Profil publik, trust endpoint dan pembaruan dashboard</a></li><li class="toc-h2"><a href="#bab-10">10. Memasang endpoint Windows dari satu paket</a></li><li class="toc-h3"><a href="#bagian-10-1">10.1 Contoh ekstraksi dan eksekusi yang lengkap</a></li><li class="toc-h2"><a href="#bab-11">11. Konfigurasi endpoint, CSR dan registrasi administrator</a></li><li class="toc-h3"><a href="#bagian-11-1">11.1 Data admin sebelum configure</a></li><li class="toc-h3"><a href="#bagian-11-2">11.2 Key dan CSR pada endpoint baru</a></li><li class="toc-h3"><a href="#bagian-11-3">11.3 Registrasi akun dan perangkat di dashboard</a></li><li class="toc-h2"><a href="#bab-12">12. Import sertifikat, login, connect, disconnect dan logout Windows</a></li><li class="toc-h3"><a href="#bagian-12-2">12.2 Disconnect, logout, repair dan pencabutan</a></li><li class="toc-h2"><a href="#bab-13">13. Pemakaian client Ubuntu dan Windows lab lama</a></li><li class="toc-h3"><a href="#bagian-13-2">13.2 Karyawan Windows: dari login desktop sampai disconnect</a></li><li class="toc-h2"><a href="#bab-14">14. Resource aplikasi dan pembuktian default-deny</a></li><li class="toc-h3"><a href="#bagian-14-0">14.0. Setup terpadu: satu folder offline, satu BAT utama (kandidat0.1.14)</a></li><li class="toc-h4"><a href="#bagian-14-0-1">14.0.1. Alternatif satu file EXE offline (installer0.1.14-fix1)</a></li><li class="toc-h5"><a href="#bagian-14-0-1-1">14.0.1.1. Langkah dari nol memakai EXE yang tersedia di GitHub</a></li><li class="toc-h3"><a href="#bagian-14-1">14.1. Kandidat internet terkelola tanpa mengubah router pengguna</a></li><li class="toc-h2"><a href="#bab-15">15. Checklist penerimaan dan hasil yang harus dibuktikan</a></li><li class="toc-h3"><a href="#bagian-15-1">15.1 Perintah observasi yang tidak menampilkan private key</a></li><li class="toc-h3"><a href="#bagian-15-2">15.2 Langkah native installer yang wajib dibuktikan</a></li><li class="toc-h2"><a href="#bab-16">16. Audit, arsip, pencabutan dan penggantian identitas</a></li><li class="toc-h3"><a href="#bagian-16-1">16.1 Mencari tindakan berdasarkan waktu</a></li><li class="toc-h3"><a href="#bagian-16-2">16.2 Menyimpan arsip yang dapat diverifikasi</a></li><li class="toc-h3"><a href="#bagian-16-3">16.3 Mencabut akses</a></li><li class="toc-h3"><a href="#bagian-16-4">16.4 VanGuard0.1.9: logout, status dan penggantian identitas</a></li><li class="toc-h3"><a href="#bagian-16-5">16.5 Batas audit yang harus dipahami admin</a></li><li class="toc-h2"><a href="#bab-17">17. Operasi harian, shutdown, backup dan pemulihan</a></li><li class="toc-h3"><a href="#bagian-17-1">17.1 Sebelum dipakai</a></li><li class="toc-h3"><a href="#bagian-17-2">17.2 Selama layanan dipakai</a></li><li class="toc-h3"><a href="#bagian-17-3">17.3 Mengakhiri hari atau pilot</a></li><li class="toc-h3"><a href="#bagian-17-4">17.4 Urutan rollback yang harus dipahami sebelum mulai</a></li><li class="toc-h2"><a href="#bab-18">18. Troubleshooting dan serah terima</a></li><li class="toc-h3"><a href="#bagian-18-1">18.1 Formulir serah terima</a></li><li class="toc-h3"><a href="#bagian-18-2">18.2 Catatan status dan bukti</a></li></ol></nav>
+<p>Edisi30 Oktober2026 · satu sumber resmi untuk pemasangan dan operasi.
 HTML dengan nama yang sama dihasilkan dari Markdown ini; keduanya satu manual,
 bukan panduan berbeda. Salinan manual di ZIP juga dihasilkan dari sumber ini.
 Tutorial lama telah digabung dan dihapus dari tree terbaru; histori Git tetap ada.</p>
@@ -122,6 +124,71 @@ punya jurnal intent/hasil dan langkah pemulihan. Catat BELUM_TERUJI bila belum d
 dan <strong>WINDOWS ADMIN</strong> di PowerShell Run as administrator. Satu terminal per mesin
 mencegah salah target. Hak admin lokal diperlukan untuk pengelolaan tunnel; akun
 VPN sendiri tidak memberi hak admin Windows. Uji satu PC dahulu sebelum laptop.</p>
+<h3 id="bagian-1-1">1.1. Flowchart sistem lengkap: dari CA sampai EXE dan penggunaan</h3>
+<p>Diagram berikut menggambarkan implementasi kandidat0.1.14-fix1 pada branch
+<code>feature/2026-10-22-physical-endpoints</code>. Baca berurutan 1→5. Gambar dapat dibuka
+untuk diperbesar di GitHub; salinan HTML menyertakan gambar dan bisa dibaca offline.
+<strong>Setiap panah lanjut mensyaratkan tahap sebelumnya berhasil.</strong> Bila gagal,
+berhenti pada tahap tersebut dan periksa alasan/state; jangan menganggap tahap
+berikutnya sudah selesai. Kotak merah menunjukkan penolakan atau pembatasan,
+bukan selalu bug. Kotak kuning adalah keputusan.</p>
+<h4 id="bagian-1-1-1">1.1.1. Persiapan layanan Linux dan otoritas sertifikat</h4>
+<p><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDYwIiBoZWlnaHQ9IjEyODUiIHZpZXdCb3g9IjAgMCAxMDYwIDEyODUiIHJvbGU9ImltZyIgYXJpYS1sYWJlbGxlZGJ5PSJ0aXRsZSI+Cjx0aXRsZSBpZD0idGl0bGUiPjEuIFBlcnNpYXBhbiBDQSwgc2VydmVyIGRhbiBkYXNoYm9hcmQ8L3RpdGxlPgo8ZGVmcz48bWFya2VyIGlkPSJhcnJvdyIgbWFya2VyV2lkdGg9IjEwIiBtYXJrZXJIZWlnaHQ9IjEwIiByZWZYPSI4IiByZWZZPSI1IiBvcmllbnQ9ImF1dG8iPjxwYXRoIGQ9Ik0wLDAgTDksNSBMMCwxMCIgZmlsbD0iIzQwNTc2YyIvPjwvbWFya2VyPjwvZGVmcz4KPHJlY3Qgd2lkdGg9IjEwNjAiIGhlaWdodD0iMTI4NSIgZmlsbD0id2hpdGUiLz4KPHRleHQgeD0iNDAiIHk9IjM4IiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIyMyIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiMxNzNkNWEiPjEuIFBlcnNpYXBhbiBDQSwgc2VydmVyIGRhbiBkYXNoYm9hcmQ8L3RleHQ+Cjxwb2x5bGluZSBwb2ludHM9IjI1MCwxODUgMjUwLDIzMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNDA1NzZjIiBzdHJva2Utd2lkdGg9IjIiIG1hcmtlci1lbmQ9InVybCgjYXJyb3cpIi8+Cjxwb2x5bGluZSBwb2ludHM9IjI1MCwzMzAgMjUwLDM3NSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNDA1NzZjIiBzdHJva2Utd2lkdGg9IjIiIG1hcmtlci1lbmQ9InVybCgjYXJyb3cpIi8+Cjx0ZXh0IHg9IjE1NSIgeT0iMzU4IiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNSIgZmlsbD0iIzI3M2U1MiI+VGlkYWs8L3RleHQ+Cjxwb2x5bGluZSBwb2ludHM9IjQzMCwyODAgNjMwLDI4MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNDA1NzZjIiBzdHJva2Utd2lkdGg9IjIiIG1hcmtlci1lbmQ9InVybCgjYXJyb3cpIi8+Cjx0ZXh0IHg9IjQ2MCIgeT0iMjcwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNSIgZmlsbD0iIzI3M2U1MiI+WWE8L3RleHQ+Cjxwb2x5bGluZSBwb2ludHM9IjI1MCw0NzUgMjUwLDUyMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNDA1NzZjIiBzdHJva2Utd2lkdGg9IjIiIG1hcmtlci1lbmQ9InVybCgjYXJyb3cpIi8+Cjxwb2x5bGluZSBwb2ludHM9IjgxMCwzMzAgODEwLDQ5OCAyNTAsNDk4IDI1MCw1MjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzQwNTc2YyIgc3Ryb2tlLXdpZHRoPSIyIiBtYXJrZXItZW5kPSJ1cmwoI2Fycm93KSIvPgo8cG9seWxpbmUgcG9pbnRzPSIyNTAsNjIwIDI1MCw2NjUiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzQwNTc2YyIgc3Ryb2tlLXdpZHRoPSIyIiBtYXJrZXItZW5kPSJ1cmwoI2Fycm93KSIvPgo8cG9seWxpbmUgcG9pbnRzPSIyNTAsNzY1IDI1MCw4MTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzQwNTc2YyIgc3Ryb2tlLXdpZHRoPSIyIiBtYXJrZXItZW5kPSJ1cmwoI2Fycm93KSIvPgo8cG9seWxpbmUgcG9pbnRzPSIyNTAsOTEwIDI1MCw5NTUiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzQwNTc2YyIgc3Ryb2tlLXdpZHRoPSIyIiBtYXJrZXItZW5kPSJ1cmwoI2Fycm93KSIvPgo8cG9seWxpbmUgcG9pbnRzPSI0MzAsMTAwNSA2MzAsMTAwNSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNDA1NzZjIiBzdHJva2Utd2lkdGg9IjIiIG1hcmtlci1lbmQ9InVybCgjYXJyb3cpIi8+Cjx0ZXh0IHg9IjQ2MCIgeT0iOTk1IiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNSIgZmlsbD0iIzI3M2U1MiI+VGlkYWs8L3RleHQ+Cjxwb2x5bGluZSBwb2ludHM9IjI1MCwxMDU1IDI1MCwxMTAwIiBmaWxsPSJub25lIiBzdHJva2U9IiM0MDU3NmMiIHN0cm9rZS13aWR0aD0iMiIgbWFya2VyLWVuZD0idXJsKCNhcnJvdykiLz4KPHRleHQgeD0iMTU1IiB5PSIxMDgzIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNSIgZmlsbD0iIzI3M2U1MiI+WWE8L3RleHQ+CjxyZWN0IHg9IjcwIiB5PSI4NSIgd2lkdGg9IjM2MCIgaGVpZ2h0PSIxMDAiIHJ4PSIxMiIgZmlsbD0iI2VkZjVmZiIgc3Ryb2tlPSIjMjQ1YThkIiBzdHJva2Utd2lkdGg9IjIiLz4KPHRleHQgeD0iMjUwIiB5PSIxMzAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5PcGVyYXRvcjogaW52ZW50YXJpcywgYWxhbWF0LCB3YWt0dTwvdGV4dD4KPHRleHQgeD0iMjUwIiB5PSIxNTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5iYWNrdXAgZGFuIGFrc2VzIGNvbnNvbGU8L3RleHQ+Cjxwb2x5Z29uIHBvaW50cz0iMjUwLDIzMCA0MzAsMjgwIDI1MCwzMzAgNzAsMjgwIiBmaWxsPSIjZmZmNGQ2IiBzdHJva2U9IiM5NDYyMDAiIHN0cm9rZS13aWR0aD0iMiIvPgo8dGV4dCB4PSIyNTAiIHk9IjI4NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPkNBIHN1ZGFoIGFkYT88L3RleHQ+CjxyZWN0IHg9IjcwIiB5PSIzNzUiIHdpZHRoPSIzNjAiIGhlaWdodD0iMTAwIiByeD0iMTIiIGZpbGw9IiNlZGY1ZmYiIHN0cm9rZT0iIzI0NWE4ZCIgc3Ryb2tlLXdpZHRoPSIyIi8+Cjx0ZXh0IHg9IjI1MCIgeT0iNDIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzE2MmQ0MCI+SW5zdGFsYXNpIEJBUlU6IGJ1YXQgUm9vdCBDQSBwcml2YXQ8L3RleHQ+Cjx0ZXh0IHg9IjI1MCIgeT0iNDQwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzE2MmQ0MCI+c2luZ2xlLXRpZXIgZGFuIGxpbmR1bmdpIHByaXZhdGUga2V5PC90ZXh0Pgo8cmVjdCB4PSI2MzAiIHk9IjIzMCIgd2lkdGg9IjM2MCIgaGVpZ2h0PSIxMDAiIHJ4PSIxMiIgZmlsbD0iI2UzZjVlYSIgc3Ryb2tlPSIjMjQ2NzQ0IiBzdHJva2Utd2lkdGg9IjIiLz4KPHRleHQgeD0iODEwIiB5PSIyNzUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5QYWthaSBDQSBkYW4gaGlzdG9yaSB5YW5nIGFkYTwvdGV4dD4KPHRleHQgeD0iODEwIiB5PSIyOTUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5QZXJpa3NhIGtvbnNpc3RlbnNpOyBqYW5nYW4gaW5pdCB1bGFuZzwvdGV4dD4KPHJlY3QgeD0iNzAiIHk9IjUyMCIgd2lkdGg9IjM2MCIgaGVpZ2h0PSIxMDAiIHJ4PSIxMiIgZmlsbD0iI2VkZjVmZiIgc3Ryb2tlPSIjMjQ1YThkIiBzdHJva2Utd2lkdGg9IjIiLz4KPHRleHQgeD0iMjUwIiB5PSI1NjUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5TaWFwa2FuIEhUVFBTLCB0cnVzdCBkYW4gc2VjcmV0IGxheWFuYW48L3RleHQ+Cjx0ZXh0IHg9IjI1MCIgeT0iNTg1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzE2MmQ0MCI+Q0EgbWVuZXJiaXRrYW4gc2VydGlmaWthdCBkYW4gQ1JMPC90ZXh0Pgo8cmVjdCB4PSI3MCIgeT0iNjY1IiB3aWR0aD0iMzYwIiBoZWlnaHQ9IjEwMCIgcng9IjEyIiBmaWxsPSIjZWRmNWZmIiBzdHJva2U9IiMyNDVhOGQiIHN0cm9rZS13aWR0aD0iMiIvPgo8dGV4dCB4PSIyNTAiIHk9IjcwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPlNlcnZlcjogV2lyZUd1YXJkLCB2YWxpZGF0b3IsIGRhZW1vbjwvdGV4dD4KPHRleHQgeD0iMjUwIiB5PSI3MjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5maXJld2FsbCBkZWZhdWx0LWRlbnkgZGFuIHJlc291cmNlPC90ZXh0Pgo8dGV4dCB4PSIyNTAiIHk9Ijc0MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPkdhdGV3YXkgaW50ZXJuZXQgYmlsYSBtb2RlIHRlcmtlbG9sYTwvdGV4dD4KPHJlY3QgeD0iNzAiIHk9IjgxMCIgd2lkdGg9IjM2MCIgaGVpZ2h0PSIxMDAiIHJ4PSIxMiIgZmlsbD0iI2VkZjVmZiIgc3Ryb2tlPSIjMjQ1YThkIiBzdHJva2Utd2lkdGg9IjIiLz4KPHRleHQgeD0iMjUwIiB5PSI4NDUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5EYXNoYm9hcmQ6IGFrdW4gYWRtaW4gZGFuIFRPVFA8L3RleHQ+Cjx0ZXh0IHg9IjI1MCIgeT0iODY1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzE2MmQ0MCI+QWt1biBrYXJ5YXdhbiwgYmluZGluZywgYXVkaXQ8L3RleHQ+Cjx0ZXh0IHg9IjI1MCIgeT0iODg1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzE2MmQ0MCI+Q0Evc2VydmVyIGRpYWtzZXMgbGV3YXQgQVBJIGJlcml6aW48L3RleHQ+Cjxwb2x5Z29uIHBvaW50cz0iMjUwLDk1NSA0MzAsMTAwNSAyNTAsMTA1NSA3MCwxMDA1IiBmaWxsPSIjZmZmNGQ2IiBzdHJva2U9IiM5NDYyMDAiIHN0cm9rZS13aWR0aD0iMiIvPgo8dGV4dCB4PSIyNTAiIHk9IjEwMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5EZXBlbmRlbnNpIHNpYXA/PC90ZXh0Pgo8cmVjdCB4PSI2MzAiIHk9Ijk1NSIgd2lkdGg9IjM2MCIgaGVpZ2h0PSIxMDAiIHJ4PSIxMiIgZmlsbD0iI2ZmZjBlZCIgc3Ryb2tlPSIjYTMzZTMyIiBzdHJva2Utd2lkdGg9IjIiLz4KPHRleHQgeD0iODEwIiB5PSI5OTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5QZXJiYWlraSBkZXBlbmRlbnNpIHlhbmcgZ2FnYWw8L3RleHQ+Cjx0ZXh0IHg9IjgxMCIgeT0iMTAxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPlN0YXR1cyBnYWdhbC90aWRhayBkaWtldGFodWk8L3RleHQ+Cjx0ZXh0IHg9IjgxMCIgeT0iMTAzMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPkphbmdhbiBtZW1iZXJpIGFrc2VzIGxld2F0IGJ5cGFzczwvdGV4dD4KPHJlY3QgeD0iNzAiIHk9IjExMDAiIHdpZHRoPSIzNjAiIGhlaWdodD0iMTAwIiByeD0iMTIiIGZpbGw9IiNlM2Y1ZWEiIHN0cm9rZT0iIzI0Njc0NCIgc3Ryb2tlLXdpZHRoPSIyIi8+Cjx0ZXh0IHg9IjI1MCIgeT0iMTEzNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPkFkbWluIHNpYXBrYW4gcHJvZmlsIHB1Ymxpaywgcm9vdCBDQTwvdGV4dD4KPHRleHQgeD0iMjUwIiB5PSIxMTU1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzE2MmQ0MCI+YWxva2FzaSBwZXJhbmdrYXQvSVAgZGFuIHBpbiBzZXJ2ZXI8L3RleHQ+Cjx0ZXh0IHg9IjI1MCIgeT0iMTE3NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPkxhbmp1dCBkaWFncmFtIDI8L3RleHQ+Cjwvc3ZnPgo=" alt="Flowchart persiapan CA, server, dashboard dan profil" /></p>
+<p>CA menerbitkan sertifikat dan CRL; server mengambil data CA yang diperlukan untuk
+validasi lewat jalur backend yang diizinkan. Dashboard mengelola registrasi,
+revocation, akun/binding dan kebijakan. Endpoint tidak menerima private key CA.
+Gunakan CA yang sudah ada pada lab ini. Rincian pemasangan dan trust ada di Bab5–9.</p>
+<h4 id="bagian-1-1-2">1.1.2. Distribusi paket dan instalasi EXE Windows</h4>
+<p><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDYwIiBoZWlnaHQ9Ijk5NSIgdmlld0JveD0iMCAwIDEwNjAgOTk1IiByb2xlPSJpbWciIGFyaWEtbGFiZWxsZWRieT0idGl0bGUiPgo8dGl0bGUgaWQ9InRpdGxlIj4yLiBQYWtldCBhZG1pbiBzYW1wYWkgRVhFIHBhZGEgZW5kcG9pbnQ8L3RpdGxlPgo8ZGVmcz48bWFya2VyIGlkPSJhcnJvdyIgbWFya2VyV2lkdGg9IjEwIiBtYXJrZXJIZWlnaHQ9IjEwIiByZWZYPSI4IiByZWZZPSI1IiBvcmllbnQ9ImF1dG8iPjxwYXRoIGQ9Ik0wLDAgTDksNSBMMCwxMCIgZmlsbD0iIzQwNTc2YyIvPjwvbWFya2VyPjwvZGVmcz4KPHJlY3Qgd2lkdGg9IjEwNjAiIGhlaWdodD0iOTk1IiBmaWxsPSJ3aGl0ZSIvPgo8dGV4dCB4PSI0MCIgeT0iMzgiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIzIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzE3M2Q1YSI+Mi4gUGFrZXQgYWRtaW4gc2FtcGFpIEVYRSBwYWRhIGVuZHBvaW50PC90ZXh0Pgo8cG9seWxpbmUgcG9pbnRzPSIyNTAsMTg1IDI1MCwyMzAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzQwNTc2YyIgc3Ryb2tlLXdpZHRoPSIyIiBtYXJrZXItZW5kPSJ1cmwoI2Fycm93KSIvPgo8cG9seWxpbmUgcG9pbnRzPSIyNTAsMzMwIDI1MCwzNzUiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzQwNTc2YyIgc3Ryb2tlLXdpZHRoPSIyIiBtYXJrZXItZW5kPSJ1cmwoI2Fycm93KSIvPgo8cG9seWxpbmUgcG9pbnRzPSI0MzAsNDI1IDYzMCw0MjUiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzQwNTc2YyIgc3Ryb2tlLXdpZHRoPSIyIiBtYXJrZXItZW5kPSJ1cmwoI2Fycm93KSIvPgo8dGV4dCB4PSI0NjAiIHk9IjQxNSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTUiIGZpbGw9IiMyNzNlNTIiPlRpZGFrPC90ZXh0Pgo8cG9seWxpbmUgcG9pbnRzPSI4MTAsNDc1IDgxMCw1MjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzQwNTc2YyIgc3Ryb2tlLXdpZHRoPSIyIiBtYXJrZXItZW5kPSJ1cmwoI2Fycm93KSIvPgo8cG9seWxpbmUgcG9pbnRzPSIyNTAsNDc1IDI1MCw1MjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzQwNTc2YyIgc3Ryb2tlLXdpZHRoPSIyIiBtYXJrZXItZW5kPSJ1cmwoI2Fycm93KSIvPgo8dGV4dCB4PSIxNTUiIHk9IjUwMyIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTUiIGZpbGw9IiMyNzNlNTIiPllhPC90ZXh0Pgo8cG9seWxpbmUgcG9pbnRzPSIyNTAsNjIwIDI1MCw2NjUiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzQwNTc2YyIgc3Ryb2tlLXdpZHRoPSIyIiBtYXJrZXItZW5kPSJ1cmwoI2Fycm93KSIvPgo8cmVjdCB4PSI3MCIgeT0iODUiIHdpZHRoPSIzNjAiIGhlaWdodD0iMTAwIiByeD0iMTIiIGZpbGw9IiNlZGY1ZmYiIHN0cm9rZT0iIzI0NWE4ZCIgc3Ryb2tlLXdpZHRoPSIyIi8+Cjx0ZXh0IHg9IjI1MCIgeT0iMTIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzE2MmQ0MCI+QWRtaW4gZGlzdHJpYnVzaWthbiBwYWtldCB0ZXBlcmNheWE8L3RleHQ+Cjx0ZXh0IHg9IjI1MCIgeT0iMTQwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzE2MmQ0MCI+RVhFIHVtdW0gYXRhdSBFWEUgcGVyIHBlcmFuZ2thdDwvdGV4dD4KPHRleHQgeD0iMjUwIiB5PSIxNjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5QZXJpa3NhIGFzYWwgZGFuIFNIQTI1NjwvdGV4dD4KPHJlY3QgeD0iNzAiIHk9IjIzMCIgd2lkdGg9IjM2MCIgaGVpZ2h0PSIxMDAiIHJ4PSIxMiIgZmlsbD0iI2VkZjVmZiIgc3Ryb2tlPSIjMjQ1YThkIiBzdHJva2Utd2lkdGg9IjIiLz4KPHRleHQgeD0iMjUwIiB5PSIyNjUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5Vc2VyIGtsaWsgRVhFIGRhbiBzZXR1anVpIFVBQzwvdGV4dD4KPHRleHQgeD0iMjUwIiB5PSIyODUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5XcmFwcGVyIHZlcmlmaWthc2kgcGF5bG9hZCBkYW4gY2FjaGU8L3RleHQ+Cjx0ZXh0IHg9IjI1MCIgeT0iMzA1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzE2MmQ0MCI+RWtzdHJha3NpIGJlbHVtIG1lbWFzYW5nIHBvbGljeTwvdGV4dD4KPHBvbHlnb24gcG9pbnRzPSIyNTAsMzc1IDQzMCw0MjUgMjUwLDQ3NSA3MCw0MjUiIGZpbGw9IiNmZmY0ZDYiIHN0cm9rZT0iIzk0NjIwMCIgc3Ryb2tlLXdpZHRoPSIyIi8+Cjx0ZXh0IHg9IjI1MCIgeT0iNDMwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzE2MmQ0MCI+UGFrZXQgcGVyIHBlcmFuZ2thdD88L3RleHQ+CjxyZWN0IHg9IjYzMCIgeT0iMzc1IiB3aWR0aD0iMzYwIiBoZWlnaHQ9IjEwMCIgcng9IjEyIiBmaWxsPSIjZWRmNWZmIiBzdHJva2U9IiMyNDVhOGQiIHN0cm9rZS13aWR0aD0iMiIvPgo8dGV4dCB4PSI4MTAiIHk9IjQxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPkVYRSB1bXVtIGRpIEdpdEh1YjogaW5zdGFsbCBydW50aW1lPC90ZXh0Pgo8dGV4dCB4PSI4MTAiIHk9IjQzMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPlB5dGhvbiwgV2lyZUd1YXJkIGRhbiBhcGxpa2FzaTwvdGV4dD4KPHRleHQgeD0iODEwIiB5PSI0NTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5UaWRhayBtZW5nYWt0aWZrYW4gYmxvayBpbnRlcm5ldCBiYXJ1PC90ZXh0Pgo8cmVjdCB4PSI2MzAiIHk9IjUyMCIgd2lkdGg9IjM2MCIgaGVpZ2h0PSIxMDAiIHJ4PSIxMiIgZmlsbD0iI2VkZjVmZiIgc3Ryb2tlPSIjMjQ1YThkIiBzdHJva2Utd2lkdGg9IjIiLz4KPHRleHQgeD0iODEwIiB5PSI1NTUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5BZG1pbiBsYW5qdXQga29uZmlndXJhc2kgQmFiMTEtMTI8L3RleHQ+Cjx0ZXh0IHg9IjgxMCIgeT0iNTc1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzE2MmQ0MCI+YXRhdSBiYW5ndW4gRVhFIHBlciBwZXJhbmdrYXQ8L3RleHQ+Cjx0ZXh0IHg9IjgxMCIgeT0iNTk1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzE2MmQ0MCI+ZGVuZ2FuIHByb2ZpbCwgcm9vdCBkYW4gYWxva2FzaSBwdWJsaWs8L3RleHQ+CjxyZWN0IHg9IjcwIiB5PSI1MjAiIHdpZHRoPSIzNjAiIGhlaWdodD0iMTAwIiByeD0iMTIiIGZpbGw9IiNlZGY1ZmYiIHN0cm9rZT0iIzI0NWE4ZCIgc3Ryb2tlLXdpZHRoPSIyIi8+Cjx0ZXh0IHg9IjI1MCIgeT0iNTU1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzE2MmQ0MCI+V2l6YXJkIG1lbWFzYW5nIGF0YXUgbWVtYWthaSB1bGFuZzwvdGV4dD4KPHRleHQgeD0iMjUwIiB5PSI1NzUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5ydW50aW1lIGxlbmdrYXAgeWFuZyB0ZXJ2ZXJpZmlrYXNpPC90ZXh0Pgo8dGV4dCB4PSIyNTAiIHk9IjU5NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPklucHV0IGxld2F0IHRlcm1pbmFsOyBiZWx1bSBhZGEgR1VJPC90ZXh0Pgo8cmVjdCB4PSI3MCIgeT0iNjY1IiB3aWR0aD0iMzYwIiBoZWlnaHQ9IjEwMCIgcng9IjEyIiBmaWxsPSIjZTNmNWVhIiBzdHJva2U9IiMyNDY3NDQiIHN0cm9rZS13aWR0aD0iMiIvPgo8dGV4dCB4PSIyNTAiIHk9IjcwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPlZhbGlkYXNpIHBpbiBkYW4gcGFzYW5nIHByb2ZpbDwvdGV4dD4KPHRleHQgeD0iMjUwIiB5PSI3MjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5Lb25mbGlrIGRpdG9sYWs7IGtleS9jb25maWcgZGlwZXJ0YWhhbmthbjwvdGV4dD4KPHRleHQgeD0iMjUwIiB5PSI3NDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5MYW5qdXQgZGlhZ3JhbSAzPC90ZXh0Pgo8cmVjdCB4PSI2MzAiIHk9IjgxMCIgd2lkdGg9IjM2MCIgaGVpZ2h0PSIxMDAiIHJ4PSIxMiIgZmlsbD0iI2ZmZjBlZCIgc3Ryb2tlPSIjYTMzZTMyIiBzdHJva2Utd2lkdGg9IjIiLz4KPHRleHQgeD0iODEwIiB5PSI4NDUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5CYXRhbCBVQUMgLyBlcnJvciBzZWJlbHVtIHBvbGljeTo8L3RleHQ+Cjx0ZXh0IHg9IjgxMCIgeT0iODY1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzE2MmQ0MCI+YmVsdW0gbWVuZ2FrdGlma2FuIGJsb2sgYmFydTwvdGV4dD4KPHRleHQgeD0iODEwIiB5PSI4ODUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5Qb2xpY3kgbGFtYSB0aWRhayBvdG9tYXRpcyBkaXB1bGloa2FuPC90ZXh0Pgo8cmVjdCB4PSI3MCIgeT0iODEwIiB3aWR0aD0iMzYwIiBoZWlnaHQ9IjEwMCIgcng9IjEyIiBmaWxsPSIjZWRmNWZmIiBzdHJva2U9IiMyNDVhOGQiIHN0cm9rZS13aWR0aD0iMiIvPgo8dGV4dCB4PSIyNTAiIHk9Ijg0NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPkppa2EgcnVudGltZSBtZW1pbnRhIHJlc3RhcnQ6IGtvZGUzMDEwPC90ZXh0Pgo8dGV4dCB4PSIyNTAiIHk9Ijg2NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPlJlc3RhcnQgbWFudWFsLCBqYWxhbmthbiBwYWtldCBsYWdpPC90ZXh0Pgo8dGV4dCB4PSIyNTAiIHk9Ijg4NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPkJlbHVtIGJlcmFydGkgc2lhcCBjb25uZWN0PC90ZXh0Pgo8L3N2Zz4K" alt="Flowchart EXE umum dan paket per perangkat" /></p>
+<p>EXE umum di downloads belum memuat profil/root/alokasi. Admin membuat paket
+perangkat dengan input publik tepercaya, lalu membungkusnya menjadi EXE menurut
+Bab14.0.1. Pengguna menerima satu EXE; bagian dalamnya tetap menjalankan BAT/wizard.
+Kotak catatan di bagian bawah diagram menjelaskan kondisi batal/error/restart.
+Tidak ada GUI form Login/Connect saat ini; interaksi menggunakan terminal.</p>
+<h4 id="bagian-1-1-3">1.1.3. Kapan internet diblok dan bagaimana perangkat didaftarkan</h4>
+<p><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDYwIiBoZWlnaHQ9IjEyODUiIHZpZXdCb3g9IjAgMCAxMDYwIDEyODUiIHJvbGU9ImltZyIgYXJpYS1sYWJlbGxlZGJ5PSJ0aXRsZSI+Cjx0aXRsZSBpZD0idGl0bGUiPjMuIFBvbGljeSBXaW5kb3dzIGRhbiBwZW5kYWZ0YXJhbiBwZXJhbmdrYXQ8L3RpdGxlPgo8ZGVmcz48bWFya2VyIGlkPSJhcnJvdyIgbWFya2VyV2lkdGg9IjEwIiBtYXJrZXJIZWlnaHQ9IjEwIiByZWZYPSI4IiByZWZZPSI1IiBvcmllbnQ9ImF1dG8iPjxwYXRoIGQ9Ik0wLDAgTDksNSBMMCwxMCIgZmlsbD0iIzQwNTc2YyIvPjwvbWFya2VyPjwvZGVmcz4KPHJlY3Qgd2lkdGg9IjEwNjAiIGhlaWdodD0iMTI4NSIgZmlsbD0id2hpdGUiLz4KPHRleHQgeD0iNDAiIHk9IjM4IiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIyMyIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiMxNzNkNWEiPjMuIFBvbGljeSBXaW5kb3dzIGRhbiBwZW5kYWZ0YXJhbiBwZXJhbmdrYXQ8L3RleHQ+Cjxwb2x5bGluZSBwb2ludHM9IjI1MCwxODUgMjUwLDIzMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNDA1NzZjIiBzdHJva2Utd2lkdGg9IjIiIG1hcmtlci1lbmQ9InVybCgjYXJyb3cpIi8+Cjxwb2x5bGluZSBwb2ludHM9IjI1MCwzMzAgMjUwLDM3NSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNDA1NzZjIiBzdHJva2Utd2lkdGg9IjIiIG1hcmtlci1lbmQ9InVybCgjYXJyb3cpIi8+Cjx0ZXh0IHg9IjE1NSIgeT0iMzU4IiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNSIgZmlsbD0iIzI3M2U1MiI+WWE8L3RleHQ+Cjxwb2x5bGluZSBwb2ludHM9IjQzMCwyODAgNjMwLDI4MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNDA1NzZjIiBzdHJva2Utd2lkdGg9IjIiIG1hcmtlci1lbmQ9InVybCgjYXJyb3cpIi8+Cjx0ZXh0IHg9IjQ2MCIgeT0iMjcwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNSIgZmlsbD0iIzI3M2U1MiI+VGlkYWs8L3RleHQ+Cjxwb2x5bGluZSBwb2ludHM9IjI1MCw0NzUgMjUwLDUyMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNDA1NzZjIiBzdHJva2Utd2lkdGg9IjIiIG1hcmtlci1lbmQ9InVybCgjYXJyb3cpIi8+Cjxwb2x5bGluZSBwb2ludHM9IjgxMCwzMzAgODEwLDQ5OCAyNTAsNDk4IDI1MCw1MjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzQwNTc2YyIgc3Ryb2tlLXdpZHRoPSIyIiBtYXJrZXItZW5kPSJ1cmwoI2Fycm93KSIvPgo8cG9seWxpbmUgcG9pbnRzPSIyNTAsNjIwIDI1MCw2NjUiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzQwNTc2YyIgc3Ryb2tlLXdpZHRoPSIyIiBtYXJrZXItZW5kPSJ1cmwoI2Fycm93KSIvPgo8cG9seWxpbmUgcG9pbnRzPSIyNTAsNzY1IDI1MCw4MTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzQwNTc2YyIgc3Ryb2tlLXdpZHRoPSIyIiBtYXJrZXItZW5kPSJ1cmwoI2Fycm93KSIvPgo8cG9seWxpbmUgcG9pbnRzPSI0MzAsODYwIDYzMCw4NjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzQwNTc2YyIgc3Ryb2tlLXdpZHRoPSIyIiBtYXJrZXItZW5kPSJ1cmwoI2Fycm93KSIvPgo8dGV4dCB4PSI0NjAiIHk9Ijg1MCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTUiIGZpbGw9IiMyNzNlNTIiPlRpZGFrPC90ZXh0Pgo8cG9seWxpbmUgcG9pbnRzPSIyNTAsOTEwIDI1MCw5NTUiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzQwNTc2YyIgc3Ryb2tlLXdpZHRoPSIyIiBtYXJrZXItZW5kPSJ1cmwoI2Fycm93KSIvPgo8dGV4dCB4PSIxNTUiIHk9IjkzOCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTUiIGZpbGw9IiMyNzNlNTIiPllhPC90ZXh0Pgo8cG9seWxpbmUgcG9pbnRzPSIyNTAsMTA1NSAyNTAsMTEwMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNDA1NzZjIiBzdHJva2Utd2lkdGg9IjIiIG1hcmtlci1lbmQ9InVybCgjYXJyb3cpIi8+CjxyZWN0IHg9IjcwIiB5PSI4NSIgd2lkdGg9IjM2MCIgaGVpZ2h0PSIxMDAiIHJ4PSIxMiIgZmlsbD0iI2VkZjVmZiIgc3Ryb2tlPSIjMjQ1YThkIiBzdHJva2Utd2lkdGg9IjIiLz4KPHRleHQgeD0iMjUwIiB5PSIxNDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5Qcm9maWwgdGVydmVyaWZpa2FzaTwvdGV4dD4KPHBvbHlnb24gcG9pbnRzPSIyNTAsMjMwIDQzMCwyODAgMjUwLDMzMCA3MCwyODAiIGZpbGw9IiNmZmY0ZDYiIHN0cm9rZT0iIzk0NjIwMCIgc3Ryb2tlLXdpZHRoPSIyIi8+Cjx0ZXh0IHg9IjI1MCIgeT0iMjg1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzE2MmQ0MCI+U2NoZW1hMiB0ZXJrZWxvbGE/PC90ZXh0Pgo8cmVjdCB4PSI3MCIgeT0iMzc1IiB3aWR0aD0iMzYwIiBoZWlnaHQ9IjEwMCIgcng9IjEyIiBmaWxsPSIjZmZmMGVkIiBzdHJva2U9IiNhMzNlMzIiIHN0cm9rZS13aWR0aD0iMiIvPgo8dGV4dCB4PSIyNTAiIHk9IjQxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPkFrdGlma2FuIC8gcGVyaWtzYSBwb2xpY3kgV2luZG93czwvdGV4dD4KPHRleHQgeD0iMjUwIiB5PSI0MzAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5TRVRFTEFIIEJFUkhBU0lMOiBpbnRlcm5ldCBsYW5nc3VuZzwvdGV4dD4KPHRleHQgeD0iMjUwIiB5PSI0NTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5kaWJsb2s7IGphbHVyIGtvbnRyb2wgdGVyYmF0YXMgdGVyc2VkaWE8L3RleHQ+CjxyZWN0IHg9IjYzMCIgeT0iMjMwIiB3aWR0aD0iMzYwIiBoZWlnaHQ9IjEwMCIgcng9IjEyIiBmaWxsPSIjZWRmNWZmIiBzdHJva2U9IiMyNDVhOGQiIHN0cm9rZS13aWR0aD0iMiIvPgo8dGV4dCB4PSI4MTAiIHk9IjI3NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPlNjaGVtYTE6IGFrc2VzIGFwbGlrYXNpIGludGVybmFsPC90ZXh0Pgo8dGV4dCB4PSI4MTAiIHk9IjI5NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPlRpZGFrIG1lbmdha3RpZmthbiBsb2NrZG93biBpbnRlcm5ldDwvdGV4dD4KPHJlY3QgeD0iNzAiIHk9IjUyMCIgd2lkdGg9IjM2MCIgaGVpZ2h0PSIxMDAiIHJ4PSIxMiIgZmlsbD0iI2VkZjVmZiIgc3Ryb2tlPSIjMjQ1YThkIiBzdHJva2Utd2lkdGg9IjIiLz4KPHRleHQgeD0iMjUwIiB5PSI1NTUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5FbmRwb2ludCBtZW1idWF0IGF0YXUgbWVtYWthaSBrZXk8L3RleHQ+Cjx0ZXh0IHg9IjI1MCIgeT0iNTc1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzE2MmQ0MCI+WC41MDkgZGFuIFdpcmVHdWFyZCBtaWxpa255YSBzZW5kaXJpPC90ZXh0Pgo8dGV4dCB4PSIyNTAiIHk9IjU5NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPkVrc3BvciByZXF1ZXN0IFBVQkxJSzwvdGV4dD4KPHJlY3QgeD0iNzAiIHk9IjY2NSIgd2lkdGg9IjM2MCIgaGVpZ2h0PSIxMDAiIHJ4PSIxMiIgZmlsbD0iI2VkZjVmZiIgc3Ryb2tlPSIjMjQ1YThkIiBzdHJva2Utd2lkdGg9IjIiLz4KPHRleHQgeD0iMjUwIiB5PSI3MDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5BZG1pbiBsb2dpbiArIFRPVFAgZGkgZGFzaGJvYXJkPC90ZXh0Pgo8dGV4dCB4PSIyNTAiIHk9IjcyMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPlBlcmlrc2EgcmVxdWVzdCBkYW4gYmluZGluZyBrYXJ5YXdhbjwvdGV4dD4KPHRleHQgeD0iMjUwIiB5PSI3NDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5DQSB5YW5nIGFkYSBtZW5hbmRhdGFuZ2FuaSBzZXJ0aWZpa2F0PC90ZXh0Pgo8cG9seWdvbiBwb2ludHM9IjI1MCw4MTAgNDMwLDg2MCAyNTAsOTEwIDcwLDg2MCIgZmlsbD0iI2ZmZjRkNiIgc3Ryb2tlPSIjOTQ2MjAwIiBzdHJva2Utd2lkdGg9IjIiLz4KPHRleHQgeD0iMjUwIiB5PSI4NjUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5CdW5kbGUgc3VkYWggdGVyc2VkaWE/PC90ZXh0Pgo8cmVjdCB4PSI2MzAiIHk9IjgxMCIgd2lkdGg9IjM2MCIgaGVpZ2h0PSIxMDAiIHJ4PSIxMiIgZmlsbD0iI2ZmZjBlZCIgc3Ryb2tlPSIjYTMzZTMyIiBzdHJva2Utd2lkdGg9IjIiLz4KPHRleHQgeD0iODEwIiB5PSI4NDUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5NZW51bmdndSBhZG1pbjoga29kZTIwPC90ZXh0Pgo8dGV4dCB4PSI4MTAiIHk9Ijg2NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPkphbGFua2FuIHBha2V0IGxhZ2kgc2V0ZWxhaCBkaXNldHVqdWk8L3RleHQ+Cjx0ZXh0IHg9IjgxMCIgeT0iODg1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzE2MmQ0MCI+TG9ja2Rvd24geWFuZyBha3RpZiB0ZXRhcCBiZXJsYWt1PC90ZXh0Pgo8cmVjdCB4PSI3MCIgeT0iOTU1IiB3aWR0aD0iMzYwIiBoZWlnaHQ9IjEwMCIgcng9IjEyIiBmaWxsPSIjZWRmNWZmIiBzdHJva2U9IiMyNDVhOGQiIHN0cm9rZS13aWR0aD0iMiIvPgo8dGV4dCB4PSIyNTAiIHk9Ijk5MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPkltcG9ydCBidW5kbGU7IGNlayBrZWNvY29rYW4gYmluZGluZzwvdGV4dD4KPHRleHQgeD0iMjUwIiB5PSIxMDEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzE2MmQ0MCI+UHJpdmF0ZSBrZXkgdGV0YXAgZGkgZW5kcG9pbnQ8L3RleHQ+Cjx0ZXh0IHg9IjI1MCIgeT0iMTAzMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPlJlZ2lzdHJhc2kgYmVsdW0gbWVuYW1iYWggcGVlcjwvdGV4dD4KPHJlY3QgeD0iNzAiIHk9IjExMDAiIHdpZHRoPSIzNjAiIGhlaWdodD0iMTAwIiByeD0iMTIiIGZpbGw9IiNlM2Y1ZWEiIHN0cm9rZT0iIzI0Njc0NCIgc3Ryb2tlLXdpZHRoPSIyIi8+Cjx0ZXh0IHg9IjI1MCIgeT0iMTEzNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPlNpYXAgbG9naW47IGxhbmp1dCBkaWFncmFtIDQ8L3RleHQ+Cjx0ZXh0IHg9IjI1MCIgeT0iMTE1NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPlNlcnRpZmlrYXQgeWFuZyBzdWRhaCBhZGEgZGljZWsgdWxhbmc8L3RleHQ+Cjx0ZXh0IHg9IjI1MCIgeT0iMTE3NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPi9wcmVwYXJlLW9ubHkgYmVyaGVudGkgdGFucGEgY29ubmVjdDwvdGV4dD4KPC9zdmc+Cg==" alt="Flowchart policy internet dan enrollment perangkat" /></p>
+<p><strong>Klik EXE belum memblokir internet.</strong> Pada pemasangan baru schema2, blok akses
+internet langsung berlaku setelah penerapan policy dikonfirmasi berhasil. Jalur
+kontrol terbatas untuk mencapai layanan tetap diperlukan. Jika penerapan policy
+gagal/parsial, hasil blok belum dapat dipastikan: wizard berhenti dan mempertahankan
+state/backup untuk inspeksi admin. Policy yang sebelumnya aktif tidak otomatis
+dibuka karena error. Schema1 tidak mengaktifkan lockdown internet.</p>
+<p>Diagram memperlihatkan pendaftaran pertama. Saat resume, key lama dipakai ulang;
+sertifikat yang sudah tersedia melewati langkah meminta bundle lalu tetap harus
+lolos admission. Bila belum disetujui, kode20 berarti menunggu admin. Request
+publik dapat dipindah lewat media admin yang disetujui; jangan mengirim folder
+identity. Admin mengikat akun/perangkat, menerbitkan sertifikat dan mengatur izin
+resource/internet. Pemberian izin atau sertifikat belum memasang peer.</p>
+<h4 id="bagian-1-1-4">1.1.4. Login, pemeriksaan perangkat dan akses yang diizinkan</h4>
+<p><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDYwIiBoZWlnaHQ9IjEyODUiIHZpZXdCb3g9IjAgMCAxMDYwIDEyODUiIHJvbGU9ImltZyIgYXJpYS1sYWJlbGxlZGJ5PSJ0aXRsZSI+Cjx0aXRsZSBpZD0idGl0bGUiPjQuIExvZ2luLCBhZG1pc3Npb24gZGFuIGl6aW4gbGFsdSBsaW50YXM8L3RpdGxlPgo8ZGVmcz48bWFya2VyIGlkPSJhcnJvdyIgbWFya2VyV2lkdGg9IjEwIiBtYXJrZXJIZWlnaHQ9IjEwIiByZWZYPSI4IiByZWZZPSI1IiBvcmllbnQ9ImF1dG8iPjxwYXRoIGQ9Ik0wLDAgTDksNSBMMCwxMCIgZmlsbD0iIzQwNTc2YyIvPjwvbWFya2VyPjwvZGVmcz4KPHJlY3Qgd2lkdGg9IjEwNjAiIGhlaWdodD0iMTI4NSIgZmlsbD0id2hpdGUiLz4KPHRleHQgeD0iNDAiIHk9IjM4IiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIyMyIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiMxNzNkNWEiPjQuIExvZ2luLCBhZG1pc3Npb24gZGFuIGl6aW4gbGFsdSBsaW50YXM8L3RleHQ+Cjxwb2x5bGluZSBwb2ludHM9IjI1MCwxODUgMjUwLDIzMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNDA1NzZjIiBzdHJva2Utd2lkdGg9IjIiIG1hcmtlci1lbmQ9InVybCgjYXJyb3cpIi8+Cjxwb2x5bGluZSBwb2ludHM9IjI1MCwzMzAgMjUwLDM3NSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNDA1NzZjIiBzdHJva2Utd2lkdGg9IjIiIG1hcmtlci1lbmQ9InVybCgjYXJyb3cpIi8+Cjxwb2x5bGluZSBwb2ludHM9IjI1MCw0NzUgMjUwLDUyMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNDA1NzZjIiBzdHJva2Utd2lkdGg9IjIiIG1hcmtlci1lbmQ9InVybCgjYXJyb3cpIi8+Cjxwb2x5bGluZSBwb2ludHM9IjQzMCw1NzAgNjMwLDU3MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNDA1NzZjIiBzdHJva2Utd2lkdGg9IjIiIG1hcmtlci1lbmQ9InVybCgjYXJyb3cpIi8+Cjx0ZXh0IHg9IjQ2MCIgeT0iNTYwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNSIgZmlsbD0iIzI3M2U1MiI+VGlkYWs8L3RleHQ+Cjxwb2x5bGluZSBwb2ludHM9IjI1MCw2MjAgMjUwLDY2NSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNDA1NzZjIiBzdHJva2Utd2lkdGg9IjIiIG1hcmtlci1lbmQ9InVybCgjYXJyb3cpIi8+Cjx0ZXh0IHg9IjE1NSIgeT0iNjQ4IiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNSIgZmlsbD0iIzI3M2U1MiI+WWE8L3RleHQ+Cjxwb2x5bGluZSBwb2ludHM9IjI1MCw3NjUgMjUwLDgxMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNDA1NzZjIiBzdHJva2Utd2lkdGg9IjIiIG1hcmtlci1lbmQ9InVybCgjYXJyb3cpIi8+Cjxwb2x5bGluZSBwb2ludHM9IjI1MCw5MTAgMjUwLDk1NSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNDA1NzZjIiBzdHJva2Utd2lkdGg9IjIiIG1hcmtlci1lbmQ9InVybCgjYXJyb3cpIi8+Cjx0ZXh0IHg9IjE1NSIgeT0iOTM4IiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNSIgZmlsbD0iIzI3M2U1MiI+QXBsaWthc2k8L3RleHQ+Cjxwb2x5bGluZSBwb2ludHM9IjI1MCw5MTAgMjUwLDkzMyA4MTAsOTMzIDgxMCw5NTUiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzQwNTc2YyIgc3Ryb2tlLXdpZHRoPSIyIiBtYXJrZXItZW5kPSJ1cmwoI2Fycm93KSIvPgo8dGV4dCB4PSI0NjAiIHk9IjkyNSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTUiIGZpbGw9IiMyNzNlNTIiPkludGVybmV0PC90ZXh0Pgo8cG9seWxpbmUgcG9pbnRzPSIyNTAsMTA1NSAyNTAsMTEwMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNDA1NzZjIiBzdHJva2Utd2lkdGg9IjIiIG1hcmtlci1lbmQ9InVybCgjYXJyb3cpIi8+Cjx0ZXh0IHg9IjE1NSIgeT0iMTA4MyIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTUiIGZpbGw9IiMyNzNlNTIiPkl6aW4gdmFsaWQ8L3RleHQ+Cjxwb2x5bGluZSBwb2ludHM9IjgxMCwxMDU1IDgxMCwxMDc4IDI1MCwxMDc4IDI1MCwxMTAwIiBmaWxsPSJub25lIiBzdHJva2U9IiM0MDU3NmMiIHN0cm9rZS13aWR0aD0iMiIgbWFya2VyLWVuZD0idXJsKCNhcnJvdykiLz4KPHRleHQgeD0iNDYwIiB5PSIxMDcwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNSIgZmlsbD0iIzI3M2U1MiI+SXppbiB2YWxpZDwvdGV4dD4KPHJlY3QgeD0iNzAiIHk9Ijg1IiB3aWR0aD0iMzYwIiBoZWlnaHQ9IjEwMCIgcng9IjEyIiBmaWxsPSIjZWRmNWZmIiBzdHJva2U9IiMyNDVhOGQiIHN0cm9rZS13aWR0aD0iMiIvPgo8dGV4dCB4PSIyNTAiIHk9IjEyMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPkthcnlhd2FuIGxvZ2luIGxld2F0IEhUVFBTPC90ZXh0Pgo8dGV4dCB4PSIyNTAiIHk9IjE0MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPlNlcnZlciBtZW1lcmlrc2EgYWt1biBkYW4gYmluZGluZzwvdGV4dD4KPHRleHQgeD0iMjUwIiB5PSIxNjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5Mb2dpbiBzYWphIGJlbHVtIG1lbmFtYmFoIHBlZXI8L3RleHQ+CjxyZWN0IHg9IjcwIiB5PSIyMzAiIHdpZHRoPSIzNjAiIGhlaWdodD0iMTAwIiByeD0iMTIiIGZpbGw9IiNlZGY1ZmYiIHN0cm9rZT0iIzI0NWE4ZCIgc3Ryb2tlLXdpZHRoPSIyIi8+Cjx0ZXh0IHg9IjI1MCIgeT0iMjY1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzE2MmQ0MCI+Q29ubmVjdDogY2hhbGxlbmdlIGRhbiBwcm9vZjwvdGV4dD4KPHRleHQgeD0iMjUwIiB5PSIyODUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5FbmRwb2ludCBtZW1idWt0aWthbiBrZXBlbWlsaWthbiBrZXk8L3RleHQ+Cjx0ZXh0IHg9IjI1MCIgeT0iMzA1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzE2MmQ0MCI+U2VydmVyIG1lbWVyaWtzYSBzZXNpIGthcnlhd2FuPC90ZXh0Pgo8cmVjdCB4PSI3MCIgeT0iMzc1IiB3aWR0aD0iMzYwIiBoZWlnaHQ9IjEwMCIgcng9IjEyIiBmaWxsPSIjZWRmNWZmIiBzdHJva2U9IiMyNDVhOGQiIHN0cm9rZS13aWR0aD0iMiIvPgo8dGV4dCB4PSIyNTAiIHk9IjQxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPkVuYW0gY2VrOiBzaWduYXR1cmUgQ0EsIG1hc2EgYmVybGFrdSw8L3RleHQ+Cjx0ZXh0IHg9IjI1MCIgeT0iNDMwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzE2MmQ0MCI+Q1JMIHRlcmtpbmksIHNlcmlhbCBwZW5jYWJ1dGFuLDwvdGV4dD4KPHRleHQgeD0iMjUwIiB5PSI0NTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5wcm9vZiBrZXkgZGFuIGJpbmRpbmcgcHVibGljIGtleSBXRzwvdGV4dD4KPHBvbHlnb24gcG9pbnRzPSIyNTAsNTIwIDQzMCw1NzAgMjUwLDYyMCA3MCw1NzAiIGZpbGw9IiNmZmY0ZDYiIHN0cm9rZT0iIzk0NjIwMCIgc3Ryb2tlLXdpZHRoPSIyIi8+Cjx0ZXh0IHg9IjI1MCIgeT0iNTc1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzE2MmQ0MCI+U2VzaSBkYW4gc2VtdWEgY2VrIGxvbG9zPzwvdGV4dD4KPHJlY3QgeD0iNjMwIiB5PSI1MjAiIHdpZHRoPSIzNjAiIGhlaWdodD0iMTAwIiByeD0iMTIiIGZpbGw9IiNmZmYwZWQiIHN0cm9rZT0iI2EzM2UzMiIgc3Ryb2tlLXdpZHRoPSIyIi8+Cjx0ZXh0IHg9IjgxMCIgeT0iNTU1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzE2MmQ0MCI+VG9sYWsgYWRtaXNzaW9uIC8gZ2FnYWwgdGVydHV0dXA8L3RleHQ+Cjx0ZXh0IHg9IjgxMCIgeT0iNTc1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzE2MmQ0MCI+VGlkYWsgbWVtYmVyaSBwZWVyL2xlYXNlIGJhcnU8L3RleHQ+Cjx0ZXh0IHg9IjgxMCIgeT0iNTk1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzE2MmQ0MCI+SW50ZXJuZXQgbGFuZ3N1bmcgdGV0YXAgZGlibG9rIGRpIHNjaGVtYTI8L3RleHQ+CjxyZWN0IHg9IjcwIiB5PSI2NjUiIHdpZHRoPSIzNjAiIGhlaWdodD0iMTAwIiByeD0iMTIiIGZpbGw9IiNlZGY1ZmYiIHN0cm9rZT0iIzI0NWE4ZCIgc3Ryb2tlLXdpZHRoPSIyIi8+Cjx0ZXh0IHg9IjI1MCIgeT0iNzAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzE2MmQ0MCI+U2VydmVyIG1lbWFzYW5nIHBlZXIgZGFuIGxlYXNlPC90ZXh0Pgo8dGV4dCB4PSIyNTAiIHk9IjcyMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPkNsaWVudCBtZW1iYW5ndW4gdHVubmVsIFdpcmVHdWFyZDwvdGV4dD4KPHRleHQgeD0iMjUwIiB5PSI3NDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5QZXJpa3NhIGhhbmRzaGFrZSBkYW4ga29uZWt0aXZpdGFzPC90ZXh0Pgo8cmVjdCB4PSI3MCIgeT0iODEwIiB3aWR0aD0iMzYwIiBoZWlnaHQ9IjEwMCIgcng9IjEyIiBmaWxsPSIjZWRmNWZmIiBzdHJva2U9IiMyNDVhOGQiIHN0cm9rZS13aWR0aD0iMiIvPgo8dGV4dCB4PSIyNTAiIHk9Ijg0NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPlBlcmlrc2Ega2ViaWpha2FuIGxhbHUgbGludGFzPC90ZXh0Pgo8dGV4dCB4PSIyNTAiIHk9Ijg2NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPkxlYXNlL3Nlc2kgdmFsaWQgdGV0YXAgZGlwZXJsdWthbjwvdGV4dD4KPHRleHQgeD0iMjUwIiB5PSI4ODUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5UdW5uZWwgYWt0aWYgYnVrYW4gaXppbiBzZW11YSB0dWp1YW48L3RleHQ+CjxyZWN0IHg9IjcwIiB5PSI5NTUiIHdpZHRoPSIzNjAiIGhlaWdodD0iMTAwIiByeD0iMTIiIGZpbGw9IiNlZGY1ZmYiIHN0cm9rZT0iIzI0NWE4ZCIgc3Ryb2tlLXdpZHRoPSIyIi8+Cjx0ZXh0IHg9IjI1MCIgeT0iOTkwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzE2MmQ0MCI+QXBsaWthc2kgaW50ZXJuYWw6IGlkZW50aXRhcyArIHJlc291cmNlPC90ZXh0Pgo8dGV4dCB4PSIyNTAiIHk9IjEwMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5wcm90b2tvbCArIHBvcnQgaGFydXMgZGlpemlua2FuPC90ZXh0Pgo8dGV4dCB4PSIyNTAiIHk9IjEwMzAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5UaWRhayBhZGEgaXppbiA9IHRvbGFrPC90ZXh0Pgo8cmVjdCB4PSI2MzAiIHk9Ijk1NSIgd2lkdGg9IjM2MCIgaGVpZ2h0PSIxMDAiIHJ4PSIxMiIgZmlsbD0iI2VkZjVmZiIgc3Ryb2tlPSIjMjQ1YThkIiBzdHJva2Utd2lkdGg9IjIiLz4KPHRleHQgeD0iODEwIiB5PSI5OTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5JbnRlcm5ldCB0ZXJrZWxvbGE6IGdhdGV3YXkgYWt0aWY8L3RleHQ+Cjx0ZXh0IHg9IjgxMCIgeT0iMTAxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPmRhbiBncmFudCBpbnRlcm5ldCB1bnR1ayBpZGVudGl0YXM8L3RleHQ+Cjx0ZXh0IHg9IjgxMCIgeT0iMTAzMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPlRhbnBhIGdyYW50ID0gdG9sYWsgaW50ZXJuZXQgZ2F0ZXdheTwvdGV4dD4KPHJlY3QgeD0iNzAiIHk9IjExMDAiIHdpZHRoPSIzNjAiIGhlaWdodD0iMTAwIiByeD0iMTIiIGZpbGw9IiNlM2Y1ZWEiIHN0cm9rZT0iIzI0Njc0NCIgc3Ryb2tlLXdpZHRoPSIyIi8+Cjx0ZXh0IHg9IjI1MCIgeT0iMTEzNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPlRyYWZpayB5YW5nIGRpaXppbmthbiBkYXBhdCBsZXdhdDwvdGV4dD4KPHRleHQgeD0iMjUwIiB5PSIxMTU1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzE2MmQ0MCI+UmVuZXdhbCBiZXJrYWxhOyBsYW5qdXQgZGlhZ3JhbSA1PC90ZXh0Pgo8dGV4dCB4PSIyNTAiIHk9IjExNzUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5MZWFzZSByZW5ld2FsIHRpZGFrIG1lbXBlcnBhbmphbmcgY2VydDwvdGV4dD4KPC9zdmc+Cg==" alt="Flowchart login, enam pemeriksaan dan kebijakan akses" /></p>
+<p>Admission terjadi melalui HTTPS sebelum peer ditambahkan. Sertifikat X.509 tidak
+disisipkan ke handshake WireGuard. Login gagal atau pemeriksaan perangkat gagal
+menghentikan alur. Setelah peer terpasang, handshake/konektivitas perlu diamati;
+status registered, lease valid, peer, handshake dan transfer merupakan fakta berbeda.
+Cabang aplikasi dan internet menunjukkan dua jenis tujuan trafik, bukan keharusan
+mengakses keduanya secara berurutan. Aplikasi memakai izin identitas/resource/
+protokol/port; internet terkelola memakai gateway serta grant internet eksplisit.
+Keduanya tetap dibatasi sesi dan lease. Bab11–14 memuat langkah operasionalnya.</p>
+<h4 id="bagian-1-1-5">1.1.5. Renewal, logout, pencabutan dan pemulihan</h4>
+<p><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDYwIiBoZWlnaHQ9IjExNDAiIHZpZXdCb3g9IjAgMCAxMDYwIDExNDAiIHJvbGU9ImltZyIgYXJpYS1sYWJlbGxlZGJ5PSJ0aXRsZSI+Cjx0aXRsZSBpZD0idGl0bGUiPjUuIFBlbmdoZW50aWFuIGFrc2VzLCBwZW11bGloYW4gZGFuIGF1ZGl0PC90aXRsZT4KPGRlZnM+PG1hcmtlciBpZD0iYXJyb3ciIG1hcmtlcldpZHRoPSIxMCIgbWFya2VySGVpZ2h0PSIxMCIgcmVmWD0iOCIgcmVmWT0iNSIgb3JpZW50PSJhdXRvIj48cGF0aCBkPSJNMCwwIEw5LDUgTDAsMTAiIGZpbGw9IiM0MDU3NmMiLz48L21hcmtlcj48L2RlZnM+CjxyZWN0IHdpZHRoPSIxMDYwIiBoZWlnaHQ9IjExNDAiIGZpbGw9IndoaXRlIi8+Cjx0ZXh0IHg9IjQwIiB5PSIzOCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjMiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjMTczZDVhIj41LiBQZW5naGVudGlhbiBha3NlcywgcGVtdWxpaGFuIGRhbiBhdWRpdDwvdGV4dD4KPHBvbHlsaW5lIHBvaW50cz0iMjUwLDE4NSAyNTAsMjMwIiBmaWxsPSJub25lIiBzdHJva2U9IiM0MDU3NmMiIHN0cm9rZS13aWR0aD0iMiIgbWFya2VyLWVuZD0idXJsKCNhcnJvdykiLz4KPHRleHQgeD0iMTU1IiB5PSIyMTMiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE1IiBmaWxsPSIjMjczZTUyIj5SZXZva2U8L3RleHQ+Cjxwb2x5bGluZSBwb2ludHM9IjI1MCwxODUgMjUwLDIwOCA4MTAsMjA4IDgxMCwyMzAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzQwNTc2YyIgc3Ryb2tlLXdpZHRoPSIyIiBtYXJrZXItZW5kPSJ1cmwoI2Fycm93KSIvPgo8dGV4dCB4PSI0NjAiIHk9IjIwMCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTUiIGZpbGw9IiMyNzNlNTIiPlBlbWljdSBsYWluPC90ZXh0Pgo8cG9seWxpbmUgcG9pbnRzPSIyNTAsMzMwIDI1MCwzNzUiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzQwNTc2YyIgc3Ryb2tlLXdpZHRoPSIyIiBtYXJrZXItZW5kPSJ1cmwoI2Fycm93KSIvPgo8cG9seWxpbmUgcG9pbnRzPSI4MTAsMzMwIDgxMCwzNTMgMjUwLDM1MyAyNTAsMzc1IiBmaWxsPSJub25lIiBzdHJva2U9IiM0MDU3NmMiIHN0cm9rZS13aWR0aD0iMiIgbWFya2VyLWVuZD0idXJsKCNhcnJvdykiLz4KPHBvbHlsaW5lIHBvaW50cz0iMjUwLDQ3NSAyNTAsNTIwIiBmaWxsPSJub25lIiBzdHJva2U9IiM0MDU3NmMiIHN0cm9rZS13aWR0aD0iMiIgbWFya2VyLWVuZD0idXJsKCNhcnJvdykiLz4KPHBvbHlsaW5lIHBvaW50cz0iMjUwLDYyMCAyNTAsNjY1IiBmaWxsPSJub25lIiBzdHJva2U9IiM0MDU3NmMiIHN0cm9rZS13aWR0aD0iMiIgbWFya2VyLWVuZD0idXJsKCNhcnJvdykiLz4KPHBvbHlsaW5lIHBvaW50cz0iMjUwLDc2NSAyNTAsODEwIiBmaWxsPSJub25lIiBzdHJva2U9IiM0MDU3NmMiIHN0cm9rZS13aWR0aD0iMiIgbWFya2VyLWVuZD0idXJsKCNhcnJvdykiLz4KPHBvbHlsaW5lIHBvaW50cz0iNDMwLDg2MCA2MzAsODYwIiBmaWxsPSJub25lIiBzdHJva2U9IiM0MDU3NmMiIHN0cm9rZS13aWR0aD0iMiIgbWFya2VyLWVuZD0idXJsKCNhcnJvdykiLz4KPHRleHQgeD0iNDYwIiB5PSI4NTAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE1IiBmaWxsPSIjMjczZTUyIj5SZWNvdmVyeSBsb2thbDwvdGV4dD4KPHBvbHlsaW5lIHBvaW50cz0iMjUwLDkxMCAyNTAsOTU1IiBmaWxsPSJub25lIiBzdHJva2U9IiM0MDU3NmMiIHN0cm9rZS13aWR0aD0iMiIgbWFya2VyLWVuZD0idXJsKCNhcnJvdykiLz4KPHBvbHlsaW5lIHBvaW50cz0iODEwLDkxMCA4MTAsOTU1IiBmaWxsPSJub25lIiBzdHJva2U9IiM0MDU3NmMiIHN0cm9rZS13aWR0aD0iMiIgbWFya2VyLWVuZD0idXJsKCNhcnJvdykiLz4KPHJlY3QgeD0iNzAiIHk9Ijg1IiB3aWR0aD0iMzYwIiBoZWlnaHQ9IjEwMCIgcng9IjEyIiBmaWxsPSIjZWRmNWZmIiBzdHJva2U9IiMyNDVhOGQiIHN0cm9rZS13aWR0aD0iMiIvPgo8dGV4dCB4PSIyNTAiIHk9IjEyMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPktvbmVrc2kgYWt0aWYgZGFuIHJlbmV3YWwgYmVya2FsYTwvdGV4dD4KPHRleHQgeD0iMjUwIiB5PSIxNDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5QYW50YXUgc2VzaSwgbGVhc2UsIENBL0NSTCBkYW4gcG9saWN5PC90ZXh0Pgo8dGV4dCB4PSIyNTAiIHk9IjE2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPlN0YXR1cyBnYWdhbCBkaXBlcmlrc2EgPSB0aWRhayBkaWtldGFodWk8L3RleHQ+CjxyZWN0IHg9IjcwIiB5PSIyMzAiIHdpZHRoPSIzNjAiIGhlaWdodD0iMTAwIiByeD0iMTIiIGZpbGw9IiNmZmYwZWQiIHN0cm9rZT0iI2EzM2UzMiIgc3Ryb2tlLXdpZHRoPSIyIi8+Cjx0ZXh0IHg9IjI1MCIgeT0iMjY1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzE2MmQ0MCI+QWRtaW4gcmV2b2tlIHNlcnRpZmlrYXQ8L3RleHQ+Cjx0ZXh0IHg9IjI1MCIgeT0iMjg1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzE2MmQ0MCI+Q0EgbWVuY2F0YXQgc2VyaWFsIGRhbiBtZW5lcmJpdGthbiBDUkw8L3RleHQ+Cjx0ZXh0IHg9IjI1MCIgeT0iMzA1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzE2MmQ0MCI+U2VydmVyL2RhZW1vbiBtZW5jYWJ1dCBha3NlcyB0ZXJrYWl0PC90ZXh0Pgo8cmVjdCB4PSI2MzAiIHk9IjIzMCIgd2lkdGg9IjM2MCIgaGVpZ2h0PSIxMDAiIHJ4PSIxMiIgZmlsbD0iI2ZmZjBlZCIgc3Ryb2tlPSIjYTMzZTMyIiBzdHJva2Utd2lkdGg9IjIiLz4KPHRleHQgeD0iODEwIiB5PSIyNjUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5QZW1pY3UgbGFpbjogbG9nb3V0LCBha3VuIG5vbmFrdGlmLDwvdGV4dD4KPHRleHQgeD0iODEwIiB5PSIyODUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5sZWFzZS9zZXNpIGhhYmlzIGF0YXUgcmVuZXdhbCBnYWdhbDwvdGV4dD4KPHRleHQgeD0iODEwIiB5PSIzMDUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5TY29wZSBwZW11dHVzYW4gc2VzdWFpIHNlc2kvaWRlbnRpdGFzPC90ZXh0Pgo8cmVjdCB4PSI3MCIgeT0iMzc1IiB3aWR0aD0iMzYwIiBoZWlnaHQ9IjEwMCIgcng9IjEyIiBmaWxsPSIjZmZmMGVkIiBzdHJva2U9IiNhMzNlMzIiIHN0cm9rZS13aWR0aD0iMiIvPgo8dGV4dCB4PSIyNTAiIHk9IjQxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPlBlZXIvaXppbiB0ZXJrYWl0IGRpaGVudGlrYW48L3RleHQ+Cjx0ZXh0IHg9IjI1MCIgeT0iNDMwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzE2MmQ0MCI+QWtzZXMgYmFydSBkaXRvbGFrIHNlc3VhaSBwb2xpY3k8L3RleHQ+Cjx0ZXh0IHg9IjI1MCIgeT0iNDUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzE2MmQ0MCI+VGlkYWsgbWVuamFuamlrYW4gcGVtdXR1c2FuIG5vbCBkZXRpazwvdGV4dD4KPHJlY3QgeD0iNzAiIHk9IjUyMCIgd2lkdGg9IjM2MCIgaGVpZ2h0PSIxMDAiIHJ4PSIxMiIgZmlsbD0iI2VkZjVmZiIgc3Ryb2tlPSIjMjQ1YThkIiBzdHJva2Utd2lkdGg9IjIiLz4KPHRleHQgeD0iMjUwIiB5PSI1NTUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5DbGllbnQgbWVuZ2hlbnRpa2FuIHR1bm5lbCBtaWxpa255YTwvdGV4dD4KPHRleHQgeD0iMjUwIiB5PSI1NzUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5DbGVhbnVwIGdhZ2FsOiBwZXJ0YWhhbmthbiBjb25maWc8L3RleHQ+Cjx0ZXh0IHg9IjI1MCIgeT0iNTk1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzE2MmQ0MCI+TG9nb3V0IG9mZmxpbmU6IHNlcnZlciBiZWx1bSB0ZXJrb25maXJtYXNpPC90ZXh0Pgo8cmVjdCB4PSI3MCIgeT0iNjY1IiB3aWR0aD0iMzYwIiBoZWlnaHQ9IjEwMCIgcng9IjEyIiBmaWxsPSIjZmZmMGVkIiBzdHJva2U9IiNhMzNlMzIiIHN0cm9rZS13aWR0aD0iMiIvPgo8dGV4dCB4PSIyNTAiIHk9IjcwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPlNjaGVtYTI6IGxvY2tkb3duIHRldGFwIGFrdGlmPC90ZXh0Pgo8dGV4dCB4PSIyNTAiIHk9IjcyMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPkRpc2Nvbm5lY3QvcmVib290IHRpZGFrIG90b21hdGlzPC90ZXh0Pgo8dGV4dCB4PSIyNTAiIHk9Ijc0MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPm1lbWJ1a2Ega2VtYmFsaSBpbnRlcm5ldCBsYW5nc3VuZzwvdGV4dD4KPHJlY3QgeD0iNzAiIHk9IjgxMCIgd2lkdGg9IjM2MCIgaGVpZ2h0PSIxMDAiIHJ4PSIxMiIgZmlsbD0iI2VkZjVmZiIgc3Ryb2tlPSIjMjQ1YThkIiBzdHJva2Utd2lkdGg9IjIiLz4KPHRleHQgeD0iMjUwIiB5PSI4NDUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5PcGVyYXRvciBwZXJpa3NhIHBlbnllYmFiIGRhbiBzdGF0ZTwvdGV4dD4KPHRleHQgeD0iMjUwIiB5PSI4NjUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5SZXZva2UgcGVybHUgaWRlbnRpdGFzIHBlbmdnYW50aSBzYWg8L3RleHQ+Cjx0ZXh0IHg9IjI1MCIgeT0iODg1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzE2MmQ0MCI+S29uZWtzaSBiYXJ1IHdhamliIGxvZ2luL2FkbWlzc2lvbiB2YWxpZDwvdGV4dD4KPHJlY3QgeD0iNjMwIiB5PSI4MTAiIHdpZHRoPSIzNjAiIGhlaWdodD0iMTAwIiByeD0iMTIiIGZpbGw9IiNlZGY1ZmYiIHN0cm9rZT0iIzI0NWE4ZCIgc3Ryb2tlLXdpZHRoPSIyIi8+Cjx0ZXh0IHg9IjgxMCIgeT0iODQ1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzE2MmQ0MCI+UmVjb3ZlcnkgcG9saWN5IG9sZWggYWRtaW4gbG9rYWw8L3RleHQ+Cjx0ZXh0IHg9IjgxMCIgeT0iODY1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzE2MmQ0MCI+UGFzdGlrYW4gb3duZXJzaGlwIGRhbiB0dW5uZWwgYmVyaGVudGk8L3RleHQ+Cjx0ZXh0IHg9IjgxMCIgeT0iODg1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzE2MmQ0MCI+UHVsaWhrYW4gYmFja3VwIHBvbGljeSBzZWNhcmEgdGVyZW5jYW5hPC90ZXh0Pgo8cmVjdCB4PSI3MCIgeT0iOTU1IiB3aWR0aD0iMzYwIiBoZWlnaHQ9IjEwMCIgcng9IjEyIiBmaWxsPSIjZTNmNWVhIiBzdHJva2U9IiMyNDY3NDQiIHN0cm9rZS13aWR0aD0iMiIvPgo8dGV4dCB4PSIyNTAiIHk9Ijk5MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPkF1ZGl0IHNlcGFuamFuZyBwcm9zZXM6IHdha3R1LCBha3Rvciw8L3RleHQ+Cjx0ZXh0IHg9IjI1MCIgeT0iMTAxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxNjJkNDAiPmFrc2ksIGhhc2lsIGRhbiBhbGFzYW4geWFuZyBhbWFuPC90ZXh0Pgo8dGV4dCB4PSIyNTAiIHk9IjEwMzAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5BcnNpcCB0YW5wYSBtZW1idWFuZyBidWt0aSBsYW1hPC90ZXh0Pgo8cmVjdCB4PSI2MzAiIHk9Ijk1NSIgd2lkdGg9IjM2MCIgaGVpZ2h0PSIxMDAiIHJ4PSIxMiIgZmlsbD0iI2VkZjVmZiIgc3Ryb2tlPSIjMjQ1YThkIiBzdHJva2Utd2lkdGg9IjIiLz4KPHRleHQgeD0iODEwIiB5PSI5OTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5SZWthbSB0ZXJwaXNhaDogcmVnaXN0ZXJlZCwgbGVhc2UsPC90ZXh0Pgo8dGV4dCB4PSI4MTAiIHk9IjEwMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5wZWVyLCBoYW5kc2hha2UgZGFuIHRyYW5zZmVyPC90ZXh0Pgo8dGV4dCB4PSI4MTAiIHk9IjEwMzAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMTYyZDQwIj5KYW5nYW4gbWVuY2F0YXQgcGFzc3dvcmQvdG9rZW4va2V5PC90ZXh0Pgo8L3N2Zz4K" alt="Flowchart penghentian akses dan audit operasional" /></p>
+<p>Revoke sertifikat mencabut identitas terkait; logout mencabut sesi yang diminta
+beserta akses yang dimilikinya, tanpa memutus sesi lain di luar cakupan. Penghapusan
+grant internet menutup izin internet, tidak otomatis berarti sertifikat dicabut
+atau seluruh izin aplikasi dihapus. CA/renewal gagal tidak memberi lease baru;
+akses lama dibatasi lease dan pemantauan, sehingga kegagalan tidak boleh diklaim
+selalu memutus trafik pada detik yang sama. Logout saat server tidak terjangkau
+harus menampilkan pencabutan server belum terkonfirmasi.</p>
+<p>Lockdown schema2 tetap aktif setelah disconnect dan reboot; koneksi ulang butuh
+pemeriksaan baru. Recovery policy merupakan tindakan admin lokal terencana,
+bukan efek otomatis logout atau uninstall. Audit dilakukan sepanjang alur,
+walaupun ditampilkan di bagian bawah diagram. Rincian operasi ada di Bab12 dan16–18.</p>
+<p><strong>Batas bukti:</strong> flowchart menjelaskan source, bukan laporan seluruh pengujian
+end-to-end. EXE umum diuji di Windows10 dan Windows11; resume EXE per-device
+schema1 diuji di Windows10. EXE per-device schema2, UAC interaktif penuh dan PC fisik belum
+dibuktikan oleh uji wrapper. Policy internet dan client native punya bukti VM
+terpisah pada Windows10/11. Lihat <a href="VALIDASI_EXE_2026-10-29.md">validasi EXE</a> dan
+<a href="CHECKPOINT.md">checkpoint</a>. EXE/ZIP yang sudah diterbitkan masih menyertakan
+salinan manual saat build; flowchart baru tersedia di manual repo dan HTML terbaru.</p>
 <h2 id="bab-2">2. Arsitektur, akun dan batas akses</h2>
 <p>VanGuard mengizinkan perangkat menjadi peer WireGuard setelah akun karyawan
 terautentikasi dan identitas perangkat lolos pemeriksaan. Sistem tidak mengubah
@@ -1054,6 +1121,31 @@ TLS/CRL. Baca log unit secara privat, perbaiki service/waktu/lock/dependensi lal
 ulang. Jangan membuat sertifikat dummy untuk health check. Server baru harus
 memiliki nol peer sebelum admission. Pada sistem aktif, periksa scope lease sah
 alih-alih menghapus semua peer hanya agar keluaran kosong.</p>
+<p><strong>Diagnostik lokal tambahan — kandidat source31Oktober, belum rollout paket VM.</strong>
+Jika <code>unknown</code> berulang, versi source baru menyediakan <code>--diagnose</code> untuk
+membedakan kegagalan koneksi, TLS, waktu baca atau lock tanpa menampilkan rahasia.
+Periksa <code>python -m vanguard.health --help</code> pada runtime yang akan digunakan:
+paket0.1.14 yang terpasang sebelum perubahan ini belum memiliki opsi tersebut.
+Sesudah kandidat diuji dan di-deploy, jalankan di VM-SERVER menggunakan environment
+layanan yang sama, tanpa <code>set -x</code> atau mencetak isi environment:</p>
+<pre><code class="language-bash">sudo bash -c 'set -a; . /etc/vanguard/server.env; set +a
+exec /opt/vanguard/venv/bin/python -m vanguard.health server --diagnose'
+</code></pre>
+<p>Baca <code>status</code> dan <code>checks</code>, lalu <code>diagnostics.&lt;check&gt;.reason</code> serta <code>elapsed_ms</code>.
+<code>lock_busy</code> berarti lock tidak didapat dalam anggaran; <code>connect_timeout</code>,
+<code>read_timeout</code> dan <code>tls_error</code> berasal dari kelas exception library. Kode ini
+bukan bukti pasti fase jaringan: timeout handshake TLS juga dapat dilaporkan
+library sebagai <code>read_timeout</code>. <code>process_timeout</code>
+berarti subprocess melewati batas6detik; detail check yang belum selesai tidak
+tersedia. <code>check_not_ready</code> hanya berarti pemeriksaan mengembalikan false; periksa
+dependency terkait sebelum menyimpulkan sebab. Exit0 CLI hanya berarti JSON
+berhasil ditulis, bukan status siap. Hasil sehat sesudah retry tidak menghapus
+kegagalan sebelumnya. Catat keduanya beserta waktu pengamatan.</p>
+<p>Mode ini tidak memperpanjang timeout, menerbitkan CRL/sertifikat, memperbaiki state
+CA, atau menambah peer. Jangan menggunakan opsi diagnostik sebagai pengganti
+admission. Untuk role CA/admin, gunakan environment dan user service yang sesuai
+agar hasil izin akses mencerminkan layanan tersebut. Kandidat yang masih staging
+harus disebut sebagai staging dalam laporan, bukan versi paket yang terpasang.</p>
 <p>Pada browser komputer admin, impor <strong>root publik terverifikasi</strong> ke trust store
 yang dipilih kebijakan organisasi. Buka <code>https://192.168.100.40:5000</code>; periksa
 issuer/SAN/fingerprint. Jangan menggunakan tombol mengabaikan error sertifikat.
@@ -1510,6 +1602,437 @@ keberadaan file JSON saja tidak mengaktifkan enforcement.</p>
 versi, ID uji, lease/handshake/transfer, hasil HTTP dan lokasi bukti tersaring.
 Jangan mengisi PASS hanya karena checklist tersedia. Tes Linux sebelumnya260/1
 bukan bukti kedua endpoint fisik.</p>
+<h3 id="bagian-14-0">14.0. Setup terpadu: satu folder offline, satu BAT utama (kandidat0.1.14)</h3>
+<p>Untuk endpoint baru, admin dapat membuat paket <strong>per perangkat</strong> yang sudah berisi
+Python, WireGuard, aplikasi, profil server, Root CA publik dan alokasi device/IP.
+Pengguna hanya menjalankan <strong>Setup-VanGuard.bat</strong>. BAT/script lain di folder adalah
+komponen internal atau alat maintenance; pengguna tidak perlu menjalankannya satu
+per satu. Ini kandidat baru; lihat checkpoint untuk hasil native versi paket.
+ZIP stabil0.1.12 tidak otomatis memiliki wizard ini.
+Template kandidat offline untuk admin tersedia di
+<a href="../downloads/README.md">downloads</a>. Template belum memiliki identitas/profil
+per-device; gunakan folder <code>wheels</code> dan <code>runtimes</code> di dalamnya pada perintah
+builder berikut. User akhir mendapat folder hasil builder, bukan template kosong.</p>
+<p>BAT <code>/prepare-only /nopause</code> sudah diuji pada VM Windows10 LTSC19044 dan
+Windows11 build26300: persiapan/impor dan resume menjaga kunci, tanpa tunnel
+sebelum login. Rincian <a href="VALIDASI_SETUP_TERPADU_2026-10-29.md">bukti setup terpadu</a>
+membedakan pengujian BAT otomatis, client native, dan jalur UAC/login interaktif
+yang masih <strong>BELUM_TERUJI</strong>. Hasil ini tidak mewakili semua edisi Windows atau PC fisik.</p>
+<p><strong>Yang tetap membutuhkan manusia:</strong> persetujuan UAC administrator Windows,
+persetujuan pendaftaran oleh admin VanGuard, serta login karyawan. Paket tidak
+boleh memuat password, OTP, token management, private key CA atau private key
+perangkat. CA utama tidak dibuat ulang pada setiap endpoint. Kunci perangkat
+dibuat di endpoint, lalu CA yang sudah ada menerbitkan sertifikat dari CSR.</p>
+<p><strong>Persiapan satu kali oleh admin Linux:</strong></p>
+<ol>
+<li>
+<p>Siapkan layanan CA/server/admin, HTTPS tepercaya dan alokasi IP tunnel unik.
+Pilih profil schema1 untuk aplikasi internal atau schema2 untuk internet
+terkelola. Profil schema2 akan mengaktifkan lockdown pada endpoint: internet
+langsung diblok sebelum enrollment. Pastikan gateway/admission bisa dijangkau
+dan console/recovery admin tersedia. Izin internet gateway tetap terpisah.</p>
+</li>
+<li>
+<p>Siapkan <code>profile.json</code> dan <code>root.crt</code> publik yang benar. Konfirmasi fingerprint
+root serta public key WireGuard server dari sumber admin tepercaya. Gunakan
+wheel aplikasi0.1.14 terbaru bersama wheel dependensi dan runtime offline
+terverifikasi; jangan mencampur wheel r8/0.1.13 dengan source wizard baru.</p>
+</li>
+<li>
+<p>Bangun paket per-device; ganti nilai contoh sesuai alokasi:</p>
+<pre><code class="language-bash">.venv/bin/python scripts/build_endpoint_package.py \
+  --wheelhouse /path/windows-wheels \
+  --runtime-directory /path/runtime-installers \
+  --output /path/paket-pc-karyawan-01 \
+  --profile /path/profile.json --root /path/root.crt \
+  --device-id pc-karyawan-01 --tunnel-ip 10.8.0.10 \
+  --expected-root-sha256 FINGERPRINT_ROOT_64_HEX \
+  --expected-server-key PUBLIC_KEY_WIREGUARD_SERVER
+</code></pre>
+<p>Output menyertakan <code>provision.json</code>, <code>profile.json</code> dan <code>root.crt</code> dalam
+checksum manifest. Bagikan seluruh folder/ZIP dan checksum melalui jalur
+admin tepercaya. Pin di dalam folder tidak menggantikan verifikasi asal
+paket. Satu alokasi tidak boleh digunakan untuk dua komputer.</p>
+</li>
+</ol>
+<p><strong>Langkah pada Windows:</strong></p>
+<ol>
+<li>Ekstrak seluruh paket terverifikasi ke folder admin di <code>C:\Program Files</code>.
+Jalankan <code>Setup-VanGuard.bat</code> dan setujui UAC. Wizard memasang prasyarat yang
+belum tersedia, aplikasi, profil, serta policy internet bila schema2.</li>
+<li>Wizard membuat kunci lokal dan berkas publik
+<code>C:\Program Files\VanGuardEndpointData\enrollment-request.json</code>.
+Kirim <strong>hanya berkas ini</strong> kepada admin melalui cara transfer yang disetujui.
+Jika lockdown membatasi transfer jaringan, gunakan console/USB admin; jangan
+membuka firewall secara sembarang atau mengirim seluruh folder <code>identity</code>.</li>
+<li>Admin mendaftarkan request melalui dashboard seperti Bab11–12: isi metadata,
+ikat akun karyawan, terbitkan sertifikat, lalu unduh bundle publik untuk
+perangkat itu. Registrasi ini belum membuat peer. Admin memberi izin resource
+dan, untuk schema2, izin internet sesuai kebijakan.</li>
+<li>Pada wizard yang sama, masukkan path bundle ZIP saat diminta. Bila admin belum
+selesai, tekan Enter: wizard keluar dengan kode20, <strong>menunggu persetujuan</strong>.
+Jalankan BAT yang sama lagi setelah bundle diterima. Kunci/config yang sama
+digunakan; konflik/identitas parsial ditolak dan dipertahankan untuk inspeksi.
+Admin juga dapat menaruh bundle pada
+<code>C:\Program Files\VanGuardEndpointData\approval.zip</code>; wizard memvalidasi
+binding sebelum import dan tidak percaya nama file sebagai bukti persetujuan.</li>
+<li>Masukkan username karyawan dan password ketika diminta. Password tidak disimpan
+oleh wizard. Sesudah login, proses connect menjalankan enam pemeriksaan,
+menambah peer hanya setelah admission, lalu melakukan renewal. Terminal harus
+tetap terbuka. Gunakan Ctrl+C untuk menghentikan koneksi; logout tetap melalui
+launcher VanGuard agar sesi server dicabut seperti Bab12.</li>
+</ol>
+<p><code>wizard-state.json</code> menyimpan tahap terakhir tanpa rahasia; bukan sumber izin.
+Revisi installer0.1.14-fix1 memperbaiki kasus pemasangan ulang terputus: jika
+metadata masih menunjuk paket yang sama tetapi runtime belum lengkap, BAT masuk
+kembali ke installer terverifikasi untuk membuat release baru. Kunci/config dan
+release sebelumnya tetap disimpan. Bila policy internet terkelola aktif, guard
+maintenance tetap menolak sampai recovery admin terencana dilakukan; lihat
+Bab14.1. Metadata rusak/ambigu tetap membutuhkan inspeksi operator. Lihat
+<a href="AUDIT_WIZARD_2026-10-29.md">audit resume wizard</a> untuk bukti dan batas uji.</p>
+<p>Setiap resume memeriksa fakta runtime/config/key/policy lagi. Tahap
+<code>WAITING_APPROVAL</code> berarti belum ada sertifikat; <code>READY_FOR_LOGIN</code> belum berarti
+ada akses VPN; <code>CONNECTING</code> bukan bukti handshake; cek hasil koneksi dan gateway.
+Kode3010 berarti runtime meminta restart: simpan pekerjaan, restart sendiri,
+lalu jalankan BAT yang sama. Kode1 berarti tahap gagal; jangan menghapus kunci
+atau konfigurasi untuk memaksa lanjut. Tidak ada autologin setelah reboot.</p>
+<p>Untuk pengujian admin tanpa prompt login, jalankan
+<code>Setup-VanGuard.bat /prepare-only /nopause</code> dari terminal administrator.
+Padanan PowerShell adalah <code>Setup-VanGuard.ps1 -PrepareOnly</code>. Keduanya
+menyiapkan endpoint dan memproses <code>approval.zip</code> bila tersedia; hasil20 menunggu
+bundle, hasil0 siap login <strong>tanpa membuat tunnel</strong>. Opsi ini tetap memerlukan
+hak admin dan paket tepercaya. Paket berbeda/upgrade saat lockdown aktif harus
+melalui recovery maintenance yang terdokumentasi; wizard tidak membuka internet
+secara otomatis saat error. Lihat Bab14.1 untuk batas dan pemulihan policy.</p>
+<h4 id="bagian-14-0-1">14.0.1. Alternatif satu file EXE offline (installer0.1.14-fix1)</h4>
+<p>EXE membungkus paket offline dan menjalankan installer/wizard yang sama. Python,
+WireGuard, dependensi Python dan aplikasi ada di dalamnya; tidak membutuhkan
+GitHub CLI, Python yang sudah terpasang, atau unduhan saat instalasi. Target
+tetap Windows10 21H2/22H2 atau Windows11 <strong>x64</strong>, dengan .NET Framework bawaan
+Windows. ARM64/x86 bukan target paket ini. Pendaftaran/login tetap membutuhkan
+koneksi ke layanan VanGuard yang sudah disiapkan admin.</p>
+<p>Ada dua jenis paket yang perlu dibedakan:</p>
+<table>
+<thead>
+<tr>
+<th>EXE</th>
+<th>Isi dan tindakan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Setup-VanGuard-0.1.14-fix1.exe</code> dari downloads</td>
+<td>Paket umum: memasang prasyarat/aplikasi. Belum berisi profil server, CA publik atau alokasi perangkat; admin melanjutkan konfigurasi Bab11–12 atau menyediakan EXE per-device.</td>
+</tr>
+<tr>
+<td>EXE per-device buatan admin</td>
+<td>Profil, CA publik dan alokasi sudah disiapkan. Menjalankan seluruh wizard Bab14.0 sampai request, approval dan login/connect. Satu alokasi hanya untuk satu komputer.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Admin menyiapkan EXE per-device:</strong> bangun folder paket dengan perintah Linux
+di Bab14.0 terlebih dahulu. Salin seluruh folder hasilnya dan tiga berkas source
+<code>deploy/endpoint/exe/Build-Exe.ps1</code>, <code>VanGuardSetup.cs</code>, <code>app.manifest</code> dari commit
+repo tepercaya ke Windows build milik admin. Tidak perlu mengubah CA atau
+menambahkan password/private key ke folder. Jalankan PowerShell sesuai kebijakan
+organisasi; contoh lokasi setelah disalin ke <code>C:\Program Files\VanGuardBuild</code>:</p>
+<pre><code class="language-powershell">&amp; 'C:\Program Files\VanGuardBuild\source\Build-Exe.ps1' `
+  -Package 'C:\Program Files\VanGuardBuild\paket-pc-karyawan-01' `
+  -Output 'C:\Program Files\VanGuardBuild\Setup-PC-Karyawan-01.exe'
+Get-FileHash 'C:\Program Files\VanGuardBuild\Setup-PC-Karyawan-01.exe' -Algorithm SHA256
+</code></pre>
+<p>Builder menggunakan compiler .NET Framework yang sudah ada di Windows x64 dan
+menolak output lama, anggota tambahan serta checksum input salah. Simpan folder
+<code>.exe.build</code> dan metadata <code>.exe.json</code> sebagai bukti build privat admin; bagikan
+<strong>EXE saja beserta SHA256</strong> melalui jalur tepercaya. Gunakan nama output baru
+untuk build ulang. EXE proyek ini <strong>belum ditandatangani Authenticode</strong>. Hash
+internal mendeteksi kerusakan, bukan membuktikan penerbit; konfirmasikan asal dan
+SHA256 sebelum mengeksekusi. Jika SmartScreen/kebijakan organisasi memblokir,
+minta pemeriksaan admin; jangan menonaktifkan proteksi atau execution policy.</p>
+<p><strong>Pada endpoint:</strong> cocokkan SHA256 dengan yang diberikan admin, klik dua kali
+EXE dan setujui UAC. EXE mengekstrak paket ke
+<code>C:\Program Files\VanGuardPackages\&lt;SHA256-payload&gt;</code> yang dibatasi untuk
+administrator/SYSTEM. Manual HTML tersedia di folder tersebut. Untuk EXE
+per-device, ikuti langkah request→approval→login pada Bab14.0. Jalankan EXE yang
+sama lagi setelah admin memberi bundle; kunci yang sudah ada dipertahankan.
+Jangan mengubah profil atau menambahkan approval ke cache paket; tempatkan bundle
+pada <code>VanGuardEndpointData\approval.zip</code> atau gunakan prompt wizard.</p>
+<p>Opsi terminal administrator:</p>
+<pre><code class="language-powershell"># Per-device: persiapan/import tanpa prompt login; exit20 menunggu approval.
+&amp; '.\Setup-PC-Karyawan-01.exe' /prepare-only /nopause
+# Kedua jenis: hanya periksa dan ekstrak, tanpa instalasi atau konfigurasi.
+&amp; '.\Setup-VanGuard-0.1.14-fix1.exe' /extract-only /nopause
+</code></pre>
+<p>Kode keluar installer diteruskan:0 tahap selesai,20 menunggu approval,3010 restart
+manual diperlukan,1 gagal. Pada EXE umum,0 hanya berarti aplikasi terpasang;
+bukan bukti enrollment/VPN. Cache diperiksa ulang setiap peluncuran. Jika cache
+tidak lengkap/diubah, EXE berhenti dan mempertahankan bukti; admin memeriksa serta
+mengarsipkan folder bermasalah sebelum mencoba lagi. Jangan menghapus identitas,
+config atau state firewall untuk memaksa lanjut. Folder <code>pending-*</code> yang tersisa
+bukan bukti instalasi sukses. Rename folder tidak menjamin ketahanan power-loss.</p>
+<p>Kandidat EXE tersedia pada branch <code>feature/2026-10-22-physical-endpoints</code>.
+Lihat <a href="https://github.com/LuiLuiLui886/vanguard-ztna/blob/feature/2026-10-22-physical-endpoints/docs/VALIDASI_EXE_2026-10-29.md">validasi EXE</a>
+untuk pengujian Windows10 native.
+Uji30Oktober menambahkan EXE umum pada Windows11 build26300: ekstraksi/resume,
+penolakan payload rusak dan instalasi sungguhan exit0 lulus, dengan key/config
+utama serta profil firewall tetap sama. Lihat laporan kelayakan30Oktober untuk
+lingkup lengkap; hasil ini memakai runtime yang sudah tersedia.
+UAC klik langsung, SmartScreen dari browser, Windows baru
+tanpa runtime, reboot3010, login interaktif penuh dan PC fisik <strong>BELUM_TERUJI</strong>
+untuk wrapper ini. Bukti BAT/runtime sebelumnya dicatat terpisah.</p>
+<h5 id="bagian-14-0-1-1">14.0.1.1. Langkah dari nol memakai EXE yang tersedia di GitHub</h5>
+<p>Alur ini khusus <strong>EXE umum</strong> <code>Setup-VanGuard-0.1.14-fix1.exe</code>. Setelah installer
+selesai, konfigurasi dan enrollment dilakukan dengan launcher di bawah. Jika admin
+sudah memberikan EXE per-device, gunakan alur wizard pada Bab14.0; jangan menjalankan
+<code>init</code> kedua kali pada identitas yang sudah dibuat wizard. Antarmuka saat ini berupa
+terminal dengan pertanyaan teks, belum berupa formulir GUI.</p>
+<p><strong>1. Admin menyiapkan sistem dan data endpoint.</strong> Nyalakan CA/server/admin dan
+pastikan HTTPS/readiness serta jalur WireGuard dapat dijangkau PC. Instalasi EXE
+di PC tidak memasang backend Linux. Admin menyediakan:</p>
+<ul>
+<li><code>profile.json</code> dan <code>root.crt</code> publik dari sistem yang akan dipakai.</li>
+<li>Fingerprint SHA256 root dan public key WireGuard server yang dikonfirmasi lewat
+kanal tepercaya; jangan menggunakan pin milik fixture pengujian.</li>
+<li>Device ID unik, IP tunnel yang belum dipakai, serta akun karyawan aktif.</li>
+<li>Hak akses aplikasi; untuk internet terkelola, gateway Linux dan grant internet
+juga harus sudah disiapkan. Schema2 memerlukan persiapan dan recovery Bab14.1.</li>
+</ul>
+<p>CA utama tetap dipakai. <strong>Tidak membuat Root CA baru untuk setiap komputer.</strong>
+Alamat lab <code>192.168.100.x</code> hanya bisa dipakai jika jaringan PC memiliki jalur ke
+lab; keberhasilan memasang EXE tidak membuktikan jalur tersebut tersedia.</p>
+<p><strong>2. Unduh dan periksa installer.</strong> Buka branch
+<code>feature/2026-10-22-physical-endpoints</code>, folder <code>downloads</code>, lalu unduh
+<a href="../downloads/Setup-VanGuard-0.1.14-fix1.exe">Setup-VanGuard-0.1.14-fix1.exe</a>
+melalui tombol <strong>Download raw file</strong> GitHub. Git/GitHub CLI tidak diperlukan.
+Di PowerShell, dari folder unduhan:</p>
+<pre><code class="language-powershell">Get-FileHash '.\Setup-VanGuard-0.1.14-fix1.exe' -Algorithm SHA256
+</code></pre>
+<p>Untuk artefak ini hasilnya harus:
+<code>f74a3b7b72373dbe55c1cc5b771938108cc683e930949c861cea7422415c7f69</code>.
+Pastikan nilai tersebut juga cocok dengan salinan/checksum tepercaya dari admin.
+EXE per-device memiliki hash berbeda yang diberikan pembuatnya. Bila berbeda,
+berhenti sebelum menjalankan installer. Paket belum memiliki tanda tangan
+Authenticode; blokir organisasi/SmartScreen perlu ditinjau admin, bukan diatasi
+dengan mematikan proteksi.</p>
+<p><strong>3. Pasang di Windows.</strong> Simpan pekerjaan, klik kanan EXE → <strong>Run as administrator</strong>
+dan setujui UAC. Tunggu terminal menyatakan aplikasi terpasang/exit0. Installer
+memasang Python, WireGuard dan dependensi bila diperlukan; runtime yang sesuai
+dan sudah ada digunakan kembali. Jika keluar3010, restart Windows lalu jalankan
+EXE yang sama. Jika keluar1, simpan pesan kegagalan untuk admin dan jangan
+menghapus key/config. Jangan menjalankan beberapa installer bersamaan.</p>
+<p>Hasil normal EXE umum: aplikasi terpasang, <strong>belum ada sertifikat perangkat,
+login, tunnel atau lockdown baru</strong>. Kebijakan yang sudah terpasang sebelumnya
+tetap berlaku. Simpan EXE dan checksum untuk maintenance.</p>
+<p><strong>4. Konfigurasi alamat server dan root.</strong> Buka <strong>PowerShell → Run as administrator</strong>.
+Letakkan dua file publik dari admin di <code>C:\Program Files\VanGuardTrust</code>, lalu:</p>
+<pre><code class="language-powershell">$vg = Join-Path $env:ProgramFiles 'VanGuardEndpoint\VanGuard.bat'
+&amp; $vg configure
+&amp; $vg status
+&amp; $vg diagnose
+</code></pre>
+<p>Pada pertanyaan configure masukkan path <code>profile.json</code>, path <code>root.crt</code>, fingerprint
+root dan public key server dari admin. Lanjutkan hanya jika konfigurasi lengkap dan
+diagnose dapat menjangkau layanan yang benar. Jika konflik subnet, trust tidak cocok
+atau server tidak siap, minta admin memperbaikinya sebelum init/connect. Jangan
+mengganti root lama atau mematikan verifikasi TLS agar proses lolos.</p>
+<p>Khusus profil <strong>schema2/internet terkelola</strong>, admin menjalankan langkah berikut
+sesudah configure dan sebelum enrollment, setelah memeriksa Bab14.1 serta
+menyiapkan console/recovery dan jalur transfer request/bundle:</p>
+<pre><code class="language-powershell">&amp; $vg internet-preview
+&amp; $vg internet-enable
+&amp; $vg internet-status
+</code></pre>
+<p>Internet langsung mulai diblok <strong>setelah internet-enable berhasil</strong>, bukan saat
+klik EXE umum. Jika pemeriksaan gagal, jangan menganggap blok sudah aktif atau
+melanjutkan connect. Langkah ini tidak diperlukan untuk profil schema1.</p>
+<p><strong>5. Buat permintaan sertifikat pada PC baru.</strong> Di PowerShell yang sama:</p>
+<pre><code class="language-powershell">&amp; $vg init
+</code></pre>
+<p>Isi device ID dan IP tunnel sesuai alokasi admin. Kirim <strong>hanya</strong>
+<code>C:\Program Files\VanGuardEndpointData\identity\request.json</code> kepada admin.
+Private key dibuat di PC; <code>identity.key</code>, <code>wg.key</code>, password, token dan seluruh
+folder identity tidak boleh dikirim. Langkah init cukup sekali untuk identitas
+baru; reinstall/resume mempertahankan identitas yang sudah ada.</p>
+<p><strong>6. Admin mendaftarkan dan menyetujui.</strong> Admin membuka dashboard HTTPS pada jalur
+management, login dengan akun admin + TOTP, menyiapkan akun karyawan, lalu mengunggah
+request pada formulir perangkat. Pastikan akun, device ID dan IP cocok. Tunggu
+status registered; pending_issue/pending_registry harus diselesaikan melalui retry
+setelah dependensi pulih. Unduh bundle ZIP publik untuk perangkat itu dan kirim
+kembali ke PC asal. Registrasi belum membuka akses. Berikan grant aplikasi yang
+diperlukan; grant internet terpisah pada mode schema2. Rincian formulir ada di Bab11.3.</p>
+<p><strong>7. Import sertifikat dan login.</strong> Simpan bundle pada folder tepercaya di PC:</p>
+<pre><code class="language-powershell">&amp; $vg import-bundle
+&amp; $vg status
+&amp; $vg diagnose
+&amp; $vg login
+</code></pre>
+<p>Masukkan path bundle ketika diminta. Import memeriksa sertifikat terhadap root,
+profil dan key PC ini. Pada login gunakan <strong>akun karyawan</strong>, bukan akun admin atau
+password login Windows. Password diketik pada prompt tersembunyi; jangan menaruhnya
+pada command line. Import/login saja belum membuat peer.</p>
+<p><strong>8. Hubungkan dan buktikan akses.</strong></p>
+<pre><code class="language-powershell">&amp; $vg connect
+</code></pre>
+<p>Biarkan terminal terbuka untuk renewal. Server memeriksa sesi karyawan dan enam
+pemeriksaan perangkat sebelum menambahkan peer. Coba resource yang benar-benar
+diizinkan admin, misalnya <code>http://10.8.0.1:8082</code> jika layanan demo tersedia dan
+grant TCP8082 sudah diberikan. Admin memeriksa lease, peer, handshake serta transfer
+sebagai indikator terpisah. Pesan instalasi berhasil atau status registered saja
+tidak cukup untuk menyatakan koneksi berhasil.</p>
+<p><strong>9. Selesai memakai atau komputer dimulai ulang.</strong> Ctrl+C pada terminal connect
+meminta penutupan tunnel. Untuk mencabut sesi, buka PowerShell administrator:</p>
+<pre><code class="language-powershell">$vg = Join-Path $env:ProgramFiles 'VanGuardEndpoint\VanGuard.bat'
+&amp; $vg disconnect
+&amp; $vg logout
+</code></pre>
+<p>Jika server tidak terjangkau, pencabutan server belum terkonfirmasi; simpan state
+untuk retry. Setelah reboot gunakan <code>status</code>, <code>diagnose</code>, <code>login</code> bila sesi berakhir,
+lalu <code>connect</code>; tidak perlu install/init ulang. Sertifikat yang kedaluwarsa atau
+dicabut membutuhkan penggantian identitas oleh admin, bukan sekadar login/renewal.
+Pada schema2, disconnect/logout tetap mempertahankan blok internet langsung;
+pemulihan kebijakan memerlukan prosedur admin Bab14.1.</p>
+<h3 id="bagian-14-1">14.1. Kandidat internet terkelola tanpa mengubah router pengguna</h3>
+<p>Mode ini terpisah dari pilot aplikasi Bab14 di atas. Source kandidat0.1.13
+menambahkan gateway internet IPv4 dan policy Windows persisten; <strong>ZIP stabil
+25 Oktober0.1.12 belum memuat fitur ini</strong>. Periksa checkpoint untuk hasil native
+aktual sebelum rollout. Jangan menerapkan pada PC kerja hanya dari contoh ini.</p>
+<p>Bukti native tersedia untuk Windows10 LTSC build19044 (27 Oktober) dan Windows11
+build26300 (28 Oktober): installer kandidat, lockdown sebelum enrollment dan
+sesudah reboot, admission/handshake, grant/default-deny, renewal, logout dan
+reconnect. Windows11 juga memiliki bukti pemutusan TCP aktif saat sertifikat
+dicabut; Windows10 mengonfirmasinya pada kandidat0.1.14 tanggal29Oktober
+(<a href="VALIDASI_SETUP_TERPADU_2026-10-29.md">bukti wizard dan koneksi</a>).
+Rincian koreksi kriteria alat ukur Windows11 ada di
+<a href="VALIDASI_WINDOWS11_INTERNET_2026-10-28.md">laporan validasi Windows11</a>.
+Gunakan paket kandidat yang telah diverifikasi, bukan mengasumsikan ZIP stabil
+memuat perubahan ini. Bukti dua VM tersebut tidak menjamin seluruh edisi/build,
+endpoint fisik, atau jaringan organisasi dengan GPO. Reboot saat tunnel aktif
+pada mode baru dan pengujian IPv6 nyata masih belum dilakukan.</p>
+<p>Linux memutuskan izin dan meneruskan internet; Windows mencegah jalur langsung
+melalui Wi-Fi/LAN. Tanpa policy endpoint aktif, Linux tidak bisa memblokir trafik
+yang langsung menuju router. Hak administrator lokal penuh tetap dapat mengubah
+firewall. Ini memerlukan endpoint terkelola, bukan kontrol mutlak atas komputer
+pribadi. Mode sekarang memblokir IPv6; tidak menyediakan internet IPv6.</p>
+<p>Urutan admin untuk pilot terisolasi:</p>
+<ol>
+<li>
+<p><strong>Operator Linux:</strong> catat interface uplink, alamat HTTPS/WireGuard yang dapat
+dijangkau endpoint, route, firewall, unit dan versi. Backup konfigurasi serta
+database tanpa memulihkan histori CA lama. Sediakan console/pemulihan lokal.
+Gunakan namespace/VM uji sebelum gateway aktif. Jangan membuat ulang Root CA.</p>
+</li>
+<li>
+<p><strong>Operator Linux:</strong> pasang versi kandidat server dan admin yang sama. Pertahankan
+admission HTTPS, enam cek, sesi karyawan, watchdog dan kebijakan aplikasi.
+Server perlu koneksi WAN dan IPv4 forwarding. NAT harus berada pada gateway
+Linux; tidak ada perubahan konfigurasi router milik pengguna. Alamat privat
+lab tidak otomatis dapat dijangkau dari rumah/jaringan lain. Untuk penggunaan
+lintas jaringan, sediakan alamat server/transport yang benar-benar reachable.</p>
+</li>
+<li>
+<p><strong>Operator Linux:</strong> hasilkan aturan kandidat, bukan langsung apply:</p>
+<pre><code class="language-bash"># Ganti eth0 dengan uplink gateway yang telah diperiksa.
+python3 deploy/firewall.py server --management-ip 192.168.100.1 \
+  --windows-client --application-policy --internet-uplink eth0 --print-only \
+  &gt; gateway-internet.candidate.nft
+sudo nft --check --file gateway-internet.candidate.nft
+</code></pre>
+<p>Generator masih mengikuti topologi lab untuk akses management/layanan internal.
+Review alamat tersebut terhadap target nyata; jangan menyalin ke server lain
+tanpa penyesuaian dan pemeriksaan. Terapkan hanya setelah backup, rencana
+pemulihan dan jalur management kedua tersedia. Tabel <code>inet vanguard</code> akan
+diganti oleh kandidat; jangan menimpa grant aktif tanpa maintenance yang jelas.
+Jangan aktifkan flow offloading yang dapat melewati pemeriksaan setiap paket.</p>
+</li>
+<li>
+<p><strong>Operator Linux:</strong> siapkan file kosong <code>{&quot;grants&quot;:[]}</code> privat0600 pada
+<code>/var/lib/vanguard/server/internet-policy.json</code>, tanpa menimpa file yang sudah
+ada. Pasang <code>VANGUARD_INTERNET_POLICY</code> menunjuk path itu pada environment server
+<strong>dan daemon</strong>. Path harus diizinkan ReadWritePaths unit server; jangan menaruh
+file yang perlu ditulis API di <code>/etc</code> yang read-only. Validasi melalui
+<code>vanguard.internet.load_internet_policy</code>. Gate default-deny tetap kosong sampai
+identitas+sesi+lease+peer+grant semuanya sah. Nilai timeout grant tidak boleh
+melampaui lease/sesi. Setelah restart, periksa liveness, readiness, nft dan
+akses langsung; HTTP200 liveness sendiri bukan bukti forwarding aman.</p>
+</li>
+<li>
+<p><strong>Admin:</strong> buat profil publik <strong>schema2</strong> melalui kanal tepercaya seperti Bab9.
+Pertahankan root fingerprint, key server dan resource eksplisit. Perbedaannya:</p>
+<pre><code class="language-json">{
+  &quot;schema&quot;: 2,
+  &quot;allowed_ips&quot;: [&quot;0.0.0.0/1&quot;, &quot;128.0.0.0/1&quot;],
+  &quot;internet&quot;: {&quot;mode&quot;: &quot;managed-ipv4&quot;, &quot;dns&quot;: [&quot;1.1.1.1&quot;]}
+}
+</code></pre>
+<p>Ini hanya potongan perubahan, bukan profil lengkap siap impor. HTTPS/WG host
+harus literal IPv4; DNS internet hanya melalui tunnel setelah izin. Jangan
+membuka DNS umum sebelum admission. Resource aplikasi tetap dibatasi tuple
+sendiri. Renewal lease tidak memperpanjang sertifikat. Root CA dipercaya
+bukan berarti perangkat sudah mempunyai sertifikat identitas atau akses.</p>
+</li>
+<li>
+<p><strong>Windows admin:</strong> install kandidat lengkap secara offline mengikuti Bab10;
+konfigurasi profil/root sesuai Bab11. Siapkan backup OS/firewall dan console.
+Jalankan dari folder aplikasi dengan PowerShell administrator:</p>
+<pre><code class="language-powershell">&amp; 'C:\Program Files\VanGuardEndpoint\VanGuard.ps1' -Action internet-preview
+&amp; 'C:\Program Files\VanGuardEndpoint\VanGuard.ps1' -Action internet-enable
+&amp; 'C:\Program Files\VanGuardEndpoint\VanGuard.ps1' -Action internet-status
+</code></pre>
+<p>Hormati execution policy organisasi; jangan memakai Bypass. Enable mengambil
+alih outbound pada seluruh profile Windows: menggunakan Local GPO milik VanGuard, menolak penggabungan rule lokal tambahan,
+default block, pengecualian HTTPS admission, UDP WireGuard dan DHCP,
+serta blok IPv6. Policy firewall GPO yang sudah ada atau endpoint domain ditolak, perlu integrasi pengelola.
+Rule inbound lokal yang aktif disalin dengan nama milik VanGuard supaya akses masuk
+yang sebelumnya diizinkan tetap tersedia. Rule asli tidak dihapus. Jangan menganggap
+semua Windows Home mendukung mode ini; validasi target diperlukan.
+Rule tunnel awal disabled sampai adaptor nyata terkonfirmasi sesudah admission.
+Backup/state berada di <code>VanGuardEndpointData\internet-lockdown</code>; jangan hapus.
+Jika gagal sebagian, quarantine tetap memblokir dan hasil bukan ACTIVE.
+Cleanup menonaktifkan pengecualian tunnel sebelum adaptor dihapus. Jika
+penghentian tunnel atau cleanup policy belum pasti, config dipertahankan;
+jangan menghapusnya untuk memaksa reconnect.</p>
+</li>
+<li>
+<p><strong>Windows/admin dashboard:</strong> buat key+CSR di endpoint, transfer request publik
+ke dashboard, terbitkan sertifikat dari CA yang <strong>sudah ada</strong>, bind karyawan,
+unduh dan import bundle seperti Bab11. Sebelum langkah ini, internet sudah
+terblokir setelah enable berhasil. Transfer publik dapat melalui media lokal
+terkelola; browser dashboard tidak otomatis dikecualikan oleh lockdown endpoint.</p>
+</li>
+<li>
+<p><strong>Admin dashboard:</strong> pada perangkat registered yang mempunyai gateway aktif,
+pilih <strong>Izinkan setelah admission</strong> pada <strong>Izin internet melalui gateway</strong>.
+Tindakan perlu login/TOTP dan CSRF serta dicatat dengan aktor/waktu. Grant ini
+tidak menambahkan peer. <strong>Karyawan:</strong> login lalu connect (Bab12). Terminal
+connect tetap hidup untuk renewal; mode ini belum layanan auto-login Windows.
+Periksa status policy, lease, handshake dan TCP internet secara terpisah.</p>
+</li>
+<li>
+<p><strong>Admin:</strong> uji cabut izin internet saat TCP aktif; paket berikutnya harus
+ditolak, sementara identitas VPN internal tetap ada. Untuk mencabut identitas,
+gunakan Revoke beserta alasan; server menghapus peer dan CA merekam revocation.
+Uji logout, sesi/lease habis, CA gagal, daemon berhenti, tunnel berhenti dan
+reboot. Jangan menyebut socket langsung tertutup: firewall drop menghentikan
+data; aplikasi mungkin menunggu timeout. Ukur waktu trafik terakhir.</p>
+</li>
+</ol>
+<p><strong>Pemulihan admin lokal:</strong> disconnect melalui proses pemilik; pastikan service
+hilang dan cleanup terkonfirmasi sebelum recovery. Jalankan <code>internet-recover</code>
+dan ketik <code>PULIHKAN</code>. Ini mengembalikan profile Local GPO sebelum lockdown (atau allow rule/profile
+legacy untuk state kandidat lama),
+menghapus hanya nama rule yang dimiliki VanGuard, dan mempertahankan backup
+historis. Ini membuka kembali kebijakan internet lama dan <strong>bukan</strong> revoke server.
+Jika server tidak terjangkau, logout belum terkonfirmasi. Jangan menghapus config
+atau menghentikan service milik proses lain untuk melewati guard recovery.
+Installer/uninstaller menolak perubahan runtime selama state lockdown masih ada;
+rencanakan maintenance terkontrol. Tidak ada auto-recovery membuka internet pada
+produk; task pemulihan berwaktu pada VM uji hanya pengaman eksperimen.</p>
+<p>Kriteria penerimaan mode ini: TCP langsung diblokir sebelum identitas, bootstrap
+HTTPS tetap bisa, authorized internet+DNS berhasil, renewal berulang, revoke dan
+pencabutan grant menghentikan data TCP aktif, perangkat lain tidak terdampak,
+cleanup/reboot tidak membuka fallback, serta recovery admin terbukti. Catat setiap
+OS/build dan metode nyata/mock; hasil Windows10 LTSC tidak membuktikan semua edisi
+Windows10/11, PC fisik, Wi-Fi berpindah, GPO atau IPv6 internet.</p>
 <h2 id="bab-15">15. Checklist penerimaan dan hasil yang harus dibuktikan</h2>
 <table>
 <thead>

@@ -300,3 +300,193 @@ Windows10LTSC19044 and Windows11build26300. Primary Windows11 identity hashes,
 legacy runtime and all six original domain definitions remain unchanged. See
 current checkpoint for actual CI results and publication; earlier r3 evidence is
 retained as history. Windows11 running; Windows10/five Ubuntu shut off.
+
+
+User constraint — 27 October 2026, internet access control design:
+The user wants deployment without configuring each user's router; heterogeneous
+home routers must not become an integration prerequisite. Central policy/admin
+and internet gateway belong on Linux. This supersedes the earlier proposal to
+require per-router WAN filtering, not the existing lab topology or six-check
+admission. Server-only cannot control traffic that bypasses the server. Proposed
+managed Windows agent with persistent endpoint enforcement plus a full-tunnel
+Linux gateway remains NOT IMPLEMENTED/NOT TESTED; no live network changes are
+authorized merely by discussing this design. Before agent/policy installation,
+there is no control over the endpoint. Full local administrator tampering is
+outside an unconditional guarantee. Reachable HTTPS/WireGuard services are still
+required; the private lab IP is not publicly reachable by assumption. Preserve
+client-generated keys, all VMs and current identities. See 27 October journal.
+
+
+User implementation authorization — 27 October 2026:
+“Coba lakukan” authorizes candidate managed Internet implementation and backed-up
+Windows10 testing. Router configuration remains unchanged. Candidate0.1.13 uses
+opt-in schema2, persistent Windows outbound enforcement and Linux nft per-identity
+Internet grants bounded by employee session/lease. Temporary CA/namespace only;
+production identities/services are not implicitly migrated. Native test failures
+and corrections are in 27 October journal. This supersedes NOT IMPLEMENTED above
+for candidate source only, not release/readiness claims. Follow latest checkpoint.
+
+Native managed Internet candidate — 27 October 2026:
+Windows10 testing showed OS updates can add outbound local allow rules despite
+default block. Candidate uses owned Local GPO rules with local rule merging
+disabled, preserving original local policy and copying enabled inbound rules.
+Existing organizational/domain firewall policy is rejected, not overwritten.
+Nine initial and six post-reboot native cases passed, including new local allow
+injection. Detach disables the owned tunnel exception before adapter removal;
+failed policy cleanup retains config after attempting tunnel shutdown. Native
+admission, grant/default-deny, renewals, logout and reconnect passed. Active TCP
+grant-removal passed; active TCP certificate-revocation timing remains unconfirmed
+due to a failed fixture, although revoke/peer removal/fresh denial passed.
+Temporary account/identity disabled, CA revocation retained, namespace transport
+stopped and Windows policy explicitly recovered. Production not rolled out.
+Source/package0.1.13 remains candidate; published stable ZIP0.1.12 unchanged.
+
+
+Windows11 managed Internet evidence — 28 October 2026:
+The same candidate0.1.13 r8 package passed native installation, nine initial
+lockdown and six post-reboot cases on Windows11 build26300. Admission/handshake,
+default-deny/granted TCP and fresh DNS, three renewals, grant removal during TCP,
+logout/owner cleanup and reconnect passed. Real temporary-CA revocation reset
+active TCP, removed the peer and rejected fresh admission403. A timeout-only
+fixture assertion failed; independent review of the recorded reset/denial evidence
+passed network-stop criteria, not a claimed rerun. Windows10's earlier incomplete
+revocation-stream measurement remains unconfirmed. No product source changes.
+Original config/identity hashes, legacy runtime, SecureBoot/TPM, VM definition and
+110 inbound rules preserved; temporary policy recovered, account disabled and
+certificate revoked. Test namespaces stopped, CA/history retained. Main/stable
+ZIP unchanged; no general Windows edition/physical endpoint guarantee.
+
+
+User choice and candidate setup — 28–29 October 2026:
+Use one offline folder and one main Setup-VanGuard.bat entrypoint. Candidate0.1.14
+orchestrates existing runtime installer, public pinned profile, local key creation,
+public request export, validated administrator bundle import and employee login/
+connect. Admin approval and six device checks remain required; no management token
+or private key in provisioning package. Resume verifies files, preserves existing
+keys and rejects conflicts. Template needs explicit per-device admin preparation;
+never distribute the disposable lab profile as production configuration.
+Windows11 BAT preparation/resume passed; see latest checkpoint for final connection,
+cleanup, publication and untested interactive/Windows10/physical scenarios.
+
+
+Windows10 setup evidence — 29 October 2026:
+Candidate0.1.14 BAT preparation/import/resume passed18assertions on Windows10
+LTSC19044. Native client admission/handshake, default-deny/grant TCP/freshDNS,
+two renewals, logout/cleanup and reconnect passed. Temporary certificate1004
+revocation stopped active TCP, removed the peer and rejected fresh admission403;
+this closes the older Windows10 measurement gap, not the earlier failed log.
+Original config/identity/firewall and VM definition restored/preserved; temporary
+CA history retained and consistency checked, account disabled and fixture stopped.
+Interactive UAC/default login-to-launcher path, fresh wizard install/reboot3010,
+physical endpoints and wider builds remain untested. No product source change.
+
+
+Wizard repair correction — 29 October 2026:
+Installer revision0.1.14-fix1 fixes same-package reuse after interrupted reinstall.
+An incomplete runtime now goes through the verified installer; ownership/tunnel/
+managed-policy guards remain. Native Windows10 control-flow tests6PASS and actual
+isolated venv installation/repair7PASS; original endpoint state retained. No CA
+issuance, firewall change, main VM rollout or Python wheel change. Full interactive
+UAC/login, Windows11 fix1, fresh OS and physical power loss remain untested. User
+asked about EXE packaging; feasible with the same admission/key/login boundaries,
+but no EXE has been built in this session. See checkpoint for publication status.
+
+
+Offline EXE candidate — 29 October 2026:
+The user explicitly requests EXE packaging. A .NET Framework x64 bootstrapper
+embeds the existing0.1.14-fix1 offline package, requires administrator elevation,
+checks payload/hash/paths/ACL/cache, and runs the original installer or per-device
+wizard. Public template has no profile/allocation; per-device approval/employee
+login and client-generated keys remain required. No admission or CA change.
+Native Windows10:13extractor cases,6final bootstrap cases,6postflight cases PASS;
+real existing-prerequisite installation exit0 and device resume exit20 verified.
+Initial observer was interrupted by guest shutdown; separate postflight checked
+backup hashes and actual installed runtime. Unsigned EXE and fresh OS/Windows11/
+interactive UAC/login/power-loss limits remain. See latest checkpoint/report.
+Four unused public ISO download fragments were relocated with verified hashes and
+original-path symlinks to another local filesystem to recover host space; no
+backup, full ISO or VM disk removed. Earlier EXE-not-built statements are history.
+
+
+Qualification evidence — 30 October 2026:
+Source307PASS/1SKIP Linux, live HTTPS30/30 and firewall40/40; native generic EXE
+now additionally passed Windows11 installation/identity-preserving postflight.
+Windows10/11 helpers/configuration/extractor/bootstrap checks passed; detailed
+scopes and harness failures remain in UJI_KELAYAKAN_2026-10-30.md. Isolated
+HTTPS/WireGuard/nft16-case run passed with a fresh client peer after startup
+reconcile; this is not proof of automatic recovery for stale tunnel state.
+Main Ubuntu client certificate expired24October and its session is expired;
+fail-closed verified, no identity replaced. Primary services remain0.1.11;
+managed Internet candidate not rolled out by this qualification. Host disk
+capacity, physical endpoints, EXE schema2/UAC/fresh OS, power-loss CA and soak
+remain acceptance gaps. Preserve original topology, keys and revocation history.
+Single manual now includes a complete generic EXE walkthrough in14.0.1.1.
+
+
+Authorized service package rollout — 30 October 2026 afternoon:
+User explicitly requested checking and updating CA/server/admin. All three were
+0.1.11 and now have0.1.14 after quiescent backups and source-wheel validation.
+Initial post-start verifier wrongly included disposable CA transaction generations;
+code-only recovery retained current CA/DB state. Corrected verifier retry passed
+published identity/config hashes. No root recreation, state rollback, policy
+activation or client changes. VANGUARD_CLIENT_PROFILE and VANGUARD_INTERNET_POLICY
+remain unset; installing new code does not enable managed Internet by itself.
+See latest checkpoint/journal for postflight and publication. Host free space is
+critically limited; evidence and backups retained, diagnostic log compressed
+losslessly with verified content hash. Seven domain definitions preserved.
+
+
+Service rollout postflight — 31 October 2026:
+CA/server/admin0.1.14 verified again after host reboot:27source files each,
+pip check, preserved CA/config identities, database integrity and historical
+rows passed. HTTPS30/30 and5authorization guards passed; CRL validation and
+current-boot daemon heartbeat healthy. The previous30October20/30 HTTP200
+sample remains evidence of an unconfirmed transient CRL/readiness issue, not
+a claimed root-cause fix. No relaxed admission or stale-CRL fallback. Only
+three service VMs running now; other four remain off after host reboot.
+Managed Internet/profile environment configuration remains separate/unset;
+package update alone does not activate gateway policy. See checkpoint/journals.
+
+Operational evidence — 31 October 2026, deployed0.1.14 acceptance tests:
+CA/server/admin0.1.14 passed real HTTPS admission, WireGuard handshake, explicit
+application grants/default deny, active TCP removal, two automatic renewals,
+scoped/idempotent logout and CA-only revocation using a disposable Ubuntu identity.
+The test client used isolated0.1.14 source; primary installed client remains0.1.9
+with expired certificate/session. Identity/configuration/history were preserved;
+test account disabled, certificate revoked, resource policy restored, no live peers.
+Linux isolated regression89PASS/1SKIP; Windows/EXE not rerun. Initial health sample
+29/30HTTP200 included server readiness503 with CA unknown. Direct CA20/20 and
+follow-up30/30 succeeded, but the original cause is unconfirmed, not fixed.
+No product code or admission policy weakened. Runtime TOTP replay counter advances
+on successful admin login and must not be treated as immutable history during
+verification. See docs/UJI_INTEGRASI_0.1.14_2026-10-31.md for harness failures and
+scope. Four Ubuntu backend/client VMs running, other three off; host1.3GiB free,
+managed internet/profile deployment still pending. Private evidence retained.
+
+Readiness investigation — 31 October 2026, source candidate only:
+Optional local `python -m vanguard.health ROLE --diagnose` now reports fixed
+exception categories and per-check timing with the same six-second subprocess
+budget. Public HTTP responses and admission remain unchanged. No raw exception,
+URL or credential is exposed. Codes describe library exceptions, not proven
+network phases. Health baseline16PASS; candidate26PASS; isolated source staging
+on CA/server/admin36/36ready; deployed HTTPS30/30HTTP200. Installed0.1.14 health
+module hashes remain unchanged. This is not a deployed package/installer update
+or a confirmed fix for the earlier transient503. No issuance, state restoration,
+restart or firewall changes; configuration and CA root/key/index/serial preserved.
+See the acceptance report and manual7.3; evidence state/readiness-20261031/.
+
+Response validation fixes — 31 October 2026, source/staging only:
+Three bugs reproduced before fixes: malformed readiness child/dependency could
+crash or falsely report ready; client login overwrote old sessions before response
+validation and copied extra fields; malformed logout confirmation bypassed the
+friendly unconfirmed-revocation error path. Health now validates role/check/status;
+login validates username/token/future finite expiry before writing only session
+fields; logout retains its token for retry on malformed confirmation. No change
+to admission, HTTPS, binding or session scope. Baseline61PASS/1SKIP, pre-fix27FAIL
+plus3FAIL/1PASS logout. Selected candidate89PASS/1SKIP; final session/logout23PASS
+(overlapping suites). Staging3VM12/12ready, configurations/CA identity/index/serial
+preserved. Installed services remain0.1.14 unchanged; Windows/EXE not rerun/rebuilt.
+Installed postflight29/30HTTP200 had admin database unknown, distinct from earlier
+server CA unknown. Direct admin DB30/30 and integrityOK, cause still unconfirmed.
+Do not attribute historical503 to the malformed-response fixtures. Evidence in
+state/bugcheck-20261031/ and acceptance report. Mockup canceled, no mockup files.

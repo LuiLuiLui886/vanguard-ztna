@@ -1,6 +1,6 @@
 # Manual admin Sistem VanGuard
 
-Edisi24 Oktober2026 · satu sumber resmi untuk pemasangan dan operasi.
+Edisi30 Oktober2026 · satu sumber resmi untuk pemasangan dan operasi.
 HTML dengan nama yang sama dihasilkan dari Markdown ini; keduanya satu manual,
 bukan panduan berbeda. Salinan manual di ZIP juga dihasilkan dari sumber ini.
 Tutorial lama telah digabung dan dihapus dari tree terbaru; histori Git tetap ada.
@@ -38,6 +38,91 @@ Perintah **HOST** dijalankan di laptop Linux, **VM-ROLE** di guest yang ditulis,
 dan **WINDOWS ADMIN** di PowerShell Run as administrator. Satu terminal per mesin
 mencegah salah target. Hak admin lokal diperlukan untuk pengelolaan tunnel; akun
 VPN sendiri tidak memberi hak admin Windows. Uji satu PC dahulu sebelum laptop.
+
+### 1.1. Flowchart sistem lengkap: dari CA sampai EXE dan penggunaan
+
+Diagram berikut menggambarkan implementasi kandidat0.1.14-fix1 pada branch
+`feature/2026-10-22-physical-endpoints`. Baca berurutan 1→5. Gambar dapat dibuka
+untuk diperbesar di GitHub; salinan HTML menyertakan gambar dan bisa dibaca offline.
+**Setiap panah lanjut mensyaratkan tahap sebelumnya berhasil.** Bila gagal,
+berhenti pada tahap tersebut dan periksa alasan/state; jangan menganggap tahap
+berikutnya sudah selesai. Kotak merah menunjukkan penolakan atau pembatasan,
+bukan selalu bug. Kotak kuning adalah keputusan.
+
+#### 1.1.1. Persiapan layanan Linux dan otoritas sertifikat
+
+![Flowchart persiapan CA, server, dashboard dan profil](assets/flows/01-backend.svg)
+
+CA menerbitkan sertifikat dan CRL; server mengambil data CA yang diperlukan untuk
+validasi lewat jalur backend yang diizinkan. Dashboard mengelola registrasi,
+revocation, akun/binding dan kebijakan. Endpoint tidak menerima private key CA.
+Gunakan CA yang sudah ada pada lab ini. Rincian pemasangan dan trust ada di Bab5–9.
+
+#### 1.1.2. Distribusi paket dan instalasi EXE Windows
+
+![Flowchart EXE umum dan paket per perangkat](assets/flows/02-installer.svg)
+
+EXE umum di downloads belum memuat profil/root/alokasi. Admin membuat paket
+perangkat dengan input publik tepercaya, lalu membungkusnya menjadi EXE menurut
+Bab14.0.1. Pengguna menerima satu EXE; bagian dalamnya tetap menjalankan BAT/wizard.
+Kotak catatan di bagian bawah diagram menjelaskan kondisi batal/error/restart.
+Tidak ada GUI form Login/Connect saat ini; interaksi menggunakan terminal.
+
+#### 1.1.3. Kapan internet diblok dan bagaimana perangkat didaftarkan
+
+![Flowchart policy internet dan enrollment perangkat](assets/flows/03-enrollment.svg)
+
+**Klik EXE belum memblokir internet.** Pada pemasangan baru schema2, blok akses
+internet langsung berlaku setelah penerapan policy dikonfirmasi berhasil. Jalur
+kontrol terbatas untuk mencapai layanan tetap diperlukan. Jika penerapan policy
+gagal/parsial, hasil blok belum dapat dipastikan: wizard berhenti dan mempertahankan
+state/backup untuk inspeksi admin. Policy yang sebelumnya aktif tidak otomatis
+dibuka karena error. Schema1 tidak mengaktifkan lockdown internet.
+
+Diagram memperlihatkan pendaftaran pertama. Saat resume, key lama dipakai ulang;
+sertifikat yang sudah tersedia melewati langkah meminta bundle lalu tetap harus
+lolos admission. Bila belum disetujui, kode20 berarti menunggu admin. Request
+publik dapat dipindah lewat media admin yang disetujui; jangan mengirim folder
+identity. Admin mengikat akun/perangkat, menerbitkan sertifikat dan mengatur izin
+resource/internet. Pemberian izin atau sertifikat belum memasang peer.
+
+#### 1.1.4. Login, pemeriksaan perangkat dan akses yang diizinkan
+
+![Flowchart login, enam pemeriksaan dan kebijakan akses](assets/flows/04-access.svg)
+
+Admission terjadi melalui HTTPS sebelum peer ditambahkan. Sertifikat X.509 tidak
+disisipkan ke handshake WireGuard. Login gagal atau pemeriksaan perangkat gagal
+menghentikan alur. Setelah peer terpasang, handshake/konektivitas perlu diamati;
+status registered, lease valid, peer, handshake dan transfer merupakan fakta berbeda.
+Cabang aplikasi dan internet menunjukkan dua jenis tujuan trafik, bukan keharusan
+mengakses keduanya secara berurutan. Aplikasi memakai izin identitas/resource/
+protokol/port; internet terkelola memakai gateway serta grant internet eksplisit.
+Keduanya tetap dibatasi sesi dan lease. Bab11–14 memuat langkah operasionalnya.
+
+#### 1.1.5. Renewal, logout, pencabutan dan pemulihan
+
+![Flowchart penghentian akses dan audit operasional](assets/flows/05-lifecycle.svg)
+
+Revoke sertifikat mencabut identitas terkait; logout mencabut sesi yang diminta
+beserta akses yang dimilikinya, tanpa memutus sesi lain di luar cakupan. Penghapusan
+grant internet menutup izin internet, tidak otomatis berarti sertifikat dicabut
+atau seluruh izin aplikasi dihapus. CA/renewal gagal tidak memberi lease baru;
+akses lama dibatasi lease dan pemantauan, sehingga kegagalan tidak boleh diklaim
+selalu memutus trafik pada detik yang sama. Logout saat server tidak terjangkau
+harus menampilkan pencabutan server belum terkonfirmasi.
+
+Lockdown schema2 tetap aktif setelah disconnect dan reboot; koneksi ulang butuh
+pemeriksaan baru. Recovery policy merupakan tindakan admin lokal terencana,
+bukan efek otomatis logout atau uninstall. Audit dilakukan sepanjang alur,
+walaupun ditampilkan di bagian bawah diagram. Rincian operasi ada di Bab12 dan16–18.
+
+**Batas bukti:** flowchart menjelaskan source, bukan laporan seluruh pengujian
+end-to-end. EXE umum diuji di Windows10 dan Windows11; resume EXE per-device
+schema1 diuji di Windows10. EXE per-device schema2, UAC interaktif penuh dan PC fisik belum
+dibuktikan oleh uji wrapper. Policy internet dan client native punya bukti VM
+terpisah pada Windows10/11. Lihat [validasi EXE](VALIDASI_EXE_2026-10-29.md) dan
+[checkpoint](CHECKPOINT.md). EXE/ZIP yang sudah diterbitkan masih menyertakan
+salinan manual saat build; flowchart baru tersedia di manual repo dan HTML terbaru.
 
 ## 2. Arsitektur, akun dan batas akses
 
@@ -909,6 +994,36 @@ ulang. Jangan membuat sertifikat dummy untuk health check. Server baru harus
 memiliki nol peer sebelum admission. Pada sistem aktif, periksa scope lease sah
 alih-alih menghapus semua peer hanya agar keluaran kosong.
 
+**Diagnostik lokal tambahan — kandidat source31Oktober, belum rollout paket VM.**
+Jika `unknown` berulang, versi source baru menyediakan `--diagnose` untuk
+membedakan kegagalan koneksi, TLS, waktu baca atau lock tanpa menampilkan rahasia.
+Periksa `python -m vanguard.health --help` pada runtime yang akan digunakan:
+paket0.1.14 yang terpasang sebelum perubahan ini belum memiliki opsi tersebut.
+Sesudah kandidat diuji dan di-deploy, jalankan di VM-SERVER menggunakan environment
+layanan yang sama, tanpa `set -x` atau mencetak isi environment:
+
+```bash
+sudo bash -c 'set -a; . /etc/vanguard/server.env; set +a
+exec /opt/vanguard/venv/bin/python -m vanguard.health server --diagnose'
+```
+
+Baca `status` dan `checks`, lalu `diagnostics.<check>.reason` serta `elapsed_ms`.
+`lock_busy` berarti lock tidak didapat dalam anggaran; `connect_timeout`,
+`read_timeout` dan `tls_error` berasal dari kelas exception library. Kode ini
+bukan bukti pasti fase jaringan: timeout handshake TLS juga dapat dilaporkan
+library sebagai `read_timeout`. `process_timeout`
+berarti subprocess melewati batas6detik; detail check yang belum selesai tidak
+tersedia. `check_not_ready` hanya berarti pemeriksaan mengembalikan false; periksa
+dependency terkait sebelum menyimpulkan sebab. Exit0 CLI hanya berarti JSON
+berhasil ditulis, bukan status siap. Hasil sehat sesudah retry tidak menghapus
+kegagalan sebelumnya. Catat keduanya beserta waktu pengamatan.
+
+Mode ini tidak memperpanjang timeout, menerbitkan CRL/sertifikat, memperbaiki state
+CA, atau menambah peer. Jangan menggunakan opsi diagnostik sebagai pengganti
+admission. Untuk role CA/admin, gunakan environment dan user service yang sesuai
+agar hasil izin akses mencerminkan layanan tersebut. Kandidat yang masih staging
+harus disebut sebagai staging dalam laporan, bukan versi paket yang terpasang.
+
 Pada browser komputer admin, impor **root publik terverifikasi** ke trust store
 yang dipilih kebijakan organisasi. Buka `https://192.168.100.40:5000`; periksa
 issuer/SAN/fingerprint. Jangan menggunakan tombol mengabaikan error sertifikat.
@@ -1444,6 +1559,472 @@ Salin ACCEPTANCE.csv keluar kit. Catat PASS/FAIL/BELUM_DIJALANKAN, waktu UTC/WIB
 versi, ID uji, lease/handshake/transfer, hasil HTTP dan lokasi bukti tersaring.
 Jangan mengisi PASS hanya karena checklist tersedia. Tes Linux sebelumnya260/1
 bukan bukti kedua endpoint fisik.
+
+### 14.0. Setup terpadu: satu folder offline, satu BAT utama (kandidat0.1.14)
+
+Untuk endpoint baru, admin dapat membuat paket **per perangkat** yang sudah berisi
+Python, WireGuard, aplikasi, profil server, Root CA publik dan alokasi device/IP.
+Pengguna hanya menjalankan **Setup-VanGuard.bat**. BAT/script lain di folder adalah
+komponen internal atau alat maintenance; pengguna tidak perlu menjalankannya satu
+per satu. Ini kandidat baru; lihat checkpoint untuk hasil native versi paket.
+ZIP stabil0.1.12 tidak otomatis memiliki wizard ini.
+Template kandidat offline untuk admin tersedia di
+[downloads](../downloads/README.md). Template belum memiliki identitas/profil
+per-device; gunakan folder `wheels` dan `runtimes` di dalamnya pada perintah
+builder berikut. User akhir mendapat folder hasil builder, bukan template kosong.
+
+BAT `/prepare-only /nopause` sudah diuji pada VM Windows10 LTSC19044 dan
+Windows11 build26300: persiapan/impor dan resume menjaga kunci, tanpa tunnel
+sebelum login. Rincian [bukti setup terpadu](VALIDASI_SETUP_TERPADU_2026-10-29.md)
+membedakan pengujian BAT otomatis, client native, dan jalur UAC/login interaktif
+yang masih **BELUM_TERUJI**. Hasil ini tidak mewakili semua edisi Windows atau PC fisik.
+
+**Yang tetap membutuhkan manusia:** persetujuan UAC administrator Windows,
+persetujuan pendaftaran oleh admin VanGuard, serta login karyawan. Paket tidak
+boleh memuat password, OTP, token management, private key CA atau private key
+perangkat. CA utama tidak dibuat ulang pada setiap endpoint. Kunci perangkat
+dibuat di endpoint, lalu CA yang sudah ada menerbitkan sertifikat dari CSR.
+
+**Persiapan satu kali oleh admin Linux:**
+
+1. Siapkan layanan CA/server/admin, HTTPS tepercaya dan alokasi IP tunnel unik.
+   Pilih profil schema1 untuk aplikasi internal atau schema2 untuk internet
+   terkelola. Profil schema2 akan mengaktifkan lockdown pada endpoint: internet
+   langsung diblok sebelum enrollment. Pastikan gateway/admission bisa dijangkau
+   dan console/recovery admin tersedia. Izin internet gateway tetap terpisah.
+2. Siapkan `profile.json` dan `root.crt` publik yang benar. Konfirmasi fingerprint
+   root serta public key WireGuard server dari sumber admin tepercaya. Gunakan
+   wheel aplikasi0.1.14 terbaru bersama wheel dependensi dan runtime offline
+   terverifikasi; jangan mencampur wheel r8/0.1.13 dengan source wizard baru.
+3. Bangun paket per-device; ganti nilai contoh sesuai alokasi:
+
+   ```bash
+   .venv/bin/python scripts/build_endpoint_package.py \
+     --wheelhouse /path/windows-wheels \
+     --runtime-directory /path/runtime-installers \
+     --output /path/paket-pc-karyawan-01 \
+     --profile /path/profile.json --root /path/root.crt \
+     --device-id pc-karyawan-01 --tunnel-ip 10.8.0.10 \
+     --expected-root-sha256 FINGERPRINT_ROOT_64_HEX \
+     --expected-server-key PUBLIC_KEY_WIREGUARD_SERVER
+   ```
+
+   Output menyertakan `provision.json`, `profile.json` dan `root.crt` dalam
+   checksum manifest. Bagikan seluruh folder/ZIP dan checksum melalui jalur
+   admin tepercaya. Pin di dalam folder tidak menggantikan verifikasi asal
+   paket. Satu alokasi tidak boleh digunakan untuk dua komputer.
+
+**Langkah pada Windows:**
+
+1. Ekstrak seluruh paket terverifikasi ke folder admin di `C:\Program Files`.
+   Jalankan `Setup-VanGuard.bat` dan setujui UAC. Wizard memasang prasyarat yang
+   belum tersedia, aplikasi, profil, serta policy internet bila schema2.
+2. Wizard membuat kunci lokal dan berkas publik
+   `C:\Program Files\VanGuardEndpointData\enrollment-request.json`.
+   Kirim **hanya berkas ini** kepada admin melalui cara transfer yang disetujui.
+   Jika lockdown membatasi transfer jaringan, gunakan console/USB admin; jangan
+   membuka firewall secara sembarang atau mengirim seluruh folder `identity`.
+3. Admin mendaftarkan request melalui dashboard seperti Bab11–12: isi metadata,
+   ikat akun karyawan, terbitkan sertifikat, lalu unduh bundle publik untuk
+   perangkat itu. Registrasi ini belum membuat peer. Admin memberi izin resource
+   dan, untuk schema2, izin internet sesuai kebijakan.
+4. Pada wizard yang sama, masukkan path bundle ZIP saat diminta. Bila admin belum
+   selesai, tekan Enter: wizard keluar dengan kode20, **menunggu persetujuan**.
+   Jalankan BAT yang sama lagi setelah bundle diterima. Kunci/config yang sama
+   digunakan; konflik/identitas parsial ditolak dan dipertahankan untuk inspeksi.
+   Admin juga dapat menaruh bundle pada
+   `C:\Program Files\VanGuardEndpointData\approval.zip`; wizard memvalidasi
+   binding sebelum import dan tidak percaya nama file sebagai bukti persetujuan.
+5. Masukkan username karyawan dan password ketika diminta. Password tidak disimpan
+   oleh wizard. Sesudah login, proses connect menjalankan enam pemeriksaan,
+   menambah peer hanya setelah admission, lalu melakukan renewal. Terminal harus
+   tetap terbuka. Gunakan Ctrl+C untuk menghentikan koneksi; logout tetap melalui
+   launcher VanGuard agar sesi server dicabut seperti Bab12.
+
+`wizard-state.json` menyimpan tahap terakhir tanpa rahasia; bukan sumber izin.
+Revisi installer0.1.14-fix1 memperbaiki kasus pemasangan ulang terputus: jika
+metadata masih menunjuk paket yang sama tetapi runtime belum lengkap, BAT masuk
+kembali ke installer terverifikasi untuk membuat release baru. Kunci/config dan
+release sebelumnya tetap disimpan. Bila policy internet terkelola aktif, guard
+maintenance tetap menolak sampai recovery admin terencana dilakukan; lihat
+Bab14.1. Metadata rusak/ambigu tetap membutuhkan inspeksi operator. Lihat
+[audit resume wizard](AUDIT_WIZARD_2026-10-29.md) untuk bukti dan batas uji.
+
+Setiap resume memeriksa fakta runtime/config/key/policy lagi. Tahap
+`WAITING_APPROVAL` berarti belum ada sertifikat; `READY_FOR_LOGIN` belum berarti
+ada akses VPN; `CONNECTING` bukan bukti handshake; cek hasil koneksi dan gateway.
+Kode3010 berarti runtime meminta restart: simpan pekerjaan, restart sendiri,
+lalu jalankan BAT yang sama. Kode1 berarti tahap gagal; jangan menghapus kunci
+atau konfigurasi untuk memaksa lanjut. Tidak ada autologin setelah reboot.
+
+Untuk pengujian admin tanpa prompt login, jalankan
+`Setup-VanGuard.bat /prepare-only /nopause` dari terminal administrator.
+Padanan PowerShell adalah `Setup-VanGuard.ps1 -PrepareOnly`. Keduanya
+menyiapkan endpoint dan memproses `approval.zip` bila tersedia; hasil20 menunggu
+bundle, hasil0 siap login **tanpa membuat tunnel**. Opsi ini tetap memerlukan
+hak admin dan paket tepercaya. Paket berbeda/upgrade saat lockdown aktif harus
+melalui recovery maintenance yang terdokumentasi; wizard tidak membuka internet
+secara otomatis saat error. Lihat Bab14.1 untuk batas dan pemulihan policy.
+
+#### 14.0.1. Alternatif satu file EXE offline (installer0.1.14-fix1)
+
+EXE membungkus paket offline dan menjalankan installer/wizard yang sama. Python,
+WireGuard, dependensi Python dan aplikasi ada di dalamnya; tidak membutuhkan
+GitHub CLI, Python yang sudah terpasang, atau unduhan saat instalasi. Target
+tetap Windows10 21H2/22H2 atau Windows11 **x64**, dengan .NET Framework bawaan
+Windows. ARM64/x86 bukan target paket ini. Pendaftaran/login tetap membutuhkan
+koneksi ke layanan VanGuard yang sudah disiapkan admin.
+
+Ada dua jenis paket yang perlu dibedakan:
+
+| EXE | Isi dan tindakan |
+|---|---|
+| `Setup-VanGuard-0.1.14-fix1.exe` dari downloads | Paket umum: memasang prasyarat/aplikasi. Belum berisi profil server, CA publik atau alokasi perangkat; admin melanjutkan konfigurasi Bab11–12 atau menyediakan EXE per-device. |
+| EXE per-device buatan admin | Profil, CA publik dan alokasi sudah disiapkan. Menjalankan seluruh wizard Bab14.0 sampai request, approval dan login/connect. Satu alokasi hanya untuk satu komputer. |
+
+**Admin menyiapkan EXE per-device:** bangun folder paket dengan perintah Linux
+di Bab14.0 terlebih dahulu. Salin seluruh folder hasilnya dan tiga berkas source
+`deploy/endpoint/exe/Build-Exe.ps1`, `VanGuardSetup.cs`, `app.manifest` dari commit
+repo tepercaya ke Windows build milik admin. Tidak perlu mengubah CA atau
+menambahkan password/private key ke folder. Jalankan PowerShell sesuai kebijakan
+organisasi; contoh lokasi setelah disalin ke `C:\Program Files\VanGuardBuild`:
+
+```powershell
+& 'C:\Program Files\VanGuardBuild\source\Build-Exe.ps1' `
+  -Package 'C:\Program Files\VanGuardBuild\paket-pc-karyawan-01' `
+  -Output 'C:\Program Files\VanGuardBuild\Setup-PC-Karyawan-01.exe'
+Get-FileHash 'C:\Program Files\VanGuardBuild\Setup-PC-Karyawan-01.exe' -Algorithm SHA256
+```
+
+Builder menggunakan compiler .NET Framework yang sudah ada di Windows x64 dan
+menolak output lama, anggota tambahan serta checksum input salah. Simpan folder
+`.exe.build` dan metadata `.exe.json` sebagai bukti build privat admin; bagikan
+**EXE saja beserta SHA256** melalui jalur tepercaya. Gunakan nama output baru
+untuk build ulang. EXE proyek ini **belum ditandatangani Authenticode**. Hash
+internal mendeteksi kerusakan, bukan membuktikan penerbit; konfirmasikan asal dan
+SHA256 sebelum mengeksekusi. Jika SmartScreen/kebijakan organisasi memblokir,
+minta pemeriksaan admin; jangan menonaktifkan proteksi atau execution policy.
+
+**Pada endpoint:** cocokkan SHA256 dengan yang diberikan admin, klik dua kali
+EXE dan setujui UAC. EXE mengekstrak paket ke
+`C:\Program Files\VanGuardPackages\<SHA256-payload>` yang dibatasi untuk
+administrator/SYSTEM. Manual HTML tersedia di folder tersebut. Untuk EXE
+per-device, ikuti langkah request→approval→login pada Bab14.0. Jalankan EXE yang
+sama lagi setelah admin memberi bundle; kunci yang sudah ada dipertahankan.
+Jangan mengubah profil atau menambahkan approval ke cache paket; tempatkan bundle
+pada `VanGuardEndpointData\approval.zip` atau gunakan prompt wizard.
+
+Opsi terminal administrator:
+
+```powershell
+# Per-device: persiapan/import tanpa prompt login; exit20 menunggu approval.
+& '.\Setup-PC-Karyawan-01.exe' /prepare-only /nopause
+# Kedua jenis: hanya periksa dan ekstrak, tanpa instalasi atau konfigurasi.
+& '.\Setup-VanGuard-0.1.14-fix1.exe' /extract-only /nopause
+```
+
+Kode keluar installer diteruskan:0 tahap selesai,20 menunggu approval,3010 restart
+manual diperlukan,1 gagal. Pada EXE umum,0 hanya berarti aplikasi terpasang;
+bukan bukti enrollment/VPN. Cache diperiksa ulang setiap peluncuran. Jika cache
+tidak lengkap/diubah, EXE berhenti dan mempertahankan bukti; admin memeriksa serta
+mengarsipkan folder bermasalah sebelum mencoba lagi. Jangan menghapus identitas,
+config atau state firewall untuk memaksa lanjut. Folder `pending-*` yang tersisa
+bukan bukti instalasi sukses. Rename folder tidak menjamin ketahanan power-loss.
+
+Kandidat EXE tersedia pada branch `feature/2026-10-22-physical-endpoints`.
+Lihat [validasi EXE](https://github.com/LuiLuiLui886/vanguard-ztna/blob/feature/2026-10-22-physical-endpoints/docs/VALIDASI_EXE_2026-10-29.md)
+untuk pengujian Windows10 native.
+Uji30Oktober menambahkan EXE umum pada Windows11 build26300: ekstraksi/resume,
+penolakan payload rusak dan instalasi sungguhan exit0 lulus, dengan key/config
+utama serta profil firewall tetap sama. Lihat laporan kelayakan30Oktober untuk
+lingkup lengkap; hasil ini memakai runtime yang sudah tersedia.
+UAC klik langsung, SmartScreen dari browser, Windows baru
+tanpa runtime, reboot3010, login interaktif penuh dan PC fisik **BELUM_TERUJI**
+untuk wrapper ini. Bukti BAT/runtime sebelumnya dicatat terpisah.
+
+##### 14.0.1.1. Langkah dari nol memakai EXE yang tersedia di GitHub
+
+Alur ini khusus **EXE umum** `Setup-VanGuard-0.1.14-fix1.exe`. Setelah installer
+selesai, konfigurasi dan enrollment dilakukan dengan launcher di bawah. Jika admin
+sudah memberikan EXE per-device, gunakan alur wizard pada Bab14.0; jangan menjalankan
+`init` kedua kali pada identitas yang sudah dibuat wizard. Antarmuka saat ini berupa
+terminal dengan pertanyaan teks, belum berupa formulir GUI.
+
+**1. Admin menyiapkan sistem dan data endpoint.** Nyalakan CA/server/admin dan
+pastikan HTTPS/readiness serta jalur WireGuard dapat dijangkau PC. Instalasi EXE
+di PC tidak memasang backend Linux. Admin menyediakan:
+
+- `profile.json` dan `root.crt` publik dari sistem yang akan dipakai.
+- Fingerprint SHA256 root dan public key WireGuard server yang dikonfirmasi lewat
+  kanal tepercaya; jangan menggunakan pin milik fixture pengujian.
+- Device ID unik, IP tunnel yang belum dipakai, serta akun karyawan aktif.
+- Hak akses aplikasi; untuk internet terkelola, gateway Linux dan grant internet
+  juga harus sudah disiapkan. Schema2 memerlukan persiapan dan recovery Bab14.1.
+
+CA utama tetap dipakai. **Tidak membuat Root CA baru untuk setiap komputer.**
+Alamat lab `192.168.100.x` hanya bisa dipakai jika jaringan PC memiliki jalur ke
+lab; keberhasilan memasang EXE tidak membuktikan jalur tersebut tersedia.
+
+**2. Unduh dan periksa installer.** Buka branch
+`feature/2026-10-22-physical-endpoints`, folder `downloads`, lalu unduh
+[Setup-VanGuard-0.1.14-fix1.exe](../downloads/Setup-VanGuard-0.1.14-fix1.exe)
+melalui tombol **Download raw file** GitHub. Git/GitHub CLI tidak diperlukan.
+Di PowerShell, dari folder unduhan:
+
+```powershell
+Get-FileHash '.\Setup-VanGuard-0.1.14-fix1.exe' -Algorithm SHA256
+```
+
+Untuk artefak ini hasilnya harus:
+`f74a3b7b72373dbe55c1cc5b771938108cc683e930949c861cea7422415c7f69`.
+Pastikan nilai tersebut juga cocok dengan salinan/checksum tepercaya dari admin.
+EXE per-device memiliki hash berbeda yang diberikan pembuatnya. Bila berbeda,
+berhenti sebelum menjalankan installer. Paket belum memiliki tanda tangan
+Authenticode; blokir organisasi/SmartScreen perlu ditinjau admin, bukan diatasi
+dengan mematikan proteksi.
+
+**3. Pasang di Windows.** Simpan pekerjaan, klik kanan EXE → **Run as administrator**
+dan setujui UAC. Tunggu terminal menyatakan aplikasi terpasang/exit0. Installer
+memasang Python, WireGuard dan dependensi bila diperlukan; runtime yang sesuai
+dan sudah ada digunakan kembali. Jika keluar3010, restart Windows lalu jalankan
+EXE yang sama. Jika keluar1, simpan pesan kegagalan untuk admin dan jangan
+menghapus key/config. Jangan menjalankan beberapa installer bersamaan.
+
+Hasil normal EXE umum: aplikasi terpasang, **belum ada sertifikat perangkat,
+login, tunnel atau lockdown baru**. Kebijakan yang sudah terpasang sebelumnya
+tetap berlaku. Simpan EXE dan checksum untuk maintenance.
+
+**4. Konfigurasi alamat server dan root.** Buka **PowerShell → Run as administrator**.
+Letakkan dua file publik dari admin di `C:\Program Files\VanGuardTrust`, lalu:
+
+```powershell
+$vg = Join-Path $env:ProgramFiles 'VanGuardEndpoint\VanGuard.bat'
+& $vg configure
+& $vg status
+& $vg diagnose
+```
+
+Pada pertanyaan configure masukkan path `profile.json`, path `root.crt`, fingerprint
+root dan public key server dari admin. Lanjutkan hanya jika konfigurasi lengkap dan
+diagnose dapat menjangkau layanan yang benar. Jika konflik subnet, trust tidak cocok
+atau server tidak siap, minta admin memperbaikinya sebelum init/connect. Jangan
+mengganti root lama atau mematikan verifikasi TLS agar proses lolos.
+
+Khusus profil **schema2/internet terkelola**, admin menjalankan langkah berikut
+sesudah configure dan sebelum enrollment, setelah memeriksa Bab14.1 serta
+menyiapkan console/recovery dan jalur transfer request/bundle:
+
+```powershell
+& $vg internet-preview
+& $vg internet-enable
+& $vg internet-status
+```
+
+Internet langsung mulai diblok **setelah internet-enable berhasil**, bukan saat
+klik EXE umum. Jika pemeriksaan gagal, jangan menganggap blok sudah aktif atau
+melanjutkan connect. Langkah ini tidak diperlukan untuk profil schema1.
+
+**5. Buat permintaan sertifikat pada PC baru.** Di PowerShell yang sama:
+
+```powershell
+& $vg init
+```
+
+Isi device ID dan IP tunnel sesuai alokasi admin. Kirim **hanya**
+`C:\Program Files\VanGuardEndpointData\identity\request.json` kepada admin.
+Private key dibuat di PC; `identity.key`, `wg.key`, password, token dan seluruh
+folder identity tidak boleh dikirim. Langkah init cukup sekali untuk identitas
+baru; reinstall/resume mempertahankan identitas yang sudah ada.
+
+**6. Admin mendaftarkan dan menyetujui.** Admin membuka dashboard HTTPS pada jalur
+management, login dengan akun admin + TOTP, menyiapkan akun karyawan, lalu mengunggah
+request pada formulir perangkat. Pastikan akun, device ID dan IP cocok. Tunggu
+status registered; pending_issue/pending_registry harus diselesaikan melalui retry
+setelah dependensi pulih. Unduh bundle ZIP publik untuk perangkat itu dan kirim
+kembali ke PC asal. Registrasi belum membuka akses. Berikan grant aplikasi yang
+diperlukan; grant internet terpisah pada mode schema2. Rincian formulir ada di Bab11.3.
+
+**7. Import sertifikat dan login.** Simpan bundle pada folder tepercaya di PC:
+
+```powershell
+& $vg import-bundle
+& $vg status
+& $vg diagnose
+& $vg login
+```
+
+Masukkan path bundle ketika diminta. Import memeriksa sertifikat terhadap root,
+profil dan key PC ini. Pada login gunakan **akun karyawan**, bukan akun admin atau
+password login Windows. Password diketik pada prompt tersembunyi; jangan menaruhnya
+pada command line. Import/login saja belum membuat peer.
+
+**8. Hubungkan dan buktikan akses.**
+
+```powershell
+& $vg connect
+```
+
+Biarkan terminal terbuka untuk renewal. Server memeriksa sesi karyawan dan enam
+pemeriksaan perangkat sebelum menambahkan peer. Coba resource yang benar-benar
+diizinkan admin, misalnya `http://10.8.0.1:8082` jika layanan demo tersedia dan
+grant TCP8082 sudah diberikan. Admin memeriksa lease, peer, handshake serta transfer
+sebagai indikator terpisah. Pesan instalasi berhasil atau status registered saja
+tidak cukup untuk menyatakan koneksi berhasil.
+
+**9. Selesai memakai atau komputer dimulai ulang.** Ctrl+C pada terminal connect
+meminta penutupan tunnel. Untuk mencabut sesi, buka PowerShell administrator:
+
+```powershell
+$vg = Join-Path $env:ProgramFiles 'VanGuardEndpoint\VanGuard.bat'
+& $vg disconnect
+& $vg logout
+```
+
+Jika server tidak terjangkau, pencabutan server belum terkonfirmasi; simpan state
+untuk retry. Setelah reboot gunakan `status`, `diagnose`, `login` bila sesi berakhir,
+lalu `connect`; tidak perlu install/init ulang. Sertifikat yang kedaluwarsa atau
+dicabut membutuhkan penggantian identitas oleh admin, bukan sekadar login/renewal.
+Pada schema2, disconnect/logout tetap mempertahankan blok internet langsung;
+pemulihan kebijakan memerlukan prosedur admin Bab14.1.
+
+### 14.1. Kandidat internet terkelola tanpa mengubah router pengguna
+
+Mode ini terpisah dari pilot aplikasi Bab14 di atas. Source kandidat0.1.13
+menambahkan gateway internet IPv4 dan policy Windows persisten; **ZIP stabil
+25 Oktober0.1.12 belum memuat fitur ini**. Periksa checkpoint untuk hasil native
+aktual sebelum rollout. Jangan menerapkan pada PC kerja hanya dari contoh ini.
+
+Bukti native tersedia untuk Windows10 LTSC build19044 (27 Oktober) dan Windows11
+build26300 (28 Oktober): installer kandidat, lockdown sebelum enrollment dan
+sesudah reboot, admission/handshake, grant/default-deny, renewal, logout dan
+reconnect. Windows11 juga memiliki bukti pemutusan TCP aktif saat sertifikat
+dicabut; Windows10 mengonfirmasinya pada kandidat0.1.14 tanggal29Oktober
+([bukti wizard dan koneksi](VALIDASI_SETUP_TERPADU_2026-10-29.md)).
+Rincian koreksi kriteria alat ukur Windows11 ada di
+[laporan validasi Windows11](VALIDASI_WINDOWS11_INTERNET_2026-10-28.md).
+Gunakan paket kandidat yang telah diverifikasi, bukan mengasumsikan ZIP stabil
+memuat perubahan ini. Bukti dua VM tersebut tidak menjamin seluruh edisi/build,
+endpoint fisik, atau jaringan organisasi dengan GPO. Reboot saat tunnel aktif
+pada mode baru dan pengujian IPv6 nyata masih belum dilakukan.
+
+Linux memutuskan izin dan meneruskan internet; Windows mencegah jalur langsung
+melalui Wi-Fi/LAN. Tanpa policy endpoint aktif, Linux tidak bisa memblokir trafik
+yang langsung menuju router. Hak administrator lokal penuh tetap dapat mengubah
+firewall. Ini memerlukan endpoint terkelola, bukan kontrol mutlak atas komputer
+pribadi. Mode sekarang memblokir IPv6; tidak menyediakan internet IPv6.
+
+Urutan admin untuk pilot terisolasi:
+
+1. **Operator Linux:** catat interface uplink, alamat HTTPS/WireGuard yang dapat
+   dijangkau endpoint, route, firewall, unit dan versi. Backup konfigurasi serta
+   database tanpa memulihkan histori CA lama. Sediakan console/pemulihan lokal.
+   Gunakan namespace/VM uji sebelum gateway aktif. Jangan membuat ulang Root CA.
+2. **Operator Linux:** pasang versi kandidat server dan admin yang sama. Pertahankan
+   admission HTTPS, enam cek, sesi karyawan, watchdog dan kebijakan aplikasi.
+   Server perlu koneksi WAN dan IPv4 forwarding. NAT harus berada pada gateway
+   Linux; tidak ada perubahan konfigurasi router milik pengguna. Alamat privat
+   lab tidak otomatis dapat dijangkau dari rumah/jaringan lain. Untuk penggunaan
+   lintas jaringan, sediakan alamat server/transport yang benar-benar reachable.
+3. **Operator Linux:** hasilkan aturan kandidat, bukan langsung apply:
+
+   ```bash
+   # Ganti eth0 dengan uplink gateway yang telah diperiksa.
+   python3 deploy/firewall.py server --management-ip 192.168.100.1 \
+     --windows-client --application-policy --internet-uplink eth0 --print-only \
+     > gateway-internet.candidate.nft
+   sudo nft --check --file gateway-internet.candidate.nft
+   ```
+
+   Generator masih mengikuti topologi lab untuk akses management/layanan internal.
+   Review alamat tersebut terhadap target nyata; jangan menyalin ke server lain
+   tanpa penyesuaian dan pemeriksaan. Terapkan hanya setelah backup, rencana
+   pemulihan dan jalur management kedua tersedia. Tabel `inet vanguard` akan
+   diganti oleh kandidat; jangan menimpa grant aktif tanpa maintenance yang jelas.
+   Jangan aktifkan flow offloading yang dapat melewati pemeriksaan setiap paket.
+4. **Operator Linux:** siapkan file kosong `{"grants":[]}` privat0600 pada
+   `/var/lib/vanguard/server/internet-policy.json`, tanpa menimpa file yang sudah
+   ada. Pasang `VANGUARD_INTERNET_POLICY` menunjuk path itu pada environment server
+   **dan daemon**. Path harus diizinkan ReadWritePaths unit server; jangan menaruh
+   file yang perlu ditulis API di `/etc` yang read-only. Validasi melalui
+   `vanguard.internet.load_internet_policy`. Gate default-deny tetap kosong sampai
+   identitas+sesi+lease+peer+grant semuanya sah. Nilai timeout grant tidak boleh
+   melampaui lease/sesi. Setelah restart, periksa liveness, readiness, nft dan
+   akses langsung; HTTP200 liveness sendiri bukan bukti forwarding aman.
+5. **Admin:** buat profil publik **schema2** melalui kanal tepercaya seperti Bab9.
+   Pertahankan root fingerprint, key server dan resource eksplisit. Perbedaannya:
+
+   ```json
+   {
+     "schema": 2,
+     "allowed_ips": ["0.0.0.0/1", "128.0.0.0/1"],
+     "internet": {"mode": "managed-ipv4", "dns": ["1.1.1.1"]}
+   }
+   ```
+
+   Ini hanya potongan perubahan, bukan profil lengkap siap impor. HTTPS/WG host
+   harus literal IPv4; DNS internet hanya melalui tunnel setelah izin. Jangan
+   membuka DNS umum sebelum admission. Resource aplikasi tetap dibatasi tuple
+   sendiri. Renewal lease tidak memperpanjang sertifikat. Root CA dipercaya
+   bukan berarti perangkat sudah mempunyai sertifikat identitas atau akses.
+6. **Windows admin:** install kandidat lengkap secara offline mengikuti Bab10;
+   konfigurasi profil/root sesuai Bab11. Siapkan backup OS/firewall dan console.
+   Jalankan dari folder aplikasi dengan PowerShell administrator:
+
+   ```powershell
+   & 'C:\Program Files\VanGuardEndpoint\VanGuard.ps1' -Action internet-preview
+   & 'C:\Program Files\VanGuardEndpoint\VanGuard.ps1' -Action internet-enable
+   & 'C:\Program Files\VanGuardEndpoint\VanGuard.ps1' -Action internet-status
+   ```
+
+   Hormati execution policy organisasi; jangan memakai Bypass. Enable mengambil
+   alih outbound pada seluruh profile Windows: menggunakan Local GPO milik VanGuard, menolak penggabungan rule lokal tambahan,
+   default block, pengecualian HTTPS admission, UDP WireGuard dan DHCP,
+   serta blok IPv6. Policy firewall GPO yang sudah ada atau endpoint domain ditolak, perlu integrasi pengelola.
+   Rule inbound lokal yang aktif disalin dengan nama milik VanGuard supaya akses masuk
+   yang sebelumnya diizinkan tetap tersedia. Rule asli tidak dihapus. Jangan menganggap
+   semua Windows Home mendukung mode ini; validasi target diperlukan.
+   Rule tunnel awal disabled sampai adaptor nyata terkonfirmasi sesudah admission.
+   Backup/state berada di `VanGuardEndpointData\internet-lockdown`; jangan hapus.
+   Jika gagal sebagian, quarantine tetap memblokir dan hasil bukan ACTIVE.
+   Cleanup menonaktifkan pengecualian tunnel sebelum adaptor dihapus. Jika
+   penghentian tunnel atau cleanup policy belum pasti, config dipertahankan;
+   jangan menghapusnya untuk memaksa reconnect.
+7. **Windows/admin dashboard:** buat key+CSR di endpoint, transfer request publik
+   ke dashboard, terbitkan sertifikat dari CA yang **sudah ada**, bind karyawan,
+   unduh dan import bundle seperti Bab11. Sebelum langkah ini, internet sudah
+   terblokir setelah enable berhasil. Transfer publik dapat melalui media lokal
+   terkelola; browser dashboard tidak otomatis dikecualikan oleh lockdown endpoint.
+8. **Admin dashboard:** pada perangkat registered yang mempunyai gateway aktif,
+   pilih **Izinkan setelah admission** pada **Izin internet melalui gateway**.
+   Tindakan perlu login/TOTP dan CSRF serta dicatat dengan aktor/waktu. Grant ini
+   tidak menambahkan peer. **Karyawan:** login lalu connect (Bab12). Terminal
+   connect tetap hidup untuk renewal; mode ini belum layanan auto-login Windows.
+   Periksa status policy, lease, handshake dan TCP internet secara terpisah.
+9. **Admin:** uji cabut izin internet saat TCP aktif; paket berikutnya harus
+   ditolak, sementara identitas VPN internal tetap ada. Untuk mencabut identitas,
+   gunakan Revoke beserta alasan; server menghapus peer dan CA merekam revocation.
+   Uji logout, sesi/lease habis, CA gagal, daemon berhenti, tunnel berhenti dan
+   reboot. Jangan menyebut socket langsung tertutup: firewall drop menghentikan
+   data; aplikasi mungkin menunggu timeout. Ukur waktu trafik terakhir.
+
+**Pemulihan admin lokal:** disconnect melalui proses pemilik; pastikan service
+hilang dan cleanup terkonfirmasi sebelum recovery. Jalankan `internet-recover`
+dan ketik `PULIHKAN`. Ini mengembalikan profile Local GPO sebelum lockdown (atau allow rule/profile
+legacy untuk state kandidat lama),
+menghapus hanya nama rule yang dimiliki VanGuard, dan mempertahankan backup
+historis. Ini membuka kembali kebijakan internet lama dan **bukan** revoke server.
+Jika server tidak terjangkau, logout belum terkonfirmasi. Jangan menghapus config
+atau menghentikan service milik proses lain untuk melewati guard recovery.
+Installer/uninstaller menolak perubahan runtime selama state lockdown masih ada;
+rencanakan maintenance terkontrol. Tidak ada auto-recovery membuka internet pada
+produk; task pemulihan berwaktu pada VM uji hanya pengaman eksperimen.
+
+Kriteria penerimaan mode ini: TCP langsung diblokir sebelum identitas, bootstrap
+HTTPS tetap bisa, authorized internet+DNS berhasil, renewal berulang, revoke dan
+pencabutan grant menghentikan data TCP aktif, perangkat lain tidak terdampak,
+cleanup/reboot tidak membuka fallback, serta recovery admin terbukti. Catat setiap
+OS/build dan metode nyata/mock; hasil Windows10 LTSC tidak membuktikan semua edisi
+Windows10/11, PC fisik, Wi-Fi berpindah, GPO atau IPv6 internet.
 
 ## 15. Checklist penerimaan dan hasil yang harus dibuktikan
 

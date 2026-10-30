@@ -16,6 +16,10 @@ from packaging.specifiers import SpecifierSet
 from packaging.tags import compatible_tags, cpython_tags
 from packaging.utils import canonicalize_name, parse_wheel_filename
 
+from vanguard.common import device_name, tunnel_ip
+from vanguard.pki import load_cert
+from vanguard.profile import load_profile
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -38,10 +42,32 @@ def runtime_inputs(directory, lock):
     return result
 
 
-def build(wheelhouse, output, runtime_directory=None):
+def provisioning_inputs(value):
+    """Copy a strict public subset; never bundle arbitrary input fields or PEM tails."""
+    if value is None:
+        return {}
+    from cryptography.hazmat.primitives.serialization import Encoding
+    if set(value) != {'profile', 'root', 'device_id', 'tunnel_ip', 'root_sha256', 'server_public_key'}:
+        raise ValueError('Expected explicit public provisioning inputs and trust pins')
+    for field in ('profile', 'root'):
+        if Path(value[field]).is_symlink():
+            raise ValueError('Provisioning inputs cannot be symbolic links')
+    profile = load_profile(value['profile'], value['root'])
+    if any(value[k] != profile[k] for k in ('root_sha256', 'server_public_key')):
+        raise ValueError('Administrator trust pins differ from profile')
+    provision = {'schema': 1, 'device_id': device_name(value['device_id']),
+                 'tunnel_ip': tunnel_ip(value['tunnel_ip']),
+                 'root_sha256': profile['root_sha256'], 'server_public_key': profile['server_public_key']}
+    return {'profile.json': (json.dumps(profile, indent=2) + '\n').encode(),
+            'root.crt': load_cert(Path(value['root']).read_bytes()).public_bytes(Encoding.PEM),
+            'provision.json': (json.dumps(provision, indent=2) + '\n').encode()}
+
+
+def build(wheelhouse, output, runtime_directory=None, provisioning=None):
     wheelhouse, output = Path(wheelhouse), Path(output)
     if output.exists():
         raise ValueError('Output exists; preserve prior package evidence')
+    public_inputs = provisioning_inputs(provisioning)
     pins = {}
     for line in (ROOT / 'deploy/constraints.txt').read_text().splitlines():
         name, version = line.split('==')
@@ -102,6 +128,8 @@ def build(wheelhouse, output, runtime_directory=None):
     for path in sorted((ROOT / 'deploy/endpoint/windows').iterdir()):
         if path.is_file():
             shutil.copyfile(path, output / path.name)
+    for name, content in public_inputs.items():
+        (output / name).write_bytes(content)
     # One authoritative manual; package contains a generated offline HTML copy.
     manual = (ROOT / 'docs/MODUL_PENGGUNAAN_VANGUARD.html').read_text()
     def published_link(match):
@@ -114,6 +142,8 @@ def build(wheelhouse, output, runtime_directory=None):
     manual = re.sub(r'href="([^"]+)"', published_link, manual)
     (output / 'MODUL_PENGGUNAAN_VANGUARD.html').write_text(manual)
     (output / 'README.md').write_text('# VanGuard Windows10/11 x64\n\n'
+        'Paket per-device: jalankan Setup-VanGuard.bat untuk instalasi/config/enrollment terpandu.\n'
+        'Jika provision.json belum tersedia, admin perlu membangun paket per-device dahulu.\n'
         'Buka MODUL_PENGGUNAAN_VANGUARD.html; Bab10 untuk instalasi dan Bab11–12 untuk endpoint.\n'
         'Manual ini berasal dari satu sumber resmi repository. Hasil native ada pada checkpoint.\n')
     (output / 'requirements.lock').write_text('\n'.join(lines) + '\n')
@@ -144,8 +174,22 @@ def main():
     parser.add_argument('--wheelhouse', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--runtime-directory', type=Path, required=True)
+    parser.add_argument('--profile', type=Path)
+    parser.add_argument('--root', type=Path)
+    parser.add_argument('--device-id')
+    parser.add_argument('--tunnel-ip')
+    parser.add_argument('--expected-root-sha256')
+    parser.add_argument('--expected-server-key')
     args = parser.parse_args()
-    build(args.wheelhouse, args.output, args.runtime_directory)
+    provisioning = dict(profile=args.profile, root=args.root, device_id=args.device_id,
+                        tunnel_ip=args.tunnel_ip, root_sha256=args.expected_root_sha256,
+                        server_public_key=args.expected_server_key)
+    if any(v is not None for v in provisioning.values()):
+        if any(v is None for v in provisioning.values()):
+            parser.error('Per-device setup requires profile/root/allocation and both trust pins')
+    else:
+        provisioning = None
+    build(args.wheelhouse, args.output, args.runtime_directory, provisioning)
     result = verify_package(args.output)
     print(json.dumps({'status': result['status'], 'files': len(result['files']), 'output': str(args.output)}))
 

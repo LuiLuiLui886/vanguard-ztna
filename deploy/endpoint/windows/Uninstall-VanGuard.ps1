@@ -9,6 +9,7 @@ try {
     $guard = New-Object Threading.Mutex($false,'Global\VanGuardEndpointSetup')
     $owned = $guard.WaitOne(0)
     if (-not $owned) { throw 'Connect/instalasi masih aktif; hentikan dengan launcher pemilik.' }
+    if (Test-Path -LiteralPath (Join-Path $DataRoot 'internet-lockdown')) { throw 'Lockdown aktif/belum selesai; maintenance memerlukan recovery lokal terencana.' }
     Assert-NoTunnel
     if ((Get-Content -LiteralPath (Join-Path $AppRoot '.vanguard-endpoint-owner') -Raw) -ne 'VanGuardEndpoint-schema1') { throw 'Kepemilikan instalasi tidak cocok.' }
     # Do not follow any reparse point or delete an unrelated runtime.

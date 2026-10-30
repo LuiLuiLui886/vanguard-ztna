@@ -12,8 +12,8 @@ pada [matriks validasi](VALIDASI_ROLLOUT_2026-10-20.md).
 Deployment mengikuti [checkpoint](CHECKPOINT.md); endpoint berikut tersedia
 pada0.1.9. [Readiness0.1.10](READINESS_0.1.10.md) menunggu lock CA
 maksimal3,5detik dan memeriksa dependency admin secara paralel; batas subprocess
-tetap6detik. Versi0.1.11 terpasang pada ketiga layanan dan mengurangi I/O
-publikasi CA; kontrak API tetap sama. Readiness yang gagal tetap503, tanpa
+tetap6detik. Versi0.1.11 mengurangi I/O publikasi CA; kontrak API tetap sama.
+Ketiga layanan kini memakai0.1.14 sesuai checkpoint31Oktober. Readiness yang gagal tetap503, tanpa
 cache status sehat. Setelah patch kapasitas unit CA8thread, postflight93/93
 respons HTTP200; sampel sebelumnya tetap menyimpan503. Ini bukan jaminan beban
 tak terbatas. Lihat [catatan kapasitas](CA_SERVICE_CAPACITY.md) dan checkpoint.
@@ -43,6 +43,30 @@ Readiness membaca CRL yang sudah ada; tidak memanggil endpoint penerbit CRL,
 menerbitkan sertifikat atau menambah peer. `/healthz` tetap liveness sederhana.
 Client Remote kini hanya menampilkan kode HTTP untuk error upstream, sehingga
 body upstream tidak tersalin ke log/UI.
+
+Kandidat source31Oktober menambahkan CLI lokal `python -m vanguard.health server
+--diagnose` (role juga `ca` atau `admin`). Ini bukan endpoint HTTP baru; respons
+publik `/readyz` tetap sama. Objek `diagnostics` pada CLI memuat durasi percheck
+dan kode tetap seperti `connect_timeout`, `read_timeout`, `tls_error`,
+`connection_error`, `lock_busy`, `process_timeout` atau `check_not_ready`.
+Tidak memuat pesan exception, URL, header atau body. Timeout subprocess tetap
+6detik dan kegagalan tetap not_ready/unknown. `check_not_ready` adalah hasil
+pemeriksaan false, bukan penjelasan lengkap akar masalah dependency. CLI
+mengklasifikasikan exception library; `read_timeout` tidak membuktikan bahwa
+handshake TLS telah selesai. CLI
+mengembalikan JSON, sehingga nilai `status` harus diperiksa; exit0 saja bukan
+bukti siap. Mode ini baru diuji di source/staging dan belum di-rollout ke paket
+layanan0.1.14 yang terpasang. Ikuti checkpoint dan manual admin untuk penggunaannya.
+
+Perbaikan kandidat lanjutan31Oktober memvalidasi JSON readiness sebagai object
+dengan check sesuai role dan status konsisten. Respons child malformed menjadi
+`checks.probe=unknown`; respons dependency HTTP200 malformed menjadi unknown,
+bukan sehat. Batas6detik tetap. Client juga memvalidasi respons login sebelum
+mengganti file sesi: username sesuai permintaan, token string32–128karakter,
+expiry angka finite di masa depan. Hanya username/session_token/expires_at yang
+disimpan. Respons login invalid tidak menimpa sesi lama. Respons logout malformed
+mempertahankan token dan menampilkan pencabutan server belum terkonfirmasi untuk
+retry. Perbaikan ini masih source/staging; lihat laporan uji31Oktober.
 
 Sejak 0.1.4, challenge/verify mengembalikan `X-VanGuard-Request-ID` acak buatan
 server untuk korelasi audit. Nilai request header caller tidak dipakai ulang.
@@ -234,3 +258,22 @@ file sesi bukan bukti token valid. `diagnose` hanya HTTPS `/readyz`, UDP/aplikas
 unknown. `disconnect` meminta connect pemilik melakukan cleanup, terpisah dari
 logout server. Timeout teardown tidak berarti sukses; config tetap disimpan.
 Lihat [pilot Windows](ENDPOINT_WINDOWS_PILOT.md) untuk prasyarat dan batas bukti.
+
+## Kandidat0.1.13 — izin internet terkelola (opt-in)
+
+Server `POST /api/devices/<id>/internet` memerlukan bearer management dan JSON
+`{"enabled":true}` atau `{"enabled":false}` (boolean, bukan string). Gateway
+harus dikonfigurasi melalui VANGUARD_INTERNET_POLICY; perangkat enabled dan
+binding karyawan aktif wajib. Response berisi device_id, internet_granted dan
+admission_required=true. Perubahan policy tidak membuat peer. Pencabutan izin
+internet saja tidak mencabut identitas/akses aplikasi internal. Bila enforcement
+gagal, lease diinvalidasi dan peer terkait dihapus; hasil tidak boleh dinyatakan
+berhasil. Riwayat grant/revoke dicatat tanpa request/credential lengkap.
+
+Dashboard `POST /devices/<id>/internet` memakai sesi admin/TOTP dan CSRF; field
+form enabled hanya `true`/`false`. Listing server menambahkan internet_configured
+serta internet_granted (null jika policy tidak dapat diperiksa). Nilai ini izin
+terkonfigurasi, bukan bukti akses, handshake atau trafik internet aktual. Gate
+memeriksa tuple device+karyawan dan lease/sesi/peer pada setiap sinkronisasi;
+firewall memeriksa grant untuk setiap paket, termasuk TCP established. Profil
+schema2 diuraikan pada Bab14.1 manual tunggal. Lihat checkpoint sebelum rollout.

@@ -1,5 +1,49 @@
 # Installer VanGuard Windows10/11 x64
 
+Lihat **flowchart seluruh sistem** pada [manual Bab1.1](../docs/MODUL_PENGGUNAAN_VANGUARD.md#11-flowchart-sistem-lengkap-dari-ca-sampai-exe-dan-penggunaan): CA/backend → installer → enrollment → akses → pencabutan dan audit.
+
+## EXE offline0.1.14-fix1 — kandidat pada branch feature
+
+[Unduh Setup-VanGuard-0.1.14-fix1.exe](Setup-VanGuard-0.1.14-fix1.exe)
+melalui **Download raw file**, lalu cocokkan [SHA256](SHA256SUMS).
+Python, WireGuard, dependensi dan aplikasi sudah dibundel. EXE umum ini memasang
+prasyarat/aplikasi; **profil server, CA publik dan alokasi perangkat tetap perlu
+disiapkan admin**. Untuk satu EXE yang juga menjalankan wizard pendaftaran,
+admin membangun EXE per-device sesuai [manual tunggal Bab14.0.1](../docs/MODUL_PENGGUNAAN_VANGUARD.md).
+Kunci dibuat di endpoint; approval admin dan login karyawan tetap wajib.
+
+**Baru pertama memakai EXE?** Ikuti [langkah dari nol sampai connect, Bab14.0.1.1](../docs/MODUL_PENGGUNAAN_VANGUARD.md#14011-langkah-dari-nol-memakai-exe-yang-tersedia-di-github):
+unduh/periksa hash → install → configure → request → persetujuan admin → import → login/connect.
+
+EXE belum ditandatangani Authenticode. Jangan menonaktifkan proteksi Windows jika
+policy menolak; konfirmasikan origin/checksum dan minta pemeriksaan admin.
+[Uji kelayakan30Oktober](../docs/UJI_KELAYAKAN_2026-10-30.md) mencatat EXE native
+Windows10/11, termasuk instalasi umum sungguhan Windows11. UAC/browser, fresh OS,
+EXE per-device schema2 dan PC fisik tetap belum diuji untuk wrapper ini.
+Branch: **feature/2026-10-22-physical-endpoints**; paket stabil/main tidak diganti.
+
+## Kandidat setup terpadu0.1.14-fix1 — untuk persiapan admin
+
+[Template offline satu folder](vanguard-windows10-11-setup-template-0.1.14-fix1-20261029.zip)
+menyertakan Python/WireGuard, wheel aplikasi dan `Setup-VanGuard.bat`.
+**Template ini belum berisi profil CA/server atau alokasi perangkat.** Admin
+menyiapkan paket per-device dengan builder dan input publik tepercaya menurut
+[manual Bab14.0](../docs/MODUL_PENGGUNAAN_VANGUARD.md); wheel/runtime dapat diambil
+dari folder template yang diekstrak. User akhir menerima paket hasil persiapan
+admin, lalu menjalankan satu BAT untuk install/config/request/import/login/connect.
+Pendaftaran tetap menunggu persetujuan admin dan password dimasukkan saat login.
+Tidak membagikan paket fixture lab. Kandidat berada pada branch feature; lihat
+[hasil native dan batas bukti](../docs/VALIDASI_SETUP_TERPADU_2026-10-29.md).
+Cocokkan [checksum](SHA256SUMS) sebelum ekstraksi/eksekusi.
+
+Fix1 memperbaiki resume setelah pemasangan ulang terputus.
+[Laporan bug dan uji repair](../docs/AUDIT_WIZARD_2026-10-29.md):6kasus kontrol
+alur native dan7kasus installer/runtime nyata terisolasi lulus di Windows10.
+Wheel tetap0.1.14; ini revisi script installer. EXE alternatif tersedia di atas;
+ZIP tetap berguna sebagai input admin untuk membangun paket per-device.
+
+## Paket sebelumnya0.1.12
+
 [Satu ZIP lengkap25Oktober](vanguard-windows10-11-offline-0.1.12-20261025.zip)
 (44.675.510byte) berisi BAT, Python3.13.17, WireGuard1.1.1,20wheel offline,
 dan manual admin. [Checksum SHA256](SHA256SUMS) harus dicocokkan sebelum eksekusi.
