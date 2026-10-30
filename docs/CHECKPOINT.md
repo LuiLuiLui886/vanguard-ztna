@@ -35,7 +35,8 @@ namespace/tunnel uji hilang, unit uji inactive; semua7XML domain cocok baseline.
 Inventaris testcredential hanya lokal privat, tidak dipublikasikan.
 Bukti lokal `state/qualification-20261030/`; backup Windows11 `VGQual30/before-install`.
 Semua7VM kembali shut off melalui shutdown normal; tidak ada runner uji tersisa.
-Publikasi dicatat pada jurnal30Oktober setelah verifikasi.
+Laporan/panduan dipush pada `62ce345`; SHA origin feature terverifikasi.
+Main dan artefak installer tetap; hasil publikasi tercatat pada jurnal30Oktober.
 
 Berikutnya: kapasitas host, penggantian identitas expired tanpa mengubah root/
 histori, rollout kandidat terencana, lalu matriks EXEper-device/physical yang tersisa.
