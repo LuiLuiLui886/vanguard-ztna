@@ -22,7 +22,8 @@ cert/sesi expired belum diganti. Profil admin/gatewayinternet masih perlu konfig
 VANGUARD_CLIENT_PROFILE dan VANGUARD_INTERNET_POLICY belum diisi. Updatepaket saja
 bukan pemberian akses internet. Selanjutnya kapasitas, replacementidentitas dan
 konfigurasi/test deployment internet terencana; jangan reinit CA atau restorehistory.
-Publikasi hasil dicatat pada jurnal31Oktober setelah remote diverifikasi.
+Hasil dipush sebagai `c694151`; SHA origin feature terverifikasi.
+Catatan publikasi ada pada jurnal31Oktober.
 
 ## 30 Oktober13:33WIB — CA/server/admin diperbarui ke0.1.14
 
