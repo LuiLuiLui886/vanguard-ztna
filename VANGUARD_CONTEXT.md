@@ -446,3 +446,19 @@ a claimed root-cause fix. No relaxed admission or stale-CRL fallback. Only
 three service VMs running now; other four remain off after host reboot.
 Managed Internet/profile environment configuration remains separate/unset;
 package update alone does not activate gateway policy. See checkpoint/journals.
+
+Operational evidence — 31 October 2026, deployed0.1.14 acceptance tests:
+CA/server/admin0.1.14 passed real HTTPS admission, WireGuard handshake, explicit
+application grants/default deny, active TCP removal, two automatic renewals,
+scoped/idempotent logout and CA-only revocation using a disposable Ubuntu identity.
+The test client used isolated0.1.14 source; primary installed client remains0.1.9
+with expired certificate/session. Identity/configuration/history were preserved;
+test account disabled, certificate revoked, resource policy restored, no live peers.
+Linux isolated regression89PASS/1SKIP; Windows/EXE not rerun. Initial health sample
+29/30HTTP200 included server readiness503 with CA unknown. Direct CA20/20 and
+follow-up30/30 succeeded, but the original cause is unconfirmed, not fixed.
+No product code or admission policy weakened. Runtime TOTP replay counter advances
+on successful admin login and must not be treated as immutable history during
+verification. See docs/UJI_INTEGRASI_0.1.14_2026-10-31.md for harness failures and
+scope. Four Ubuntu backend/client VMs running, other three off; host1.3GiB free,
+managed internet/profile deployment still pending. Private evidence retained.

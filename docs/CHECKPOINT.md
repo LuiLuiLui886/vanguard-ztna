@@ -1,5 +1,31 @@
 # Checkpoint VanGuard — 31 Oktober 2026
 
+## 31 Oktober — pengujian layanan0.1.14 selesai, satu readiness sementara gagal
+
+[Laporan uji terbaru](UJI_INTEGRASI_0.1.14_2026-10-31.md) mencatat VM langsung CA/server/admin0.1.14 dengan
+sourceclient0.1.14 terisolasi pada Ubuntu (instalasi client utama tetap0.1.9).
+Registrasi/login tanpa peer,4admission negatif, handshake nyata, default-deny,
+grant aplikasiTCP8082, penolakanLAN/portlain, TCP aktif setelah pencabutan grant,
+2renewal otomatis, logoutscope/idempotent dan revokeCA PASS. RevokeCA menghapus
+peer8,238detik pada satu sampel. AdminHTTPS/TOTP/arsip/hash PASS. Regresi terisolasi
+Linux **89PASS/1SKIP267,83detik**; bukan fullsuite atau Windows native.
+
+Postflight pertama **29/30HTTP200**: server/readyz503, dependencyCA unknown,
+dependensi lain ready. Diagnostik langsungCA20/20 dan follow-up30/30HTTP200.
+Penyebab503 **BELUM_TERKONFIRMASI**, tidak diklaim fixed. Driver exercise exit1
+karena enum alasan cleanup keliru; cleanup terpisah berhasil dan kegagalan
+harness lain dijelaskan dalam laporan/jurnal, bukan disembunyikan.
+
+CA invariant/CRL, keduaDB, histori serta identitas utama terjaga. Akun uji disabled,
+sertifikat revoked, resource-policy byte-identik, nolpeer/tunnelclient/listenerdemo.
+Bukti/backup `state/live014-20261031/` tetap lokal; inventarisprivat diperbarui.
+CA/server/admin/clientUbuntu running; attacker/Win10/Win11 off. Clientutama
+kembali auto-restart fail-closed (cert/sesi expired). Host1,3GiB free; profiladmin/
+gatewayinternet belum dikonfigurasi. Windowsnative/EXE/reboot/outage tidak diuji
+ulang. Tidak ada perubahan sourceproduk. Berikutnya kapasitas, investigasi503,
+penggantian identitas utama dan deployment/testinternet terencana.
+
+
 ## 31 Oktober01:05WIB — update CA/server/admin0.1.14 selesai diverifikasi
 
 **Ketiga layanan sekarang0.1.14**, bukan0.1.11. CA/server/admin dan daemon/WG
