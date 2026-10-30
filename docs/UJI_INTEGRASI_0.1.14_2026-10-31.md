@@ -169,3 +169,56 @@ yang belum diketahui. Pemeriksaan terpisah dapat melewatkan insiden sementara;
 tidak membuktikan sebab request lama. Tidak ada kenaikan timeout, restart layanan,
 perubahan firewall, atau rollback CA. Bukti tambahan privat berada di
 `state/readiness-20261031/`; kandidat staging terpisah dari paket terpasang.
+
+## Audit bug lanjutan — validasi respons readiness dan sesi
+
+Audit dimulai dari source `ccdaafd`, tree bersih. Mockup dibatalkan; tidak ada
+pekerjaan antarmuka. Tiga bug berikut dibuktikan dengan regresi gagal sebelum
+implementasi diperbaiki. Semua memerlukan respons malformed; tidak ditemukan
+bukti bahwa respons seperti itu terjadi pada VM lab.
+
+| Klasifikasi / prioritas | File dan fungsi | Bukti sebelum perbaikan / dampak | Kriteria selesai dan hasil source |
+|---|---|---|---|
+| Bug terbukti, P2 | `vanguard/health.py`: `bounded_readiness`, `dependency_ready` | JSON non-object memicu AttributeError; status ready tanpa checks atau berlawanan dengan checks tetap dipercaya. Status dapat salah sehat atau route gagal | Validasi struktur, check sesuai role dan konsistensi status; malformed menjadi unknown. Regresi lulus |
+| Bug terbukti, P2 | `vanguard/client.py`: `_login_employee` | Respons login ditulis sebelum validasi, sehingga sesi lama terganti oleh respons rusak; field password/metadata tambahan ikut tersimpan | Validasi username, token dan expiry sebelum menulis; sesi lama byte-identik saat ditolak, simpan hanya tiga field sesi. Regresi lulus |
+| Bug terbukti, P3 | `vanguard/client.py`: `logout_employee` | JSON non-object memicu AttributeError; token tetap ada tetapi pesan pencabutan belum terkonfirmasi tidak muncul | Respons malformed masuk jalur error aman, token dipertahankan, retry valid dapat selesai. Regresi lulus |
+
+Validasi expiry menolak string, bool, waktu lewat, NaN dan infinity; token harus
+bertipe string dengan panjang sesuai kontrak server, username sesuai permintaan.
+Field tambahan respons login tidak disimpan. Login saja tetap tidak memberi akses;
+enam pemeriksaan admission tidak berubah.
+
+Hasil aktual:
+
+- Baseline health/client/logout/transport: **61PASS/1SKIP,107,37detik**.
+- Reproduksi sebelum perbaikan readiness/login: **27FAIL,1,53detik**; bukti gagal
+  dipertahankan. Kasus logout tambahan: **3FAIL/1PASS** sebelum guard tipe.
+- Sesudah perbaikan readiness/login, suite terpilih termasuk kapasitas CA:
+  **89PASS/1SKIP,106,02detik**.
+- Setelah guard logout, regresi sesi/login/logout: **23PASS,31,36detik**.
+  Suite terakhir tumpang tindih; angka tidak dijumlahkan sebagai112tes unik.
+- Source final readiness di staging CA/server/admin: **12/12ready**,4putaran;
+  memakai environment dan user service. Config/root/key/index/serial tetap.
+
+Tes malformed child menjalankan subprocess nyata dan route Flask; tes sesi
+menggunakan respons sintetis serta file nyata. Alur normal HTTPS CA/server/client
+juga diuji dengan CA sementara dan adapter WireGuard fake. Suite Linux bukan
+Windows native; Windows ACL dilewati. Testdouble lama yang hanya berisi status
+ready atau token pendek disesuaikan ke format respons server nyata.
+
+Regresi baru: `tests/test_health_result_validation.py` dan
+`tests/test_client_session_response.py`. Bukti privat `state/bugcheck-20261031/`.
+Perubahan masih **source/staging**, belum wheel/EXE atau paket layanan/client
+terpasang. Tidak ada perubahan akun, sertifikat, firewall, unit, kernel atau
+paket VM. **503 historis belum diketahui penyebabnya** dan tidak diklaim
+teratasi oleh tiga bug yang ditemukan melalui injeksi respons ini.
+
+Postflight layanan terpasang pada audit ini: **29/30HTTP200**, satu
+admin/readyz503 dalam1,324detik dengan `database=unknown`, CA/server ready.
+Pengamatan ini berbeda dari kejadian server/CA sebelumnya. Pemeriksaan langsung
+DB admin memakai user service kemudian **30/30berhasil, integrity_check=ok**.
+Klasifikasi: risiko operasional P2 dengan sebab **BELUM_TERKONFIRMASI**, bukan
+bukti database korup. Kriteria selesai: rekam penyebab aman saat kejadian dapat
+direproduksi, lalu perbaiki sebab yang terbukti tanpa melonggarkan timeout.
+Hash kode health paket terpasang tetap0.1.14 lama dan nolpeer; perbaikan source
+belum aktif pada service. Hasil30/30 DB tidak menghapus503 yang sudah tercatat.

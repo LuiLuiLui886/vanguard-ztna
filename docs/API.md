@@ -58,6 +58,16 @@ mengembalikan JSON, sehingga nilai `status` harus diperiksa; exit0 saja bukan
 bukti siap. Mode ini baru diuji di source/staging dan belum di-rollout ke paket
 layanan0.1.14 yang terpasang. Ikuti checkpoint dan manual admin untuk penggunaannya.
 
+Perbaikan kandidat lanjutan31Oktober memvalidasi JSON readiness sebagai object
+dengan check sesuai role dan status konsisten. Respons child malformed menjadi
+`checks.probe=unknown`; respons dependency HTTP200 malformed menjadi unknown,
+bukan sehat. Batas6detik tetap. Client juga memvalidasi respons login sebelum
+mengganti file sesi: username sesuai permintaan, token string32–128karakter,
+expiry angka finite di masa depan. Hanya username/session_token/expires_at yang
+disimpan. Respons login invalid tidak menimpa sesi lama. Respons logout malformed
+mempertahankan token dan menampilkan pencabutan server belum terkonfirmasi untuk
+retry. Perbaikan ini masih source/staging; lihat laporan uji31Oktober.
+
 Sejak 0.1.4, challenge/verify mengembalikan `X-VanGuard-Request-ID` acak buatan
 server untuk korelasi audit. Nilai request header caller tidak dipakai ulang.
 Penolakan aplikasi 400/403 dapat menghasilkan audit `admission_timing` dengan

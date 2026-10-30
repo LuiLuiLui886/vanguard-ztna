@@ -172,6 +172,20 @@ def local_lock(path):
 
 def _login_employee(directory, remote, username, password):
     result = remote.call('POST', '/api/employee/login', {'username': username, 'password': password})
+    if not isinstance(result, dict):
+        raise Rejected('Unexpected employee login response')
+    token, expires = result.get('session_token'), result.get('expires_at')
+    try:
+        valid_expiry = (type(expires) in (int, float) and math.isfinite(expires)
+                        and expires > time.time())
+    except OverflowError:
+        valid_expiry = False
+    if (not isinstance(result.get('username'), str) or result['username'] != username
+            or not isinstance(token, str) or not 32 <= len(token) <= 128 or not valid_expiry):
+        raise Rejected('Unexpected employee login response')
+    # A malformed response must not replace a usable token, and extra upstream
+    # fields (including credentials) must never be copied to the session file.
+    result = {key: result[key] for key in ('username', 'session_token', 'expires_at')}
     target = directory / 'employee-session.json'
     temporary = None
     try:
@@ -198,7 +212,8 @@ def logout_employee(directory, remote):
         try:
             result = remote.call('POST', '/api/employee/logout',
                                  {'employee_session': saved['session_token']})
-            if result.get('revoked') is not True or result.get('peer_removal_confirmed') is not True:
+            if (not isinstance(result, dict) or result.get('revoked') is not True
+                    or result.get('peer_removal_confirmed') is not True):
                 raise Rejected('Unexpected logout result')
         except Rejected as exc:
             raise Rejected('Pencabutan server belum terkonfirmasi; token disimpan untuk retry',

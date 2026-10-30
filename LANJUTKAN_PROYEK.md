@@ -1,5 +1,30 @@
 # Lanjutkan proyek VanGuard
 
+## 31 Oktober01:47WIB — tiga bug respons diperbaiki di source, belum rollout
+
+Audit dari ccdaafd membuktikan dan memperbaiki: (P2) readinessmalformed dapat
+crash/salahsehat, (P2) responslogininvalid menimpa sesi lama dan menyimpan field
+tambahan, (P3) logoutnon-object memicu exception tanpa pesan belumterkonfirmasi.
+Validasi readiness kini memeriksa role/check/status; login memvalidasi sebelum
+menulis3field; logoutmalformed mempertahankan token untukretry. Enamcek/HTTPS/
+immutablebinding dan scope sesi tidak berubah. File health.py/client.py dan dua
+regresi baru; rincian pada [laporan uji](docs/UJI_INTEGRASI_0.1.14_2026-10-31.md).
+
+Baseline61PASS/1SKIP107,37detik; reproduksi27FAIL serta3FAIL/1PASSlogout. Setelah
+fixreadiness/login89PASS/1SKIP106,02detik, sesudahguardlogout23PASS31,36detik
+(overlap, tidak dijumlahkan). Stagingfinal3VM12/12ready; config/root/key/index/
+serialtetap. Windowsnative/BAT/EXE belum diuji ulang atau direbuild. Paket layanan
+masih0.1.14 lama, clientutama tetap0.1.9; candidate hanya source/staging.
+
+Postflight installed29/30HTTP200: adminreadiness503(databaseunknown;CA/serverready).
+DB langsung30/30berhasil dan integrityOK, namun sebab503 tetapBELUM_TERKONFIRMASI.
+Tidak mengaitkannya dengan bugmalformed atau mengklaim fixed. Nolpeer dan tidak
+mengubah VM/akun/sertifikat/firewall/unit. Bukti privat state/bugcheck-20261031/.
+Selanjutnya investigasi event503, kapasitasdisk, validasi/rolloutkandidat terencana,
+penggantian identitasutama expired dan deployment/testinternet. Mockup dibatalkan
+sesuai pengguna; tidak ada filemockup dibuat.
+
+
 ## 31 Oktober01:33WIB — diagnostik readiness lokal selesai diuji, belum rollout
 
 Source/test/manual dipush pada `22e98c0`; SHA origin feature terverifikasi.

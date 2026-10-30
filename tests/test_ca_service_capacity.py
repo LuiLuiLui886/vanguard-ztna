@@ -56,7 +56,8 @@ def app(env, start):
     failed = Path('not-ready').exists()
     start('503 Service Unavailable' if failed else '200 OK',
           [('Content-Type', 'application/json')])
-    return [b'{"status":"not_ready"}' if failed else b'{"status":"ready"}']
+    return [b'{"status":"not_ready","checks":{"ca_state":"not_ready"}}' if failed
+            else b'{"status":"ready","checks":{"ca_state":"ready"}}']
 ''')
     with socket.socket() as listener, (tmp_path / 'gunicorn.log').open('wb') as log:
         listener.bind(('127.0.0.1', 0))

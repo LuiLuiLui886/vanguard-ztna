@@ -20,7 +20,7 @@ def bounded_readiness(role, *, diagnostics=False):
     try:
         result = subprocess.run(command, capture_output=True, timeout=6, check=True)
         data = json.loads(result.stdout)
-        if data.get('status') in ('ready', 'not_ready'):
+        if valid_readiness(data, role):
             return data
         reason = 'invalid_result'
     except (OSError, subprocess.SubprocessError, ValueError) as exc:
@@ -29,6 +29,19 @@ def bounded_readiness(role, *, diagnostics=False):
     if diagnostics:
         result['diagnostics'] = {'probe': {'reason': reason}}
     return result
+
+
+def valid_readiness(data, role):
+    expected = {'ca': {'ca_state'}, 'server': {'database', 'ca', 'daemon', 'interface'},
+                'admin': {'database', 'ca', 'server'}}.get(role)
+    if not isinstance(data, dict) or data.get('status') not in ('ready', 'not_ready'):
+        return False
+    checks = data.get('checks')
+    if not isinstance(checks, dict) or set(checks) != expected:
+        return False
+    if any(value not in ('ready', 'not_ready', 'unknown') for value in checks.values()):
+        return False
+    return (data['status'] == 'ready') == all(value == 'ready' for value in checks.values())
 
 
 def failure_reason(exc):
@@ -75,7 +88,12 @@ def dependency_ready(url, trust, *, role='ca'):
     response = requests.get(url.rstrip('/') + '/readyz', verify=trust,
                             timeout=(0.5, 5 if role == 'server' else 4.25),
                             allow_redirects=False)
-    return response.status_code == 200 and response.json().get('status') == 'ready'
+    if response.status_code != 200:
+        return False
+    data = response.json()
+    if not valid_readiness(data, role):
+        raise ValueError('Invalid readiness response')
+    return data['status'] == 'ready'
 
 
 def shared_ca_lock(lock):

@@ -38,6 +38,13 @@ Penonaktifan akun menghapus sesi dan peer; daemon juga memeriksa validitas sesi.
 Perangkat lama tanpa binding akun gagal admission. Metadata pemilik/departemen
 hanya deskriptif, bukan kebijakan akses atau attestation hardware.
 
+Kandidat source31Oktober memvalidasi respons login sebelum mengganti file sesi
+client dan menyimpan hanya username, token serta expiry. Respons rusak tidak
+menimpa sesi lama. Respons logout yang tidak mengonfirmasi pencabutan dan
+penghapusan peer mempertahankan token untuk retry, termasuk JSON non-object.
+Ini validasi respons, bukan jalur admission baru. Belum di-rollout ke paket/EXE;
+hasil regresi dan batas bukti tercatat pada laporan uji31Oktober.
+
 Lease maksimal 300 detik. Daemon memeriksa ulang setiap 5 detik **setelah** siklus sebelumnya
 selesai. Peer expired/revoked/disabled/unknown dihapus. Kegagalan fetch/validasi CRL membatalkan
 lease dan menghapus semua peer. Restart API/daemon mengosongkan peer dan lease agar memerlukan

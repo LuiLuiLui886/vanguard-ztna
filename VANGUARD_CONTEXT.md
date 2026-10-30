@@ -474,3 +474,19 @@ module hashes remain unchanged. This is not a deployed package/installer update
 or a confirmed fix for the earlier transient503. No issuance, state restoration,
 restart or firewall changes; configuration and CA root/key/index/serial preserved.
 See the acceptance report and manual7.3; evidence state/readiness-20261031/.
+
+Response validation fixes — 31 October 2026, source/staging only:
+Three bugs reproduced before fixes: malformed readiness child/dependency could
+crash or falsely report ready; client login overwrote old sessions before response
+validation and copied extra fields; malformed logout confirmation bypassed the
+friendly unconfirmed-revocation error path. Health now validates role/check/status;
+login validates username/token/future finite expiry before writing only session
+fields; logout retains its token for retry on malformed confirmation. No change
+to admission, HTTPS, binding or session scope. Baseline61PASS/1SKIP, pre-fix27FAIL
+plus3FAIL/1PASS logout. Selected candidate89PASS/1SKIP; final session/logout23PASS
+(overlapping suites). Staging3VM12/12ready, configurations/CA identity/index/serial
+preserved. Installed services remain0.1.14 unchanged; Windows/EXE not rerun/rebuilt.
+Installed postflight29/30HTTP200 had admin database unknown, distinct from earlier
+server CA unknown. Direct admin DB30/30 and integrityOK, cause still unconfirmed.
+Do not attribute historical503 to the malformed-response fixtures. Evidence in
+state/bugcheck-20261031/ and acceptance report. Mockup canceled, no mockup files.
