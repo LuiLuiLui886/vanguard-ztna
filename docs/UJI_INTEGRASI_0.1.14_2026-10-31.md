@@ -128,3 +128,44 @@ installer, key utama atau unit layanan utama. GitHub hanya menerima dokumentasi.
 Kondisi akhir: CA/server/admin/clientUbuntu running; attacker/Win10/Win11 off.
 Client utama tetap fail-closed karena identitas/sesi expired, tanpa tunnel aktif.
 Kebijakan aplikasi dikembalikan byte-identik; listener demo serta peer uji hilang.
+
+## Kelanjutan investigasi — mode diagnostik lokal
+
+Sesudah publikasi awal, gap observabilitas pada `vanguard/health.py:probe` telah
+diverifikasi: exception dependency yang berbeda sama-sama diringkas `unknown`.
+Klasifikasi **fitur belum tersedia, P2**; bukan bukti penyebab503 lama. Kriteria
+selesai untuk fitur ini ialah alasan aman yang dapat dibedakan, batas waktu tetap,
+output HTTP tetap dan pemeriksaan tidak mengubah state.
+
+Source kini menyediakan `python -m vanguard.health <role> --diagnose` dengan
+kode alasan dari allowlist dan waktu tiap pemeriksaan. Tidak ada pesan exception,
+URL, credential atau body mentah. CLI tetap membatasi subprocess6detik. Endpoint
+HTTP dan keputusan admission tidak berubah; versi paket VM/installer belum
+memuat tambahan ini. Petunjuk ada di Bab7.3 manual admin tunggal dan `docs/API.md`.
+
+Validasi tambahan:
+
+- Baseline health/status/contention/capacity: **16PASS,47,57detik**.
+- Setelah perubahan, suite yang sama ditambah diagnostik: **26PASS,61,39detik**.
+  Termasuk koneksi lokal yang benar-benar ditolak, lock CA sementara, subprocess
+  hang yang dihentikan, dan tidak adanya secret sentinel pada keluaran.
+  Klasifikasi exception TLS/connect/read juga diuji menggunakan injeksi exception;
+  tidak diklaim sebagai insiden TLS nyata di VM.
+- Pemeriksaan server terpasang→CA: **20/20ready**. Harness juga mencoba jalur
+  server→dashboard yang bukan jalur diizinkan firewall admin;20request itu gagal,
+  dipertahankan sebagai kesalahan pemilihan jalur uji, bukan kegagalan backend.
+  Ruleset admin hanya mengizinkan akses dashboard dari host lab.
+- Kandidat dijalankan dari staging terpisah di CA/server/admin, memakai
+  environment dan user masing-masing service: **36/36ready** dalam12putaran.
+  Durasi maksimum termasuk SSH4,884detik; durasi check maksimum3128,6ms.
+- Hash config ketiga VM serta root/key/index/serial CA tetap; tidak ada penerbitan,
+  pencabutan atau penggantian identitas dalam investigasi ini.
+- Postflight layanan terpasang: **30/30HTTP200**, nolpeer; hash module health
+  terpasang masih sama dengan sebelum perubahan kandidat, versi paket0.1.14.
+
+Kejadian503 sebelumnya **belum direproduksi dengan penyebab terkonfirmasi**.
+Tambahan diagnostik menutup gap penelusuran lokal, bukan memperbaiki akar masalah
+yang belum diketahui. Pemeriksaan terpisah dapat melewatkan insiden sementara;
+tidak membuktikan sebab request lama. Tidak ada kenaikan timeout, restart layanan,
+perubahan firewall, atau rollback CA. Bukti tambahan privat berada di
+`state/readiness-20261031/`; kandidat staging terpisah dari paket terpasang.

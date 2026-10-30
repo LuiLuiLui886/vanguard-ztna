@@ -462,3 +462,15 @@ on successful admin login and must not be treated as immutable history during
 verification. See docs/UJI_INTEGRASI_0.1.14_2026-10-31.md for harness failures and
 scope. Four Ubuntu backend/client VMs running, other three off; host1.3GiB free,
 managed internet/profile deployment still pending. Private evidence retained.
+
+Readiness investigation — 31 October 2026, source candidate only:
+Optional local `python -m vanguard.health ROLE --diagnose` now reports fixed
+exception categories and per-check timing with the same six-second subprocess
+budget. Public HTTP responses and admission remain unchanged. No raw exception,
+URL or credential is exposed. Codes describe library exceptions, not proven
+network phases. Health baseline16PASS; candidate26PASS; isolated source staging
+on CA/server/admin36/36ready; deployed HTTPS30/30HTTP200. Installed0.1.14 health
+module hashes remain unchanged. This is not a deployed package/installer update
+or a confirmed fix for the earlier transient503. No issuance, state restoration,
+restart or firewall changes; configuration and CA root/key/index/serial preserved.
+See the acceptance report and manual7.3; evidence state/readiness-20261031/.

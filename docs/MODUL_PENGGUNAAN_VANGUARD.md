@@ -994,6 +994,36 @@ ulang. Jangan membuat sertifikat dummy untuk health check. Server baru harus
 memiliki nol peer sebelum admission. Pada sistem aktif, periksa scope lease sah
 alih-alih menghapus semua peer hanya agar keluaran kosong.
 
+**Diagnostik lokal tambahan — kandidat source31Oktober, belum rollout paket VM.**
+Jika `unknown` berulang, versi source baru menyediakan `--diagnose` untuk
+membedakan kegagalan koneksi, TLS, waktu baca atau lock tanpa menampilkan rahasia.
+Periksa `python -m vanguard.health --help` pada runtime yang akan digunakan:
+paket0.1.14 yang terpasang sebelum perubahan ini belum memiliki opsi tersebut.
+Sesudah kandidat diuji dan di-deploy, jalankan di VM-SERVER menggunakan environment
+layanan yang sama, tanpa `set -x` atau mencetak isi environment:
+
+```bash
+sudo bash -c 'set -a; . /etc/vanguard/server.env; set +a
+exec /opt/vanguard/venv/bin/python -m vanguard.health server --diagnose'
+```
+
+Baca `status` dan `checks`, lalu `diagnostics.<check>.reason` serta `elapsed_ms`.
+`lock_busy` berarti lock tidak didapat dalam anggaran; `connect_timeout`,
+`read_timeout` dan `tls_error` berasal dari kelas exception library. Kode ini
+bukan bukti pasti fase jaringan: timeout handshake TLS juga dapat dilaporkan
+library sebagai `read_timeout`. `process_timeout`
+berarti subprocess melewati batas6detik; detail check yang belum selesai tidak
+tersedia. `check_not_ready` hanya berarti pemeriksaan mengembalikan false; periksa
+dependency terkait sebelum menyimpulkan sebab. Exit0 CLI hanya berarti JSON
+berhasil ditulis, bukan status siap. Hasil sehat sesudah retry tidak menghapus
+kegagalan sebelumnya. Catat keduanya beserta waktu pengamatan.
+
+Mode ini tidak memperpanjang timeout, menerbitkan CRL/sertifikat, memperbaiki state
+CA, atau menambah peer. Jangan menggunakan opsi diagnostik sebagai pengganti
+admission. Untuk role CA/admin, gunakan environment dan user service yang sesuai
+agar hasil izin akses mencerminkan layanan tersebut. Kandidat yang masih staging
+harus disebut sebagai staging dalam laporan, bukan versi paket yang terpasang.
+
 Pada browser komputer admin, impor **root publik terverifikasi** ke trust store
 yang dipilih kebijakan organisasi. Buka `https://192.168.100.40:5000`; periksa
 issuer/SAN/fingerprint. Jangan menggunakan tombol mengabaikan error sertifikat.

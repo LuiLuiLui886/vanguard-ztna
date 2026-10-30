@@ -12,8 +12,8 @@ pada [matriks validasi](VALIDASI_ROLLOUT_2026-10-20.md).
 Deployment mengikuti [checkpoint](CHECKPOINT.md); endpoint berikut tersedia
 pada0.1.9. [Readiness0.1.10](READINESS_0.1.10.md) menunggu lock CA
 maksimal3,5detik dan memeriksa dependency admin secara paralel; batas subprocess
-tetap6detik. Versi0.1.11 terpasang pada ketiga layanan dan mengurangi I/O
-publikasi CA; kontrak API tetap sama. Readiness yang gagal tetap503, tanpa
+tetap6detik. Versi0.1.11 mengurangi I/O publikasi CA; kontrak API tetap sama.
+Ketiga layanan kini memakai0.1.14 sesuai checkpoint31Oktober. Readiness yang gagal tetap503, tanpa
 cache status sehat. Setelah patch kapasitas unit CA8thread, postflight93/93
 respons HTTP200; sampel sebelumnya tetap menyimpan503. Ini bukan jaminan beban
 tak terbatas. Lihat [catatan kapasitas](CA_SERVICE_CAPACITY.md) dan checkpoint.
@@ -43,6 +43,20 @@ Readiness membaca CRL yang sudah ada; tidak memanggil endpoint penerbit CRL,
 menerbitkan sertifikat atau menambah peer. `/healthz` tetap liveness sederhana.
 Client Remote kini hanya menampilkan kode HTTP untuk error upstream, sehingga
 body upstream tidak tersalin ke log/UI.
+
+Kandidat source31Oktober menambahkan CLI lokal `python -m vanguard.health server
+--diagnose` (role juga `ca` atau `admin`). Ini bukan endpoint HTTP baru; respons
+publik `/readyz` tetap sama. Objek `diagnostics` pada CLI memuat durasi percheck
+dan kode tetap seperti `connect_timeout`, `read_timeout`, `tls_error`,
+`connection_error`, `lock_busy`, `process_timeout` atau `check_not_ready`.
+Tidak memuat pesan exception, URL, header atau body. Timeout subprocess tetap
+6detik dan kegagalan tetap not_ready/unknown. `check_not_ready` adalah hasil
+pemeriksaan false, bukan penjelasan lengkap akar masalah dependency. CLI
+mengklasifikasikan exception library; `read_timeout` tidak membuktikan bahwa
+handshake TLS telah selesai. CLI
+mengembalikan JSON, sehingga nilai `status` harus diperiksa; exit0 saja bukan
+bukti siap. Mode ini baru diuji di source/staging dan belum di-rollout ke paket
+layanan0.1.14 yang terpasang. Ikuti checkpoint dan manual admin untuk penggunaannya.
 
 Sejak 0.1.4, challenge/verify mengembalikan `X-VanGuard-Request-ID` acak buatan
 server untuk korelasi audit. Nilai request header caller tidak dipakai ulang.

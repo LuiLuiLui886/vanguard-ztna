@@ -1,5 +1,27 @@
 # Checkpoint VanGuard — 31 Oktober 2026
 
+## 31 Oktober01:33WIB — diagnostik readiness lokal selesai diuji, belum rollout
+
+Source `vanguard/health.py` kini mendukung `<role> --diagnose`: alasan kegagalan
+allowlist dan durasi, tanpa pesan exception/URL/secret. Subprocess tetap6detik;
+API publik/fail-closed tidak berubah. Tes baru `tests/test_health_diagnostics.py`.
+Baseline16PASS47,57detik; kandidat26PASS61,39detik. Source staging di ketigaVM
+memakai environment/user service:36/36ready; postflight layanan terpasang30/30
+HTTP200 dan nolpeer. Config/root/key/index/serial tidak berubah. ManualMD/HTML
+Bab7.3 dan API diperbarui; hasil ada pada [laporan uji](UJI_INTEGRASI_0.1.14_2026-10-31.md).
+
+**503 awal belum direproduksi dengan penyebab terkonfirmasi**, bukan fixed.
+Kode diagnostik mencerminkan kelas exception library, bukan kepastian fase
+jaringan. Source baru belum terpasang pada paket/EXE: VM tetap0.1.14 dengan module
+health lama yang hash-nya diverifikasi, kandidat hanya staging. Bukti privat
+`state/readiness-20261031/`. Harness awal mencoba server→dashboard yang firewall
+memang tidak izinkan; kegagalan itu dipisahkan dari20/20probe server→CA sehat.
+Tidak ada restart/ubahfirewall/enrollment pada investigasi ini. KondisiVM/disk/
+clientutama expired tetap seperti checkpoint sebelumnya. Berikutnya lanjutkan
+observasi insiden bila muncul, review/rollout diagnostik terencana, kapasitasdisk,
+penggantian identitas client utama serta deployment/testgatewayinternet.
+
+
 ## 31 Oktober — pengujian layanan0.1.14 selesai, satu readiness sementara gagal
 
 [Laporan uji terbaru](UJI_INTEGRASI_0.1.14_2026-10-31.md) mencatat VM langsung CA/server/admin0.1.14 dengan

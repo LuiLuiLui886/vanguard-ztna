@@ -1,5 +1,6 @@
 """Bounded, read-only readiness probes. No CRL issuance or peer mutations."""
 
+import argparse
 import json
 import os
 import sqlite3
@@ -12,16 +13,43 @@ from pathlib import Path
 import requests
 
 
-def bounded_readiness(role):
+def bounded_readiness(role, *, diagnostics=False):
+    command = [sys.executable, '-m', 'vanguard.health', role]
+    if diagnostics:
+        command.append('--diagnostic-worker')
     try:
-        result = subprocess.run([sys.executable, '-m', 'vanguard.health', role],
-                                capture_output=True, timeout=6, check=True)
+        result = subprocess.run(command, capture_output=True, timeout=6, check=True)
         data = json.loads(result.stdout)
         if data.get('status') in ('ready', 'not_ready'):
             return data
-    except (OSError, subprocess.SubprocessError, ValueError):
-        pass
-    return {'status': 'not_ready', 'checks': {'probe': 'unknown'}}
+        reason = 'invalid_result'
+    except (OSError, subprocess.SubprocessError, ValueError) as exc:
+        reason = failure_reason(exc)
+    result = {'status': 'not_ready', 'checks': {'probe': 'unknown'}}
+    if diagnostics:
+        result['diagnostics'] = {'probe': {'reason': reason}}
+    return result
+
+
+def failure_reason(exc):
+    """Fixed codes only: exception text can contain URLs, credentials or SQL."""
+    for error, reason in (
+        (requests.exceptions.SSLError, 'tls_error'),
+        (requests.exceptions.ConnectTimeout, 'connect_timeout'),
+        (requests.exceptions.ReadTimeout, 'read_timeout'),
+        (requests.exceptions.ConnectionError, 'connection_error'),
+        (requests.exceptions.Timeout, 'request_timeout'),
+        (subprocess.TimeoutExpired, 'process_timeout'),
+        (subprocess.CalledProcessError, 'process_failed'),
+        (BlockingIOError, 'lock_busy'),
+        (PermissionError, 'permission_denied'),
+        (FileNotFoundError, 'file_missing'),
+        (sqlite3.Error, 'database_error'),
+        (ValueError, 'invalid_data'),
+    ):
+        if isinstance(exc, error):
+            return reason
+    return 'check_error'
 
 
 def database_ready(path):
@@ -66,16 +94,23 @@ def shared_ca_lock(lock):
             time.sleep(min(0.05, remaining))
 
 
-def probe(role):
+def probe(role, *, diagnostics=False):
     checks = {}
-    def status(action):
+    observations = {}
+    def status(action, name):
+        started = time.monotonic()
         try:
-            return 'ready' if action() else 'not_ready'
-        except Exception:
-            return 'unknown'
+            state = 'ready' if action() else 'not_ready'
+            reason = 'ok' if state == 'ready' else 'check_not_ready'
+        except Exception as exc:
+            state, reason = 'unknown', failure_reason(exc)
+        if diagnostics:
+            observations[name] = {'reason': reason,
+                                  'elapsed_ms': round((time.monotonic() - started) * 1000, 1)}
+        return state
 
     def inspect(name, action):
-        checks[name] = status(action)
+        checks[name] = status(action, name)
 
     trust = os.environ.get('VANGUARD_ROOT_CERT', '/etc/vanguard/root.crt')
     if role == 'ca':
@@ -114,16 +149,28 @@ def probe(role):
             # These independent read-only requests must overlap: sequential
             # nested probes can exceed the outer six-second subprocess budget.
             with ThreadPoolExecutor(max_workers=2) as pool:
-                ca = pool.submit(status, ca_ready)
+                ca = pool.submit(status, ca_ready, 'ca')
                 server = pool.submit(status, lambda: dependency_ready(os.environ.get(
                     'VANGUARD_SERVER_URL', 'https://192.168.100.20:8081'), trust,
-                    role='server'))
+                    role='server'), 'server')
                 checks['ca'], checks['server'] = ca.result(), server.result()
     else:
         checks['role'] = 'unknown'
-    return {'status': 'ready' if all(v == 'ready' for v in checks.values()) else 'not_ready',
-            'checks': checks}
+    result = {'status': 'ready' if all(v == 'ready' for v in checks.values()) else 'not_ready',
+              'checks': checks}
+    if diagnostics:
+        result['diagnostics'] = observations
+    return result
 
 
 if __name__ == '__main__':
-    print(json.dumps(probe(sys.argv[1])))
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('role', choices=('ca', 'server', 'admin'))
+    parser.add_argument('--diagnose', action='store_true',
+                        help='Local diagnostic codes; bounded to the same six-second probe budget')
+    parser.add_argument('--diagnostic-worker', action='store_true', help=argparse.SUPPRESS)
+    args = parser.parse_args()
+    if args.diagnose:
+        print(json.dumps(bounded_readiness(args.role, diagnostics=True)))
+    else:
+        print(json.dumps(probe(args.role, diagnostics=args.diagnostic_worker)))

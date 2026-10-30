@@ -1121,6 +1121,31 @@ TLS/CRL. Baca log unit secara privat, perbaiki service/waktu/lock/dependensi lal
 ulang. Jangan membuat sertifikat dummy untuk health check. Server baru harus
 memiliki nol peer sebelum admission. Pada sistem aktif, periksa scope lease sah
 alih-alih menghapus semua peer hanya agar keluaran kosong.</p>
+<p><strong>Diagnostik lokal tambahan — kandidat source31Oktober, belum rollout paket VM.</strong>
+Jika <code>unknown</code> berulang, versi source baru menyediakan <code>--diagnose</code> untuk
+membedakan kegagalan koneksi, TLS, waktu baca atau lock tanpa menampilkan rahasia.
+Periksa <code>python -m vanguard.health --help</code> pada runtime yang akan digunakan:
+paket0.1.14 yang terpasang sebelum perubahan ini belum memiliki opsi tersebut.
+Sesudah kandidat diuji dan di-deploy, jalankan di VM-SERVER menggunakan environment
+layanan yang sama, tanpa <code>set -x</code> atau mencetak isi environment:</p>
+<pre><code class="language-bash">sudo bash -c 'set -a; . /etc/vanguard/server.env; set +a
+exec /opt/vanguard/venv/bin/python -m vanguard.health server --diagnose'
+</code></pre>
+<p>Baca <code>status</code> dan <code>checks</code>, lalu <code>diagnostics.&lt;check&gt;.reason</code> serta <code>elapsed_ms</code>.
+<code>lock_busy</code> berarti lock tidak didapat dalam anggaran; <code>connect_timeout</code>,
+<code>read_timeout</code> dan <code>tls_error</code> berasal dari kelas exception library. Kode ini
+bukan bukti pasti fase jaringan: timeout handshake TLS juga dapat dilaporkan
+library sebagai <code>read_timeout</code>. <code>process_timeout</code>
+berarti subprocess melewati batas6detik; detail check yang belum selesai tidak
+tersedia. <code>check_not_ready</code> hanya berarti pemeriksaan mengembalikan false; periksa
+dependency terkait sebelum menyimpulkan sebab. Exit0 CLI hanya berarti JSON
+berhasil ditulis, bukan status siap. Hasil sehat sesudah retry tidak menghapus
+kegagalan sebelumnya. Catat keduanya beserta waktu pengamatan.</p>
+<p>Mode ini tidak memperpanjang timeout, menerbitkan CRL/sertifikat, memperbaiki state
+CA, atau menambah peer. Jangan menggunakan opsi diagnostik sebagai pengganti
+admission. Untuk role CA/admin, gunakan environment dan user service yang sesuai
+agar hasil izin akses mencerminkan layanan tersebut. Kandidat yang masih staging
+harus disebut sebagai staging dalam laporan, bukan versi paket yang terpasang.</p>
 <p>Pada browser komputer admin, impor <strong>root publik terverifikasi</strong> ke trust store
 yang dipilih kebijakan organisasi. Buka <code>https://192.168.100.40:5000</code>; periksa
 issuer/SAN/fingerprint. Jangan menggunakan tombol mengabaikan error sertifikat.
