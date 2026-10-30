@@ -2,6 +2,8 @@
 
 ## 31 Oktober01:47WIB — tiga bug respons diperbaiki di source, belum rollout
 
+Perbaikan dipush pada `cc59e86`; SHA origin feature terverifikasi.
+
 Audit dari ccdaafd membuktikan dan memperbaiki: (P2) readinessmalformed dapat
 crash/salahsehat, (P2) responslogininvalid menimpa sesi lama dan menyimpan field
 tambahan, (P3) logoutnon-object memicu exception tanpa pesan belumterkonfirmasi.
