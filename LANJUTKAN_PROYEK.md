@@ -2,6 +2,8 @@
 
 ## 31 Oktober01:33WIB — diagnostik readiness lokal selesai diuji, belum rollout
 
+Source/test/manual dipush pada `22e98c0`; SHA origin feature terverifikasi.
+
 Source `vanguard/health.py` kini mendukung `<role> --diagnose`: alasan kegagalan
 allowlist dan durasi, tanpa pesan exception/URL/secret. Subprocess tetap6detik;
 API publik/fail-closed tidak berubah. Tes baru `tests/test_health_diagnostics.py`.
