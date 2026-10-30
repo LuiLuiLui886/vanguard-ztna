@@ -421,3 +421,28 @@ managed Internet candidate not rolled out by this qualification. Host disk
 capacity, physical endpoints, EXE schema2/UAC/fresh OS, power-loss CA and soak
 remain acceptance gaps. Preserve original topology, keys and revocation history.
 Single manual now includes a complete generic EXE walkthrough in14.0.1.1.
+
+
+Authorized service package rollout — 30 October 2026 afternoon:
+User explicitly requested checking and updating CA/server/admin. All three were
+0.1.11 and now have0.1.14 after quiescent backups and source-wheel validation.
+Initial post-start verifier wrongly included disposable CA transaction generations;
+code-only recovery retained current CA/DB state. Corrected verifier retry passed
+published identity/config hashes. No root recreation, state rollback, policy
+activation or client changes. VANGUARD_CLIENT_PROFILE and VANGUARD_INTERNET_POLICY
+remain unset; installing new code does not enable managed Internet by itself.
+See latest checkpoint/journal for postflight and publication. Host free space is
+critically limited; evidence and backups retained, diagnostic log compressed
+losslessly with verified content hash. Seven domain definitions preserved.
+
+
+Service rollout postflight — 31 October 2026:
+CA/server/admin0.1.14 verified again after host reboot:27source files each,
+pip check, preserved CA/config identities, database integrity and historical
+rows passed. HTTPS30/30 and5authorization guards passed; CRL validation and
+current-boot daemon heartbeat healthy. The previous30October20/30 HTTP200
+sample remains evidence of an unconfirmed transient CRL/readiness issue, not
+a claimed root-cause fix. No relaxed admission or stale-CRL fallback. Only
+three service VMs running now; other four remain off after host reboot.
+Managed Internet/profile environment configuration remains separate/unset;
+package update alone does not activate gateway policy. See checkpoint/journals.

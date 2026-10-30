@@ -13,6 +13,15 @@ setelah host reboot pada siang hari. Hasil sebelum reboot tetap bukti pada waktu
 pengujian, bukan status layanan sekarang. Semua7VM dipertahankan. Main, kernel
 WireGuard, CA utama, binding dan histori pencabutan utama tidak diganti.
 
+**Pembaruan13:33WIB:** setelah laporan awal, pengguna mengotorisasi rollout paket
+CA/server/admin. Ketiganya kini0.1.14 dengan backup dan verifikasi source. Tabel
+versi0.1.11 di bawah adalah hasil pengujian awal, bukan versi terpasang terbaru.
+Postflight31Oktober:30/30HTTPS200, CA/DB/integritas histori PASS; sampel
+readiness gagal30Oktober tetap dicatat pada jurnal.
+Q02 masih memerlukan konfigurasi profil/gateway dan uji endpoint karena update
+paket saja tidak mengaktifkan internet terkelola. Lihat [checkpoint](CHECKPOINT.md)
+dan [jurnal rollout](PROGRESS_2026-10-30.md) untuk postflight serta kegagalan verifier.
+
 ## 1. Hasil aktual dan jenis buktinya
 
 | Bagian | Hasil aktual | Lingkungan dan batas |

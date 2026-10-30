@@ -1,5 +1,63 @@
 # Lanjutkan proyek VanGuard
 
+## 31 Oktober01:05WIB — update CA/server/admin0.1.14 selesai diverifikasi
+
+**Ketiga layanan sekarang0.1.14**, bukan0.1.11. CA/server/admin dan daemon/WG
+aktif setelah hostboot.27berkas paket masing-masing cocok sourcewheel, pip check
+PASS;77berkasCA,9server,6admin config/identity tetap sama backup. CA invariant/CRL
+PASS, keduaDB integrity OK.1120baris historis7tabel server dan157baris6tabel admin
+terjaga. Nol livepeer; semua7domain definition tetap sama. HTTPS30/30HTTP200,
+maksimum3,597detik,5authorization guards PASS. Bukti `state/rollout-20261031-postflight/`.
+
+Postflight30Oktober20/30HTTP200 tetap dicatat, bukan diganti hasil baru. Penyebab
+heartbeat crl_available=false pada faseitu belum terkonfirmasi;31Oktober fetch/
+signature/waktuCRL serta heartbeat valid tanpa melonggarkan validasi. Ini bukan
+klaim soak atau perbaikan akar masalah readiness di semua kondisi. Backup rollout
+ada pada `state/rollout-20261030-services/` dan `retry2/`; recovery percobaan pertama
+hanya code, tidak rollback CA/DB. Lihat jurnal30/31Oktober untuk kegagalan harness.
+
+Saat ini CA/server/admin running; empat VM lain off akibat hostreboot dan belum
+dinyalakan ulang pada tugas pengecekanbackend. Host1,3GiB free. ClientUbuntu utama
+cert/sesi expired belum diganti. Profil admin/gatewayinternet masih perlu konfigurasi:
+VANGUARD_CLIENT_PROFILE dan VANGUARD_INTERNET_POLICY belum diisi. Updatepaket saja
+bukan pemberian akses internet. Selanjutnya kapasitas, replacementidentitas dan
+konfigurasi/test deployment internet terencana; jangan reinit CA atau restorehistory.
+Publikasi hasil dicatat pada jurnal31Oktober setelah remote diverifikasi.
+
+## 30 Oktober13:33WIB — CA/server/admin diperbarui ke0.1.14
+
+Permintaan pengguna update tiga layanan sudah diimplementasikan. Preflight benar
+0.1.11; kini paket0.1.14 pada CA,server,admin;27berkas wheel masing-masing cocok,
+pip check PASS dan semuaunit aktif. Backup quiescent pernode retained, key/root/
+index/serial/issued/config/env dipertahankan; tidak restore CA/DB lama. Percobaan
+pertama verifier salah menganggap generation transaksi sementara sebagai state
+permanen, sehingga code-only recovery dilakukan. Retry dengan whitelist published
+state selesai; semua7definisi VM tetap, VM/console dibiarkan aktif untuk pengguna.
+Bukti `state/rollout-20261030-services/`, khusus hasil akhir di `retry2/`.
+Readiness dan DB postflight dicatat pada jurnal setelah selesai.
+
+Update ini **paket aplikasi**, bukan aktivasi profil/gateway internet. Admin kini
+memiliki code dukungan profil dan server memiliki module internet, tetapi env
+VANGUARD_CLIENT_PROFILE/VANGUARD_INTERNET_POLICY belum diisi; kebijakan internet
+masih perlu deployment terencana. Resource-policy lama tetap. ClientUbuntu utama
+cert/sesi expired tetap, perlu penggantian identitas/login; tidak diubah oleh update.
+Host sekitar456MiB free, tetap perlu kapasitas sebelum uji/build tambahan berat.
+Log diagnostik192MiB telah dikompres lossless dan hash isi diverifikasi; tidak
+menghapus bukti/backup. Lihat jurnal30Oktober untuk validasi/publikasi akhir.
+
+## 30 Oktober 12:34 WIB — seluruh VM dibuka untuk uji pengguna
+
+Permintaan pengguna untuk membuka semua VM sudah dilaksanakan: CA, SERVER,
+ADMIN, CLIENT Ubuntu, ATTACKER, CLIENT-WINDOWS11 dan CLIENT-WINDOWS10 semuanya
+running. Lima console serial dibuka di GNOME Terminal; dua virt-viewer Windows
+aktif tanpa error launcher. Virsh domblkerror ketujuhnya: No errors found.
+Bukti privat `state/vm-open-20261030-1233/`; disk host sekitar3,2GiB kosong.
+Ini status boot/console, bukan pengujian ulang readiness, desktop/login atau VPN.
+Sertifikat/sesi client Ubuntu expired dan backend utama0.1.11 tetap seperti
+laporan kelayakan; tidak ada perubahan key, akun, grant, CA atau konfigurasi.
+VM dan jendela console sengaja dibiarkan aktif untuk pengguna. Catatan terbaru
+ini menggantikan kondisi akhir shut off pada sesi pengujian sebelumnya.
+
 ## 30 Oktober — uji kelayakan dan panduan EXE dari nol
 
 **Keputusan: layak untuk uji lab terkontrol, belum penerimaan produksi penuh.**
