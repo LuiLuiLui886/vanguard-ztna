@@ -1,7 +1,7 @@
 # Validasi internet terkelola Windows 11 — 28 Oktober 2026
 
 Laporan bukti kandidat0.1.13; langkah operator tetap di
-[manual tunggal Bab14.1](MODUL_PENGGUNAAN_VANGUARD.md). Hasil ini hanya untuk
+[manual tunggal Bagian8](MODUL_PENGGUNAAN_VANGUARD.md). Hasil ini hanya untuk
 VM Windows11 build26300 yang diuji, bukan sertifikasi semua edisi/build Windows.
 ZIP stabil0.1.12 belum memuat mode internet baru.
 

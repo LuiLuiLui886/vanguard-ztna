@@ -4,7 +4,7 @@ Pengguna memilih satu folder offline dan satu BAT utama. Kandidat menambahkan
 `deploy/endpoint/windows/Setup-VanGuard.bat` dan `.ps1`, kontrak publik
 `vanguard/provision.py`, serta opsi per-device pada
 `scripts/build_endpoint_package.py`. Petunjuk operator tetap satu sumber:
-[manual Bab14.0](MODUL_PENGGUNAAN_VANGUARD.md).
+[manual Bagian7](MODUL_PENGGUNAAN_VANGUARD.md).
 
 ## Perilaku kandidat
 

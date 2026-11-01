@@ -490,3 +490,12 @@ Installed postflight29/30HTTP200 had admin database unknown, distinct from earli
 server CA unknown. Direct admin DB30/30 and integrityOK, cause still unconfirmed.
 Do not attribute historical503 to the malformed-response fixtures. Evidence in
 state/bugcheck-20261031/ and acceptance report. Mockup canceled, no mockup files.
+
+Documentation decision — 1 November 2026:
+User requested a simpler, direct usage module. The single manual MD/HTML now
+has10sections and is83% shorter: main Windows use first, per-device packaging,
+managed internet and new backend/CA setup in separate optional sections.
+Current links were updated; historical evidence/flowcharts/Git history preserved.
+No product/VM/credential changes or ZIP/EXE rebuild. Embedded manuals in existing
+packages remain older editions. Source fixes and deployment gaps remain as
+recorded31October; documentation editing does not imply execution or rollout.

@@ -193,7 +193,7 @@ serta aplikasi0.1.12. Tidak menggunakan wheel Linux untuk runtime Windows.
 ### Alur operator
 
 Langkah instalasi, konfigurasi, enrollment, repair/uninstall dan pemulihan ada
-pada [manual admin tunggal Bab8–18](MODUL_PENGGUNAAN_VANGUARD.md). Bagian ini
+pada [manual admin tunggal](MODUL_PENGGUNAAN_VANGUARD.md). Bagian ini
 mempertahankan spesifikasi dan bukti pilot, bukan salinan tutorial.
 
 ## Checklist dan batas bukti

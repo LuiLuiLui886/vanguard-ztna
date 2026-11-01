@@ -1,5 +1,22 @@
 # Lanjutkan proyek VanGuard
 
+## 1 November — manual penggunaan disederhanakan
+
+Manual tunggal [Markdown](docs/MODUL_PENGGUNAAN_VANGUARD.md) dan [HTML](docs/MODUL_PENGGUNAAN_VANGUARD.html) kini10bagian,
+508baris/2788kata, turun83% dari16355kata. Alur utama langsung persiapan→EXE→
+configure/request→approvaladmin→import/login/connect→ujiakses→logout/revoke.
+Paket per-device, internet terkelola dan instalasi backend/CA baru berada pada
+bagian khusus. Teori/riwayat berulang tidak lagi memenuhi alur penggunaan;
+laporan/jurnal, flowchart dan histori Git tetap dipertahankan.
+
+README/downloads dan pointer aktif laporan/API disesuaikan. Validasi79tautanlokal,
+anchor manual, navigasiHTML10bagian PASS. Tidak mengubah kodeproduk/VM/akun/CA/
+credential atau rebuild ZIP/EXE: manual bawaan paket lama masih edisi lama.
+Tidak menjalankan instruksi pemasangan dalam manual; ini perubahan dokumentasi.
+Status bugfixsource/staging, readiness503, clientexpired, kapasitasdisk dan
+gatewayinternet tetap mengikuti checkpoint31Oktober; tidak diklaim selesai.
+
+
 ## 31 Oktober01:47WIB — tiga bug respons diperbaiki di source, belum rollout
 
 Perbaikan dipush pada `cc59e86`; SHA origin feature terverifikasi.

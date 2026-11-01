@@ -126,7 +126,7 @@ lockdown/reboot/TCP revoke Windows bukan bagian EXE umum yang diuji30Oktober.
 
 ## 5. Penggunaan, bukti dan tindak lanjut
 
-Panduan langkah EXE tersedia dalam [manual tunggal Bab14.0.1.1](MODUL_PENGGUNAAN_VANGUARD.md#14011-langkah-dari-nol-memakai-exe-yang-tersedia-di-github),
+Panduan langkah EXE tersedia dalam [manual tunggal Bagian2–4](MODUL_PENGGUNAAN_VANGUARD.md#2-install-windows-dan-buat-permintaan-perangkat),
 termasuk configure, init, tugas admin, import, login/connect dan logout. Mode
 schema2 membutuhkan `internet-enable` sukses dan gateway/grant yang siap;
 EXE umum sendiri tidak mengaktifkan lockdown.

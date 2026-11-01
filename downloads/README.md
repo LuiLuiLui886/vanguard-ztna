@@ -1,6 +1,6 @@
 # Installer VanGuard Windows10/11 x64
 
-Lihat **flowchart seluruh sistem** pada [manual Bab1.1](../docs/MODUL_PENGGUNAAN_VANGUARD.md#11-flowchart-sistem-lengkap-dari-ca-sampai-exe-dan-penggunaan): CA/backend → installer → enrollment → akses → pencabutan dan audit.
+Lihat **flowchart seluruh sistem** pada [referensi flowchart pada manual](../docs/MODUL_PENGGUNAAN_VANGUARD.md#10-masalah-umum-dan-pemeriksaan-akhir): CA/backend → installer → enrollment → akses → pencabutan dan audit.
 
 ## EXE offline0.1.14-fix1 — kandidat pada branch feature
 
@@ -9,10 +9,10 @@ melalui **Download raw file**, lalu cocokkan [SHA256](SHA256SUMS).
 Python, WireGuard, dependensi dan aplikasi sudah dibundel. EXE umum ini memasang
 prasyarat/aplikasi; **profil server, CA publik dan alokasi perangkat tetap perlu
 disiapkan admin**. Untuk satu EXE yang juga menjalankan wizard pendaftaran,
-admin membangun EXE per-device sesuai [manual tunggal Bab14.0.1](../docs/MODUL_PENGGUNAAN_VANGUARD.md).
+admin membangun EXE per-device sesuai [manual Bagian7](../docs/MODUL_PENGGUNAAN_VANGUARD.md#7-opsional-satu-bat-atau-exe-per-perangkat).
 Kunci dibuat di endpoint; approval admin dan login karyawan tetap wajib.
 
-**Baru pertama memakai EXE?** Ikuti [langkah dari nol sampai connect, Bab14.0.1.1](../docs/MODUL_PENGGUNAAN_VANGUARD.md#14011-langkah-dari-nol-memakai-exe-yang-tersedia-di-github):
+**Baru pertama memakai EXE?** Ikuti [langkah install sampai connect, Bagian1–4](../docs/MODUL_PENGGUNAAN_VANGUARD.md#2-install-windows-dan-buat-permintaan-perangkat):
 unduh/periksa hash → install → configure → request → persetujuan admin → import → login/connect.
 
 EXE belum ditandatangani Authenticode. Jangan menonaktifkan proteksi Windows jika
@@ -28,7 +28,7 @@ Branch: **feature/2026-10-22-physical-endpoints**; paket stabil/main tidak digan
 menyertakan Python/WireGuard, wheel aplikasi dan `Setup-VanGuard.bat`.
 **Template ini belum berisi profil CA/server atau alokasi perangkat.** Admin
 menyiapkan paket per-device dengan builder dan input publik tepercaya menurut
-[manual Bab14.0](../docs/MODUL_PENGGUNAAN_VANGUARD.md); wheel/runtime dapat diambil
+[manual Bagian7](../docs/MODUL_PENGGUNAAN_VANGUARD.md#7-opsional-satu-bat-atau-exe-per-perangkat); wheel/runtime dapat diambil
 dari folder template yang diekstrak. User akhir menerima paket hasil persiapan
 admin, lalu menjalankan satu BAT untuk install/config/request/import/login/connect.
 Pendaftaran tetap menunggu persetujuan admin dan password dimasukkan saat login.
@@ -49,12 +49,12 @@ ZIP tetap berguna sebagai input admin untuk membangun paket per-device.
 dan manual admin. [Checksum SHA256](SHA256SUMS) harus dicocokkan sebelum eksekusi.
 Unduh melalui **Download raw file**, atau clone/pull branch **main**.
 
-**Satu manual resmi:** [baca manual admin18bab](../docs/MODUL_PENGGUNAAN_VANGUARD.md).
-Salinan HTML di dalam ZIP bernama `MODUL_PENGGUNAAN_VANGUARD.html`; Bab10
-menjelaskan ekstraksi dan instalasi, Bab11–12 konfigurasi endpoint, CSR,
-registrasi admin, import sertifikat, login dan koneksi. Bab5–9 mencakup backend,
-CA, jaringan dan profil. Komputer baru memakai CA yang sama, dengan key baru
-buatan client. Seluruh file ZIP harus diekstrak bersama; jangan mengambil BAT saja.
+**Satu manual resmi:** [panduan ringkas admin dan pengguna](../docs/MODUL_PENGGUNAAN_VANGUARD.md).
+[HTML terbaru](../docs/MODUL_PENGGUNAAN_VANGUARD.html) dapat dibaca offline/dicetak.
+Bagian1–4 menjelaskan persiapan, install, registrasi dan koneksi; Bagian7 paket
+per-device; Bagian8 internet terkelola; Bagian9 backend/CA baru. Salinan HTML
+dalam ZIP/EXE lama tetap edisi saat paket dibuat, belum diperbarui dengan revisi
+manual1November. Untuk ZIP, ekstrak seluruh isinya; jangan mengambil BAT saja.
 
 Target: Windows10 x64 build19044/19045 dan Windows11 x64 build22000 ke atas.
 [Lihat checkpoint untuk hasil native per OS/build](../docs/CHECKPOINT.md).

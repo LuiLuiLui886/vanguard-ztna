@@ -276,4 +276,4 @@ serta internet_granted (null jika policy tidak dapat diperiksa). Nilai ini izin
 terkonfigurasi, bukan bukti akses, handshake atau trafik internet aktual. Gate
 memeriksa tuple device+karyawan dan lease/sesi/peer pada setiap sinkronisasi;
 firewall memeriksa grant untuk setiap paket, termasuk TCP established. Profil
-schema2 diuraikan pada Bab14.1 manual tunggal. Lihat checkpoint sebelum rollout.
+schema2 diuraikan pada Bagian8 manual tunggal. Lihat checkpoint sebelum rollout.

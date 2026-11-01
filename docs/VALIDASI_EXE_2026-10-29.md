@@ -2,7 +2,7 @@
 
 Branch kerja `feature/2026-10-22-physical-endpoints`, basis `1983cd4`.
 Wrapper baru membungkus paket0.1.14-fix1; wheel aplikasi tetap0.1.14.
-Manual tunggal: [Bab14.0.1](MODUL_PENGGUNAAN_VANGUARD.md).
+Manual tunggal: [Bagian7](MODUL_PENGGUNAAN_VANGUARD.md).
 
 ## Cakupan dan implementasi
 

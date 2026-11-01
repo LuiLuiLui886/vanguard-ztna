@@ -4,7 +4,7 @@ Pembaruan29Oktober: gap pengukuran TCP aktif saat revoke sertifikat Windows10
 ditutup oleh [eksperimen baru kandidat0.1.14](VALIDASI_SETUP_TERPADU_2026-10-29.md).
 Hasil FAIL/terbatas27Oktober di bawah dipertahankan sebagai bukti historis.
 
-Ini laporan bukti, bukan manual kedua. Langkah operator berada pada Bab14.1
+Ini laporan bukti, bukan manual kedua. Langkah operator berada pada Bagian8
 [manual admin tunggal](MODUL_PENGGUNAAN_VANGUARD.md). Source kandidat0.1.13 di
 branch feature; ZIP stabil0.1.12 tidak otomatis berubah. Fixture sudah ditutup; hasil regresi akhir dicatat pada 28 Oktober. Rincian dan batas bukti di bawah.
 
