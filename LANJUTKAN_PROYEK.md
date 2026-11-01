@@ -2,6 +2,8 @@
 
 ## 1 November — manual penggunaan disederhanakan
 
+Manual dipush pada `4a3e538`; SHA origin feature terverifikasi.
+
 Manual tunggal [Markdown](docs/MODUL_PENGGUNAAN_VANGUARD.md) dan [HTML](docs/MODUL_PENGGUNAAN_VANGUARD.html) kini10bagian,
 508baris/2788kata, turun83% dari16355kata. Alur utama langsung persiapan→EXE→
 configure/request→approvaladmin→import/login/connect→ujiakses→logout/revoke.
