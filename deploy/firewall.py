@@ -10,19 +10,24 @@ import argparse
 import ipaddress
 import json
 import os
+import re
 import subprocess
 from pathlib import Path
 
 ADDRESSES = {"ca": 10, "server": 20, "client": 30, "admin": 40, "attacker": 50}
 
 
-def rules(role, management, windows_client=False, application_policy=False, physical_clients=()):
+def rules(role, management, windows_client=False, application_policy=False, physical_clients=(), internet_uplink=None):
     management = str(ipaddress.IPv4Address(management))
     physical = [str(ipaddress.IPv4Address(value)) for value in physical_clients]
     if (len(physical) != len(set(physical)) or len(physical) > 2
             or any(ip not in ('192.168.50.20', '192.168.50.30') for ip in physical)
             or (physical and role != 'server')):
         raise ValueError('Physical pilot addresses must be the two approved endpoints on server only')
+    if internet_uplink is not None and (role != 'server' or not application_policy
+            or not re.fullmatch(r'[a-zA-Z0-9_.-]{1,15}', internet_uplink)
+            or internet_uplink in ('lo', 'wg0')):
+        raise ValueError('Internet gateway requires server application policy and a distinct uplink')
     own = f"192.168.100.{ADDRESSES[role]}"
     lines = [
         "add table inet vanguard",
@@ -59,6 +64,11 @@ def rules(role, management, windows_client=False, application_policy=False, phys
             f'  iifname "wg0" ip saddr {clients} ip daddr 10.8.0.1 '
             "icmp type echo-request counter accept",
         ])
+        if internet_uplink:
+            # Roaming managed endpoints are authenticated at the HTTPS/WG boundary;
+            # their changing home LAN address is not an identity allowlist.
+            lines.extend(['  tcp dport 8081 counter accept',
+                          '  udp dport 51820 counter accept'])
     elif role == "admin":
         lines.append(
             f"  ip saddr {management} ip daddr {own} tcp dport 5000 counter accept"
@@ -88,6 +98,31 @@ def rules(role, management, windows_client=False, application_policy=False, phys
         lines[3:3] = gate
         offset = lines.index('  ct state invalid drop')
         lines.insert(offset + 1, '  tcp dport 8082 jump application_gate')
+    if internet_uplink:
+        # Every packet, including established TCP, must still have a live grant.
+        # Never enable flow offloading on this gateway: it bypasses forward hooks.
+        denied = ('0.0.0.0/8, 10.0.0.0/8, 100.64.0.0/10, 127.0.0.0/8, '
+                  '169.254.0.0/16, 172.16.0.0/12, 192.0.0.0/24, 192.0.2.0/24, '
+                  '192.168.0.0/16, 198.18.0.0/15, 198.51.100.0/24, '
+                  '203.0.113.0/24, 224.0.0.0/4, 240.0.0.0/4')
+        lines[3:3] = [
+            ' set internet_access { type ipv4_addr; flags timeout; }',
+            ' set non_internet { type ipv4_addr; flags interval; elements = { ' + denied + ' }; }',
+            ' chain internet_nat {',
+            '  type nat hook postrouting priority srcnat; policy accept;',
+            f'  iifname "wg0" oifname "{internet_uplink}" ip saddr 10.8.0.0/24 masquerade',
+            ' }',
+        ]
+        offset = lines.index('  type filter hook forward priority -10; policy drop;')
+        lines[offset + 1:offset + 1] = [
+            '  ct state invalid drop',
+            '  meta nfproto ipv6 counter drop',
+            '  iifname "wg0" ip daddr @non_internet counter drop',
+            '  oifname "wg0" ip saddr @non_internet counter drop',
+            f'  iifname "wg0" oifname "{internet_uplink}" ip saddr @internet_access meta l4proto {{ tcp, udp, icmp }} counter accept',
+            f'  iifname "{internet_uplink}" oifname "wg0" ip daddr @internet_access ct state established,related counter accept',
+            '  counter drop',
+        ]
     return "\n".join(lines) + "\n"
 
 
@@ -102,11 +137,14 @@ def main():
                         help='Enable default-deny internal-demo TCP/8082 resource gate')
     parser.add_argument('--physical-client', action='append', default=[],
                         help='Generate-only approved pilot source; requires --print-only')
+    parser.add_argument('--internet-uplink', help='Opt-in managed IPv4 gateway; generate only')
     args = parser.parse_args()
+    if args.internet_uplink and not args.print_only:
+        parser.error('Internet rollout requires reviewed backup/recovery; use --print-only')
     if args.physical_client and not args.print_only:
         parser.error('Physical pilot is preparation-only; use --print-only for reviewed rules')
     content = rules(args.role, args.management_ip, args.windows_client, args.application_policy,
-                    args.physical_client)
+                    args.physical_client, args.internet_uplink)
     if args.print_only:
         print(content, end="")
         return

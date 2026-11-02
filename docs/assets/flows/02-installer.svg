@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1060" height="995" viewBox="0 0 1060 995" role="img" aria-labelledby="title">
+<title id="title">2. Paket admin sampai EXE pada endpoint</title>
+<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L9,5 L0,10" fill="#40576c"/></marker></defs>
+<rect width="1060" height="995" fill="white"/>
+<text x="40" y="38" font-family="sans-serif" font-size="23" font-weight="bold" fill="#173d5a">2. Paket admin sampai EXE pada endpoint</text>
+<polyline points="250,185 250,230" fill="none" stroke="#40576c" stroke-width="2" marker-end="url(#arrow)"/>
+<polyline points="250,330 250,375" fill="none" stroke="#40576c" stroke-width="2" marker-end="url(#arrow)"/>
+<polyline points="430,425 630,425" fill="none" stroke="#40576c" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="460" y="415" font-family="sans-serif" font-size="15" fill="#273e52">Tidak</text>
+<polyline points="810,475 810,520" fill="none" stroke="#40576c" stroke-width="2" marker-end="url(#arrow)"/>
+<polyline points="250,475 250,520" fill="none" stroke="#40576c" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="155" y="503" font-family="sans-serif" font-size="15" fill="#273e52">Ya</text>
+<polyline points="250,620 250,665" fill="none" stroke="#40576c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="70" y="85" width="360" height="100" rx="12" fill="#edf5ff" stroke="#245a8d" stroke-width="2"/>
+<text x="250" y="120" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Admin distribusikan paket tepercaya</text>
+<text x="250" y="140" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">EXE umum atau EXE per perangkat</text>
+<text x="250" y="160" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Periksa asal dan SHA256</text>
+<rect x="70" y="230" width="360" height="100" rx="12" fill="#edf5ff" stroke="#245a8d" stroke-width="2"/>
+<text x="250" y="265" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">User klik EXE dan setujui UAC</text>
+<text x="250" y="285" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Wrapper verifikasi payload dan cache</text>
+<text x="250" y="305" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Ekstraksi belum memasang policy</text>
+<polygon points="250,375 430,425 250,475 70,425" fill="#fff4d6" stroke="#946200" stroke-width="2"/>
+<text x="250" y="430" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Paket per perangkat?</text>
+<rect x="630" y="375" width="360" height="100" rx="12" fill="#edf5ff" stroke="#245a8d" stroke-width="2"/>
+<text x="810" y="410" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">EXE umum di GitHub: install runtime</text>
+<text x="810" y="430" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Python, WireGuard dan aplikasi</text>
+<text x="810" y="450" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Tidak mengaktifkan blok internet baru</text>
+<rect x="630" y="520" width="360" height="100" rx="12" fill="#edf5ff" stroke="#245a8d" stroke-width="2"/>
+<text x="810" y="555" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Admin lanjut konfigurasi Bab11-12</text>
+<text x="810" y="575" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">atau bangun EXE per perangkat</text>
+<text x="810" y="595" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">dengan profil, root dan alokasi publik</text>
+<rect x="70" y="520" width="360" height="100" rx="12" fill="#edf5ff" stroke="#245a8d" stroke-width="2"/>
+<text x="250" y="555" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Wizard memasang atau memakai ulang</text>
+<text x="250" y="575" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">runtime lengkap yang terverifikasi</text>
+<text x="250" y="595" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Input lewat terminal; belum ada GUI</text>
+<rect x="70" y="665" width="360" height="100" rx="12" fill="#e3f5ea" stroke="#246744" stroke-width="2"/>
+<text x="250" y="700" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Validasi pin dan pasang profil</text>
+<text x="250" y="720" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Konflik ditolak; key/config dipertahankan</text>
+<text x="250" y="740" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Lanjut diagram 3</text>
+<rect x="630" y="810" width="360" height="100" rx="12" fill="#fff0ed" stroke="#a33e32" stroke-width="2"/>
+<text x="810" y="845" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Batal UAC / error sebelum policy:</text>
+<text x="810" y="865" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">belum mengaktifkan blok baru</text>
+<text x="810" y="885" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Policy lama tidak otomatis dipulihkan</text>
+<rect x="70" y="810" width="360" height="100" rx="12" fill="#edf5ff" stroke="#245a8d" stroke-width="2"/>
+<text x="250" y="845" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Jika runtime meminta restart: kode3010</text>
+<text x="250" y="865" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Restart manual, jalankan paket lagi</text>
+<text x="250" y="885" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#162d40">Belum berarti siap connect</text>
+</svg>

@@ -6,7 +6,7 @@ Paket terbaru menyertakan Python/WireGuard dan wheel offline. Gunakan `main` seb
 pintu masuk proyek; branch endpoint dipakai untuk pekerjaan lanjutan. Hasil tes
 aktual serta batas bukti ada pada [checkpoint](docs/CHECKPOINT.md).
 
-[Modul lengkap teknisi, admin dan pengguna](docs/MODUL_PENGGUNAAN_VANGUARD.md)
+[Panduan ringkas admin dan pengguna](docs/MODUL_PENGGUNAAN_VANGUARD.md)
 tersedia juga sebagai [HTML siap dibaca/dicetak](docs/MODUL_PENGGUNAAN_VANGUARD.html).
 Modul mencakup pemasangan awal serta pemakaian Ubuntu dan Windows pada lab terpasang.
 Materi generate root CA, CSR, sertifikat HTTPS/perangkat, CRL dan backup sudah

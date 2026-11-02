@@ -97,7 +97,8 @@ def test_dependency_read_timeout_allows_its_nested_probe(role, monkeypatch):
             status_code = 200
 
             def json(self):
-                return {'status': 'ready'}
+                names = ('ca_state',) if role == 'ca' else ('database', 'ca', 'daemon', 'interface')
+                return {'status': 'ready', 'checks': dict.fromkeys(names, 'ready')}
         return Response()
 
     monkeypatch.setattr(health.requests, 'get', get)

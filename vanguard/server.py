@@ -446,12 +446,65 @@ class Admission:
         if self.resources is not None:
             self.resources.sync(self.db, self.wg.peers())
 
+    def internet_policy(self):
+        from .internet import NftInternet
+        for policy in getattr(self.resources, 'policies', [self.resources]):
+            if isinstance(policy, NftInternet):
+                return policy.policy
+        return None
+
+    def set_internet(self, name, enabled):
+        from .internet import load_internet_policy
+        if type(enabled) is not bool:
+            raise Rejected('Internet permission must be an explicit boolean')
+        path = self.internet_policy()
+        if path is None:
+            raise Rejected('Managed Internet gateway is not configured', 409)
+        with locked(self.lock):
+            with database(self.db) as db:
+                row = db.execute('SELECT d.*,e.username FROM devices d '
+                                 'JOIN employee_devices e ON e.device_id=d.device_id '
+                                 'JOIN employees u ON u.username=e.username '
+                                 'WHERE d.device_id=? AND d.enabled=1 AND u.enabled=1',
+                                 (device_name(name),)).fetchone()
+            if not row:
+                raise Rejected('Device must be enabled and bound to an active employee', 409)
+            try:
+                grants = load_internet_policy(path)
+            except (OSError, ValueError, TypeError) as exc:
+                raise Rejected('Internet policy unavailable; existing evidence retained', 503) from exc
+            grants.discard((name, row['username']))
+            if enabled:
+                grants.add((name, row['username']))
+            durable_write(path, json.dumps({'grants': [
+                {'device_id': device, 'username': user, 'resource': 'internet-ipv4'}
+                for device, user in sorted(grants)]}).encode())
+            try:
+                self.sync_resources()
+            except Exception:
+                with database(self.db) as db:
+                    db.execute('UPDATE devices SET lease_until=0 WHERE device_id=?', (name,))
+                self.wg.remove(row['wg_public_key'])
+                self.audit('internet_policy_failed', name, 'Enforcement unconfirmed; lease invalidated')
+                raise
+            self.audit('internet_granted' if enabled else 'internet_removed', name,
+                       'Internet policy updated; admission and live lease still required')
+        return {'device_id': name, 'internet_granted': enabled, 'admission_required': True}
+
     def listing(self):
         try:
             observed = (self.wg.observations() if hasattr(self.wg, 'observations')
                         else {key: {} for key in self.wg.peers()})
         except (Rejected, ValueError):
             observed = None
+        internet_grants = None
+        internet_path = self.internet_policy()
+        if internet_path is not None:
+            from .internet import load_internet_policy
+            try:
+                internet_grants = load_internet_policy(internet_path)
+            except (OSError, ValueError, TypeError, Rejected):
+                pass
         with database(self.db) as db:
             rows = db.execute(
                 "SELECT device_id,serial,wg_public_key,tunnel_ip,enabled,lease_until FROM devices"
@@ -468,7 +521,12 @@ class Admission:
                         self.employees.require_hash(owner[0] if owner else '', row['device_id'])
                     except Rejected:
                         lease_valid = False
+                binding = db.execute('SELECT username FROM employee_devices WHERE device_id=?',
+                                     (row['device_id'],)).fetchone()
                 results.append(dict(row, registered=True,
+                    internet_configured=internet_path is not None,
+                    internet_granted=(bool(binding) and (row['device_id'], binding[0]) in internet_grants)
+                    if internet_grants is not None else None,
                     lease_valid=lease_valid,
                     live=peer, peer_present=peer, last_handshake=detail.get('last_handshake'),
                     rx_bytes=detail.get('rx_bytes'), tx_bytes=detail.get('tx_bytes'),
@@ -479,13 +537,18 @@ class Admission:
 def from_environment():
     trust = os.environ.get("VANGUARD_ROOT_CERT", "/etc/vanguard/root.crt")
     ca = Remote(os.environ.get("VANGUARD_CA_URL", "https://192.168.100.10:8080"), trust)
+    from .internet import AccessPolicies, NftInternet
+    policies = []
+    if os.environ.get('VANGUARD_RESOURCE_POLICY'):
+        policies.append(NftResources(os.environ['VANGUARD_RESOURCE_POLICY']))
+    if os.environ.get('VANGUARD_INTERNET_POLICY'):
+        policies.append(NftInternet(os.environ['VANGUARD_INTERNET_POLICY']))
     return Admission(
         os.environ.get("VANGUARD_SERVER_DIR", "/var/lib/vanguard/server"),
         Path(trust).read_bytes(),
         lambda: ca.call("GET", "/api/ca/crl", raw=True),
         WireGuard(),
-        resources=NftResources(os.environ['VANGUARD_RESOURCE_POLICY'])
-        if os.environ.get('VANGUARD_RESOURCE_POLICY') else None,
+        resources=AccessPolicies(policies) if policies else None,
     )
 
 
@@ -505,6 +568,11 @@ def create_app(config=None):
         return admission.register(
             json_body("device_id", "certificate", "wg_public_key", "tunnel_ip")
         ), 201
+
+    @app.post('/api/devices/<name>/internet')
+    @bearer(token)
+    def internet_permission(name):
+        return admission.set_internet(name, json_body().get('enabled'))
 
     @app.get("/api/devices")
     @bearer(token)

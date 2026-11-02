@@ -31,6 +31,9 @@ class NftResources:
     def __init__(self, policy):
         self.policy = Path(policy)
 
+    def clear(self):
+        run(['nft', '-f', '-'], input=b'flush set inet vanguard application_access\n', timeout=2)
+
     def sync(self, db_path, peers):
         # Atomic nft batch keeps other sessions' grants while removing revoked
         # access. Timeout never extends the recorded admission lease.

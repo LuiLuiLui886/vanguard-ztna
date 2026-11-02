@@ -36,6 +36,7 @@ try {
     $guard = New-Object Threading.Mutex($false,'Global\VanGuardEndpointSetup')
     $owned = $guard.WaitOne(0)
     if (-not $owned) { throw 'Operasi VanGuard lain sedang berjalan.' }
+    if (Test-Path -LiteralPath (Join-Path $DataRoot 'internet-lockdown')) { throw 'Lockdown aktif/belum selesai; maintenance memerlukan recovery lokal terencana.' }
     Assert-NoTunnel
     $manifestPath = Join-Path $PSScriptRoot 'manifest.json'
     if ($ExpectedManifestSha256 -and ($ExpectedManifestSha256 -notmatch '^[0-9a-fA-F]{64}$' -or
@@ -80,7 +81,7 @@ try {
     Invoke-Checked $candidate @('-m','pip','check')
     Invoke-Checked $candidate @('-m','vanguard.client','--help')
     $phase = 'publish'
-    foreach ($file in @('Common.ps1','VanGuard.ps1','VanGuard.bat')) {
+    foreach ($file in @('Internet-Lockdown.ps1','Common.ps1','VanGuard.ps1','VanGuard.bat')) {
         Copy-Item -LiteralPath (Join-Path $PSScriptRoot $file) -Destination (Join-Path $AppRoot $file) -Force
     }
     $maintenance = Join-Path $DataRoot 'tools'

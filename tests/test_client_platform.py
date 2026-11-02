@@ -100,9 +100,9 @@ def test_session_replace_handles_repeated_login(tmp_path):
             return {'username': 'test-user', 'session_token': data['password'],
                     'expires_at': time.time() + 60}
     directory = tmp_path / 'identity'
-    client.login_employee(directory, Remote(), 'test-user', 'first-test-token')
-    client.login_employee(directory, Remote(), 'test-user', 'second-test-token')
-    assert json.loads((directory / 'employee-session.json').read_text())['session_token'] == 'second-test-token'
+    client.login_employee(directory, Remote(), 'test-user', 'first-test-token'.ljust(43, 'a'))
+    client.login_employee(directory, Remote(), 'test-user', 'second-test-token'.ljust(43, 'b'))
+    assert json.loads((directory / 'employee-session.json').read_text())['session_token'] == 'second-test-token'.ljust(43, 'b')
     assert {p.name for p in directory.iterdir()} == {'employee-session.json', '.session.lock'}
 
 

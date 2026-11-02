@@ -508,3 +508,28 @@ def test_operations_is_authenticated_and_preserves_audit(dashboard):
     page = client.get('/operations', base_url='https://localhost')
     assert page.status_code == 200 and b'Tidak diketahui' not in page.data
     assert dash.history() == before
+
+
+def test_dashboard_internet_requires_csrf_and_records_actor(lab, dashboard, tmp_path, monkeypatch):
+    from vanguard import internet
+    path = tmp_path / 'internet.json'
+    path.write_text('{"grants": []}')
+    monkeypatch.setattr(internet, 'run', lambda *a, **kw: None)
+    lab['admission'].resources = internet.NftInternet(path)
+    dash, browser, secret = dashboard
+    request = dict(lab['request'], employee_username='employee-test')
+    dash.register(request)
+    assert login(browser, secret).status_code == 302
+    url = '/devices/vm-client/internet'
+    assert browser.post(url, base_url='https://localhost', data={'enabled': 'true'}).status_code == 403
+    assert json.loads(path.read_text()) == {'grants': []}
+    with browser.session_transaction() as state:
+        token = state['csrf']
+    for enabled, event in [('true', 'internet_granted'), ('false', 'internet_removed')]:
+        response = browser.post(url, base_url='https://localhost', data={'enabled': enabled, 'csrf': token})
+        assert response.status_code == 302
+        assert bool(json.loads(path.read_text())['grants']) == (enabled == 'true')
+        with database(dash.db) as db:
+            record = db.execute('SELECT * FROM admin_audit WHERE event=? ORDER BY id DESC', (event,)).fetchone()
+        assert record['actor'] == 'admin'
+    assert not lab['wg'].active

@@ -597,6 +597,14 @@ def create_app(config=None):
                 )
             elif action == 'employee':
                 dashboard.bind_employee(name, request.form.get('username'), g.admin_username)
+            elif action == 'internet':
+                value = request.form.get('enabled')
+                if value not in ('true', 'false'):
+                    raise Rejected('Pilih izin internet yang valid')
+                dashboard.server.call('POST', f'/api/devices/{name}/internet', {'enabled': value == 'true'})
+                dashboard.audit('internet_granted' if value == 'true' else 'internet_removed',
+                                name, actor=g.admin_username)
+                flash('Kebijakan internet disimpan. Sertifikat, sesi, admission dan lockdown endpoint tetap wajib.')
             elif action == "revoke":
                 dashboard.revoke(name, request.form.get('reason'), g.admin_username)
             elif action == "retry":

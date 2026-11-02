@@ -33,6 +33,7 @@
 {% if device.revocation_reason %}<small>Alasan: {{ revocation_reasons.get(device.revocation_reason, device.revocation_reason) }}</small>{% endif %}
 {% if device.last_error %}<small class="error">{{ device.last_error }}</small>{% endif %}</td>
 <td>{{ peer.tunnel_ip if peer else '—' }}</td><td>
+<small>Izin internet: {% if peer and peer.internet_configured is defined and peer.internet_configured %}{{ 'Tidak diketahui' if peer.internet_granted is none else ('Diizinkan; perlu lease sah' if peer.internet_granted else 'Tidak diizinkan') }}{% else %}Gateway belum dikonfigurasi{% endif %}</small>
 <small>Registry: {{ 'Terdaftar' if peer else 'Tidak diketahui' }}</small>
 <small>Lease: {{ ('Valid' if peer.lease_valid else 'Tidak valid') if peer and peer.lease_valid is defined else 'Tidak diketahui' }}</small>
 <small>Peer: {{ ('Terpasang' if peer.peer_present else 'Tidak terpasang') if peer and peer.peer_present is defined and peer.peer_present is not none else 'Tidak diketahui' }}</small>
@@ -44,6 +45,10 @@
 {% if device.status == 'registered' and device.employee_username %}<p><a href="/devices/{{ device.device_id }}/bundle">Unduh bundle onboarding</a></p>{% endif %}
 {% if not device.employee_username and device.status == 'registered' %}<form action="/devices/{{ device.device_id }}/employee" method="post">
 <input type="hidden" name="csrf" value="{{ session.csrf }}"><label>Akun VPN<select name="username" required><option value="">Pilih akun</option>{% for employee in employees %}{% if employee.enabled %}<option value="{{ employee.username }}">{{ employee.username }}</option>{% endif %}{% endfor %}</select></label><button>Tautkan akun VPN</button></form>{% endif %}
+{% if device.status == 'registered' and peer and peer.internet_configured is defined and peer.internet_configured %}
+<form action="/devices/{{ device.device_id }}/internet" method="post"><input type="hidden" name="csrf" value="{{ session.csrf }}">
+<label>Izin internet melalui gateway<select name="enabled" required><option value="false">Cabut izin internet</option><option value="true">Izinkan setelah admission</option></select></label><button>Simpan izin internet</button></form>
+{% endif %}
 <details><summary>Edit data perangkat</summary><form action="/devices/{{ device.device_id }}/metadata" method="post">
 <input type="hidden" name="csrf" value="{{ session.csrf }}">
 <label>Nama perangkat<input name="display_name" maxlength="100" value="{{ device.metadata.get('display_name', '') }}" required></label>

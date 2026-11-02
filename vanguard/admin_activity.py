@@ -18,6 +18,8 @@ PAGE_SIZE = 50
 ARCHIVE_LIMIT = 10000
 ARCHIVE_BYTES = 8 * 1024 * 1024
 EVENTS = {
+    'internet_granted': ('Izin internet diberikan', 'Akses internet melalui gateway diizinkan setelah sertifikat, sesi dan admission sah.'),
+    'internet_removed': ('Izin internet dicabut', 'Izin forwarding internet perangkat dicabut; perangkat lain tetap mengikuti kebijakannya.'),
     'identity_replacement_requested': ('Penggantian identitas diminta', 'Identitas baru didaftarkan setelah pencabutan identitas lama; binding lama dipertahankan.'),
     'admin_login': ('Masuk dashboard', 'Administrator berhasil masuk dengan password dan TOTP.'),
     'admin_logout': ('Keluar dashboard', 'Administrator mengakhiri sesi dashboard.'),
@@ -50,7 +52,7 @@ REASONS = {
 }
 FIELDS = {'display_name': 'nama perangkat', 'department': 'departemen',
           'owner': 'pemilik', 'platform': 'platform'}
-OPERATIONS = {'registration': 'registrasi perangkat', 'metadata': 'mengubah data perangkat',
+OPERATIONS = {'internet': 'mengubah izin internet', 'registration': 'registrasi perangkat', 'metadata': 'mengubah data perangkat',
               'replace': 'mengganti identitas',
               'employee': 'menautkan akun', 'revoke': 'mencabut akses', 'retry': 'mengulang proses',
               'employee_create': 'membuat akun karyawan', 'employee_disable': 'menonaktifkan akun',

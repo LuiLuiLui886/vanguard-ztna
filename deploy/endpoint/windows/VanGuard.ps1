@@ -1,4 +1,4 @@
-param([ValidateSet('configure','status','init','import-bundle','login','connect','disconnect','diagnose','logout')][string]$Action='status')
+param([ValidateSet('configure','status','init','import-bundle','login','connect','disconnect','diagnose','logout','internet-preview','internet-enable','internet-status','internet-recover')][string]$Action='status')
 $ErrorActionPreference = 'Stop'
 . (Join-Path $PSScriptRoot 'Common.ps1')
 $guard = $null
@@ -10,7 +10,7 @@ try {
     # Serialize runtime use against installer/uninstaller. Disconnect/logout must
     # run in a separate terminal during connect, using the client's scoped locks.
     $guard = New-Object Threading.Mutex($false,'Global\VanGuardEndpointSetup')
-    if ($Action -notin @('disconnect','logout','status')) {
+    if ($Action -notin @('disconnect','logout','status') -and $Action -notlike 'internet-*') {
         $owned = $guard.WaitOne(0)
         if (-not $owned) { throw 'Operasi instalasi/connect lain sedang berjalan.' }
     }
@@ -37,6 +37,16 @@ try {
         Install-TrustedProfile $python $source $root $expectedRoot $expectedKey (Join-Path $DataRoot 'config')
         Write-Host 'Profil tersimpan. Belum ada identitas baru, login, peer atau tunnel.'
         exit 0
+    }
+    if ($Action -like 'internet-*') {
+        $mode=$Action.Substring(9)
+        $extra=@()
+        if ($mode -eq 'recover') {
+            if ((Read-Host 'Recovery membuka policy internet lama. Ketik PULIHKAN untuk konfirmasi administrator') -cne 'PULIHKAN') { throw 'Recovery dibatalkan.' }
+            $extra=@('-ConfirmRecovery')
+        }
+        & powershell.exe -NoProfile -ExecutionPolicy RemoteSigned -File (Join-Path $PSScriptRoot 'Internet-Lockdown.ps1') -Action $mode @extra
+        exit $LASTEXITCODE
     }
     $arguments = @('-m','vanguard.client' ,'--directory',$identity,'--profile',$profile,'--trust',$trust,$Action)
     switch ($Action) {

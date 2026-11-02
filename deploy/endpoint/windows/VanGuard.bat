@@ -6,7 +6,7 @@ if exist "%SystemRoot%\Sysnative\WindowsPowerShell\v1.0\powershell.exe" set "VAN
 set "VANGUARD_SCRIPT=%~dp0VanGuard.ps1"
 set "VANGUARD_ACTION=%~1"
 if not defined VANGUARD_ACTION (
-  echo Pilih: status, configure, init, import-bundle, diagnose, login, connect, disconnect, logout
+  echo Pilih: status, configure, init, import-bundle, diagnose, login, connect, disconnect, logout, internet-preview, internet-enable, internet-status, internet-recover
   set /p "VANGUARD_ACTION=Action [status]: "
 )
 if not defined VANGUARD_ACTION set "VANGUARD_ACTION=status"

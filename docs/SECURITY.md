@@ -38,6 +38,13 @@ Penonaktifan akun menghapus sesi dan peer; daemon juga memeriksa validitas sesi.
 Perangkat lama tanpa binding akun gagal admission. Metadata pemilik/departemen
 hanya deskriptif, bukan kebijakan akses atau attestation hardware.
 
+Kandidat source31Oktober memvalidasi respons login sebelum mengganti file sesi
+client dan menyimpan hanya username, token serta expiry. Respons rusak tidak
+menimpa sesi lama. Respons logout yang tidak mengonfirmasi pencabutan dan
+penghapusan peer mempertahankan token untuk retry, termasuk JSON non-object.
+Ini validasi respons, bukan jalur admission baru. Belum di-rollout ke paket/EXE;
+hasil regresi dan batas bukti tercatat pada laporan uji31Oktober.
+
 Lease maksimal 300 detik. Daemon memeriksa ulang setiap 5 detik **setelah** siklus sebelumnya
 selesai. Peer expired/revoked/disabled/unknown dihapus. Kegagalan fetch/validasi CRL membatalkan
 lease dan menghapus semua peer. Restart API/daemon mengosongkan peer dan lease agar memerlukan
@@ -163,3 +170,33 @@ bukan proof firewall/UDP. Pemulihan service yang belum terkonfirmasi tetap manua
 host mencegah injeksi ekstensi; default tetap alamat layanan lab. Perubahan ini
 diuji pada CA sementara, bukan penerbitan/rotasi sertifikat utama. Riwayat CA dan
 revocation tidak dipulihkan saat rollback paket. Baca [rencana pilot](ENDPOINT_WINDOWS_PILOT.md).
+
+## Kandidat0.1.13 — internet terkelola tanpa konfigurasi router
+
+Mode opt-in memerlukan enforcement Windows persisten **dan** gateway Linux;
+Linux tidak mengendalikan jalur langsung pada endpoint yang belum dikelola.
+Lockdown memakai Local GPO milik sendiri dengan local rule merging disabled,
+default-block semua profile, hanya
+mengecualikan IP/port API, WireGuard dan DHCP. Tunnel exception dibuka setelah
+admission membentuk adaptor nyata; IPv6 diblok. Pending/error mempertahankan
+quarantine; recovery eksplisit admin lokal membuka kebijakan lama dan bukan
+logout server. Backup/history tetap ada. Domain/policy firewall GPO yang sudah ada ditolak; Local GPO milik VanGuard
+dan salinan inbound dibuat/dipulihkan dengan backup. Local-admin tampering
+bukan jaminan yang ditangani sistem ini. OS firewall inspection bukan remote
+attestation. Windows11/PC fisik perlu bukti sendiri, bukan asumsi dari Windows10.
+
+Gateway tidak percaya route full-tunnel sebagai izin. Internet memerlukan grant
+identitas+karyawan, akun/sesi/lease sah dan peer aktif; timeout nft tidak melebihi
+lease. Forwarding untuk established TCP tetap melewati gate; flow offload tidak
+boleh digunakan. Private/reserved destination ditolak di WAN; resource internal
+memakai gate terpisah. Mode ini memberi internet IPv4 TCP/UDP/ICMP umum setelah
+izin, bukan filter kategori/domain. Admission enam cek dan private key client
+tidak berubah. Pemeriksaan CA gagal tidak memakai CRL usang. Endpoint public IP
+harus reachable; fitur tidak otomatis mengekspos alamat privat di internet.
+
+Audit source28Oktober memperketat tipe DNS/route/network profil menjadi string
+JSON dan memeriksa policy lokal **sebelum** setiap permintaan renewal. Guard yang
+gagal masuk jalur cleanup tanpa meminta lease baru. Ini bukan attestation remote
+atau jaminan policy tidak berubah setelah pemeriksaan. Lease lama tetap dibatasi
+server; tidak menganggap cleanup lokal sebagai konfirmasi revocation server.
+Bukti patch Linux/mock dan batas native tercatat di [audit bug](AUDIT_BUG_2026-10-28.md).
