@@ -1,5 +1,24 @@
 # Lanjutkan proyek VanGuard
 
+## Pemantauan 15:49 WIB — VM aktif, readiness campuran
+
+CA lock sempat lepas tanpa intervensi. Sampel terakhir: CA ready, admin ready,
+server not_ready saat probe CA bertabrakan dengan lock/CRL; daemon heartbeat sudah
+ready. Readiness ketiganya serempak dan stabil **BELUM_TERKONFIRMASI**. Tiga VM
+tetap running; jangan restart/hapus lock atau mengubah CA berdasarkan sampel ini.
+Detail ada di [jurnal3November](docs/PROGRESS_2026-11-03.md).
+
+## 3 November 15:46 WIB — tiga VM menyala; aplikasi BELUM_SIAP
+
+Atas permintaan pengguna, VM-CA, VM-SERVER, VM-ADMIN running; empat VM lain
+shut off. SSH dan unit ketiga layanan active. HTTPS `/healthz` 3/3 HTTP200,
+`/readyz` 3/3 HTTP503. CA `ca_state=unknown/lock_busy`; worker CA memegang
+`ca.lock`, satu thread menunggu commit filesystem. Server dan admin tidak ready
+karena dependensi CA; server daemon juga not_ready. Jangan menganggap dashboard
+atau admission siap. Tidak ada restart, hapus lock, restore CA atau perubahan
+identitas. Lanjut pantau/diagnosis nonmutasi dan ulang readiness; lihat
+[jurnal3November](docs/PROGRESS_2026-11-03.md) untuk bukti dan kriteria selesai.
+
 ## Status 3 November — rilis0.1.15 dan pengujian VM selesai
 
 **Rilis dipush pada `7e5d632` ke branch `feature/2026-10-22-physical-endpoints`;
