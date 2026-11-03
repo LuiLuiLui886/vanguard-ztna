@@ -2,7 +2,8 @@
 
 ## Status 3 November — rilis0.1.15 dan pengujian VM selesai
 
-**Publikasi sedang diselesaikan pada branch `feature/2026-10-22-physical-endpoints`.**
+**Rilis dipush pada `7e5d632` ke branch `feature/2026-10-22-physical-endpoints`;
+SHA remote terverifikasi 3 November13:37WIB.**
 Main c8af46f sudah merge pekerjaan terdahulu sampai13dbb18; belum memuat0.1.15.
 EXE/ZIP final beserta checksum ada di downloads. Manual tunggal MD/HTML disertakan.
 
@@ -43,7 +44,7 @@ prasyarat, launcher EXE per-device schema2 end-to-end dan soak/powerloss fisikCA
 Fixture API langsung bukan bukti launcher: guard overlap subnet tetap ada.
 503/upstream timeout dan egress gagal historis belum diketahui penyebabnya;
 probe terbaru lulus tidak berarti insiden tersebut fixed. Prioritas berikutnya:
-publikasi terverifikasi, kapasitasdisk, lalu batas pengujian di atas.
+kapasitas disk, lalu batas pengujian di atas.
 
 Laporan [validasi0.1.15](VALIDASI_0.1.15_2026-11-02.md),
 [jurnal3November](PROGRESS_2026-11-03.md).
