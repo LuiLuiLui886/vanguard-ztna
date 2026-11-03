@@ -25,8 +25,9 @@ Bukti `state/ca-io-20261103/`, finalrollout `v2/`, pascareboot `reboot-2226/`.
 Semua milestone selesai; rollbackkode disiapkan tetapi tidak dieksekusi. Backend
 client/EXE/ZIPWindows tetap0.1.15, tidak perlu rebuild untuk perubahan khususCA.
 Laporan [perbaikan CA](PERBAIKAN_CA_IO_2026-11-03.md),
-[jurnal](PROGRESS_2026-11-03.md). Publikasi feature sedangdifinalisasi;
-main belumdiubah. Berikutnya kapasitasdisk dan pengujian fisik/soak yang tersisa.
+[jurnal](PROGRESS_2026-11-03.md). Perbaikan dipush pada `be600d5` ke branch
+`feature/2026-10-22-physical-endpoints`; SHA remote terverifikasi22:29WIB.
+Main belumdiubah. Berikutnya kapasitasdisk dan pengujian fisik/soak yang tersisa.
 
 ## Riwayat sebelum perbaikan0.1.17 (bukan status terbaru)
 
