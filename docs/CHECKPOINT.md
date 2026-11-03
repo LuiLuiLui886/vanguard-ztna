@@ -1,5 +1,18 @@
 # Checkpoint VanGuard — 3 November 2026
 
+## Kesiapan pemakaian — 3 November setelah pembukaan console
+
+Tiga terminal desktop sudah login SSH ke CA/server/admin, diverifikasi shell
+prompt dan sesi `who`. Gunakan jendela ubuntu@vm-ca, ubuntu@vm-server,
+ubuntu@vm-admin untuk perintah; tanpa perubahan password/autologin.
+Dashboard HTTPS mengarah /login; browser diminta membuka alamat admin.
+Aplikasi **BELUM_SIAP penuh**: sampel terakhir readiness ketiganya503 terkait
+CA lock/CRL, walau liveness200. Latensi flush penyimpanan teramati, penyebab
+mendasar belum terkonfirmasi; jangan mematikan durability atau menganggap sehat.
+Bukti state/ready-20261103/, jurnal3November. Perlu lanjut diagnosis penyimpanan/
+transaksi CA dan kapasitas host (1,3GiB bebas) sebelum klaim siap admission.
+
+
 ## Console desktop — 3 November16:03WIB
 
 Ketiga jendela VM-CA/server/admin kini terbuka pada virt-manager, masing-masing
