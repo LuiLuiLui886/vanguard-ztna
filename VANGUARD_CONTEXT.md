@@ -555,3 +555,25 @@ backups and obtain capacity before long tests. Six VMs running, attacker preserv
 off. See docs/VALIDASI_0.1.15_2026-11-02.md and latest checkpoint for final postflight
 and publication. Main c8af46f merged previous work through13dbb18;0.1.15 is published
 separately on the existing feature branch, never assume main has the same package.
+
+
+CA storage update — 3 November 2026:
+VM-CA now runs0.1.17; server/admin and Windows installer remain0.1.15. The old
+seal serialized all file flushes under the CA lock; temporary-VM fixture confirmed
+5.487s for the second generation. First0.1.16 parallel-fsync candidate was deployed
+but still failed29/30 and25/30HTTPS; preserve those failures. Final0.1.17 uses
+Linux>=5.8 syncfs for the private generation, verifies all members share its
+filesystem, checks errors, and waits before directory barriers and commit. Older
+platforms retain per-file fsync. Publication/recovery journal format, counters,
+CRL freshness, admission and readiness budgets are unchanged. Never restore old
+index/CRL or disable storage barriers to recover readiness.
+Final tests:26CA durability/interruption/error/fallback cases plus74health/PKI/
+admission cases passed. Selected100tests, not a new full suite or Windows test.
+Two verified quiescent code/config/state backups are private under
+state/ca-io-20261103/ and v2/. Only code rollback is allowed; no rollback was needed.
+27installed source members and196state files verified before restart; CA invariant,
+root/key/bindings/history retained. Final live postflight30/30HTTPS plus5/5fresh
+CRLs; separate normal-load30/30HTTPS. All35revocations retained. Real admin
+password/TOTP login, dashboard200, scoped logout passed; credentials remain local.
+Host later rebooted; latest VM/display status is in checkpoint. Do not rerun
+rollout scripts: finished milestones exist. See docs/PERBAIKAN_CA_IO_2026-11-03.md.

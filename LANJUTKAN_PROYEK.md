@@ -1,5 +1,35 @@
 # Lanjutkan proyek VanGuard
 
+## Status terbaru 3 November22:28WIB — layanan dan terminal siap
+
+CA0.1.17 terpasang; server/admin0.1.15. Ketiga VM running setelah hostreboot,
+SSHterminal desktop sudahlogin dan shellprompt terverifikasi. ConsoleSerial1 juga
+terbuka. Browser diminta membuka https://192.168.100.40:5000/login; gunakan login
+admin dan TOTP existing. Tidak mengaktifkan autologin atau mengganti password.
+EmpatVM lain tetapoff. Readiness setelahboot **30/30HTTP200**.
+
+Perbaikan `Publication.seal`: barrier Linux syncfs untuk generasi privat sebelum
+commit, error ditolak, fallback fsync pada platformlama. Tidak mengubah format
+jurnal/recovery, CRLfreshness, admissionenamcek atau budgetreadiness. Revisi awal
+0.1.16 masihgagal dan digantikan0.1.17; semua bukti gagalretained. Sourcefinal
+**100PASS** (CA26 danhealth/PKI/admission74), bukanfullsuite/Windowsulang.
+
+Rolloutv2 dengan backupkode/config/state,27filekode dan196filestate/invariantCA
+PASS. Root/key/index/serial/binding/config tetap;35revokasi preserved. Sebelumboot:
+30/30HTTP+5/5CRLvalid, beban normalterpisah30/30HTTP; dashboardloginTOTP/GET200/
+logoutscopedPASS. Sesudahboot baru30/30HTTP. Kriteria perbaikan pada sampel ini
+terpenuhi; bukanjaminan semua beban/powerloss fisik. Diskhost sekitar1,3GiB bebas.
+
+Bukti `state/ca-io-20261103/`, finalrollout `v2/`, pascareboot `reboot-2226/`.
+**Jangan ulang rollout/enrollment atau restoreindex/CRL/counter dari backup**.
+Semua milestone selesai; rollbackkode disiapkan tetapi tidak dieksekusi. Backend
+client/EXE/ZIPWindows tetap0.1.15, tidak perlu rebuild untuk perubahan khususCA.
+Laporan [perbaikan CA](docs/PERBAIKAN_CA_IO_2026-11-03.md),
+[jurnal](docs/PROGRESS_2026-11-03.md). Publikasi feature sedangdifinalisasi;
+main belumdiubah. Berikutnya kapasitasdisk dan pengujian fisik/soak yang tersisa.
+
+## Riwayat sebelum perbaikan0.1.17 (bukan status terbaru)
+
 ## Kesiapan pemakaian — 3 November setelah pembukaan console
 
 Tiga terminal desktop sudah login SSH ke CA/server/admin, diverifikasi shell

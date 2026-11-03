@@ -13,7 +13,7 @@ Deployment mengikuti [checkpoint](CHECKPOINT.md); endpoint berikut tersedia
 pada0.1.9. [Readiness0.1.10](READINESS_0.1.10.md) menunggu lock CA
 maksimal3,5detik dan memeriksa dependency admin secara paralel; batas subprocess
 tetap6detik. Versi0.1.11 mengurangi I/O publikasi CA; kontrak API tetap sama.
-Ketiga layanan kini memakai0.1.15 sesuai [validasi2November](VALIDASI_0.1.15_2026-11-02.md). Readiness yang gagal tetap503, tanpa
+Server/admin memakai0.1.15; CA kini0.1.17 untuk [perbaikan penyimpanan](PERBAIKAN_CA_IO_2026-11-03.md). Kontrak API tetap sama. Readiness yang gagal tetap503, tanpa
 cache status sehat. Setelah patch kapasitas unit CA8thread, postflight93/93
 respons HTTP200; sampel sebelumnya tetap menyimpan503. Ini bukan jaminan beban
 tak terbatas. Lihat [catatan kapasitas](CA_SERVICE_CAPACITY.md) dan checkpoint.

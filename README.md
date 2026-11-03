@@ -5,6 +5,8 @@ dan [panduan instalasi → CSR → admin → login](docs/MODUL_PENGGUNAAN_VANGUA
 Paket0.1.15 menyertakan Python/WireGuard dan wheel offline, tersedia pada branch
 `feature/2026-10-22-physical-endpoints`. `main` belum menerima rilis ini.
 Hasil tes aktual serta batas bukti ada pada [checkpoint](docs/CHECKPOINT.md).
+Perbaikan penyimpanan **CA0.1.17** tersedia di source dan sudah dipasang pada VM-CA;
+server/admin serta installer Windows tetap0.1.15. Lihat [hasil perbaikan CA](docs/PERBAIKAN_CA_IO_2026-11-03.md).
 
 [Panduan ringkas admin dan pengguna](docs/MODUL_PENGGUNAAN_VANGUARD.md)
 tersedia juga sebagai [HTML siap dibaca/dicetak](docs/MODUL_PENGGUNAAN_VANGUARD.html).

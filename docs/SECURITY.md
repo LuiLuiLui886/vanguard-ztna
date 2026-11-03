@@ -201,3 +201,14 @@ gagal masuk jalur cleanup tanpa meminta lease baru. Ini bukan attestation remote
 atau jaminan policy tidak berubah setelah pemeriksaan. Lease lama tetap dibatasi
 server; tidak menganggap cleanup lokal sebagai konfirmasi revocation server.
 Bukti patch Linux/mock dan batas native tercatat di [audit bug](AUDIT_BUG_2026-10-28.md).
+
+
+## CA0.1.17 — barrier generasi sebelum commit
+
+Pada Linux>=5.8, seal menunggu syncfs pada filesystem generasi privat, memeriksa
+error dan filesystem seluruh anggota, lalu menyinkronkan directory/manifest.
+Kernel/platform lama memakai fsync perfile. Error menghentikan commit; recovery
+manifest tetap roll-forward, tanpa restorecounter/CRL. Flush filesystem tidak
+menggantikan validasi signature/invariant atau membolehkan readinessfalse200.
+[Laporan perbaikan dan bukti interupsi](PERBAIKAN_CA_IO_2026-11-03.md) memisahkan
+tesCA sementara, benchmarkfixture, rollout utama dan batas hardware powerloss.
