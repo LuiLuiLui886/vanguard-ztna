@@ -1,5 +1,16 @@
 # Lanjutkan proyek VanGuard
 
+## Console desktop — 3 November16:03WIB
+
+Ketiga jendela VM-CA/server/admin kini terbuka pada virt-manager, masing-masing
+View → Consoles → Serial1. AT-SPI memverifikasi terminal showing dan prompt login
+nyata pada ketiganya. Domain hanya punya serial PTY, tidak graphics/video;
+virt-viewer sebelumnya tidak dapat menampilkan layar. GUI berjalan melalui
+transient user service vanguard-vm-console-windows. Serial-getty direfresh setelah
+dibuktikan hanya agetty tanpa sesi login. Tidak ada reboot/perubahan hardware.
+Status console ini tidak mengubah hasil readiness layanan yang dicatat di bawah.
+
+
 ## Pemantauan 15:49 WIB — VM aktif, readiness campuran
 
 CA lock sempat lepas tanpa intervensi. Sampel terakhir: CA ready, admin ready,
