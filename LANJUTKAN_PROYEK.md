@@ -1,5 +1,55 @@
 # Lanjutkan proyek VanGuard
 
+## Status 3 November — rilis0.1.15 dan pengujian VM selesai
+
+**Publikasi sedang diselesaikan pada branch `feature/2026-10-22-physical-endpoints`.**
+Main c8af46f sudah merge pekerjaan terdahulu sampai13dbb18; belum memuat0.1.15.
+EXE/ZIP final beserta checksum ada di downloads. Manual tunggal MD/HTML disertakan.
+
+CA/server/admin dan client Ubuntu sudah0.1.15. Gateway utama default-deny dan
+profil schema2 aktif, tanpa grant Internet permanen. Installer EXE final lulus
+native Windows10/11; baseline Linux348PASS/1SKIP, packaging12PASS overlap.
+Windows10 gabungan gateway PASS122probe dan Windows11 PASS98probe, masing-masing
+dua renewal, grant/remove/regrant, blokir sebelum sertifikat/admission, bypass LAN
+ditolak dan readmission403 setelah revoke. Peer hilang10,056/4,359detik pada satu
+sampel perOS. Recovery dan verifikasi terpisah state asli keduaWindows PASS;
+fixture revoked/disabled, grant, route dan task uji sudah dibersihkan.
+
+Ubuntu pulih setelah reboot: sesi lama expired fail-closed, artefak lama yang
+terbukti milik client diarsipkan setelah owner stop/lock/no tunnel. Login ulang
+existing, handshake dan renewal PASS; identitas tidak berubah. Aktif adalah
+`vm-client-20261102` pada `/var/lib/vanguard/client-20261102`, melalui drop-in
+`/etc/systemd/system/vanguard-client.service.d/identity-20261102.conf`.
+**Jangan reenroll, membuat ulang CA, atau mengaktifkan ID vm-client lama revoked.**
+Windows11 generik semula tidak mempunyai folder identitas Program Files;
+ketidakhadiran itu dan identitas legacy ProgramData dipertahankan.
+
+Postflight3November: empatLinuxactive0.1.15, daemon/WireGuard aktif, integritas
+kedua DB ok, primary lease/peer/handshake sah,30/30HTTPhealth/readiness200.
+Hashroot/keyCA tetap;30revokasi lama tercakup pada35revokasi kini. Empatidentitas
+uji revoked/disabled tanpa lease/peer. Policy Internet semantik semula dan resource
+byte semula; tidak restore CA/DB. Bukti baru `state/release-20261101/final-postflight-20261103/`,
+Windows `windows-managed-r2/10/` dan `11/`, Ubuntu `client-reboot-20261103/`.
+Seluruh direktori tersebut berada di bawah `state/release-20261101/`, tetap privat.
+Jangan menjalankan ulang rollout/prepare/enrollment atau menimpa bukti selesai.
+
+EnamVM running, attacker preserved/off. RAM host15GiB; disk tinggal1,5GiB, perlu
+kapasitas sebelum uji panjang. Credential hanya inventaris privat0700/0600,
+backup dan histori gagal tetap disimpan. Tidak ada perubahan router/firewallhost.
+
+Sisa **BELUM_TERUJI**: TCP Internet persisten sepanjang revocation Windows,
+PCfisik LAN/Wi-Fi (belum tersedia), UAC/MOTW/GPO interaktif, Windows kosong/fresh
+prasyarat, launcher EXE per-device schema2 end-to-end dan soak/powerloss fisikCA.
+Fixture API langsung bukan bukti launcher: guard overlap subnet tetap ada.
+503/upstream timeout dan egress gagal historis belum diketahui penyebabnya;
+probe terbaru lulus tidak berarti insiden tersebut fixed. Prioritas berikutnya:
+publikasi terverifikasi, kapasitasdisk, lalu batas pengujian di atas.
+
+Laporan [validasi0.1.15](docs/VALIDASI_0.1.15_2026-11-02.md),
+[jurnal3November](docs/PROGRESS_2026-11-03.md).
+
+## Riwayat sebelum rilis0.1.15
+
 ## 1 November — manual penggunaan disederhanakan
 
 Manual dipush pada `4a3e538`; SHA origin feature terverifikasi.

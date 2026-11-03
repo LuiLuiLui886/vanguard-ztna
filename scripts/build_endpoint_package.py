@@ -138,13 +138,15 @@ def build(wheelhouse, output, runtime_directory=None, provisioning=None):
             return match[0]
         from posixpath import normpath
         target = normpath('docs/' + link)
-        return 'href="https://github.com/LuiLuiLui886/vanguard-ztna/blob/main/' + target + '"'
+        return ('href="https://github.com/LuiLuiLui886/vanguard-ztna/blob/'
+                'feature/2026-10-22-physical-endpoints/' + target + '"')
     manual = re.sub(r'href="([^"]+)"', published_link, manual)
     (output / 'MODUL_PENGGUNAAN_VANGUARD.html').write_text(manual)
     (output / 'README.md').write_text('# VanGuard Windows10/11 x64\n\n'
         'Paket per-device: jalankan Setup-VanGuard.bat untuk instalasi/config/enrollment terpandu.\n'
         'Jika provision.json belum tersedia, admin perlu membangun paket per-device dahulu.\n'
-        'Buka MODUL_PENGGUNAAN_VANGUARD.html; Bab10 untuk instalasi dan Bab11–12 untuk endpoint.\n'
+        'Buka MODUL_PENGGUNAAN_VANGUARD.html; Bagian1–4 untuk instalasi sampai connect, '
+        'Bagian7 untuk paket per-device dan Bagian8 untuk internet terkelola.\n'
         'Manual ini berasal dari satu sumber resmi repository. Hasil native ada pada checkpoint.\n')
     (output / 'requirements.lock').write_text('\n'.join(lines) + '\n')
     hashes = {p.relative_to(output).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()

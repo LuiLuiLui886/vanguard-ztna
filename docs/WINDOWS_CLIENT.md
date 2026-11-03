@@ -1,5 +1,19 @@
 # Bukti operasional client Windows VanGuard
 
+## 2–3 November — installer dan gateway utama0.1.15
+
+EXE final identik lulus instalasi native pada Windows10 build19044 dan Windows11
+build26300: exit0, versi0.1.15, pip check/27source cocok, identitas/config/firewall
+tetap dan tidak membuat tunnel. Runtime Python/WireGuard sudah tersedia; bukan
+fresh OS atau klik UAC interaktif. Gabungan lockdown0.1.15 dengan gateway utama
+PASS: Windows10 122probe dan Windows11 98probe, masing-masing dua renewal,
+grant/remove/regrant, larangan bypass route LAN, CA-only revoke dan readmission403.
+Peer hilang10,056/4,359detik pada satu sampel perOS. State asli dipulihkan dan
+fixture dibersihkan. Fixture memanggil API client langsung; guard overlap subnet
+launcher tetap ada. TCP Internet persisten, UAC dan fisik belum diuji.
+Rincian pada [laporan rilis](VALIDASI_0.1.15_2026-11-02.md).
+
+
 Dokumen ini menyimpan bukti dan pemulihan historis VM, bukan tutorial aktif.
 Seluruh langkah penggunaan terbaru ada dalam [manual admin tunggal](MODUL_PENGGUNAAN_VANGUARD.md).
 

@@ -499,3 +499,59 @@ Current links were updated; historical evidence/flowcharts/Git history preserved
 No product/VM/credential changes or ZIP/EXE rebuild. Embedded manuals in existing
 packages remain older editions. Source fixes and deployment gaps remain as
 recorded31October; documentation editing does not imply execution or rollout.
+
+
+Release and operational update — 2 November 2026:
+CA/server/admin upgraded0.1.14→0.1.15 with quiescent backups, source-wheel parity,
+dependency and state verification. Ubuntu client upgraded0.1.9→0.1.15. Original
+expired vm-client identity was revoked through the dashboard; its files remain.
+Active primary is vm-client-20261102 at /var/lib/vanguard/client-20261102 via
+/etc/systemd/system/vanguard-client.service.d/identity-20261102.conf. Both keys
+were generated on the client; immutable replacement inherits old account/IP.
+Password unchanged. Handshake and two automatic renewals passed. Do not reenroll
+or restart the revoked old identity as a recovery method.
+
+Main server now has empty/default-deny VANGUARD_INTERNET_POLICY at
+/var/lib/vanguard/server/internet-policy.json, IPv4 forwarding and NAT on eth0.
+Admin VANGUARD_CLIENT_PROFILE points to /etc/vanguard/endpoint-profile.json,
+schema2 public lab profile. No permanent Internet grant was added. An exact-table
+config recovery timer was prepared and canceled after fresh SSH/readiness
+checks; no CA or database rollback. Gateway availability does not enable endpoint
+lockdown or authorize unmanaged Internet access.
+
+Full Linux348PASS/1SKIP; native final EXE identical on Windows10 build19044 and
+Windows11 build26300: actual upgrade exit0,0.1.15/27source parity/pip check,
+primary config/identity/firewall retained, no tunnel created. Installed runtime
+prerequisites were reused; legacy files and releases retained. Not fresh OS/UAC.
+Live installed0.1.15 HTTPS/WireGuard tests passed negative admission, application
+policy/LAN denial, active TCP blocking, two renewals, scoped/idempotent logout,
+and CA-only revoke (one peer-removal sample6.828s). Main gateway Linux /32 fixture
+passed no-grant→grant→removal. Fixture cleaned, account disabled/cert revoked,
+original policy bytes restored and primary client active. Postflight30/30HTTP,
+root/key unchanged, all30old CRL revocations retained within32current entries.
+
+Windows0.1.15 native main-gateway follow-up — 2–3 November 2026:
+Windows10 build19044 passed122probes; Windows11 build26300 passed98probes.
+Both passed two renewals, pre-certificate/pre-admission lockdown, Internet grant,
+removal/regrant, explicit direct-LAN-route bypass denial, CA-only revocation,
+403readmission and policy remaining blocked after disconnect. Single peer-removal
+samples were10.056s and4.359s. Explicit local recovery restored original files and
+firewall; fixture accounts disabled/certificates revoked/grants and tasks removed.
+Windows11 originally had no ProgramFiles identity directory; preserve that absence
+and the separate legacy ProgramData identity. Evidence under windows-managed-r2/.
+These fixtures called installed client APIs directly; production launcher subnet
+overlap guard stays intact. Do not count this as physical launcher/UAC coverage.
+Persistent Internet TCP revocation, physicalLAN/Wi-Fi, interactiveUAC/MOTW/GPO,
+freshOS, long-load and physical CA power-loss acceptance remain BELUM_TERUJI.
+Earlier transient public egress/upstream failures remain unexplained; no host
+firewall/router changes and no claim they were fixed. Failed evidence retained.
+
+After host reboot3November, Ubuntu employee session was expired and fail-closed.
+Owner was stopped, lock acquired, no tunnel verified, and only proven stale owned
+files archived. Existing account login, handshake and automatic renewal passed;
+primary identity hashes unchanged. Do not reenroll vm-client-20261102. Host now
+reports15GiB RAM; VM definitions were not changed. Free disk about1.5GiB; retain
+backups and obtain capacity before long tests. Six VMs running, attacker preserved
+off. See docs/VALIDASI_0.1.15_2026-11-02.md and latest checkpoint for final postflight
+and publication. Main c8af46f merged previous work through13dbb18;0.1.15 is published
+separately on the existing feature branch, never assume main has the same package.

@@ -1,6 +1,6 @@
 # Panduan penggunaan VanGuard
 
-Edisi 1 November 2026 · panduan admin dan pengguna Windows.
+Edisi 2 November 2026 · panduan admin dan pengguna Windows.
 Markdown dan HTML adalah dua format dari **manual yang sama**.
 Ganti `/PATH/...`, `ID_PERANGKAT`, `IP_TUNNEL` dan placeholder kapital dengan
 nilai yang sudah disiapkan admin; jangan menyalin placeholder apa adanya.
@@ -18,10 +18,10 @@ nilai yang sudah disiapkan admin; jangan menyalin placeholder apa adanya.
 | Memasang backend dan CA dari nol | Bagian 9, lalu kembali ke Bagian 1 |
 | Ada kendala | Bagian 10 |
 
-**Status paket:** EXE unduhan adalah `0.1.14-fix1`. Perbaikan source31Oktober belum
-masuk EXE/paket VM. Gateway internet dan profil admin pada lab masih perlu
-konfigurasi. Lihat [checkpoint](CHECKPOINT.md) untuk status, bukan menganggap
-semua fitur aktif setelah install.
+**Pilih paket:** gunakan versi dan checksum pada [halaman unduhan](../downloads/README.md).
+Lihat [checkpoint](CHECKPOINT.md) untuk versi yang benar-benar terpasang dan hasil
+uji. Instalasi aplikasi tidak otomatis mengaktifkan profil server atau gateway
+internet; admin tetap perlu mengikuti konfigurasi pada Bagian 1 dan 8.
 
 ## 1. Persiapan admin
 
@@ -109,14 +109,14 @@ hak administrator lokal. Akun VPN tetap terpisah dari akun admin Windows.
 
 ### 2.1 Install EXE umum
 
-1. Unduh [Setup-VanGuard-0.1.14-fix1.exe](../downloads/Setup-VanGuard-0.1.14-fix1.exe)
+1. Unduh EXE terbaru dari [halaman unduhan](../downloads/README.md)
    dari branch `feature/2026-10-22-physical-endpoints`, folder `downloads`, tombol
    **Download raw file**. Tidak perlu GitHub CLI.
 2. Cocokkan hash dengan [SHA256SUMS](../downloads/SHA256SUMS) dan nilai tepercaya
    dari admin:
 
    ```powershell
-   Get-FileHash '.\Setup-VanGuard-0.1.14-fix1.exe' -Algorithm SHA256
+   Get-FileHash '.\NAMA_FILE_INSTALLER.exe' -Algorithm SHA256
    ```
 
 3. Klik kanan EXE → **Run as administrator**, setujui UAC, tunggu selesai.

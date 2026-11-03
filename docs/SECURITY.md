@@ -38,12 +38,13 @@ Penonaktifan akun menghapus sesi dan peer; daemon juga memeriksa validitas sesi.
 Perangkat lama tanpa binding akun gagal admission. Metadata pemilik/departemen
 hanya deskriptif, bukan kebijakan akses atau attestation hardware.
 
-Kandidat source31Oktober memvalidasi respons login sebelum mengganti file sesi
+Mulai0.1.15 client memvalidasi respons login sebelum mengganti file sesi
 client dan menyimpan hanya username, token serta expiry. Respons rusak tidak
 menimpa sesi lama. Respons logout yang tidak mengonfirmasi pencabutan dan
 penghapusan peer mempertahankan token untuk retry, termasuk JSON non-object.
-Ini validasi respons, bukan jalur admission baru. Belum di-rollout ke paket/EXE;
-hasil regresi dan batas bukti tercatat pada laporan uji31Oktober.
+Ini validasi respons, bukan jalur admission baru. Paket0.1.15 kini terpasang pada
+empat peran Linux dan kedua installer Windows VM. Hasil dan batas buktinya ada
+pada [validasi2November](VALIDASI_0.1.15_2026-11-02.md).
 
 Lease maksimal 300 detik. Daemon memeriksa ulang setiap 5 detik **setelah** siklus sebelumnya
 selesai. Peer expired/revoked/disabled/unknown dihapus. Kegagalan fetch/validasi CRL membatalkan

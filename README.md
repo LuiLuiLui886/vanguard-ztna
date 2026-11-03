@@ -2,15 +2,15 @@
 
 Untuk **endpoint Windows**, mulai dari [download installer](downloads/README.md)
 dan [panduan instalasi → CSR → admin → login](docs/MODUL_PENGGUNAAN_VANGUARD.md).
-Paket terbaru menyertakan Python/WireGuard dan wheel offline. Gunakan `main` sebagai
-pintu masuk proyek; branch endpoint dipakai untuk pekerjaan lanjutan. Hasil tes
-aktual serta batas bukti ada pada [checkpoint](docs/CHECKPOINT.md).
+Paket0.1.15 menyertakan Python/WireGuard dan wheel offline, tersedia pada branch
+`feature/2026-10-22-physical-endpoints`. `main` belum menerima rilis ini.
+Hasil tes aktual serta batas bukti ada pada [checkpoint](docs/CHECKPOINT.md).
 
 [Panduan ringkas admin dan pengguna](docs/MODUL_PENGGUNAAN_VANGUARD.md)
 tersedia juga sebagai [HTML siap dibaca/dicetak](docs/MODUL_PENGGUNAAN_VANGUARD.html).
 Modul mencakup pemasangan awal serta pemakaian Ubuntu dan Windows pada lab terpasang.
 Materi generate root CA, CSR, sertifikat HTTPS/perangkat, CRL dan backup sudah
-digabung secara rinci di Bab6 modul yang sama, dengan daftar isi subbagian.
+tersedia pada Bagian9 modul yang sama.
 
 ## Pembimbing
 

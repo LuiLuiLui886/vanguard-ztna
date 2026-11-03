@@ -27,7 +27,7 @@ code { font-size:.9em; } blockquote { border-left:4px solid #1c7088; margin-left
  a { color:inherit; } .print-note { display:none; }
 }
 </style></head><body><main><p class="print-note">Modul dapat dibaca tanpa internet. Untuk PDF, tekan Ctrl+P, pilih Simpan sebagai PDF, ukuran A4. Tautan dokumen pendukung memerlukan folder docs dari repository yang sama.</p><h1>Panduan penggunaan VanGuard</h1><nav aria-label="Daftar isi"><h2>Daftar isi</h2><ol><li class="toc-h2"><a href="#bab-1">1. Persiapan admin</a></li><li class="toc-h3"><a href="#bagian-1-1">1.1 Menyiapkan profil jika belum tersedia</a></li><li class="toc-h2"><a href="#bab-2">2. Install Windows dan buat permintaan perangkat</a></li><li class="toc-h3"><a href="#bagian-2-1">2.1 Install EXE umum</a></li><li class="toc-h3"><a href="#bagian-2-2">2.2 Configure dan buat request</a></li><li class="toc-h2"><a href="#bab-3">3. Daftarkan perangkat di dashboard</a></li><li class="toc-h2"><a href="#bab-4">4. Import, login, connect dan logout</a></li><li class="toc-h2"><a href="#bab-5">5. Beri izin aplikasi dan uji koneksi</a></li><li class="toc-h2"><a href="#bab-6">6. Cabut akses, ganti identitas dan simpan audit</a></li><li class="toc-h2"><a href="#bab-7">7. Opsional: satu BAT atau EXE per perangkat</a></li><li class="toc-h2"><a href="#bab-8">8. Opsional: internet terkelola tanpa konfigurasi router</a></li><li class="toc-h2"><a href="#bab-9">9. Khusus instalasi backend dan CA baru</a></li><li class="toc-h3"><a href="#bagian-9-1">9.1 Siapkan host dan inventory</a></li><li class="toc-h3"><a href="#bagian-9-2">9.2 Install, generate CA dan siapkan admin</a></li><li class="toc-h3"><a href="#bagian-9-3">9.3 Firewall dan mulai layanan</a></li><li class="toc-h2"><a href="#bab-10">10. Masalah umum dan pemeriksaan akhir</a></li></ol></nav>
-<p>Edisi 1 November 2026 · panduan admin dan pengguna Windows.
+<p>Edisi 2 November 2026 · panduan admin dan pengguna Windows.
 Markdown dan HTML adalah dua format dari <strong>manual yang sama</strong>.
 Ganti <code>/PATH/...</code>, <code>ID_PERANGKAT</code>, <code>IP_TUNNEL</code> dan placeholder kapital dengan
 nilai yang sudah disiapkan admin; jangan menyalin placeholder apa adanya.</p>
@@ -71,10 +71,10 @@ nilai yang sudah disiapkan admin; jangan menyalin placeholder apa adanya.</p>
 </tr>
 </tbody>
 </table>
-<p><strong>Status paket:</strong> EXE unduhan adalah <code>0.1.14-fix1</code>. Perbaikan source31Oktober belum
-masuk EXE/paket VM. Gateway internet dan profil admin pada lab masih perlu
-konfigurasi. Lihat <a href="CHECKPOINT.md">checkpoint</a> untuk status, bukan menganggap
-semua fitur aktif setelah install.</p>
+<p><strong>Pilih paket:</strong> gunakan versi dan checksum pada <a href="../downloads/README.md">halaman unduhan</a>.
+Lihat <a href="CHECKPOINT.md">checkpoint</a> untuk versi yang benar-benar terpasang dan hasil
+uji. Instalasi aplikasi tidak otomatis mengaktifkan profil server atau gateway
+internet; admin tetap perlu mengikuti konfigurasi pada Bagian 1 dan 8.</p>
 <h2 id="bab-1">1. Persiapan admin</h2>
 <p><strong>Tempat kerja:</strong> HOST = laptop Linux; VM = mesin layanan; WINDOWS = PowerShell
 <strong>Run as administrator</strong>; DASHBOARD = browser admin pada jalur management.</p>
@@ -172,14 +172,14 @@ hak administrator lokal. Akun VPN tetap terpisah dari akun admin Windows.</p>
 <h3 id="bagian-2-1">2.1 Install EXE umum</h3>
 <ol>
 <li>
-<p>Unduh <a href="../downloads/Setup-VanGuard-0.1.14-fix1.exe">Setup-VanGuard-0.1.14-fix1.exe</a>
+<p>Unduh EXE terbaru dari <a href="../downloads/README.md">halaman unduhan</a>
 dari branch <code>feature/2026-10-22-physical-endpoints</code>, folder <code>downloads</code>, tombol
 <strong>Download raw file</strong>. Tidak perlu GitHub CLI.</p>
 </li>
 <li>
 <p>Cocokkan hash dengan <a href="../downloads/SHA256SUMS">SHA256SUMS</a> dan nilai tepercaya
 dari admin:</p>
-<pre><code class="language-powershell">Get-FileHash '.\Setup-VanGuard-0.1.14-fix1.exe' -Algorithm SHA256
+<pre><code class="language-powershell">Get-FileHash '.\NAMA_FILE_INSTALLER.exe' -Algorithm SHA256
 </code></pre>
 </li>
 <li>
