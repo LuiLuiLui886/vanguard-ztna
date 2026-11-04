@@ -27,7 +27,7 @@ LAN/Wi-Fi ketika tersedia. Fresh OS/UAC, Internet TCP persisten pascarevoke dan
 power loss fisik tetap BELUM_TERUJI; jangan mengklaim seluruh penerimaan selesai.
 
 Bukti pascaboot hari ini: `state/resume-20261104-1230/`. Metrik storage akhir
-diambil hari ini, bukan tepat setelah observasi kemarin. Publikasi sedang disiapkan.
+diambil hari ini, bukan tepat setelah observasi kemarin. Hasil dipush pada `04bef56`; SHA remote sudah diverifikasi pada 4 November.
 
 ## Riwayat sebelum observasi lanjutan
 
