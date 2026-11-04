@@ -1,4 +1,35 @@
-# Checkpoint VanGuard — 3 November 2026
+# Checkpoint VanGuard — 4 November 2026
+
+## Status terbaru 4 November 12:33 WIB — tiga VM siap, observasi terverifikasi
+
+CA 0.1.17; server/admin 0.1.15. Observasi dari VM admin selesai 600 detik,
+60 siklus: **210/210 HTTP 200** (180 readiness + 30 liveness). Tidak ada kegagalan
+pada sampel kemarin. Hari ini ketiga VM dinyalakan kembali; **30/30 HTTPS HTTP200**
+pascaboot dan layanan/daemon active. Unit observer lama sudah not-found setelah
+boot; PASS berasal dari complete.json, bukan default exit status systemd. Ini beban
+daemon normal, bukan soak panjang atau pengujian endpoint tambahan.
+
+Ruang host dipulihkan sekitar **4,90 GB** (21 fragmen ISO duplikat terverifikasi),
+tersisa sekitar **5,4 GiB** pada 4 November. ISO utuh, disk VM, backup, identitas dan bukti tetap.
+DB server/admin integrity_check ok; audit lama tidak dihapus. Tiga console dan
+terminal SSH CA/server/admin tampil serta sesi login terkonfirmasi; empat VM lain tetap mati.
+
+Bukti `state/stability-20261103-2238/`, hasil final `vm-admin/complete.json` dan
+`summary.json`. Probe host yang salah asal tetap disimpan; CA hanya mengizinkan
+asal server/admin. **Jangan ulang rollout CA, cleanup fragmen, atau memulihkan
+index/CRL/counter lama.** Kode aplikasi dan installer tidak diubah pada tindak lanjut ini.
+Laporan [observasi layanan](OBSERVASI_LAYANAN_2026-11-03.md),
+[jurnal terbaru](PROGRESS_2026-11-04.md). Branch tetap
+`feature/2026-10-22-physical-endpoints`; main tidak diubah.
+
+Berikutnya: kapasitas jangka panjang, beban endpoint lebih lama, dan pengujian fisik
+LAN/Wi-Fi ketika tersedia. Fresh OS/UAC, Internet TCP persisten pascarevoke dan
+power loss fisik tetap BELUM_TERUJI; jangan mengklaim seluruh penerimaan selesai.
+
+Bukti pascaboot hari ini: `state/resume-20261104-1230/`. Metrik storage akhir
+diambil hari ini, bukan tepat setelah observasi kemarin. Publikasi sedang disiapkan.
+
+## Riwayat sebelum observasi lanjutan
 
 ## Status terbaru 3 November22:28WIB — layanan dan terminal siap
 
