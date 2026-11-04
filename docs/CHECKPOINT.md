@@ -2,6 +2,8 @@
 
 ## Persiapan lapangan kampus — 4 November 2026
 
+Dokumen dipush pada `3041a18` ke branch feature; SHA remote terverifikasi.
+
 [Satu dokumen kerja lapangan](PERSIAPAN_UJI_LAPANGAN.md) menyiapkan pilot
 router 192.168.50.0/24, host .10, PC .20 dan laptop .30. Memuat inventaris,
 gerbang kesiapan jaringan/domain-GPO, install/enrollment, matriks uji, recovery
