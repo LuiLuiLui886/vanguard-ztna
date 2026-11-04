@@ -4,6 +4,8 @@ Mulai dari **[manual penggunaan](MODUL_PENGGUNAAN_VANGUARD.md)** untuk pemasanga
 hingga koneksi endpoint. [Versi HTML](MODUL_PENGGUNAAN_VANGUARD.html) dapat dibaca
 atau dicetak. Untuk melanjutkan pekerjaan, baca **[checkpoint](CHECKPOINT.md)**.
 
+Untuk jaringan kampus `192.168.50.0/24`, gunakan **[dokumen kerja lapangan](PERSIAPAN_UJI_LAPANGAN.md)**: kebutuhan, urutan uji, recovery dan formulir hasil dalam satu file.
+
 | Kebutuhan | Folder atau dokumen |
 | --- | --- |
 | Memasang dan menggunakan sistem | [Manual utama](MODUL_PENGGUNAAN_VANGUARD.md) |

@@ -1,5 +1,17 @@
 # Checkpoint VanGuard — 4 November 2026
 
+## Persiapan lapangan kampus — 4 November 2026
+
+[Satu dokumen kerja lapangan](PERSIAPAN_UJI_LAPANGAN.md) menyiapkan pilot
+router 192.168.50.0/24, host .10, PC .20 dan laptop .30. Memuat inventaris,
+gerbang kesiapan jaringan/domain-GPO, install/enrollment, matriks uji, recovery
+dan formulir hasil kosong. Tutorial terminal untuk start VM, SSH/console,
+service dan shutdown juga ada pada file yang sama. Backend existing dan CA dipertahankan.
+Ini pekerjaan dokumentasi; tidak menerapkan konfigurasi atau membuktikan uji
+fisik. Forwarding host/libvirt wajib diperiksa operator; mode internet pada
+endpoint domain/GPO masih terhalang. Berikutnya isi inventaris aktual dan lakukan
+preflight lapangan sebelum lockdown. Status operasional terdahulu ada di bawah.
+
 ## Panduan instalasi — 4 November 2026
 
 [Manual terbaru](MODUL_PENGGUNAAN_VANGUARD.md) dan
