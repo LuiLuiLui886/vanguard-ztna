@@ -27,10 +27,17 @@ code { font-size:.9em; } blockquote { border-left:4px solid #1c7088; margin-left
  a { color:inherit; } .print-note { display:none; }
 }
 </style></head><body><main><p class="print-note">Modul dapat dibaca tanpa internet. Untuk PDF, tekan Ctrl+P, pilih Simpan sebagai PDF, ukuran A4. Tautan dokumen pendukung memerlukan folder docs dari repository yang sama.</p><h1>Panduan penggunaan VanGuard</h1><nav aria-label="Daftar isi"><h2>Daftar isi</h2><ol><li class="toc-h2"><a href="#bab-1">1. Persiapan admin</a></li><li class="toc-h3"><a href="#bagian-1-1">1.1 Menyiapkan profil jika belum tersedia</a></li><li class="toc-h2"><a href="#bab-2">2. Install Windows dan buat permintaan perangkat</a></li><li class="toc-h3"><a href="#bagian-2-1">2.1 Install EXE umum</a></li><li class="toc-h3"><a href="#bagian-2-2">2.2 Configure dan buat request</a></li><li class="toc-h2"><a href="#bab-3">3. Daftarkan perangkat di dashboard</a></li><li class="toc-h2"><a href="#bab-4">4. Import, login, connect dan logout</a></li><li class="toc-h2"><a href="#bab-5">5. Beri izin aplikasi dan uji koneksi</a></li><li class="toc-h2"><a href="#bab-6">6. Cabut akses, ganti identitas dan simpan audit</a></li><li class="toc-h2"><a href="#bab-7">7. Opsional: satu BAT atau EXE per perangkat</a></li><li class="toc-h2"><a href="#bab-8">8. Opsional: internet terkelola tanpa konfigurasi router</a></li><li class="toc-h2"><a href="#bab-9">9. Khusus instalasi backend dan CA baru</a></li><li class="toc-h3"><a href="#bagian-9-1">9.1 Siapkan host dan inventory</a></li><li class="toc-h3"><a href="#bagian-9-2">9.2 Install, generate CA dan siapkan admin</a></li><li class="toc-h3"><a href="#bagian-9-3">9.3 Firewall dan mulai layanan</a></li><li class="toc-h2"><a href="#bab-10">10. Masalah umum dan pemeriksaan akhir</a></li></ol></nav>
-<p>Edisi 2 November 2026 · panduan admin dan pengguna Windows.
+<p>Edisi 4 November 2026 · panduan admin dan pengguna Windows.
 Markdown dan HTML adalah dua format dari <strong>manual yang sama</strong>.
 Ganti <code>/PATH/...</code>, <code>ID_PERANGKAT</code>, <code>IP_TUNNEL</code> dan placeholder kapital dengan
 nilai yang sudah disiapkan admin; jangan menyalin placeholder apa adanya.</p>
+<p><strong>Versi panduan ini:</strong> source CA 0.1.17; server, admin, dan installer Windows
+0.1.15 pada branch <code>feature/2026-10-22-physical-endpoints</code>. Versi pada VM harus
+diperiksa terlebih dahulu; jangan menyimpulkan versi terpasang hanya dari GitHub.</p>
+<p><strong>Status:</strong> alur lab sudah diuji, tetapi penerapan nyata belum selesai diterima.
+Instalasi Windows dari OS kosong, UAC interaktif, PC fisik LAN/Wi-Fi, koneksi TCP
+internet yang tetap aktif saat revoke, dan uji daya putus CA masih BELUM_TERUJI.
+Lihat <a href="CHECKPOINT.md">checkpoint</a> dan <a href="reports/VALIDASI_0.1.15_2026-11-02.md">hasil validasi</a>.</p>
 <p><strong>Alur:</strong> siapkan layanan → install endpoint → daftar perangkat → import sertifikat
 → login → connect → uji akses → logout atau revoke.</p>
 <table>
@@ -181,6 +188,9 @@ dari branch <code>feature/2026-10-22-physical-endpoints</code>, folder <code>dow
 dari admin:</p>
 <pre><code class="language-powershell">Get-FileHash '.\NAMA_FILE_INSTALLER.exe' -Algorithm SHA256
 </code></pre>
+<p>Untuk EXE 0.1.15 yang tercatat saat panduan ini diperbarui, SHA-256 adalah
+<code>01bdfd418cf8ab97543b172d7abaedb1baba507ac215900f895eb18ced591031</code>.
+Pastikan juga nilai tersebut cocok dengan checksum yang diverifikasi admin.</p>
 </li>
 <li>
 <p>Klik kanan EXE → <strong>Run as administrator</strong>, setujui UAC, tunggu selesai.
@@ -583,7 +593,7 @@ memutus akses terkait, perangkat lain tetap bekerja, logout dan cleanup selesai.
 Catat waktu, versi/OS, PASS/FAIL/BELUM_TERUJI dan lokasi bukti; jangan merekam password,
 OTP, token atau private key. Simpan backup sebelum upgrade; uninstall bukan revoke.</p>
 <p><strong>Referensi:</strong> <a href="CHECKPOINT.md">checkpoint</a>, <a href="API.md">API</a>,
-<a href="SECURITY.md">keamanan</a>, <a href="reports/UJI_INTEGRASI_0.1.14_2026-10-31.md">hasil uji terbaru</a>.
+<a href="SECURITY.md">keamanan</a>, <a href="reports/VALIDASI_0.1.15_2026-11-02.md">hasil uji 0.1.15</a>.
 Flowchart tersimpan terpisah agar manual tetap singkat:
 <a href="assets/flows/01-backend.svg">backend</a> · <a href="assets/flows/02-installer.svg">installer</a> ·
 <a href="assets/flows/03-enrollment.svg">pendaftaran</a> · <a href="assets/flows/04-access.svg">akses</a> ·

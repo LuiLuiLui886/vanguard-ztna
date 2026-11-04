@@ -1,9 +1,18 @@
 # Panduan penggunaan VanGuard
 
-Edisi 2 November 2026 · panduan admin dan pengguna Windows.
+Edisi 4 November 2026 · panduan admin dan pengguna Windows.
 Markdown dan HTML adalah dua format dari **manual yang sama**.
 Ganti `/PATH/...`, `ID_PERANGKAT`, `IP_TUNNEL` dan placeholder kapital dengan
 nilai yang sudah disiapkan admin; jangan menyalin placeholder apa adanya.
+
+**Versi panduan ini:** source CA 0.1.17; server, admin, dan installer Windows
+0.1.15 pada branch `feature/2026-10-22-physical-endpoints`. Versi pada VM harus
+diperiksa terlebih dahulu; jangan menyimpulkan versi terpasang hanya dari GitHub.
+
+**Status:** alur lab sudah diuji, tetapi penerapan nyata belum selesai diterima.
+Instalasi Windows dari OS kosong, UAC interaktif, PC fisik LAN/Wi-Fi, koneksi TCP
+internet yang tetap aktif saat revoke, dan uji daya putus CA masih BELUM_TERUJI.
+Lihat [checkpoint](CHECKPOINT.md) dan [hasil validasi](reports/VALIDASI_0.1.15_2026-11-02.md).
 
 **Alur:** siapkan layanan → install endpoint → daftar perangkat → import sertifikat
 → login → connect → uji akses → logout atau revoke.
@@ -118,6 +127,10 @@ hak administrator lokal. Akun VPN tetap terpisah dari akun admin Windows.
    ```powershell
    Get-FileHash '.\NAMA_FILE_INSTALLER.exe' -Algorithm SHA256
    ```
+
+   Untuk EXE 0.1.15 yang tercatat saat panduan ini diperbarui, SHA-256 adalah
+   `01bdfd418cf8ab97543b172d7abaedb1baba507ac215900f895eb18ced591031`.
+   Pastikan juga nilai tersebut cocok dengan checksum yang diverifikasi admin.
 
 3. Klik kanan EXE → **Run as administrator**, setujui UAC, tunggu selesai.
    Python, WireGuard dan dependensi disertakan. Jika kebijakan Windows memblokir
@@ -501,7 +514,7 @@ Catat waktu, versi/OS, PASS/FAIL/BELUM_TERUJI dan lokasi bukti; jangan merekam p
 OTP, token atau private key. Simpan backup sebelum upgrade; uninstall bukan revoke.
 
 **Referensi:** [checkpoint](CHECKPOINT.md), [API](API.md),
-[keamanan](SECURITY.md), [hasil uji terbaru](reports/UJI_INTEGRASI_0.1.14_2026-10-31.md).
+[keamanan](SECURITY.md), [hasil uji 0.1.15](reports/VALIDASI_0.1.15_2026-11-02.md).
 Flowchart tersimpan terpisah agar manual tetap singkat:
 [backend](assets/flows/01-backend.svg) · [installer](assets/flows/02-installer.svg) ·
 [pendaftaran](assets/flows/03-enrollment.svg) · [akses](assets/flows/04-access.svg) ·

@@ -1,5 +1,16 @@
 # Lanjutkan proyek VanGuard
 
+## Panduan instalasi — 4 November 2026
+
+[Manual terbaru](docs/MODUL_PENGGUNAAN_VANGUARD.md) dan
+[HTML](docs/MODUL_PENGGUNAAN_VANGUARD.html) adalah satu panduan dalam dua format.
+Versi CA 0.1.17 dan installer Windows 0.1.15, checksum EXE, serta batas pengujian
+dijelaskan. Paket EXE/ZIP lama tidak dibangun ulang; manual di dalamnya mungkin
+masih edisi lama. Tidak ditemukan manual instalasi duplikat aktif untuk dihapus.
+Validasi render, tautan lokal dan lima checksum unduhan lulus. Tidak ada tes VM baru.
+Penerimaan nyata tetap belum selesai; baca status pengujian di bawah.
+
+
 ## Penataan repository — 4 November 2026
 
 Mulai dari [indeks dokumentasi](docs/README.md). File dikelompokkan tanpa
