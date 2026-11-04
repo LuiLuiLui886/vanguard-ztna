@@ -17,7 +17,8 @@ ruff lulus. Build source terisolasi juga memuat dokumentasi yang dipindahkan.
 
 Tidak ada rebuild installer atau perubahan VM. Status operasional terakhir ada
 di bawah. Detail penataan: [jurnal 4 November](progress/PROGRESS_2026-11-04.md).
-Publikasi susunan baru sedang disiapkan pada branch feature existing.
+Susunan baru dipush pada `7b58a53` ke `feature/2026-10-22-physical-endpoints`;
+SHA remote terverifikasi. Main belum diubah.
 
 ## Status operasional terakhir
 
