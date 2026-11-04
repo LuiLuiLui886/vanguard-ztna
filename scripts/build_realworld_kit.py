@@ -57,9 +57,18 @@ def build(endpoint, public, wheel, output, expected_endpoint_sha256):
             shutil.copyfile(ROOT / 'deploy/pilot' / name, output / 'checks' / name)
         shutil.copyfile(ROOT / 'scripts/pilot_preflight.py', output / 'checks/pilot_preflight.py')
         (output / 'docs').mkdir()
-        for path in sorted((ROOT / 'docs').iterdir()):
-            if path.is_file() and not path.is_symlink() and path.suffix in ('.md', '.html'):
-                shutil.copyfile(path, output / 'docs' / path.name)
+        documentation = ROOT / 'docs'
+        for path in sorted(documentation.rglob('*')):
+            relative = path.relative_to(documentation)
+            if any(part.startswith('.') for part in relative.parts):
+                continue
+            if any(parent.is_symlink() for parent in (path, *path.parents)
+                   if parent != documentation and documentation in parent.parents):
+                continue
+            if path.is_file() and path.suffix in ('.md', '.html', '.svg', '.xml', '.patch'):
+                target = output / 'docs' / relative
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(path, target)
         bundled_runtime = 'runtime-lock.json' in manifest['files'] and any(
             name.startswith('runtimes/') for name in manifest['files'])
         (output / 'START_HERE.html').write_text('''<!doctype html><html lang="id"><meta charset="utf-8">

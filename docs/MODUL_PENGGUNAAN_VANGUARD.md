@@ -501,7 +501,7 @@ Catat waktu, versi/OS, PASS/FAIL/BELUM_TERUJI dan lokasi bukti; jangan merekam p
 OTP, token atau private key. Simpan backup sebelum upgrade; uninstall bukan revoke.
 
 **Referensi:** [checkpoint](CHECKPOINT.md), [API](API.md),
-[keamanan](SECURITY.md), [hasil uji terbaru](UJI_INTEGRASI_0.1.14_2026-10-31.md).
+[keamanan](SECURITY.md), [hasil uji terbaru](reports/UJI_INTEGRASI_0.1.14_2026-10-31.md).
 Flowchart tersimpan terpisah agar manual tetap singkat:
 [backend](assets/flows/01-backend.svg) · [installer](assets/flows/02-installer.svg) ·
 [pendaftaran](assets/flows/03-enrollment.svg) · [akses](assets/flows/04-access.svg) ·

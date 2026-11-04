@@ -75,6 +75,13 @@ def test_kit_copies_only_public_config_and_detects_tamper(public_inputs, tmp_pat
     assert not list(output.rglob('private.key'))
     assert 'DO_NOT_COPY' not in (output / 'config/admin-public.env').read_text()
     assert result['ready_for_production'] is False
+    # A copied manual must retain its nested supporting documents after regrouping.
+    for relative in ('reports/UJI_INTEGRASI_0.1.14_2026-10-31.md',
+                     'assets/flows/01-backend.svg', 'testing/results/test-results.xml'):
+        bundled = output / 'docs' / relative
+        assert bundled.is_file()
+        assert bundled.read_bytes() == (kit.ROOT / 'docs' / relative).read_bytes()
+        assert 'docs/' + relative in result['files']
     manifest_hash = hashlib.sha256((output / 'kit-manifest.json').read_bytes()).hexdigest()
     assert verifier.verify(output, manifest_hash) == len(result['files'])
     with pytest.raises(ValueError, match='Output exists'):

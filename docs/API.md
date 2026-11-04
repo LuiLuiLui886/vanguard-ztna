@@ -7,16 +7,16 @@ Respons gagal berbentuk `{"error":"..."}`. Request JSON dibatasi 64 KiB.
 ## Tambahan0.1.9
 
 Paket sudah di-rollout20 Oktober. Hasil dan keterbatasan bukti operasional ada
-pada [matriks validasi](VALIDASI_ROLLOUT_2026-10-20.md).
+pada [matriks validasi](reports/VALIDASI_ROLLOUT_2026-10-20.md).
 
 Deployment mengikuti [checkpoint](CHECKPOINT.md); endpoint berikut tersedia
-pada0.1.9. [Readiness0.1.10](READINESS_0.1.10.md) menunggu lock CA
+pada0.1.9. [Readiness0.1.10](reference/READINESS_0.1.10.md) menunggu lock CA
 maksimal3,5detik dan memeriksa dependency admin secara paralel; batas subprocess
 tetap6detik. Versi0.1.11 mengurangi I/O publikasi CA; kontrak API tetap sama.
-Server/admin memakai0.1.15; CA kini0.1.17 untuk [perbaikan penyimpanan](PERBAIKAN_CA_IO_2026-11-03.md). Kontrak API tetap sama. Readiness yang gagal tetap503, tanpa
+Server/admin memakai0.1.15; CA kini0.1.17 untuk [perbaikan penyimpanan](reports/PERBAIKAN_CA_IO_2026-11-03.md). Kontrak API tetap sama. Readiness yang gagal tetap503, tanpa
 cache status sehat. Setelah patch kapasitas unit CA8thread, postflight93/93
 respons HTTP200; sampel sebelumnya tetap menyimpan503. Ini bukan jaminan beban
-tak terbatas. Lihat [catatan kapasitas](CA_SERVICE_CAPACITY.md) dan checkpoint.
+tak terbatas. Lihat [catatan kapasitas](reference/CA_SERVICE_CAPACITY.md) dan checkpoint.
 
 | Method | Path | Akses dan hasil |
 |---|---|---|
@@ -74,7 +74,7 @@ Penolakan aplikasi 400/403 dapat menghasilkan audit `admission_timing` dengan
 `schema`, `request_id`, `endpoint`, `status`, `reason`, `detect_ns`, `respond_ns`,
 `total_ns`, `clock` dan `response_boundary`. Metrik memakai monotonic server;
 `total_ns = detect_ns + respond_ns`. Tidak ada password/token/body/nonce dalam
-event tersebut. Arti batas waktunya ada di [RESPONSE_METRICS.md](RESPONSE_METRICS.md).
+event tersebut. Arti batas waktunya ada di [RESPONSE_METRICS.md](testing/RESPONSE_METRICS.md).
 Event hanya dapat dibaca melalui endpoint audit manajemen yang sudah dilindungi.
 
 ## VM-CA — `https://192.168.100.10:8080`
@@ -257,7 +257,7 @@ logout. Override API/server key yang berbeda ditolak sebelum admission.
 file sesi bukan bukti token valid. `diagnose` hanya HTTPS `/readyz`, UDP/aplikasi
 unknown. `disconnect` meminta connect pemilik melakukan cleanup, terpisah dari
 logout server. Timeout teardown tidak berarti sukses; config tetap disimpan.
-Lihat [pilot Windows](ENDPOINT_WINDOWS_PILOT.md) untuk prasyarat dan batas bukti.
+Lihat [pilot Windows](reports/ENDPOINT_WINDOWS_PILOT.md) untuk prasyarat dan batas bukti.
 
 ## Kandidat0.1.13 — izin internet terkelola (opt-in)
 

@@ -40,7 +40,7 @@ The proposal explicitly defines MTTR as Mean Time to Respond, not recovery/repai
 and scopes MTTD/MTTR to stolen valid employee credentials on an untrusted device.
 Version 0.1.4 adds request-local monotonic denial timing and server-generated
 correlation IDs. Application detection/response boundaries are defined in
-docs/RESPONSE_METRICS.md; they are distinct from network RTT, prior S-04 revocation
+docs/testing/RESPONSE_METRICS.md; they are distinct from network RTT, prior S-04 revocation
 bounds, credential-theft onset and operational recovery. Timing records never
 include passwords, sessions, bodies, certificate PEM, proof signatures or nonces.
 This telemetry does not change any admission check or add an alternative peer path.
@@ -90,7 +90,7 @@ extends certificates. Readiness is bounded/read-only, separate from liveness.
 An opt-in explicit resource policy gates internal-demo 10.8.0.1 TCP8082 before
 established-flow acceptance; an empty policy denies access. This does not change
 WireGuard or relax six-check admission/employee sessions. Deployment and native
-versus mock evidence must follow docs/CHECKPOINT.md and docs/HARDENING_0.1.9.md.
+versus mock evidence must follow docs/CHECKPOINT.md and docs/reference/HARDENING_0.1.9.md.
 
 Windows VM optimization — 19 October 2026:
 The existing Windows domain now exposes hypervclock plus vpindex/synic/stimer.
@@ -109,7 +109,7 @@ primary identity hashes precede rollout. The CA root/index/serial were preserved
 no old index/CRL restoration or counter guessing was performed. The server now
 enables the explicit TCP8082 application gate with default deny. Temporary
 identity .3 is used sequentially, not either primary client identity.
-Linux live matrix is recorded in docs/VALIDASI_ROLLOUT_2026-10-20.md; Windows
+Linux live matrix is recorded in docs/reports/VALIDASI_ROLLOUT_2026-10-20.md; Windows
 live work remains in progress until its final evidence/cleanup is recorded.
 A Windows teardown timeout preserved config; verified operator recovery stopped
 the exact service before confirming1060. Do not blindly delete leftover config.
@@ -459,7 +459,7 @@ Linux isolated regression89PASS/1SKIP; Windows/EXE not rerun. Initial health sam
 follow-up30/30 succeeded, but the original cause is unconfirmed, not fixed.
 No product code or admission policy weakened. Runtime TOTP replay counter advances
 on successful admin login and must not be treated as immutable history during
-verification. See docs/UJI_INTEGRASI_0.1.14_2026-10-31.md for harness failures and
+verification. See docs/reports/UJI_INTEGRASI_0.1.14_2026-10-31.md for harness failures and
 scope. Four Ubuntu backend/client VMs running, other three off; host1.3GiB free,
 managed internet/profile deployment still pending. Private evidence retained.
 
@@ -552,7 +552,7 @@ files archived. Existing account login, handshake and automatic renewal passed;
 primary identity hashes unchanged. Do not reenroll vm-client-20261102. Host now
 reports15GiB RAM; VM definitions were not changed. Free disk about1.5GiB; retain
 backups and obtain capacity before long tests. Six VMs running, attacker preserved
-off. See docs/VALIDASI_0.1.15_2026-11-02.md and latest checkpoint for final postflight
+off. See docs/reports/VALIDASI_0.1.15_2026-11-02.md and latest checkpoint for final postflight
 and publication. Main c8af46f merged previous work through13dbb18;0.1.15 is published
 separately on the existing feature branch, never assume main has the same package.
 
@@ -576,4 +576,14 @@ root/key/bindings/history retained. Final live postflight30/30HTTPS plus5/5fresh
 CRLs; separate normal-load30/30HTTPS. All35revocations retained. Real admin
 password/TOTP login, dashboard200, scoped logout passed; credentials remain local.
 Host later rebooted; latest VM/display status is in checkpoint. Do not rerun
-rollout scripts: finished milestones exist. See docs/PERBAIKAN_CA_IO_2026-11-03.md.
+rollout scripts: finished milestones exist. See docs/reports/PERBAIKAN_CA_IO_2026-11-03.md.
+
+
+Repository organization — 4 November 2026:
+Documentation is grouped under docs/progress, reports, proposal, reference,
+testing (including results XML), and history/checkpoints. The active checkpoint,
+API, SECURITY, WINDOWS_CLIENT and single manual MD/HTML keep their existing paths.
+New journals belong in docs/progress/PROGRESS_YYYY-MM-DD.md. Start at docs/README.md
+or the root README. Older installers moved to downloads/archive with unchanged
+bytes; latest 0.1.15 paths remain stable. No application/VM/security behavior was
+changed by this organization. Released ZIP/EXE contents were not rebuilt.

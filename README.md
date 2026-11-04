@@ -6,7 +6,7 @@ Paket0.1.15 menyertakan Python/WireGuard dan wheel offline, tersedia pada branch
 `feature/2026-10-22-physical-endpoints`. `main` belum menerima rilis ini.
 Hasil tes aktual serta batas bukti ada pada [checkpoint](docs/CHECKPOINT.md).
 Perbaikan penyimpanan **CA0.1.17** tersedia di source dan sudah dipasang pada VM-CA;
-server/admin serta installer Windows tetap0.1.15. Lihat [hasil perbaikan CA](docs/PERBAIKAN_CA_IO_2026-11-03.md).
+server/admin serta installer Windows tetap0.1.15. Lihat [hasil perbaikan CA](docs/reports/PERBAIKAN_CA_IO_2026-11-03.md).
 
 [Panduan ringkas admin dan pengguna](docs/MODUL_PENGGUNAAN_VANGUARD.md)
 tersedia juga sebagai [HTML siap dibaca/dicetak](docs/MODUL_PENGGUNAAN_VANGUARD.html).
@@ -62,27 +62,24 @@ sequenceDiagram
     C->>S: Handshake WireGuard
 ```
 
-Implementasi tersedia dalam `vanguard/`, pengujian dalam `tests/`, dan installer/unit systemd
-dalam `deploy/`. Baca:
+## Peta repository
 
-- [Manual admin tunggal: persiapan, CA, backend, endpoint dan operasi](docs/MODUL_PENGGUNAAN_VANGUARD.md)
-- [Kontrak endpoint API](docs/API.md)
-- [Keputusan keamanan dan batas operasional](docs/SECURITY.md)
-- [Skenario uji Tugas Akhir](docs/TEST_PLAN.md)
-- [Hasil verifikasi dan status deployment](docs/IMPLEMENTATION_REPORT.md)
-- [Saran revisi proposal dan hasil audit fitur](docs/SARAN_REVISI_PROPOSAL_2026-10-12.md)
-- [Checkpoint untuk melanjutkan pekerjaan](docs/CHECKPOINT.md)
-- [Jurnal perubahan 8 Oktober 2026](docs/PROGRESS_2026-10-08.md)
-- [Jurnal perubahan 9 Oktober 2026](docs/PROGRESS_2026-10-09.md)
-- [Jurnal perubahan 10 Oktober 2026](docs/PROGRESS_2026-10-10.md)
-- [Jurnal perubahan 12 Oktober 2026](docs/PROGRESS_2026-10-12.md)
-- [Pengujian otomatis dan artefak GitHub](docs/CI.md)
-- [Kesesuaian implementasi dengan proposal](docs/PROPOSAL_ALIGNMENT.md)
-- [Protokol capture dan pencabutan berulang S-03/S-04](docs/SECURITY_EXPERIMENTS.md)
-- [Hasil eksperimen S-03/S-04](docs/SECURITY_RESULTS_2026-10-09.md)
-- [Definisi MTTD dan MTTR Respond untuk S-01](docs/RESPONSE_METRICS.md)
-- [Hasil MTTD/MTTR aplikasi pada 0.1.4](docs/RESPONSE_METRICS_2026-10-10.md)
-- [Rencana benchmark tiga konfigurasi](docs/BENCHMARK_PLAN.md)
+| Folder | Isi |
+| --- | --- |
+| [downloads/](downloads/) | Installer Windows terbaru; versi lama di [archive](downloads/archive/) |
+| [docs/](docs/) | Manual dan indeks seluruh dokumentasi |
+| [docs/progress/](docs/progress/) | Jurnal perubahan per tanggal |
+| [docs/reports/](docs/reports/) | Audit, validasi dan hasil pengujian |
+| [docs/proposal/](docs/proposal/) | Kesesuaian dan saran revisi proposal |
+| [docs/history/](docs/history/) | Snapshot dan bukti historis |
+| [vanguard/](vanguard/) | Source aplikasi |
+| [deploy/](deploy/) | Installer, konfigurasi contoh dan unit layanan |
+| [scripts/](scripts/) | Alat build, deployment dan verifikasi lab |
+| [tests/](tests/) | Pengujian otomatis |
+
+Dokumen untuk melanjutkan proyek: [checkpoint](docs/CHECKPOINT.md),
+[handoff](LANJUTKAN_PROYEK.md), dan [keputusan arsitektur](VANGUARD_CONTEXT.md).
+Manual tetap satu sumber; laporan serta jurnal dikelompokkan tanpa dihapus.
 
 Uji lokal (tidak membutuhkan root atau mengubah jaringan host):
 
