@@ -2,6 +2,8 @@
 
 ## Flowchart terpadu — 5 November 2026
 
+Dipush pada `0d9a4a1` ke branch feature; SHA remote terverifikasi.
+
 [Satu flowchart lengkap](docs/FLOWCHART_SISTEM_LENGKAP.md) menghubungkan
 backend/CA, installer, enrollment, enam cek admission, kebijakan akses, renewal,
 logout/revoke, cleanup, recovery dan audit. README/manual mengarah ke diagram ini;
