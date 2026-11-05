@@ -1,6 +1,6 @@
 # Installer VanGuard Windows10/11 x64
 
-Lihat **flowchart seluruh sistem** pada [referensi flowchart pada manual](../docs/MODUL_PENGGUNAAN_VANGUARD.md#10-masalah-umum-dan-pemeriksaan-akhir): CA/backend → installer → enrollment → akses → pencabutan dan audit.
+Lihat **flowchart seluruh sistem** pada [satu diagram lengkap](../docs/FLOWCHART_SISTEM_LENGKAP.md): CA/backend → installer → enrollment → akses → pencabutan dan audit.
 
 ## EXE dan template0.1.15 — branch feature
 

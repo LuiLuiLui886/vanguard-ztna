@@ -38,30 +38,7 @@ Client Windows tambahan memakai `10.8.0.4/32`; kelima Ubuntu tetap
 dipertahankan. [Status/panduan Windows](docs/WINDOWS_CLIENT.md) membedakan tes
 helper native, bukti tunnel guest15 Oktober, dan skenario yang masih belum diuji.
 
-```mermaid
-sequenceDiagram
-    participant C as VM-CLIENT
-    participant A as VM-ADMIN
-    participant CA as VM-CA
-    participant S as VM-SERVER
-    C->>C: Buat key X.509, CSR, key WireGuard
-    C->>A: request.json (tanpa private key)
-    A->>CA: POST /api/ca/issue
-    CA-->>A: Sertifikat X.509
-    A->>S: POST /api/devices (registry saja)
-    A->>S: Tautkan perangkat ke akun karyawan
-    A-->>C: device.crt
-    C->>S: POST /api/employee/login
-    S-->>C: Sesi karyawan (8 jam)
-    C->>S: POST /api/challenge + sesi karyawan
-    S-->>C: Nonce sekali pakai, TTL 60 detik
-    C->>S: POST /api/verify + signature X.509 + sesi yang sama
-    S->>CA: Ambil dan validasi CRL terkini
-    S->>S: Enam pemeriksaan admission
-    S->>S: wg set wg0 peer ... allowed-ips 10.8.0.2/32
-    S-->>C: ACCEPT + lease
-    C->>S: Handshake WireGuard
-```
+**[Buka satu flowchart lengkap sistem](docs/FLOWCHART_SISTEM_LENGKAP.md)** — backend/CA → installer → enrollment → admission → akses → logout/revoke → recovery dan audit.
 
 ## Peta repository
 

@@ -18,7 +18,7 @@ Untuk jaringan kampus `192.168.50.0/24`, gunakan **[dokumen kerja lapangan](PERS
 | Memeriksa kesesuaian proposal TA | [Proposal](proposal/) |
 | Membaca catatan kapasitas, hardening dan CI | [Referensi teknis](reference/) |
 | Membuka snapshot checkpoint/handoff lama | [Arsip](history/) |
-| Melihat diagram sistem | [Flowchart SVG](assets/flows/) |
+| Melihat seluruh alur sistem dalam satu diagram | [Flowchart lengkap](FLOWCHART_SISTEM_LENGKAP.md) |
 
 Dokumen inti yang alamatnya dipertahankan:
 

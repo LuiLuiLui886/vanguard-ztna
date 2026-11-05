@@ -515,7 +515,4 @@ OTP, token atau private key. Simpan backup sebelum upgrade; uninstall bukan revo
 
 **Referensi:** [checkpoint](CHECKPOINT.md), [API](API.md),
 [keamanan](SECURITY.md), [hasil uji 0.1.15](reports/VALIDASI_0.1.15_2026-11-02.md).
-Flowchart tersimpan terpisah agar manual tetap singkat:
-[backend](assets/flows/01-backend.svg) · [installer](assets/flows/02-installer.svg) ·
-[pendaftaran](assets/flows/03-enrollment.svg) · [akses](assets/flows/04-access.svg) ·
-[lifecycle](assets/flows/05-lifecycle.svg).
+**[Flowchart lengkap sistem dalam satu diagram](FLOWCHART_SISTEM_LENGKAP.md)** mencakup backend, installer, pendaftaran, akses, pencabutan, recovery dan audit.

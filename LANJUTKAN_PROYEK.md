@@ -1,5 +1,13 @@
 # Lanjutkan proyek VanGuard
 
+## Flowchart terpadu — 5 November 2026
+
+[Satu flowchart lengkap](docs/FLOWCHART_SISTEM_LENGKAP.md) menghubungkan
+backend/CA, installer, enrollment, enam cek admission, kebijakan akses, renewal,
+logout/revoke, cleanup, recovery dan audit. README/manual mengarah ke diagram ini;
+lima SVG lama tetap arsip. Tidak ada perubahan aplikasi, installer atau VM.
+Diagram adalah dokumentasi implementasi, bukan hasil uji fisik baru.
+
 ## Persiapan lapangan kampus — 4 November 2026
 
 Dokumen dipush pada `3041a18` ke branch feature; SHA remote terverifikasi.
