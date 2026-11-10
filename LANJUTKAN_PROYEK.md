@@ -1,5 +1,16 @@
 # Lanjutkan proyek VanGuard
 
+## Ethernet host aktif — 10 November 2026 15:04 WIB
+
+Kabel `enp3s0` tersambung. Profil NetworkManager kini memakai IPv4 manual
+`192.168.50.10/24`, gateway/DNS `.50.1`; ping router 2/2. Wi-Fi `.50.101`
+tetap aktif. Cadangan konfigurasi awal privat ada di
+`state/pilot-host-20261110/`. Reservasi `.10` di router belum diverifikasi;
+operator harus memastikan alamat itu tidak dibagikan DHCP ke perangkat lain.
+Preflight host_lan PASS, tetapi status keseluruhan BLOCKED karena CA/server/admin
+mati; firewall MANUAL dan lalu lintas endpoint BELUM_TERUJI. Nyalakan layanan
+dan uji jalur balik sebelum memasang route Windows atau memulai lockdown.
+
 ## Koreksi alamat pilot — 10 November 2026
 
 Koreksi panduan `99d2024` dan catatan pemulihan `8ddf9b4` sudah dipush ke

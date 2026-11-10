@@ -617,3 +617,12 @@ Libvirt NAT rules exist but observed FORWARD counters0, no endpoint forwarding
 proof. Manual updated: check .10 availability/reservation, use Ethernet for
 approved topology, start services, rerun preflight and verify traffic before
 Windows route/lockdown. No host/firewall/VM/IP changes were made in this step.
+
+
+Pilot Ethernet host update — 10 November 2026 15:04 WIB:
+enp3s0 linked, initially DHCP192.168.50.102. Static manual profile now
+192.168.50.10/24, gateway/DNS192.168.50.1; router ping2/2. Wi-Fi .50.101 kept.
+Original profile/address/routes saved privately state/pilot-host-20261110/.
+Preflight host_lan PASS, overall BLOCKED due three services off; firewall and
+endpoint traffic untested. Router DHCP reservation/exclusion for .10 unverified;
+check before physical client pilot. Do not infer backend readiness from host IP.
