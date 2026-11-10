@@ -181,6 +181,11 @@ firewall/HTTPS/traffic. `MANUAL_REVIEW_REQUIRED` bukan kelulusan akhir. Jika bel
 bisa membuktikan matriks di atas, **tunda instalasi/lockdown**, catat BLOCKED dan
 selesaikan dengan petugas jaringan. Dokumen ini tidak menyatakan host sudah siap.
 
+Pada source terbaru 11 November, preflight mempertahankan persyaratan lima
+Ubuntu asli. VM Windows11/10 sudah dihapus atas permintaan pengguna; gunakan
+endpoint Windows fisik. Paket lama dapat membawa pemeriksa yang masih meminta
+VM Windows, jadi jalankan skrip dari repository terbaru pada host.
+
 ### 3.2 Tambahkan route pada Windows
 
 PowerShell **Run as administrator** pada setiap endpoint:

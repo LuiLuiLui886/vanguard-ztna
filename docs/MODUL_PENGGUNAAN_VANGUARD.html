@@ -27,7 +27,7 @@ code { font-size:.9em; } blockquote { border-left:4px solid #1c7088; margin-left
  a { color:inherit; } .print-note { display:none; }
 }
 </style></head><body><main><p class="print-note">Modul dapat dibaca tanpa internet. Untuk PDF, tekan Ctrl+P, pilih Simpan sebagai PDF, ukuran A4. Tautan dokumen pendukung memerlukan folder docs dari repository yang sama.</p><h1>Panduan penggunaan VanGuard</h1><nav aria-label="Daftar isi"><h2>Daftar isi</h2><ol><li class="toc-h2"><a href="#bab-1">0. Mulai di sini: komputer dan terminal yang digunakan</a></li><li class="toc-h3"><a href="#bagian-0-1">0.1 Arti host, VM, endpoint, dan dashboard</a></li><li class="toc-h3"><a href="#bagian-0-2">0.2 Kenali prompt dan folder sebelum menyalin perintah</a></li><li class="toc-h3"><a href="#bagian-0-3">0.3 Nyalakan backend, lalu buka terminal VM</a></li><li class="toc-h2"><a href="#bab-2">1. Persiapan admin</a></li><li class="toc-h3"><a href="#bagian-1-1">1.1 Ambil profil yang sudah aktif pada lab ini</a></li><li class="toc-h3"><a href="#bagian-1-2">1.2 Opsional: buat kandidat profil aplikasi internal baru</a></li><li class="toc-h2"><a href="#bab-3">2. Install Windows dan buat permintaan perangkat</a></li><li class="toc-h3"><a href="#bagian-2-1">2.1 Install EXE umum</a></li><li class="toc-h3"><a href="#bagian-2-2">2.2 Configure dan buat request</a></li><li class="toc-h2"><a href="#bab-4">3. Daftarkan perangkat di dashboard</a></li><li class="toc-h2"><a href="#bab-5">4. Import, login, connect dan logout</a></li><li class="toc-h2"><a href="#bab-6">5. Beri izin aplikasi dan uji koneksi</a></li><li class="toc-h2"><a href="#bab-7">6. Cabut akses, ganti identitas dan simpan audit</a></li><li class="toc-h2"><a href="#bab-8">7. Opsional: satu BAT atau EXE per perangkat</a></li><li class="toc-h2"><a href="#bab-9">8. Opsional: internet terkelola tanpa konfigurasi router</a></li><li class="toc-h2"><a href="#bab-10">9. Khusus instalasi backend dan CA baru</a></li><li class="toc-h3"><a href="#bagian-9-1">9.1 Siapkan host dan inventory</a></li><li class="toc-h3"><a href="#bagian-9-2">9.2 Install, generate CA dan siapkan admin</a></li><li class="toc-h3"><a href="#bagian-9-3">9.3 Firewall dan mulai layanan</a></li><li class="toc-h2"><a href="#bab-11">10. Masalah umum dan pemeriksaan akhir</a></li></ol></nav>
-<p>Edisi 10 November 2026 · panduan admin dan pengguna Windows.
+<p>Edisi 11 November 2026 · panduan admin dan pengguna Windows.
 Markdown dan HTML adalah dua format dari <strong>manual yang sama</strong>.
 Manual yang tertanam di EXE/ZIP rilis lama belum dibangun ulang; gunakan edisi
 MD/HTML terbaru di folder <code>docs</code> ini saat mengikuti tutorial.
@@ -320,46 +320,34 @@ mengalokasikan IP lain. PC berbeda harus mempunyai ID dan kunci berbeda.</p>
 pemeriksaan 10 November, profil ini <strong>schema2 (internet terkelola)</strong>. Generator
 <code>prepare_endpoint_pilot.py</code> menghasilkan schema1; jangan menjalankannya hanya
 karena ingin menambah komputer pada sistem yang sudah bekerja.</p>
-<p><strong>HOST — terminal lokal, bukan shell VM:</strong> perintah berikut mengambil tiga
-berkas publik lewat jalur SSH yang sudah diverifikasi. Buat folder baru setiap
-pengambilan agar bahan sebelumnya tidak tertimpa.</p>
+<p><strong>HOST — terminal lokal, bukan shell VM:</strong> jalankan dua baris ini:</p>
 <pre><code class="language-bash">cd /home/lui/vanguard
-read -r -p 'Username SSH VM dari inventaris privat: ' VG_SSH_USER
-VG_PUBLIC_DIR=$(mktemp -d &quot;$PWD/state/endpoint-public.XXXXXX&quot;)
-printf 'Folder hasil: %s\n' &quot;$VG_PUBLIC_DIR&quot;
-ssh -F /home/lui/.ssh/vanguard_lab_config -o StrictHostKeyChecking=yes &quot;$VG_SSH_USER@192.168.100.10&quot; \
-  'cat /etc/vanguard/root.crt' &gt; &quot;$VG_PUBLIC_DIR/root.crt&quot;
-ssh -F /home/lui/.ssh/vanguard_lab_config -o StrictHostKeyChecking=yes &quot;$VG_SSH_USER@192.168.100.20&quot; \
-  'sudo wg show wg0 public-key' &gt; &quot;$VG_PUBLIC_DIR/server-wg.pub&quot;
-ssh -F /home/lui/.ssh/vanguard_lab_config -o StrictHostKeyChecking=yes &quot;$VG_SSH_USER@192.168.100.40&quot; \
-  'sudo -n cat /etc/vanguard/endpoint-profile.json' &gt; &quot;$VG_PUBLIC_DIR/profile.json&quot;
+.venv/bin/python scripts/export_endpoint_public.py
 </code></pre>
-<p>Jalankan berurutan; jika salah satu perintah gagal atau meminta hak yang belum
-tersedia, <strong>berhenti</strong>. Berkas hasil bisa kosong jika SSH gagal; jangan langsung
-menyalinnya ke Windows. Kredensial VM harus sesuai inventaris privat host ini.</p>
-<p><strong>HOST — validasi hasil dan tampilkan nilai publik untuk dicocokkan admin:</strong></p>
-<pre><code class="language-bash">.venv/bin/python - &quot;$VG_PUBLIC_DIR&quot; &lt;&lt;'PYPROFILE'
-import sys
-from pathlib import Path
-from vanguard.profile import load_profile
-from vanguard.pki import fingerprint, load_cert
-folder = Path(sys.argv[1])
-profile = load_profile(folder / 'profile.json', folder / 'root.crt')
-key = (folder / 'server-wg.pub').read_text().strip()
-assert key == profile['server_public_key'], 'Public key server tidak cocok'
-print('Mode/schema:', profile['schema'])
-print('API:', profile['api_url'])
-print('Fingerprint root:', fingerprint(load_cert((folder / 'root.crt').read_bytes())))
-print('Public key server:', key)
-print('Folder siap diperiksa admin:', folder)
-PYPROFILE
-</code></pre>
-<p>Cocokkan fingerprint dengan CA melalui jalur admin tepercaya (Bagian 9.2 memuat
-perintah membaca fingerprint; tidak perlu menjalankan init). Salin <code>profile.json</code>
-dan <code>root.crt</code> ke folder Windows pada Bagian 2.2. Catat fingerprint/public key
-untuk isian configure. Folder ini tidak berisi private key, token atau password.
-<code>VG_PUBLIC_DIR</code> hanya berlaku pada terminal yang sama; jika membuka terminal baru,
-isi kembali dengan alamat folder hasil yang tadi dicetak.</p>
+<p>Helper mengambil username, port dan konfigurasi SSH masing-masing VM langsung
+dari <code>state/lab/inventory.json</code>; tidak ada pertanyaan username dan tidak perlu
+mengisi <code>VG_SSH_USER</code>. File inventory privat tetap pada host. CA, server dan
+admin harus menyala dengan SSH siap dan akses sudo noninteraktif yang sudah
+disiapkan. Jika clone baru belum memiliki inventory, helper berhenti dengan
+petunjuk; jangan membuat akun atau mengganti kunci untuk memaksa lolos.</p>
+<p>Hasil sukses menampilkan <strong>Folder hasil tervalidasi</strong>, mode/schema, fingerprint
+root dan public key WireGuard server. Folder baru ada di
+<code>/home/lui/vanguard/state/endpoint-public-.../</code>, berisi tepat:</p>
+<ul>
+<li><code>root.crt</code>: sertifikat root publik;</li>
+<li><code>server-wg.pub</code>: public key WireGuard server;</li>
+<li><code>profile.json</code>: profil aktif yang telah dicocokkan dengan root dan key server.</li>
+</ul>
+<p>Helper memeriksa ketiga bahan sebelum membuat folder hasil. Bila SSH/validasi
+gagal, hentikan langkah ini dan periksa layanan; jangan memakai folder kosong
+dari percobaan lama. Folder baru tidak menimpa hasil sebelumnya. Catat alamat
+folder yang dicetak; tidak perlu menjalankan <code>mktemp</code> atau mengatur variabel shell.</p>
+<p>Cocokkan fingerprint lewat jalur admin tepercaya. Salin <code>profile.json</code> dan
+<code>root.crt</code> dari folder sukses ke Windows pada Bagian 2.2. Catat fingerprint/
+public key untuk configure. Kunci privat, token dan password tidak diekspor.</p>
+<p>Jika contoh lama menghasilkan <code>VG_SSH_USER@...: Permission denied (publickey)</code>,
+nama variabel telah dipakai sebagai username literal. Gunakan helper di atas;
+pesan itu tidak membuktikan CA atau password VM rusak.</p>
 <h3 id="bagian-1-2">1.2 Opsional: buat kandidat profil aplikasi internal baru</h3>
 <p>Gunakan bagian ini hanya jika admin memang memilih <strong>mode aplikasi internal</strong>.
 Pada host existing tersedia <code>state/deployment/root.crt</code> dan

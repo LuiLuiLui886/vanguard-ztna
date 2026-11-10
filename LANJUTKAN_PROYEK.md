@@ -6,10 +6,11 @@ Baca `AGENTS.md`, `VANGUARD_CONTEXT.md`, lalu
 [checkpoint terbaru](docs/CHECKPOINT.md). Branch kerja:
 `feature/2026-10-22-physical-endpoints`. Periksa perubahan pengguna dan commit
 terbaru sebelum mengedit. Semua perubahan memerlukan intent dan hasil di
-[jurnal](docs/progress/PROGRESS_2026-11-10.md).
+[jurnal](docs/progress/PROGRESS_2026-11-11.md).
 
 [Manual utama](docs/MODUL_PENGGUNAAN_VANGUARD.md) edisi 10 November dimulai dari
-arti host/VM, prompt terminal, `cd /home/lui/vanguard`, boot dan SSH. Gunakan
+arti host/VM, prompt terminal, `cd /home/lui/vanguard`, boot dan SSH. Revisi
+11 November memakai `scripts/export_endpoint_public.py` tanpa input username. Gunakan
 profil existing schema2 pada Bagian 1.1. Jangan mengulang instalasi CA atau
 mengganti profil ke schema1 hanya untuk mengikuti tutorial dari awal.
 
@@ -17,17 +18,19 @@ mengganti profil ke schema1 hanya untuk mengikuti tutorial dari awal.
 
 - CA 0.1.17, server/admin dan installer Windows 0.1.15. Keputusan mempertahankan
   server/admin berdasarkan perbandingan kode, bukan sekadar nomor versi.
-- Ketujuh VM sudah dinyalakan dan lima Ubuntu lolos SSH pada 10 November.
-  Periksa keadaan aktual jika melanjutkan setelah reboot.
-- Host Ethernet .50.10 aktif; DHCP reservation, forwarding/filter host dan
+- Pengguna11November mengizinkan penghapusan Windows11/10: domain dan dua disk
+  sudah dihapus,135file identitas/config dan XML disimpan privat; NVRAM/TPM tetap.
+  Lima Ubuntu terpelihara; CA/server/admin running. Jangan buat ulang Windows otomatis.
+- Host kini Wi-Fi .66.9; sambungkan kembali Ethernet .50.10. DHCP reservation, forwarding/filter host dan
   koneksi endpoint fisik belum dibuktikan. Ikuti
   [dokumen lapangan](docs/PERSIAPAN_UJI_LAPANGAN.md).
 - Baseline 355 PASS/1 SKIP dan postflight 30/30 sudah selesai. Jangan mengulang
   suite/rollout lama tanpa perubahan atau masalah konkret yang memerlukannya.
   Readiness CA masih pernah timeout; retry ready tidak membuktikan penyebab selesai.
-- Sertifikat Windows existing berakhir 14 November 13:16:28 WIB; periksa sebelum
-  uji berikutnya. Disk host tinggal sekitar 480 MiB pada pemeriksaan cleanup;
-  siapkan kapasitas sebelum backup/operasi yang banyak menulis.
+- Disk kini sekitar77GiB bebas. Windows OS perlu instalasi ulang jika dibutuhkan;
+  backup kecil bukan image OS. Hasil uji historis dan installer tetap tersedia.
+- Helper ekspor publik lulus uji aktual schema2; output terbaru
+  `state/endpoint-public-u8wsu2hh/`.14teshelper/preflight PASS, bukan uji fisik.
 - DNS router .50.1 pernah timeout dan menghambat push; periksa DNS/HTTPS jika
   push gagal, jangan langsung mengubah autentikasi GitHub.
 

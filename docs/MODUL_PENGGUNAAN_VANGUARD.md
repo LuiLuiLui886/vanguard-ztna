@@ -1,6 +1,6 @@
 # Panduan penggunaan VanGuard
 
-Edisi 10 November 2026 · panduan admin dan pengguna Windows.
+Edisi 11 November 2026 · panduan admin dan pengguna Windows.
 Markdown dan HTML adalah dua format dari **manual yang sama**.
 Manual yang tertanam di EXE/ZIP rilis lama belum dibangun ulang; gunakan edisi
 MD/HTML terbaru di folder `docs` ini saat mengikuti tutorial.
@@ -187,53 +187,40 @@ pemeriksaan 10 November, profil ini **schema2 (internet terkelola)**. Generator
 `prepare_endpoint_pilot.py` menghasilkan schema1; jangan menjalankannya hanya
 karena ingin menambah komputer pada sistem yang sudah bekerja.
 
-**HOST — terminal lokal, bukan shell VM:** perintah berikut mengambil tiga
-berkas publik lewat jalur SSH yang sudah diverifikasi. Buat folder baru setiap
-pengambilan agar bahan sebelumnya tidak tertimpa.
+**HOST — terminal lokal, bukan shell VM:** jalankan dua baris ini:
 
 ```bash
 cd /home/lui/vanguard
-read -r -p 'Username SSH VM dari inventaris privat: ' VG_SSH_USER
-VG_PUBLIC_DIR=$(mktemp -d "$PWD/state/endpoint-public.XXXXXX")
-printf 'Folder hasil: %s\n' "$VG_PUBLIC_DIR"
-ssh -F /home/lui/.ssh/vanguard_lab_config -o StrictHostKeyChecking=yes "$VG_SSH_USER@192.168.100.10" \
-  'cat /etc/vanguard/root.crt' > "$VG_PUBLIC_DIR/root.crt"
-ssh -F /home/lui/.ssh/vanguard_lab_config -o StrictHostKeyChecking=yes "$VG_SSH_USER@192.168.100.20" \
-  'sudo wg show wg0 public-key' > "$VG_PUBLIC_DIR/server-wg.pub"
-ssh -F /home/lui/.ssh/vanguard_lab_config -o StrictHostKeyChecking=yes "$VG_SSH_USER@192.168.100.40" \
-  'sudo -n cat /etc/vanguard/endpoint-profile.json' > "$VG_PUBLIC_DIR/profile.json"
+.venv/bin/python scripts/export_endpoint_public.py
 ```
 
-Jalankan berurutan; jika salah satu perintah gagal atau meminta hak yang belum
-tersedia, **berhenti**. Berkas hasil bisa kosong jika SSH gagal; jangan langsung
-menyalinnya ke Windows. Kredensial VM harus sesuai inventaris privat host ini.
+Helper mengambil username, port dan konfigurasi SSH masing-masing VM langsung
+dari `state/lab/inventory.json`; tidak ada pertanyaan username dan tidak perlu
+mengisi `VG_SSH_USER`. File inventory privat tetap pada host. CA, server dan
+admin harus menyala dengan SSH siap dan akses sudo noninteraktif yang sudah
+disiapkan. Jika clone baru belum memiliki inventory, helper berhenti dengan
+petunjuk; jangan membuat akun atau mengganti kunci untuk memaksa lolos.
 
-**HOST — validasi hasil dan tampilkan nilai publik untuk dicocokkan admin:**
+Hasil sukses menampilkan **Folder hasil tervalidasi**, mode/schema, fingerprint
+root dan public key WireGuard server. Folder baru ada di
+`/home/lui/vanguard/state/endpoint-public-.../`, berisi tepat:
 
-```bash
-.venv/bin/python - "$VG_PUBLIC_DIR" <<'PYPROFILE'
-import sys
-from pathlib import Path
-from vanguard.profile import load_profile
-from vanguard.pki import fingerprint, load_cert
-folder = Path(sys.argv[1])
-profile = load_profile(folder / 'profile.json', folder / 'root.crt')
-key = (folder / 'server-wg.pub').read_text().strip()
-assert key == profile['server_public_key'], 'Public key server tidak cocok'
-print('Mode/schema:', profile['schema'])
-print('API:', profile['api_url'])
-print('Fingerprint root:', fingerprint(load_cert((folder / 'root.crt').read_bytes())))
-print('Public key server:', key)
-print('Folder siap diperiksa admin:', folder)
-PYPROFILE
-```
+- `root.crt`: sertifikat root publik;
+- `server-wg.pub`: public key WireGuard server;
+- `profile.json`: profil aktif yang telah dicocokkan dengan root dan key server.
 
-Cocokkan fingerprint dengan CA melalui jalur admin tepercaya (Bagian 9.2 memuat
-perintah membaca fingerprint; tidak perlu menjalankan init). Salin `profile.json`
-dan `root.crt` ke folder Windows pada Bagian 2.2. Catat fingerprint/public key
-untuk isian configure. Folder ini tidak berisi private key, token atau password.
-`VG_PUBLIC_DIR` hanya berlaku pada terminal yang sama; jika membuka terminal baru,
-isi kembali dengan alamat folder hasil yang tadi dicetak.
+Helper memeriksa ketiga bahan sebelum membuat folder hasil. Bila SSH/validasi
+gagal, hentikan langkah ini dan periksa layanan; jangan memakai folder kosong
+dari percobaan lama. Folder baru tidak menimpa hasil sebelumnya. Catat alamat
+folder yang dicetak; tidak perlu menjalankan `mktemp` atau mengatur variabel shell.
+
+Cocokkan fingerprint lewat jalur admin tepercaya. Salin `profile.json` dan
+`root.crt` dari folder sukses ke Windows pada Bagian 2.2. Catat fingerprint/
+public key untuk configure. Kunci privat, token dan password tidak diekspor.
+
+Jika contoh lama menghasilkan `VG_SSH_USER@...: Permission denied (publickey)`,
+nama variabel telah dipakai sebagai username literal. Gunakan helper di atas;
+pesan itu tidak membuktikan CA atau password VM rusak.
 
 ### 1.2 Opsional: buat kandidat profil aplikasi internal baru
 

@@ -39,7 +39,7 @@ def test_host_preflight_never_confuses_power_or_flag_with_readiness():
 def test_host_inspection_failures_remain_unknown():
     report = preflight.assess(None, None, {})
     assert report['status'] == 'BLOCKED'
-    assert all(c['status'] == 'UNKNOWN' for c in report['checks'][:9])
+    assert all(c['status'] == 'UNKNOWN' for c in report['checks'][:3 + len(preflight.NODES)])
 
 
 @pytest.fixture
@@ -124,3 +124,17 @@ def test_verifier_rejects_symlink(public_inputs, tmp_path):
     (output / 'link').symlink_to(tmp_path, target_is_directory=True)
     with pytest.raises(ValueError, match='Symbolic'):
         verifier.verify(output, expected)
+
+
+def test_physical_pilot_requires_original_ubuntu_but_not_retired_windows():
+    addresses = [{'ifname': 'enp3s0', 'operstate': 'UP', 'addr_info': [
+        {'local': '192.168.50.10', 'prefixlen': 24}]},
+        {'ifname': 'virbr-vg', 'addr_info': [
+            {'local': '192.168.100.1', 'prefixlen': 24}]}]
+    nodes = {name: 'running' for name in
+             ('VM-CA', 'VM-SERVER', 'VM-CLIENT', 'VM-ADMIN', 'VM-ATTACKER')}
+    assert preflight.assess(addresses, '1', nodes)['status'] == 'MANUAL_REVIEW_REQUIRED'
+    del nodes['VM-CLIENT']
+    result = preflight.assess(addresses, '1', nodes)
+    assert result['status'] == 'BLOCKED'
+    assert next(c for c in result['checks'] if c['check'] == 'VM-CLIENT')['status'] == 'UNKNOWN'

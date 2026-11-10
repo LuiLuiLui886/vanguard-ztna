@@ -1,17 +1,31 @@
-# Checkpoint VanGuard — 10 November 2026
+# Checkpoint VanGuard — 11 November 2026
 
 ## Cara menggunakan checkpoint
 
 File ini hanya berisi status terbaru dan pekerjaan tersisa. Catatan sebelum
 cleanup tersimpan lengkap di [arsip checkpoint](history/checkpoints/CHECKPOINT_2026-11-10_before_cleanup.md).
-Bukti per langkah ada di [jurnal 10 November](progress/PROGRESS_2026-11-10.md).
+Bukti terbaru ada di [jurnal 11 November](progress/PROGRESS_2026-11-11.md).
+
+## Perubahan terbaru 11 November
+
+Atas permintaan pengguna, VM Windows11/10 beserta dua disk OS dihapus setelah
+backup privat135file identitas/config terverifikasi dan shutdown normal. XML,
+NVRAM/TPM serta seluruh hasil uji host dipertahankan; tidak ada backup OS lengkap.
+Lima XML VM Ubuntu sama persis. Ruang bebas kini sekitar77GiB. Jangan membuat
+ulang VM Windows otomatis; endpoint fisik harus menjalani pengujian tersendiri.
+
+Ekspor profil kini satu perintah pada host, tanpa prompt username:
+`/home/lui/vanguard/.venv/bin/python /home/lui/vanguard/scripts/export_endpoint_public.py`.
+Ekspor aktual schema2 lulus; hasil tersedia di `state/endpoint-public-u8wsu2hh/`.
+Helper dan preflight lulus14tes Linux terarah. Preflight kini mewajibkan5Ubuntu,
+namun tetap BLOCKED karena Ethernet.50.10 tidak aktif saat pemeriksaan terakhir.
 
 ## Source dan panduan aktif
 
 - Branch: `feature/2026-10-22-physical-endpoints`; main tidak otomatis sama.
 - Manual terbaru: [MD](MODUL_PENGGUNAAN_VANGUARD.md) dan
   [HTML](MODUL_PENGGUNAAN_VANGUARD.html), satu manual dalam dua format.
-  Edisi 10 November sudah dipush pada `8a87469` sebelum cleanup.
+  Edisi 11 November memakai helper ekspor otomatis pada Bagian1.1.
 - Mulai manual dari Bagian 0: host adalah laptop Linux fisik. Jalankan
   `cd /home/lui/vanguard` sebelum memakai `.venv` atau `scripts/`.
   Prompt `ubuntu@vm-*` berarti sudah masuk VM; inventory hanya ada di host.
@@ -27,12 +41,11 @@ Bukti per langkah ada di [jurnal 10 November](progress/PROGRESS_2026-11-10.md).
 | CA | 0.1.17; invariant CA dan 35 revokasi lama terjaga pada audit 9 November |
 | Server/admin | 0.1.15 dipertahankan; delta 0.1.17 hanya relevan ke penyimpanan CA |
 | Installer Windows | 0.1.15 di downloads; EXE/ZIP belum dibangun ulang untuk edisi manual terbaru |
-| VM | Ketujuh domain running saat pemeriksaan 10 November; lima Ubuntu lolos SSH |
-| Tampilan | Lima terminal SSH dan dua viewer Windows diluncurkan; tampilan fisik layar belum diverifikasi |
-| Host | Ethernet enp3s0 statis 192.168.50.10/24, gateway/DNS .50.1; ping router berhasil |
-| Kapasitas | RAM 31 GiB; ruang disk sekitar 480 MiB (100% terpakai) pada pemeriksaan setelah cleanup |
+| VM | Lima Ubuntu tetap terdaftar; CA/server/admin running, client/attacker off; dua Windows dihapus |
+| Host | Saat cek11November memakai Wi-Fi192.168.66.9; Ethernet.50.10 belum aktif |
+| Kapasitas | Ruang disk sekitar77GiB bebas setelah penghapusan dua disk Windows |
 
-Tidak mengubah runtime, CA, firewall atau konfigurasi VM pada cleanup. Periksa
+Runtime CA/backend dan firewall tidak diubah; pensiun Windows sesuai izin pengguna. Periksa
 ulang status aktual sebelum pengujian; tabel ini adalah catatan pengamatan.
 
 ## Bukti dan batas pengujian
@@ -52,14 +65,14 @@ ulang status aktual sebelum pengujian; tabel ini adalah catatan pengamatan.
 
 ## Pekerjaan berikut
 
-1. Pastikan .50.10 dicadangkan/dikecualikan dari DHCP router. Host sudah memakai
-   alamat itu, tetapi konfigurasi pool router belum diverifikasi.
+1. Sambungkan Ethernet host pada pilot .50/24; periksa alamat .50.10 dan
+   reservation/exclusion DHCP router. Koneksi sekarang masih Wi-Fi .66.9.
 2. Periksa forwarding/filter libvirt, rute /32 endpoint dan jalur balik.
    Alamat host dan ip_forward=1 tidak membuktikan traffic Windows→server lolos.
 3. Periksa readiness sebelum lockdown. Telusuri timeout jika terulang.
 4. Sediakan kapasitas backup/log tanpa menghapus bukti atau state CA.
-5. Identitas vm-client-windows berakhir **14 November 2026 13:16:28 WIB**.
-   Gunakan alur penggantian resmi jika diperlukan; renewal lease tidak memperpanjangnya.
+5. Identitas VM Windows lama disimpan sebagai histori dan backup privat;
+   komputer fisik memakai ID/key baru. Jangan menyalin key lama ke endpoint baru.
 6. Ikuti dokumen lapangan untuk satu endpoint dahulu, kemudian LAN/Wi-Fi bersama;
    catat hasil nyata dan skenario yang masih BELUM_TERUJI.
 

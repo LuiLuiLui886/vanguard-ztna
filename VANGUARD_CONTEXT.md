@@ -645,3 +645,19 @@ logical bytes total. Unique artifacts, private state/backups, source, tests,
 installers and all VMs retained. Manifest/result are state/cleanup-20261110/;
 do not rerun cleanup.py. Six local kit tests passed; no VM acceptance retest.
 Latest host disk480MiBfree/100%used: cleanup does not resolve capacity shortage.
+
+
+Explicit Windows VM retirement — 11 November 2026:
+User authorized deleting Windows11/10 VM domains and OS disks to focus on physical
+endpoints, preserving all test results and five Ubuntu nodes. Both inactive guests
+were briefly booted individually to export135identity/config files (4,367,736bytes),
+verified and stored privately in /home/lui/VanGuard-Privat/retired-windows-20261111/.
+Normal shutdown preceded exact volume deletions; no shared/backing references.
+XML and small NVRAM/TPM state retained, no full OS backup. All5Ubuntu inactive XMLs
+unchanged. Free disk680MiB→77GiB. Do not recreate Windows unless later requested;
+prior test evidence remains valid for its recorded environment, not physical acceptance.
+Preflight now requires5originalUbuntu only. New host export_endpoint_public.py reads
+private inventory automatically, validates root/profile/WGkey before publishing3public
+files. Live export succeeded with schema2;14targeted Linux tests passed, no Windows
+retest. CA/server/admin running, client/attacker off. Latest preflight BLOCKED because
+host Ethernet.50.10 inactive; forwarding flag alone cannot prove field connectivity.
