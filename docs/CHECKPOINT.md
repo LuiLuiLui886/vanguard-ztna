@@ -1,5 +1,16 @@
 # Checkpoint VanGuard — 10 November 2026
 
+## Diagnosis FileNotFoundError SSH — 10 November 2026
+
+Pengguna menjalankan helper login host di prompt `ubuntu@vm-ca/admin/server`.
+Ketiganya sudah login; inventory hanya ada di repository host. Panduan lapangan
+kini membedakan prompt host/VM, mengarahkan pengguna VM ke bagian 4.0.4, dan
+menampilkan petunjuk sebelum input peran bila inventory tidak ditemukan.
+Uji salah direktori PASS tanpa traceback. SSH nyata ke ketiga VM berhasil,
+unit layanan active. Readiness awal paralel timeout pada CA; retry berurutan
+ketiga peran ready. Penyebab timeout belum dibuktikan; bukan penyebab traceback
+inventory. Tidak ada perubahan runtime/CA atau penyalinan inventory ke VM.
+
 ## Push GitHub pulih — 10 November 2026
 
 Commit hingga `9aaa6ca` berhasil dipush ke branch feature. Kegagalan sebelumnya
