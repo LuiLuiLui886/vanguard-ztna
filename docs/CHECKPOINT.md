@@ -1,5 +1,12 @@
 # Checkpoint VanGuard — 10 November 2026
 
+## Push GitHub pulih — 10 November 2026
+
+Commit hingga `9aaa6ca` berhasil dipush ke branch feature. Kegagalan sebelumnya
+terkait DNS router `.50.1`: kueri langsung timeout, sedangkan DNS publik
+`1.1.1.1` menjawab dan HTTPS GitHub HTTP200 saat retry. DNS host/router belum
+diubah. Jika berulang, periksa layanan DNS router. Bukti ada di jurnal 10 November.
+
 ## Tujuh VM dinyalakan — 10 November 2026 15:24 WIB
 
 Commit boot `13b26fd` dan koreksi SSH masih lokal; push tertunda karena DNS
