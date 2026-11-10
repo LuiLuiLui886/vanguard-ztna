@@ -33,6 +33,8 @@ mengganti profil ke schema1 hanya untuk mengikuti tutorial dari awal.
 
 ## Cleanup yang sudah dikerjakan
 
+Cleanup tercatat pada `ec45628`, sudah dipush dan SHA remote terverifikasi.
+
 Empat salinan ekstraksi paket lama di dist dihapus setelah dicocokkan seluruh
 anggotanya dengan ZIP yang tetap tersedia. Cache dan build sementara dibersihkan.
 Manifest/hash ada di `state/cleanup-20261110/`. Jangan menjalankan cleanup.py
