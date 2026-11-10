@@ -1,5 +1,55 @@
 # Lanjutkan proyek VanGuard
 
+## Modul penggunaan dari awal — edisi 10 November 2026
+
+Manual utama MD/HTML kini dimulai dari Bagian0: arti host/VM/endpoint, prompt,
+folder, `.venv`, placeholder, boot dan SSH. Bagian1.1 mengambil profil existing
+schema2 serta bahan trust publik; generator schema1 dipindahkan ke opsi1.2.
+Contoh pengambilan bahan publik aktual dan validasi dari manual PASS; generator
+schema1 diuji di direktori sementara. Render HTML dan validasi tautan lulus.
+Tidak mengubah runtime, CA, profil admin atau paket installer. Mulai dari
+[manual terbaru](docs/MODUL_PENGGUNAAN_VANGUARD.md); pada host jalankan `cd /home/lui/vanguard` dahulu.
+
+## Diagnosis FileNotFoundError SSH — 10 November 2026
+
+Pengguna menjalankan helper login host di prompt `ubuntu@vm-ca/admin/server`.
+Ketiganya sudah login; inventory hanya ada di repository host. Panduan lapangan
+kini membedakan prompt host/VM, mengarahkan pengguna VM ke bagian 4.0.4, dan
+menampilkan petunjuk sebelum input peran bila inventory tidak ditemukan.
+Uji salah direktori PASS tanpa traceback. SSH nyata ke ketiga VM berhasil,
+unit layanan active. Readiness awal paralel timeout pada CA; retry berurutan
+ketiga peran ready. Penyebab timeout belum dibuktikan; bukan penyebab traceback
+inventory. Tidak ada perubahan runtime/CA atau penyalinan inventory ke VM.
+
+## Push GitHub pulih — 10 November 2026
+
+Commit hingga `9aaa6ca` berhasil dipush ke branch feature. Kegagalan sebelumnya
+terkait DNS router `.50.1`: kueri langsung timeout, sedangkan DNS publik
+`1.1.1.1` menjawab dan HTTPS GitHub HTTP200 saat retry. DNS host/router belum
+diubah. Jika berulang, periksa layanan DNS router. Bukti ada di jurnal 10 November.
+
+## Tujuh VM dinyalakan — 10 November 2026 15:24 WIB
+
+Commit boot `13b26fd` dan koreksi SSH masih lokal; push tertunda karena DNS
+GitHub gagal.
+
+Semua tujuh domain `running`. Kelima Ubuntu lulus SSH BatchMode dan jendela
+terminal SSH interaktif diluncurkan. Dua viewer Windows11/10 berproses; tampilan
+fisik di layar pengguna belum diverifikasi. RAM host31GiB, disk bebas2,6GiB
+(99% terpakai). Belum ada uji HTTPS ulang, sehingga `running` bukan bukti
+aplikasi siap. Lihat jurnal 10 November untuk hasil tiap peran.
+
+## Koreksi contoh SSH terminal — 10 November 2026
+
+Commit lokal `7e88edc` belum ter-push karena DNS GitHub timeout; ulang push
+saat koneksi pulih.
+
+Contoh pada panduan lapangan sebelumnya gagal saat membuka `/dev/tty` dengan
+mode `r+` (`io.UnsupportedOperation`). Kini input peran dibaca dengan mode `r`.
+Uji PTY lokal dengan koneksi SSH dimock PASS untuk pilihan `ca` dan argumen SSH;
+login VM nyata belum diuji pada sesi ini. Lihat
+[Panduan lapangan](docs/PERSIAPAN_UJI_LAPANGAN.md).
+
 ## Ethernet host aktif — 10 November 2026 15:04 WIB
 
 Kabel `enp3s0` tersambung. Profil NetworkManager kini memakai IPv4 manual

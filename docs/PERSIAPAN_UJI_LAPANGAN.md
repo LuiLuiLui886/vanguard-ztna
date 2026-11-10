@@ -237,23 +237,42 @@ mengubah disk, atau membuat CA baru. Node lama lainnya tetap dipertahankan.
 
 ### 4.0.2 Buka tiga terminal SSH
 
-Pada host proyek ini, inventory privat ada di `state/lab/inventory.json`. Dari
-root repository, jalankan blok berikut di **masing-masing dari tiga tab terminal**.
+**Periksa prompt sebelum menjalankan langkah ini:**
+
+| Prompt terminal | Lokasi dan tindakan |
+| --- | --- |
+| `lui@lui-Vostro-15-3510:~$` | Host: masuk folder proyek dengan `cd /home/lui/vanguard` |
+| `lui@lui-Vostro-15-3510:~/vanguard$` | Host di folder yang benar: jalankan blok SSH di bawah |
+| `ubuntu@vm-ca:~$`, `ubuntu@vm-server:~$`, `ubuntu@vm-admin:~$` | Sudah login ke VM: lewati blok SSH, langsung ke bagian 4.0.4 untuk memeriksa layanan |
+
+Terminal VM yang sudah dibuka otomatis juga sudah melewati langkah login ini.
+Jika ingin membuka koneksi baru, gunakan terminal host baru atau ketik `exit`
+sekali pada sesi SSH untuk kembali ke host. Inventory privat
+`state/lab/inventory.json` hanya ada di repository host; file tersebut tidak perlu
+disalin ke VM. `FileNotFoundError` saat blok dijalankan di VM menunjukkan salah
+lokasi menjalankan perintah, bukan bukti kerusakan CA/server/admin.
+
+Dari folder `/home/lui/vanguard` pada **host**, jalankan blok berikut di
+masing-masing dari tiga tab terminal host.
 Pilih `ca` pada tab pertama, `server` pada tab kedua, dan `admin` pada tab ketiga.
 Blok ini mengambil user, port dan konfigurasi SSH existing tanpa mencetak password:
 
 ```bash
 python3 - <<'PYSSH'
-import json, subprocess
+import json, subprocess, sys
 from pathlib import Path
+inventory = Path('state/lab/inventory.json')
+if not inventory.is_file():
+    raise SystemExit(
+        'Jalankan dari host Linux: cd /home/lui/vanguard. '
+        'Jika prompt ubuntu@vm-..., Anda sudah login; lanjut ke pemeriksaan layanan.')
 # Input melalui /dev/tty karena stdin blok ini berisi kode Python.
-with open('/dev/tty', 'r+') as terminal:
-    terminal.write('Peran (ca/server/admin): ')
-    terminal.flush()
+print('Peran (ca/server/admin): ', end='', file=sys.stderr, flush=True)
+with open('/dev/tty', 'r') as terminal:
     role = terminal.readline().strip()
 if role not in ('ca', 'server', 'admin'):
     raise SystemExit('Peran tidak valid')
-node = json.loads(Path('state/lab/inventory.json').read_text())[role]
+node = json.loads(inventory.read_text())[role]
 args = ['ssh', '-tt', '-o', 'StrictHostKeyChecking=yes', '-o', 'ConnectTimeout=10']
 if node.get('ssh_config'):
     args += ['-F', node['ssh_config']]
