@@ -1,5 +1,13 @@
 # Lanjutkan proyek VanGuard
 
+## Koreksi contoh SSH terminal — 10 November 2026
+
+Contoh pada panduan lapangan sebelumnya gagal saat membuka `/dev/tty` dengan
+mode `r+` (`io.UnsupportedOperation`). Kini input peran dibaca dengan mode `r`.
+Uji PTY lokal dengan koneksi SSH dimock PASS untuk pilihan `ca` dan argumen SSH;
+login VM nyata belum diuji pada sesi ini. Lihat
+[Panduan lapangan](docs/PERSIAPAN_UJI_LAPANGAN.md).
+
 ## Ethernet host aktif — 10 November 2026 15:04 WIB
 
 Kabel `enp3s0` tersambung. Profil NetworkManager kini memakai IPv4 manual

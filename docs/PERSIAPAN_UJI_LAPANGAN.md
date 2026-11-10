@@ -244,12 +244,11 @@ Blok ini mengambil user, port dan konfigurasi SSH existing tanpa mencetak passwo
 
 ```bash
 python3 - <<'PYSSH'
-import json, subprocess
+import json, subprocess, sys
 from pathlib import Path
 # Input melalui /dev/tty karena stdin blok ini berisi kode Python.
-with open('/dev/tty', 'r+') as terminal:
-    terminal.write('Peran (ca/server/admin): ')
-    terminal.flush()
+print('Peran (ca/server/admin): ', end='', file=sys.stderr, flush=True)
+with open('/dev/tty', 'r') as terminal:
     role = terminal.readline().strip()
 if role not in ('ca', 'server', 'admin'):
     raise SystemExit('Peran tidak valid')
