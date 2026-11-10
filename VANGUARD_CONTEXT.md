@@ -634,3 +634,14 @@ five interactive gnome-terminal SSH windows launched. Two Windows virt-viewer
 processes running; visual appearance on user screen unconfirmed. No identity,
 credential, disk or firewall changes. Host free disk2.6GiB (99% used), RAM31GiB.
 HTTPS services not retested; running VM is not application readiness.
+
+
+Cleanup — 10 November 2026:
+Active checkpoint/handoff now summarize current state; full prior content is in
+docs/history/checkpoints/*_2026-11-10_before_cleanup.md with rebased links.
+Four dist extracted directories matched every ZIP member and were removed;
+original ZIPs remain. Reproducible build/caches also removed:373files,51,780,579
+logical bytes total. Unique artifacts, private state/backups, source, tests,
+installers and all VMs retained. Manifest/result are state/cleanup-20261110/;
+do not rerun cleanup.py. Six local kit tests passed; no VM acceptance retest.
+Latest host disk480MiBfree/100%used: cleanup does not resolve capacity shortage.
