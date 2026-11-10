@@ -31,3 +31,8 @@ histori Git dipertahankan. Installer terbaru tetap di `downloads/`, versi lama
 ada di `downloads/archive/`. Dokumen pada ZIP/EXE yang sudah dirilis tetap edisi
 saat paket dibangun. Sumber aplikasi ada di `vanguard/`, pengujian di `tests/`,
 installer di `deploy/`, dan alat operasional di `scripts/`.
+
+Cleanup 10 November merangkum checkpoint/handoff aktif dan mempertahankan catatan
+lengkapnya di [arsip](history/). Source, tes, unduhan dan bukti tetap tersedia.
+Salinan ekstraksi lokal yang identik dengan ZIP serta cache/build sementara
+dibersihkan; lihat [jurnal](progress/PROGRESS_2026-11-10.md) untuk rinciannya.

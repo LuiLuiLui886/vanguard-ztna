@@ -7,7 +7,7 @@ import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 
-NODES = ('VM-CA', 'VM-SERVER', 'VM-CLIENT', 'VM-ADMIN', 'VM-ATTACKER', 'VM-CLIENT-WINDOWS')
+NODES = ('VM-CA', 'VM-SERVER', 'VM-CLIENT', 'VM-ADMIN', 'VM-ATTACKER')
 SERVICES = {'VM-CA', 'VM-SERVER', 'VM-ADMIN'}
 
 

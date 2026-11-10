@@ -26,8 +26,8 @@ code { font-size:.9em; } blockquote { border-left:4px solid #1c7088; margin-left
  pre,tr { break-inside:avoid; } thead { display:table-header-group; }
  a { color:inherit; } .print-note { display:none; }
 }
-</style></head><body><main><p class="print-note">Modul dapat dibaca tanpa internet. Untuk PDF, tekan Ctrl+P, pilih Simpan sebagai PDF, ukuran A4. Tautan dokumen pendukung memerlukan folder docs dari repository yang sama.</p><h1>Panduan penggunaan VanGuard</h1><nav aria-label="Daftar isi"><h2>Daftar isi</h2><ol><li class="toc-h2"><a href="#bab-1">0. Mulai di sini: komputer dan terminal yang digunakan</a></li><li class="toc-h3"><a href="#bagian-0-1">0.1 Arti host, VM, endpoint, dan dashboard</a></li><li class="toc-h3"><a href="#bagian-0-2">0.2 Kenali prompt dan folder sebelum menyalin perintah</a></li><li class="toc-h3"><a href="#bagian-0-3">0.3 Nyalakan backend, lalu buka terminal VM</a></li><li class="toc-h2"><a href="#bab-2">1. Persiapan admin</a></li><li class="toc-h3"><a href="#bagian-1-1">1.1 Ambil profil yang sudah aktif pada lab ini</a></li><li class="toc-h3"><a href="#bagian-1-2">1.2 Opsional: buat kandidat profil aplikasi internal baru</a></li><li class="toc-h2"><a href="#bab-3">2. Install Windows dan buat permintaan perangkat</a></li><li class="toc-h3"><a href="#bagian-2-1">2.1 Install EXE umum</a></li><li class="toc-h3"><a href="#bagian-2-2">2.2 Configure dan buat request</a></li><li class="toc-h2"><a href="#bab-4">3. Daftarkan perangkat di dashboard</a></li><li class="toc-h2"><a href="#bab-5">4. Import, login, connect dan logout</a></li><li class="toc-h2"><a href="#bab-6">5. Beri izin aplikasi dan uji koneksi</a></li><li class="toc-h2"><a href="#bab-7">6. Cabut akses, ganti identitas dan simpan audit</a></li><li class="toc-h2"><a href="#bab-8">7. Opsional: satu BAT atau EXE per perangkat</a></li><li class="toc-h2"><a href="#bab-9">8. Opsional: internet terkelola tanpa konfigurasi router</a></li><li class="toc-h2"><a href="#bab-10">9. Khusus instalasi backend dan CA baru</a></li><li class="toc-h3"><a href="#bagian-9-1">9.1 Siapkan host dan inventory</a></li><li class="toc-h3"><a href="#bagian-9-2">9.2 Install, generate CA dan siapkan admin</a></li><li class="toc-h3"><a href="#bagian-9-3">9.3 Firewall dan mulai layanan</a></li><li class="toc-h2"><a href="#bab-11">10. Masalah umum dan pemeriksaan akhir</a></li></ol></nav>
-<p>Edisi 10 November 2026 · panduan admin dan pengguna Windows.
+</style></head><body><main><p class="print-note">Modul dapat dibaca tanpa internet. Untuk PDF, tekan Ctrl+P, pilih Simpan sebagai PDF, ukuran A4. Tautan dokumen pendukung memerlukan folder docs dari repository yang sama.</p><h1>Panduan penggunaan VanGuard</h1><nav aria-label="Daftar isi"><h2>Daftar isi</h2><ol><li class="toc-h2"><a href="#bab-1">0. Mulai di sini: komputer dan terminal yang digunakan</a></li><li class="toc-h3"><a href="#bagian-0-1">0.1 Arti host, VM, endpoint, dan dashboard</a></li><li class="toc-h3"><a href="#bagian-0-2">0.2 Kenali prompt dan folder sebelum menyalin perintah</a></li><li class="toc-h3"><a href="#bagian-0-2-1">0.2.1 Jika lupa sedang berada di komputer/folder mana</a></li><li class="toc-h3"><a href="#bagian-0-2-2">0.2.2 Peta lokasi file yang sering dipakai</a></li><li class="toc-h3"><a href="#bagian-0-2-3">0.2.3 Membuka folder tanpa mengingat perintah terminal</a></li><li class="toc-h3"><a href="#bagian-0-3">0.3 Nyalakan backend, lalu buka terminal VM</a></li><li class="toc-h2"><a href="#bab-2">1. Persiapan admin</a></li><li class="toc-h3"><a href="#bagian-1-1">1.1 Ambil profil yang sudah aktif pada lab ini</a></li><li class="toc-h4"><a href="#bagian-1-1-1">1.1.1 Menemukan hasil ekspor setelah terminal ditutup</a></li><li class="toc-h4"><a href="#bagian-1-1-2">1.1.2 Memindahkan file publik dari host ke Windows</a></li><li class="toc-h3"><a href="#bagian-1-2">1.2 Opsional: buat kandidat profil aplikasi internal baru</a></li><li class="toc-h2"><a href="#bab-3">2. Install Windows dan buat permintaan perangkat</a></li><li class="toc-h3"><a href="#bagian-2-1">2.1 Install EXE umum</a></li><li class="toc-h3"><a href="#bagian-2-2">2.2 Configure dan buat request</a></li><li class="toc-h2"><a href="#bab-4">3. Daftarkan perangkat di dashboard</a></li><li class="toc-h2"><a href="#bab-5">4. Import, login, connect dan logout</a></li><li class="toc-h2"><a href="#bab-6">5. Beri izin aplikasi dan uji koneksi</a></li><li class="toc-h2"><a href="#bab-7">6. Cabut akses, ganti identitas dan simpan audit</a></li><li class="toc-h2"><a href="#bab-8">7. Opsional: satu BAT atau EXE per perangkat</a></li><li class="toc-h2"><a href="#bab-9">8. Opsional: internet terkelola tanpa konfigurasi router</a></li><li class="toc-h2"><a href="#bab-10">9. Khusus instalasi backend dan CA baru</a></li><li class="toc-h3"><a href="#bagian-9-1">9.1 Siapkan host dan inventory</a></li><li class="toc-h3"><a href="#bagian-9-2">9.2 Install, generate CA dan siapkan admin</a></li><li class="toc-h3"><a href="#bagian-9-3">9.3 Firewall dan mulai layanan</a></li><li class="toc-h2"><a href="#bab-11">10. Masalah umum dan pemeriksaan akhir</a></li></ol></nav>
+<p>Edisi 11 November 2026 · panduan admin dan pengguna Windows.
 Markdown dan HTML adalah dua format dari <strong>manual yang sama</strong>.
 Manual yang tertanam di EXE/ZIP rilis lama belum dibangun ulang; gunakan edisi
 MD/HTML terbaru di folder <code>docs</code> ini saat mengikuti tutorial.
@@ -188,7 +188,7 @@ Folder home host dan folder home VM adalah lokasi berbeda.</p>
 <p><strong>HOST — buka terminal baru pada laptop Linux</strong>, lalu:</p>
 <pre><code class="language-bash">cd /home/lui/vanguard
 pwd
-ls -l .venv/bin/python scripts/prepare_endpoint_pilot.py
+ls -l .venv/bin/python scripts/export_endpoint_public.py
 .venv/bin/python --version
 </code></pre>
 <p>Hasil <code>pwd</code> harus <code>/home/lui/vanguard</code>; Python harus menampilkan versinya.
@@ -202,6 +202,122 @@ lokal, sehingga clone GitHub baru tidak otomatis memiliki inventory/sertifikatny
 benar”, bukan folder yang harus dibuat bernama PATH. <code>ID_PERANGKAT</code>, <code>IP_TUNNEL</code>
 dan tulisan kapital serupa harus diisi sesuai data admin. Bagian 1.1 di bawah
 memakai lokasi nyata pada host ini supaya tidak perlu menebak <code>/PATH</code>.</p>
+<h3 id="bagian-0-2-1">0.2.1 Jika lupa sedang berada di komputer/folder mana</h3>
+<p><strong>Terminal Linux (host atau VM):</strong> jalankan tiga perintah baca ini satu per satu:</p>
+<pre><code class="language-bash">hostname
+pwd
+ls -lah
+</code></pre>
+<ul>
+<li><code>hostname</code>: nama komputer. <code>vm-ca</code>, <code>vm-server</code>, <code>vm-admin</code> berarti terminal VM.</li>
+<li><code>pwd</code>: alamat folder yang sedang dibuka oleh terminal, misalnya <code>/home/lui</code>.</li>
+<li><code>ls -lah</code>: isi folder tersebut, termasuk file tersembunyi seperti <code>.venv</code>.</li>
+</ul>
+<p><code>cd</code> berpindah folder pada terminal itu saja. Membuka file manager tidak otomatis
+mengubah folder terminal. Menutup terminal tidak menghapus file, tetapi variabel
+seperti <code>$vg</code> atau <code>VG_SSH_USER</code> tidak otomatis tersedia pada terminal baru.</p>
+<p><strong>HOST — cara kembali ke proyek dari folder mana pun:</strong></p>
+<pre><code class="language-bash">cd /home/lui/vanguard
+pwd
+</code></pre>
+<p><code>state/endpoint-public-...</code> adalah path relatif: dihitung dari folder terminal.
+<code>/home/lui/vanguard/state/endpoint-public-...</code> adalah path absolut: menunjuk tempat
+yang sama dari folder mana pun <strong>pada host itu</strong>. File host tidak otomatis muncul
+di VM atau Windows; transfer dilakukan pada langkah yang dijelaskan di bawah.</p>
+<p><strong>Cara menyalin perintah:</strong> salin isi kotak kode, tanpa prompt <code>$</code>/<code>PS ...&gt;</code>.
+Jalankan perintah satu per satu dan periksa hasilnya. Untuk perintah interaktif
+seperti <code>configure</code>, tunggu pertanyaan, isi jawabannya, baru lanjut perintah lain.
+Jangan menempel baris perintah berikutnya sebagai jawaban pertanyaan. Pada blok
+Python <code>&lt;&lt;'NAMA'</code>, salin seluruh blok sampai baris penutup <code>NAMA</code>.</p>
+<h3 id="bagian-0-2-2">0.2.2 Peta lokasi file yang sering dipakai</h3>
+<table>
+<thead>
+<tr>
+<th>File/folder</th>
+<th>Berada di komputer mana</th>
+<th>Cara menggunakan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/home/lui/vanguard</code></td>
+<td>Host Linux</td>
+<td>Folder proyek; tempat menjalankan skrip</td>
+</tr>
+<tr>
+<td><code>/home/lui/vanguard/docs/MODUL_PENGGUNAAN_VANGUARD.html</code></td>
+<td>Host Linux</td>
+<td>Manual yang dibuka lewat browser</td>
+</tr>
+<tr>
+<td><code>/home/lui/vanguard/downloads</code></td>
+<td>Host Linux</td>
+<td>EXE/ZIP rilis; pilih versi terbaru menurut README downloads</td>
+</tr>
+<tr>
+<td><code>/home/lui/vanguard/state/endpoint-public-...</code></td>
+<td>Host Linux</td>
+<td>Hasil ekspor trust/profil; akhiran folder berbeda setiap ekspor</td>
+</tr>
+<tr>
+<td><code>/home/lui/vanguard/state/lab/inventory.json</code></td>
+<td>Host Linux saja</td>
+<td>Dibaca helper otomatis; jangan unggah atau salin ke endpoint</td>
+</tr>
+<tr>
+<td><code>/home/lui/VanGuard-Privat</code></td>
+<td>Host Linux saja</td>
+<td>Inventaris credential dan backup privat; bukan bahan transfer pengguna</td>
+</tr>
+<tr>
+<td><code>/etc/vanguard/root.crt</code></td>
+<td>Masing-masing VM layanan</td>
+<td>Root publik yang digunakan layanan pada VM itu</td>
+</tr>
+<tr>
+<td><code>/etc/vanguard/endpoint-profile.json</code></td>
+<td>VM-ADMIN</td>
+<td>Profil aktif; helper menyalin versi publiknya ke host</td>
+</tr>
+<tr>
+<td><code>C:\Program Files\VanGuardTrust</code></td>
+<td>Windows endpoint</td>
+<td>Tempat menyimpan bahan publik dari admin</td>
+</tr>
+<tr>
+<td><code>C:\Program Files\VanGuardEndpoint\VanGuard.bat</code></td>
+<td>Windows endpoint</td>
+<td>Perintah aplikasi setelah EXE diinstal</td>
+</tr>
+<tr>
+<td><code>C:\Program Files\VanGuardEndpointData\identity\request.json</code></td>
+<td>Windows endpoint, alur manual <code>init</code></td>
+<td>Request yang dikirim ke dashboard admin</td>
+</tr>
+<tr>
+<td><code>C:\Program Files\VanGuardEndpointData\enrollment-request.json</code></td>
+<td>Windows endpoint, wizard per-device</td>
+<td>Request wizard; gunakan Bagian 7</td>
+</tr>
+</tbody>
+</table>
+<p><code>state</code> dan <code>VanGuard-Privat</code> menyimpan data penting. Jangan menyalin seluruh folder
+ke USB/GitHub. Untuk konfigurasi endpoint, ambil hanya file publik dari folder
+hasil ekspor yang berhasil. Request/bundle mengikuti perangkat asalnya.</p>
+<h3 id="bagian-0-2-3">0.2.3 Membuka folder tanpa mengingat perintah terminal</h3>
+<p><strong>HOST Linux:</strong> buka aplikasi <strong>Files</strong>, tekan <strong>Ctrl+L</strong>, tempel alamat lengkap,
+lalu Enter. Contoh alamat: <code>/home/lui/vanguard/state</code>. Pilih folder
+<code>endpoint-public-...</code> yang tercetak saat ekspor. Alternatif lewat terminal host:</p>
+<pre><code class="language-bash">xdg-open /home/lui/vanguard/state
+</code></pre>
+<p>Untuk membaca manual lewat browser host:</p>
+<pre><code class="language-bash">xdg-open /home/lui/vanguard/docs/MODUL_PENGGUNAAN_VANGUARD.html
+</code></pre>
+<p><code>xdg-open</code> memerlukan desktop grafis; jangan menjalankannya di terminal SSH VM
+untuk membuka folder laptop. Pada host tanpa desktop, gunakan <code>ls -lah</code>.</p>
+<p><strong>WINDOWS:</strong> tekan <strong>Win+E</strong> untuk membuka File Explorer, tekan <strong>Ctrl+L</strong>, lalu
+masukkan <code>C:\Program Files\VanGuardTrust</code> dan Enter. Jika belum ada, foldernya
+akan dibuat pada Bagian 2.2. Alamat Linux <code>/home/lui/...</code> tidak berlaku di Windows.</p>
 <h3 id="bagian-0-3">0.3 Nyalakan backend, lalu buka terminal VM</h3>
 <p><strong>HOST — dari <code>/home/lui/vanguard</code>:</strong></p>
 <pre><code class="language-bash">virsh -c qemu:///system list --all
@@ -320,46 +436,83 @@ mengalokasikan IP lain. PC berbeda harus mempunyai ID dan kunci berbeda.</p>
 pemeriksaan 10 November, profil ini <strong>schema2 (internet terkelola)</strong>. Generator
 <code>prepare_endpoint_pilot.py</code> menghasilkan schema1; jangan menjalankannya hanya
 karena ingin menambah komputer pada sistem yang sudah bekerja.</p>
-<p><strong>HOST — terminal lokal, bukan shell VM:</strong> perintah berikut mengambil tiga
-berkas publik lewat jalur SSH yang sudah diverifikasi. Buat folder baru setiap
-pengambilan agar bahan sebelumnya tidak tertimpa.</p>
+<p><strong>HOST — terminal lokal, bukan shell VM:</strong> jalankan dua baris ini:</p>
 <pre><code class="language-bash">cd /home/lui/vanguard
-read -r -p 'Username SSH VM dari inventaris privat: ' VG_SSH_USER
-VG_PUBLIC_DIR=$(mktemp -d &quot;$PWD/state/endpoint-public.XXXXXX&quot;)
-printf 'Folder hasil: %s\n' &quot;$VG_PUBLIC_DIR&quot;
-ssh -F /home/lui/.ssh/vanguard_lab_config -o StrictHostKeyChecking=yes &quot;$VG_SSH_USER@192.168.100.10&quot; \
-  'cat /etc/vanguard/root.crt' &gt; &quot;$VG_PUBLIC_DIR/root.crt&quot;
-ssh -F /home/lui/.ssh/vanguard_lab_config -o StrictHostKeyChecking=yes &quot;$VG_SSH_USER@192.168.100.20&quot; \
-  'sudo wg show wg0 public-key' &gt; &quot;$VG_PUBLIC_DIR/server-wg.pub&quot;
-ssh -F /home/lui/.ssh/vanguard_lab_config -o StrictHostKeyChecking=yes &quot;$VG_SSH_USER@192.168.100.40&quot; \
-  'sudo -n cat /etc/vanguard/endpoint-profile.json' &gt; &quot;$VG_PUBLIC_DIR/profile.json&quot;
+.venv/bin/python scripts/export_endpoint_public.py
 </code></pre>
-<p>Jalankan berurutan; jika salah satu perintah gagal atau meminta hak yang belum
-tersedia, <strong>berhenti</strong>. Berkas hasil bisa kosong jika SSH gagal; jangan langsung
-menyalinnya ke Windows. Kredensial VM harus sesuai inventaris privat host ini.</p>
-<p><strong>HOST — validasi hasil dan tampilkan nilai publik untuk dicocokkan admin:</strong></p>
-<pre><code class="language-bash">.venv/bin/python - &quot;$VG_PUBLIC_DIR&quot; &lt;&lt;'PYPROFILE'
+<p>Helper mengambil username, port dan konfigurasi SSH masing-masing VM langsung
+dari <code>state/lab/inventory.json</code>; tidak ada pertanyaan username dan tidak perlu
+mengisi <code>VG_SSH_USER</code>. File inventory privat tetap pada host. CA, server dan
+admin harus menyala dengan SSH siap dan akses sudo noninteraktif yang sudah
+disiapkan. Jika clone baru belum memiliki inventory, helper berhenti dengan
+petunjuk; jangan membuat akun atau mengganti kunci untuk memaksa lolos.</p>
+<p>Hasil sukses menampilkan <strong>Folder hasil tervalidasi</strong>, mode/schema, fingerprint
+root dan public key WireGuard server. Folder baru ada di
+<code>/home/lui/vanguard/state/endpoint-public-.../</code>, berisi tepat:</p>
+<ul>
+<li><code>root.crt</code>: sertifikat root publik;</li>
+<li><code>server-wg.pub</code>: public key WireGuard server;</li>
+<li><code>profile.json</code>: profil aktif yang telah dicocokkan dengan root dan key server.</li>
+</ul>
+<p>Helper memeriksa ketiga bahan sebelum membuat folder hasil. Bila SSH/validasi
+gagal, hentikan langkah ini dan periksa layanan; jangan memakai folder kosong
+dari percobaan lama. Folder baru tidak menimpa hasil sebelumnya. Catat alamat
+folder yang dicetak; tidak perlu menjalankan <code>mktemp</code> atau mengatur variabel shell.</p>
+<p>Cocokkan fingerprint lewat jalur admin tepercaya. Salin <code>profile.json</code> dan
+<code>root.crt</code> dari folder sukses ke Windows pada Bagian 2.2. Catat fingerprint/
+public key untuk configure. Kunci privat, token dan password tidak diekspor.</p>
+<p>Jika contoh lama menghasilkan <code>VG_SSH_USER@...: Permission denied (publickey)</code>,
+nama variabel telah dipakai sebagai username literal. Gunakan helper di atas;
+pesan itu tidak membuktikan CA atau password VM rusak.</p>
+<h4 id="bagian-1-1-1">1.1.1 Menemukan hasil ekspor setelah terminal ditutup</h4>
+<p>Folder hasil tetap ada walaupun terminal ditutup. <strong>HOST — cari daftar folder:</strong></p>
+<pre><code class="language-bash">ls -ldt /home/lui/vanguard/state/endpoint-public-*/
+</code></pre>
+<p>Urutan tersebut berdasarkan waktu perubahan folder, <strong>bukan jaminan profilnya
+paling benar</strong>. Pilih folder dari ekspor yang berhasil dan cocokkan dengan catatan
+admin; jangan otomatis memilih folder terbaru dari percobaan yang gagal.</p>
+<p>Contoh hasil ekspor yang benar-benar diverifikasi pada <strong>11 November 2026</strong>:
+<code>/home/lui/vanguard/state/endpoint-public-u8wsu2hh</code>. Pada host ini, cek isinya:</p>
+<pre><code class="language-bash">ls -lh /home/lui/vanguard/state/endpoint-public-u8wsu2hh/
+</code></pre>
+<p>Harus ada tiga file tidak kosong: <code>root.crt</code>, <code>profile.json</code>, <code>server-wg.pub</code>.
+Nama <code>u8wsu2hh</code> adalah hasil sesi tersebut, bukan nama wajib. Jika ekspor baru
+mencetak nama lain, gunakan nama baru itu secara konsisten. Bila CA/profil berubah,
+lakukan ekspor ulang dan validasi; jangan memakai salinan lama hanya karena ada.</p>
+<p><strong>HOST — lihat kembali mode, fingerprint dan public key dari folder pilihan:</strong></p>
+<pre><code class="language-bash">cd /home/lui/vanguard
+.venv/bin/python - /home/lui/vanguard/state/endpoint-public-u8wsu2hh &lt;&lt;'PYTRUST'
 import sys
 from pathlib import Path
 from vanguard.profile import load_profile
-from vanguard.pki import fingerprint, load_cert
 folder = Path(sys.argv[1])
 profile = load_profile(folder / 'profile.json', folder / 'root.crt')
 key = (folder / 'server-wg.pub').read_text().strip()
-assert key == profile['server_public_key'], 'Public key server tidak cocok'
+if key != profile['server_public_key']:
+    raise SystemExit('Public key tidak cocok; hentikan dan periksa ekspor.')
+print('Folder:', folder)
 print('Mode/schema:', profile['schema'])
-print('API:', profile['api_url'])
-print('Fingerprint root:', fingerprint(load_cert((folder / 'root.crt').read_bytes())))
+print('Fingerprint root:', profile['root_sha256'])
 print('Public key server:', key)
-print('Folder siap diperiksa admin:', folder)
-PYPROFILE
+PYTRUST
 </code></pre>
-<p>Cocokkan fingerprint dengan CA melalui jalur admin tepercaya (Bagian 9.2 memuat
-perintah membaca fingerprint; tidak perlu menjalankan init). Salin <code>profile.json</code>
-dan <code>root.crt</code> ke folder Windows pada Bagian 2.2. Catat fingerprint/public key
-untuk isian configure. Folder ini tidak berisi private key, token atau password.
-<code>VG_PUBLIC_DIR</code> hanya berlaku pada terminal yang sama; jika membuka terminal baru,
-isi kembali dengan alamat folder hasil yang tadi dicetak.</p>
+<p>Ubah hanya alamat folder pada baris pertama pemanggilan Python jika menggunakan
+hasil lain. Keluaran ini hanya berisi nilai publik. Jika muncul error/file hilang,
+berhenti dan jalankan ekspor lagi setelah layanan siap.</p>
+<h4 id="bagian-1-1-2">1.1.2 Memindahkan file publik dari host ke Windows</h4>
+<ol>
+<li><strong>HOST:</strong> buka folder hasil sukses melalui Files. Pilih hanya <code>root.crt</code>,
+<code>profile.json</code>, dan <code>server-wg.pub</code>. Salin ke USB atau media transfer yang
+disetujui; beri folder media nama <code>VanGuardTrust</code> agar mudah ditemukan.</li>
+<li>Catat fingerprint yang sudah diverifikasi admin melalui jalur tepercaya.
+Jangan menjadikan file yang datang dari media transfer sebagai satu-satunya
+sumber kepercayaan tanpa pembandingan dengan admin.</li>
+<li><strong>WINDOWS:</strong> buka media tadi lewat File Explorer. Sesudah instalasi EXE,
+siapkan folder tujuan pada Bagian 2.2, lalu salin tiga file ke sana.</li>
+<li>File <code>request.json</code> dibuat <strong>setelah</strong> init pada Windows. Bundle sertifikat
+baru tersedia <strong>setelah</strong> admin menyetujui request. Keduanya bukan keluaran
+helper ekspor, jadi tidak perlu dicari di folder <code>endpoint-public-...</code>.</li>
+</ol>
 <h3 id="bagian-1-2">1.2 Opsional: buat kandidat profil aplikasi internal baru</h3>
 <p>Gunakan bagian ini hanya jika admin memang memilih <strong>mode aplikasi internal</strong>.
 Pada host existing tersedia <code>state/deployment/root.crt</code> dan
@@ -449,21 +602,77 @@ EXE yang belum ditandatangani ini, minta admin meninjau; jangan matikan proteksi
 <p><strong>EXE umum belum membuat sertifikat, tunnel atau blokir internet.</strong> Jika admin
 memberikan paket per-device, ikuti Bagian7; jangan ulang init pada identitas wizard.</p>
 <h3 id="bagian-2-2">2.2 Configure dan buat request</h3>
-<p>Letakkan profil/root publik dari admin di <code>C:\Program Files\VanGuardTrust</code>.
-Buka PowerShell Administrator:</p>
+<p><strong>WINDOWS — setelah EXE selesai terpasang:</strong> klik Start, cari <strong>PowerShell</strong>,
+klik kanan → <strong>Run as administrator</strong>, lalu setujui UAC. Terminal bertuliskan
+<code>ubuntu@vm-*</code> atau <code>lui@...</code> adalah terminal Linux, sehingga blok berikut
+harus dijalankan pada PC Windows yang akan didaftarkan.</p>
+<p>Jalankan ini untuk menyiapkan dan membuka folder trust publik:</p>
+<pre><code class="language-powershell">New-Item -ItemType Directory -Path 'C:\Program Files\VanGuardTrust' -Force | Out-Null
+explorer.exe 'C:\Program Files\VanGuardTrust'
+</code></pre>
+<p>Lewat File Explorer, salin <code>root.crt</code>, <code>profile.json</code>, dan <code>server-wg.pub</code> dari
+media transfer ke folder yang baru terbuka. Jika file lama sudah ada dan berbeda,
+berhenti untuk review admin; jangan menimpa trust existing secara sembarang.
+Lalu kembali ke <strong>PowerShell Administrator yang sama</strong> dan periksa:</p>
+<pre><code class="language-powershell">Get-Item 'C:\Program Files\VanGuardTrust\root.crt', 'C:\Program Files\VanGuardTrust\profile.json', 'C:\Program Files\VanGuardTrust\server-wg.pub'
+Get-Item 'C:\Program Files\VanGuardEndpoint\VanGuard.bat'
+</code></pre>
+<p>Ketiga file trust harus terlihat dan ukurannya tidak nol. Jika <code>Cannot find path</code>,
+periksa tempat menyalin file. Jika <code>VanGuard.bat</code> tidak ditemukan, selesaikan
+instalasi EXE dahulu; jangan lanjut configure.</p>
+<p>Sekarang jalankan <strong>configure saja</strong>, lalu jawab pertanyaannya:</p>
 <pre><code class="language-powershell">$vg = Join-Path $env:ProgramFiles 'VanGuardEndpoint\VanGuard.bat'
 &amp; $vg configure
-&amp; $vg status
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Pertanyaan program</th>
+<th>Yang diketik sebagai jawaban</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Path profil publik</td>
+<td><code>C:\Program Files\VanGuardTrust\profile.json</code></td>
+</tr>
+<tr>
+<td>Path root.crt</td>
+<td><code>C:\Program Files\VanGuardTrust\root.crt</code></td>
+</tr>
+<tr>
+<td>Fingerprint SHA256 Root CA</td>
+<td>Nilai 64 karakter hex yang telah dikonfirmasi admin dari hasil ekspor</td>
+</tr>
+<tr>
+<td>Public key WireGuard server</td>
+<td>Nilai public key server yang telah dikonfirmasi admin</td>
+</tr>
+</tbody>
+</table>
+<p>Pada jawaban interaktif path, tempel alamatnya tanpa tanda kutip luar. Pada
+perintah PowerShell, path yang mengandung spasi harus diberi tanda kutip seperti
+contoh. Jangan mengetik nama variabel atau perintah berikutnya sebagai jawaban.
+Sesudah configure selesai dan prompt <code>PS ...&gt;</code> muncul lagi, baru jalankan:</p>
+<pre><code class="language-powershell">&amp; $vg status
 &amp; $vg diagnose
 </code></pre>
-<p>Isi path profil/root, fingerprint dan public key server saat diminta.
-<strong>Hasil wajib:</strong> konfigurasi lengkap dan server dapat diperiksa. Jangan mengganti
-root lama atau mengabaikan TLS agar lolos.</p>
+<p><strong>Hasil wajib:</strong> konfigurasi lengkap dan server dapat diperiksa. Jika menutup
+PowerShell lalu membuka lagi, isi ulang <code>$vg = Join-Path ...</code> sebelum memakai
+<code>&amp; $vg</code>. Jangan mengganti root lama atau mengabaikan TLS agar lolos.</p>
 <p>Untuk <strong>perangkat baru</strong>, jalankan:</p>
 <pre><code class="language-powershell">&amp; $vg init
 </code></pre>
 <p>Masukkan device ID dan IP tunnel dari admin. Kirim <strong>hanya</strong> berkas berikut:</p>
 <p><code>C:\Program Files\VanGuardEndpointData\identity\request.json</code></p>
+<p><strong>WINDOWS — sesudah init sukses</strong>, buka lokasi request dengan:</p>
+<pre><code class="language-powershell">explorer.exe 'C:\Program Files\VanGuardEndpointData\identity'
+</code></pre>
+<p>Pilih <code>request.json</code> pada folder yang terbuka. Jika folder tidak terbuka,
+tekan Ctrl+L, masukkan
+<code>C:\Program Files\VanGuardEndpointData\identity</code>, lalu pilih <code>request.json</code>.
+Kirim hanya file itu kepada admin. Jangan menjalankan init ulang hanya karena
+lupa lokasi file; identitas yang sudah dibuat harus tetap dipakai.</p>
 <p>Kunci X.509 dan WireGuard dibuat di PC. Jangan kirim <code>identity.key</code>, <code>wg.key</code>,
 token, atau seluruh folder identity. Jika memakai schema2, aktifkan policy
 Bagian8 <strong>sebelum</strong> init/enrollment. Perangkat yang sudah punya identitas melewati init.</p>
@@ -479,20 +688,40 @@ device ID, IP tunnel dan permintaan dari PC asal.</li>
 <li>Tunggu status <strong>registered</strong>. Jika pending, perbaiki penyebab lalu retry.</li>
 <li>Unduh <strong>bundle perangkat</strong>, kirim ke PC asal melalui jalur tepercaya.</li>
 </ol>
+<p><strong>Agar file request/bundle mudah ditemukan:</strong> di HOST admin, siapkan folder
+transfer khusus (isinya hanya request dan bundle publik yang dipilih):</p>
+<pre><code class="language-bash">mkdir -p /home/lui/Downloads/VanGuard
+xdg-open /home/lui/Downloads/VanGuard
+</code></pre>
+<p>Salin request dari PC asal ke subfolder bernama device ID agar beberapa PC tidak
+tertukar. Pada dialog upload browser, buka folder perangkat itu dan pilih
+<code>request.json</code>. Setelah mengunduh bundle, tekan <strong>Ctrl+J</strong> pada browser →
+<strong>Tampilkan dalam folder</strong>. Catat lokasi hasil; gunakan Save As atau pindahkan
+bundle ke subfolder perangkat yang sama. Nama bundle mengikuti hasil dashboard;
+jangan menganggap semua unduhan bernama <code>approval.zip</code>.</p>
+<p>Kirim bundle ke PC yang membuat request. Simpan pada folder yang mudah ditemukan
+pengguna, misalnya folder <code>VanGuardTransfer</code> yang dibuat sendiri melalui File
+Explorer. Lokasi folder Downloads dapat berbeda antar akun/perangkat; gunakan
+alamat yang benar-benar terlihat di Explorer, bukan menebak nama akun.</p>
 <p>CA menerbitkan sertifikat dari CSR; root CA tidak dibuat ulang. Registrasi dan
 login karyawan saja <strong>belum</strong> menambahkan peer atau memberikan akses VPN.</p>
 <h2 id="bab-5">4. Import, login, connect dan logout</h2>
 <p><strong>WINDOWS:</strong> buka PowerShell Administrator. Untuk endpoint dari EXE umum:</p>
 <pre><code class="language-powershell">$vg = Join-Path $env:ProgramFiles 'VanGuardEndpoint\VanGuard.bat'
 &amp; $vg import-bundle
-&amp; $vg status
+</code></pre>
+<p>Jawab pertanyaan lokasi bundle dan tunggu selesai. Setelah prompt PowerShell
+kembali, jalankan perintah berikut satu per satu; tunggu setiap langkah selesai:</p>
+<pre><code class="language-powershell">&amp; $vg status
 &amp; $vg diagnose
 &amp; $vg login
 &amp; $vg connect
 </code></pre>
 <ul>
-<li>Saat import, masukkan path bundle dari admin. Bundle harus cocok dengan profil,
-root dan kunci PC yang membuat request.</li>
+<li>Saat import, buka File Explorer dan temukan ZIP bundle yang diterima. Gunakan
+<strong>Copy as path/Salin sebagai jalur</strong>, lalu tempel sebagai jawaban program dan
+hapus tanda kutip luar bila ikut tersalin. Bundle harus cocok dengan profil,
+root dan kunci PC yang membuat request. Jangan tempel alamat folder saja.</li>
 <li>Saat login, masukkan akun karyawan dan password secara interaktif.</li>
 <li>Biarkan terminal <strong>connect</strong> terbuka untuk renewal lease.</li>
 <li>Server menambah peer hanya setelah sesi dan enam pemeriksaan perangkat lolos.

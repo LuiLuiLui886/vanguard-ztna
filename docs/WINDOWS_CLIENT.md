@@ -1,5 +1,14 @@
 # Bukti operasional client Windows VanGuard
 
+## Status 11 November 2026 — VM dipensiunkan
+
+Atas permintaan pengguna, domain dan disk OS Windows11/10 dihapus untuk
+mengosongkan ruang. Hasil uji di bawah, installer dan data identitas/config privat
+terpilih tetap disimpan. Lima VM Ubuntu dipertahankan. Jika VM Windows diperlukan
+lagi, lakukan instalasi ulang; XML saja bukan backup OS lengkap. Jangan mengikuti
+perintah membuka VM lama di bagian historis sebagai langkah yang masih aktif.
+Penerimaan endpoint fisik tetap belum selesai.
+
 ## 2–3 November — installer dan gateway utama0.1.15
 
 EXE final identik lulus instalasi native pada Windows10 build19044 dan Windows11
@@ -252,7 +261,8 @@ bersamaan. Pengukuran ini tidak mengubah atau menghapus lima Ubuntu.
 
 ## Kandidat endpoint fisik0.1.12 —22 Oktober2026
 
-Client Windows VM lama tetap dipertahankan. Pilot PC LAN dan laptop Wi-Fi adalah
+Catatan historis sebelum 11 November: client Windows VM lama dipertahankan saat itu.
+Kini VM Windows dipensiunkan; pilot PC LAN dan laptop Wi-Fi adalah
 endpoint tambahan, bukan penggantian VM dan bukan hasil yang sudah diuji. Gunakan
 [panduan pilot lengkap](reports/ENDPOINT_WINDOWS_PILOT.md) dan Bab15.3 pada modul tunggal.
 Source installer ada di `deploy/endpoint/windows`; jangan menggunakan
