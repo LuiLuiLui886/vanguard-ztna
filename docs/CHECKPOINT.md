@@ -2,6 +2,8 @@
 
 ## Pra-uji lapangan — selesai 10 November 2026 11:53 WIB
 
+Hasil dan perbaikan dipush pada `80394ca` ke branch feature; SHA remote terverifikasi.
+
 Baseline Linux: **355 PASS, 1 SKIP**, 0 failure/error, 1010,63 detik. Skip memerlukan
 Windows ACL asli; ini bukan hasil Windows native atau endpoint fisik. Ruff lulus.
 Postflight akhir setelah boot: **30/30 HTTPS HTTP200**; CA/server/admin active.
