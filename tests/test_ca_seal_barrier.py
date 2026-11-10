@@ -7,8 +7,8 @@ import threading
 
 import pytest
 
-from vanguard.ca import Authority
 from vanguard import ca_storage
+from vanguard.ca import Authority
 
 
 def test_commit_waits_for_every_file_flush(tmp_path, monkeypatch):
@@ -114,8 +114,8 @@ def test_syncfs_error_aborts_before_commit(tmp_path, monkeypatch, error):
 
 
 def test_old_kernel_fallback_syncs_every_member(tmp_path, monkeypatch):
-    from types import SimpleNamespace
     from pathlib import Path
+    from types import SimpleNamespace
 
     members = [tmp_path / 'a', tmp_path / 'b']
     for p in members:

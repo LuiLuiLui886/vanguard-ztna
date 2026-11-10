@@ -1,4 +1,33 @@
-# Checkpoint VanGuard — 4 November 2026
+# Checkpoint VanGuard — 10 November 2026
+
+## Pra-uji lapangan — selesai 10 November 2026 11:53 WIB
+
+Baseline Linux: **355 PASS, 1 SKIP**, 0 failure/error, 1010,63 detik. Skip memerlukan
+Windows ACL asli; ini bukan hasil Windows native atau endpoint fisik. Ruff lulus.
+Postflight akhir setelah boot: **30/30 HTTPS HTTP200**; CA/server/admin active.
+Kegagalan awal 9 November (13/30) dan 10 November (28/30, database unknown sesaat)
+dipertahankan; penyebab spesifik startup belum terbukti dan tidak diklaim selesai.
+
+CA tetap **0.1.17**, admin/server **0.1.15**: perubahan terbaru khusus penyimpanan
+CA; kode peran admin/server dan fungsi durable_write yang dipakai server tidak
+berubah. Hash 27 file source per VM cocok acuannya. Tidak ada rollout runtime,
+reset identitas atau perubahan grant/firewall. Source pengguna ef14b07 dan
+flowchart-nya terpelihara. Perbaikan source hanya import lint tes dan contoh
+perintah pytest pada README. CA invariant, 35 revokasi lama, DB integrity dan
+login/TOTP/logout scoped admin lulus pemeriksaan 9 November.
+
+Pilot fisik belum siap dinyatakan diterima: host belum Ethernet192.168.50.10;
+forwarding/filter host perlu pembuktian lapangan. Sertifikat vm-client-windows
+berakhir **14 November 2026 13:16:28 WIB**; renewal lease tidak memperpanjangnya.
+Ruang host sekitar **3,2 GiB (99%)**; siapkan kapasitas backup tanpa menghapus bukti.
+Windows native dan PC LAN/Wi-Fi tidak diuji ulang pada sesi ini (**BELUM_TERUJI**).
+CA/server/admin running, empat VM lain off, tujuh definisi VM dipertahankan.
+
+Bukti: state/preflight-20261109/ dan state/preflight-20261110/settled/.
+Baseline dan postflight sudah selesai; jangan ulang finalize-checks.py lama,
+suite atau script rollout. Lanjutkan persiapan jaringan, kapasitas dan identitas
+sesuai runbook, kemudian uji satu endpoint fisik.
+[Laporan pemeriksaan](reports/PRA_UJI_LAPANGAN_2026-11-09.md). [Jurnal hasil](progress/PROGRESS_2026-11-10.md).
 
 ## Flowchart terpadu — 5 November 2026
 

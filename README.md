@@ -64,7 +64,7 @@ Uji lokal (tidak membutuhkan root atau mengubah jaringan host):
 ```bash
 python3 -m venv .venv
 .venv/bin/pip install -c deploy/constraints.txt -e '.[test]'
-.venv/bin/pytest -q
+.venv/bin/python -m pytest -q
 .venv/bin/ruff check vanguard tests scripts
 ```
 

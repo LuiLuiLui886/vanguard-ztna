@@ -4,6 +4,8 @@ Catatan pekerjaan harian, intent, hasil aktual dan langkah berikutnya. Tulis jur
 
 ## Daftar file
 
+- [PROGRESS_2026-11-10.md](PROGRESS_2026-11-10.md)
+- [PROGRESS_2026-11-09.md](PROGRESS_2026-11-09.md)
 - [PROGRESS_2026-11-04.md](PROGRESS_2026-11-04.md)
 - [PROGRESS_2026-11-03.md](PROGRESS_2026-11-03.md)
 - [PROGRESS_2026-11-02.md](PROGRESS_2026-11-02.md)

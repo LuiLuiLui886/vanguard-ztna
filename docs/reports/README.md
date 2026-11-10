@@ -4,6 +4,7 @@ Bukti pengujian, audit, validasi rilis dan observasi. Setiap laporan berlaku unt
 
 ## Daftar file
 
+- [PRA_UJI_LAPANGAN_2026-11-09.md](PRA_UJI_LAPANGAN_2026-11-09.md)
 - [AUDIT_BUG_2026-10-28.md](AUDIT_BUG_2026-10-28.md)
 - [AUDIT_HARDENING_2026-10-18.md](AUDIT_HARDENING_2026-10-18.md)
 - [AUDIT_WINDOWS_CONFIG_2026-10-25.md](AUDIT_WINDOWS_CONFIG_2026-10-25.md)

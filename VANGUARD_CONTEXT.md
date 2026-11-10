@@ -587,3 +587,23 @@ New journals belong in docs/progress/PROGRESS_YYYY-MM-DD.md. Start at docs/READM
 or the root README. Older installers moved to downloads/archive with unchanged
 bytes; latest 0.1.15 paths remain stable. No application/VM/security behavior was
 changed by this organization. Released ZIP/EXE contents were not rebuilt.
+
+
+Pre-field verification — 9–10 November 2026:
+User flowchart commit ef14b07 was integrated without replacing their changes.
+Keep CA0.1.17 and server/admin0.1.15: runtime changes since0.1.15 affect CA seal;
+server's imported durable_write is AST-identical. All27installed source members
+per VM match their release. No runtime rollout, identity reset or grant changes.
+Full local Linux baseline:355pass/1skip (Windows ACL APIs),1010.63s; lint passed
+with two test import-order fixes; README uses python -m pytest as CI does.
+Initial boot samples13/30HTTPS on9Nov and28/30on10Nov retained; the latter had
+transient database unknown. Root cause unproven, do not claim a startup fix.
+Final10Nov11:53WIB postflight30/30HTTPS, all3services active, diagnostics ready.
+Nov9read-only CA invariants/history35revocations, DB integrity and scoped admin
+login/TOTP/logout passed. No new Windows native or physical endpoint acceptance.
+Only CA/server/admin running, all7definitions preserved. Host not on pilot
+Ethernet192.168.50.10; disk3.2GiBfree/99%used needs capacity before pilot backups.
+Existing Windows identity expires14Nov13:16:28WIB; lease renewal cannot extend it.
+See docs/reports/PRA_UJI_LAPANGAN_2026-11-09.md and latest checkpoint. Completed
+suite/postflight must not be rerun merely to resume; do not run old finalize or
+rollout scripts. Private evidence is under state/preflight-20261109/ and state/preflight-20261110/.
