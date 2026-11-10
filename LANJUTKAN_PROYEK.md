@@ -11,7 +11,9 @@ terbaru sebelum mengedit. Semua perubahan memerlukan intent dan hasil di
 [Manual utama](docs/MODUL_PENGGUNAAN_VANGUARD.md) edisi 10 November dimulai dari
 arti host/VM, prompt terminal, `cd /home/lui/vanguard`, boot dan SSH. Revisi
 11 November memakai `scripts/export_endpoint_public.py` tanpa input username. Gunakan
-profil existing schema2 pada Bagian 1.1. Jangan mengulang instalasi CA atau
+profil existing schema2 pada Bagian 1.1.
+Detail lokasi file dan terminal ada pada Bagian0.2.1–0.2.3 serta1.1.1–1.1.2;
+contoh ekspor existing diuji tanpa membuat ulang identitas. Jangan mengulang instalasi CA atau
 mengganti profil ke schema1 hanya untuk mengikuti tutorial dari awal.
 
 ## Kondisi terakhir dan prioritas

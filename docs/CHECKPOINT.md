@@ -20,6 +20,14 @@ Ekspor aktual schema2 lulus; hasil tersedia di `state/endpoint-public-u8wsu2hh/`
 Helper dan preflight lulus14tes Linux terarah. Preflight kini mewajibkan5Ubuntu,
 namun tetap BLOCKED karena Ethernet.50.10 tidak aktif saat pemeriksaan terakhir.
 
+## Petunjuk terminal dan file
+
+Manual diperinci pada Bagian0.2.1–0.2.3 dan1.1.1–1.1.2: posisi terminal,
+peta folder, membuka file manager, menemukan hasil ekspor lama dan transfer
+bahan publik. Bagian2–4 menunjukkan lokasi file Windows/request/bundle dan
+jawaban prompt. Snippet membaca trust existing berhasil; HTML dan tautan valid.
+Tidak ada perubahan aplikasi atau pengujian Windows native pada edit manual ini.
+
 ## Source dan panduan aktif
 
 - Branch: `feature/2026-10-22-physical-endpoints`; main tidak otomatis sama.
