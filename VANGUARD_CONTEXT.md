@@ -626,3 +626,11 @@ Original profile/address/routes saved privately state/pilot-host-20261110/.
 Preflight host_lan PASS, overall BLOCKED due three services off; firewall and
 endpoint traffic untested. Router DHCP reservation/exclusion for .10 unverified;
 check before physical client pilot. Do not infer backend readiness from host IP.
+
+
+All-VM boot — 10 November 2026 15:24 WIB:
+All7domains running. Five Ubuntu roles passed strict-host-key BatchMode SSH;
+five interactive gnome-terminal SSH windows launched. Two Windows virt-viewer
+processes running; visual appearance on user screen unconfirmed. No identity,
+credential, disk or firewall changes. Host free disk2.6GiB (99% used), RAM31GiB.
+HTTPS services not retested; running VM is not application readiness.

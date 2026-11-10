@@ -1,5 +1,13 @@
 # Checkpoint VanGuard — 10 November 2026
 
+## Tujuh VM dinyalakan — 10 November 2026 15:24 WIB
+
+Semua tujuh domain `running`. Kelima Ubuntu lulus SSH BatchMode dan jendela
+terminal SSH interaktif diluncurkan. Dua viewer Windows11/10 berproses; tampilan
+fisik di layar pengguna belum diverifikasi. RAM host31GiB, disk bebas2,6GiB
+(99% terpakai). Belum ada uji HTTPS ulang, sehingga `running` bukan bukti
+aplikasi siap. Lihat jurnal 10 November untuk hasil tiap peran.
+
 ## Koreksi contoh SSH terminal — 10 November 2026
 
 Commit lokal `7e88edc` belum ter-push karena DNS GitHub timeout; ulang push
