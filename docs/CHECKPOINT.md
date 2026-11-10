@@ -2,8 +2,9 @@
 
 ## Koreksi alamat pilot — 10 November 2026
 
-Koreksi panduan tersimpan lokal pada commit `99d2024`; push GitHub **TERTUNDA**
-karena DNS `github.com` gagal. Ulang push setelah internet pulih.
+Koreksi panduan `99d2024` dan catatan pemulihan `8ddf9b4` sudah dipush ke
+branch feature setelah DNS pulih. Pemeriksaan ulang 14:30 WIB masih menunjukkan
+Wi-Fi `.50.101`, Ethernet `.50.10` belum aktif, dan CA/server/admin shut off.
 
 Host saat diperiksa memakai Wi-Fi DHCP `192.168.50.101/24`; panduan `.50.10`
 adalah alamat rencana Ethernet host, belum aktif. Seluruh VM saat ini shut off.
