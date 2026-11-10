@@ -26,7 +26,7 @@ code { font-size:.9em; } blockquote { border-left:4px solid #1c7088; margin-left
  pre,tr { break-inside:avoid; } thead { display:table-header-group; }
  a { color:inherit; } .print-note { display:none; }
 }
-</style></head><body><main><p class="print-note">Modul dapat dibaca tanpa internet. Untuk PDF, tekan Ctrl+P, pilih Simpan sebagai PDF, ukuran A4. Tautan dokumen pendukung memerlukan folder docs dari repository yang sama.</p><h1>Panduan penggunaan VanGuard</h1><nav aria-label="Daftar isi"><h2>Daftar isi</h2><ol><li class="toc-h2"><a href="#bab-1">0. Mulai di sini: komputer dan terminal yang digunakan</a></li><li class="toc-h3"><a href="#bagian-0-1">0.1 Arti host, VM, endpoint, dan dashboard</a></li><li class="toc-h3"><a href="#bagian-0-2">0.2 Kenali prompt dan folder sebelum menyalin perintah</a></li><li class="toc-h3"><a href="#bagian-0-2-1">0.2.1 Jika lupa sedang berada di komputer/folder mana</a></li><li class="toc-h3"><a href="#bagian-0-2-2">0.2.2 Peta lokasi file yang sering dipakai</a></li><li class="toc-h3"><a href="#bagian-0-2-3">0.2.3 Membuka folder tanpa mengingat perintah terminal</a></li><li class="toc-h3"><a href="#bagian-0-3">0.3 Nyalakan backend, lalu buka terminal VM</a></li><li class="toc-h2"><a href="#bab-2">1. Persiapan admin</a></li><li class="toc-h3"><a href="#bagian-1-1">1.1 Ambil profil yang sudah aktif pada lab ini</a></li><li class="toc-h4"><a href="#bagian-1-1-1">1.1.1 Menemukan hasil ekspor setelah terminal ditutup</a></li><li class="toc-h4"><a href="#bagian-1-1-2">1.1.2 Memindahkan file publik dari host ke Windows</a></li><li class="toc-h3"><a href="#bagian-1-2">1.2 Opsional: buat kandidat profil aplikasi internal baru</a></li><li class="toc-h2"><a href="#bab-3">2. Install Windows dan buat permintaan perangkat</a></li><li class="toc-h3"><a href="#bagian-2-1">2.1 Install EXE umum</a></li><li class="toc-h3"><a href="#bagian-2-2">2.2 Configure dan buat request</a></li><li class="toc-h2"><a href="#bab-4">3. Daftarkan perangkat di dashboard</a></li><li class="toc-h2"><a href="#bab-5">4. Import, login, connect dan logout</a></li><li class="toc-h2"><a href="#bab-6">5. Beri izin aplikasi dan uji koneksi</a></li><li class="toc-h2"><a href="#bab-7">6. Cabut akses, ganti identitas dan simpan audit</a></li><li class="toc-h2"><a href="#bab-8">7. Opsional: satu BAT atau EXE per perangkat</a></li><li class="toc-h2"><a href="#bab-9">8. Opsional: internet terkelola tanpa konfigurasi router</a></li><li class="toc-h2"><a href="#bab-10">9. Khusus instalasi backend dan CA baru</a></li><li class="toc-h3"><a href="#bagian-9-1">9.1 Siapkan host dan inventory</a></li><li class="toc-h3"><a href="#bagian-9-2">9.2 Install, generate CA dan siapkan admin</a></li><li class="toc-h3"><a href="#bagian-9-3">9.3 Firewall dan mulai layanan</a></li><li class="toc-h2"><a href="#bab-11">10. Masalah umum dan pemeriksaan akhir</a></li></ol></nav>
+</style></head><body><main><p class="print-note">Modul dapat dibaca tanpa internet. Untuk PDF, tekan Ctrl+P, pilih Simpan sebagai PDF, ukuran A4. Tautan dokumen pendukung memerlukan folder docs dari repository yang sama.</p><h1>Panduan penggunaan VanGuard</h1><nav aria-label="Daftar isi"><h2>Daftar isi</h2><ol><li class="toc-h2"><a href="#bab-1">0. Mulai di sini: komputer dan terminal yang digunakan</a></li><li class="toc-h3"><a href="#bagian-0-1">0.1 Arti host, VM, endpoint, dan dashboard</a></li><li class="toc-h3"><a href="#bagian-0-2">0.2 Kenali prompt dan folder sebelum menyalin perintah</a></li><li class="toc-h3"><a href="#bagian-0-2-1">0.2.1 Jika lupa sedang berada di komputer/folder mana</a></li><li class="toc-h3"><a href="#bagian-0-2-2">0.2.2 Peta lokasi file yang sering dipakai</a></li><li class="toc-h3"><a href="#bagian-0-2-3">0.2.3 Membuka folder tanpa mengingat perintah terminal</a></li><li class="toc-h3"><a href="#bagian-0-3">0.3 Nyalakan backend, lalu buka terminal VM</a></li><li class="toc-h2"><a href="#bab-2">1. Persiapan admin</a></li><li class="toc-h3"><a href="#bagian-1-1">1.1 Ambil profil yang sudah aktif pada lab ini</a></li><li class="toc-h4"><a href="#bagian-1-1-1">1.1.1 Menemukan hasil ekspor setelah terminal ditutup</a></li><li class="toc-h4"><a href="#bagian-1-1-2">1.1.2 Memindahkan file publik dari host ke Windows</a></li><li class="toc-h3"><a href="#bagian-1-2">1.2 Opsional: buat kandidat profil aplikasi internal baru</a></li><li class="toc-h2"><a href="#bab-3">2. Install Windows dan buat permintaan perangkat</a></li><li class="toc-h3"><a href="#bagian-2-1">2.1 Install EXE umum</a></li><li class="toc-h3"><a href="#bagian-2-2">2.2 Configure dan buat request</a></li><li class="toc-h4"><a href="#bagian-2-2-1">2.2.1 Buat folder untuk file dari admin</a></li><li class="toc-h4"><a href="#bagian-2-2-2">2.2.2 Masuk ke folder aplikasi</a></li><li class="toc-h4"><a href="#bagian-2-2-3">2.2.3 Masukkan konfigurasi dari admin</a></li><li class="toc-h4"><a href="#bagian-2-2-4">2.2.4 Buat request untuk perangkat baru</a></li><li class="toc-h2"><a href="#bab-4">3. Daftarkan perangkat di dashboard</a></li><li class="toc-h2"><a href="#bab-5">4. Import, login, connect dan logout</a></li><li class="toc-h3"><a href="#bagian-4-1">4.1 Masukkan bundle dari admin</a></li><li class="toc-h3"><a href="#bagian-4-2">4.2 Login akun karyawan</a></li><li class="toc-h3"><a href="#bagian-4-3">4.3 Hubungkan perangkat</a></li><li class="toc-h3"><a href="#bagian-4-4">4.4 Putuskan koneksi dan logout</a></li><li class="toc-h2"><a href="#bab-6">5. Beri izin aplikasi dan uji koneksi</a></li><li class="toc-h2"><a href="#bab-7">6. Cabut akses, ganti identitas dan simpan audit</a></li><li class="toc-h2"><a href="#bab-8">7. Opsional: satu BAT atau EXE per perangkat</a></li><li class="toc-h2"><a href="#bab-9">8. Opsional: internet terkelola tanpa konfigurasi router</a></li><li class="toc-h2"><a href="#bab-10">9. Khusus instalasi backend dan CA baru</a></li><li class="toc-h3"><a href="#bagian-9-1">9.1 Siapkan host dan inventory</a></li><li class="toc-h3"><a href="#bagian-9-2">9.2 Install, generate CA dan siapkan admin</a></li><li class="toc-h3"><a href="#bagian-9-3">9.3 Firewall dan mulai layanan</a></li><li class="toc-h2"><a href="#bab-11">10. Masalah umum dan pemeriksaan akhir</a></li></ol></nav>
 <p>Edisi 11 November 2026 · panduan admin dan pengguna Windows.
 Markdown dan HTML adalah dua format dari <strong>manual yang sama</strong>.
 Manual yang tertanam di EXE/ZIP rilis lama belum dibangun ulang; gunakan edisi
@@ -215,7 +215,7 @@ ls -lah
 </ul>
 <p><code>cd</code> berpindah folder pada terminal itu saja. Membuka file manager tidak otomatis
 mengubah folder terminal. Menutup terminal tidak menghapus file, tetapi variabel
-seperti <code>$vg</code> atau <code>VG_SSH_USER</code> tidak otomatis tersedia pada terminal baru.</p>
+seperti <code>VG_SSH_USER</code> tidak otomatis tersedia pada terminal baru.</p>
 <p><strong>HOST — cara kembali ke proyek dari folder mana pun:</strong></p>
 <pre><code class="language-bash">cd /home/lui/vanguard
 pwd
@@ -602,33 +602,47 @@ EXE yang belum ditandatangani ini, minta admin meninjau; jangan matikan proteksi
 <p><strong>EXE umum belum membuat sertifikat, tunnel atau blokir internet.</strong> Jika admin
 memberikan paket per-device, ikuti Bagian7; jangan ulang init pada identitas wizard.</p>
 <h3 id="bagian-2-2">2.2 Configure dan buat request</h3>
-<p><strong>WINDOWS — setelah EXE selesai terpasang:</strong> klik Start, cari <strong>PowerShell</strong>,
-klik kanan → <strong>Run as administrator</strong>, lalu setujui UAC. Terminal bertuliskan
-<code>ubuntu@vm-*</code> atau <code>lui@...</code> adalah terminal Linux, sehingga blok berikut
-harus dijalankan pada PC Windows yang akan didaftarkan.</p>
-<p>Jalankan ini untuk menyiapkan dan membuka folder trust publik:</p>
-<pre><code class="language-powershell">New-Item -ItemType Directory -Path 'C:\Program Files\VanGuardTrust' -Force | Out-Null
-explorer.exe 'C:\Program Files\VanGuardTrust'
+<p>Semua langkah pada bagian ini dilakukan di <strong>PC Windows</strong>, menggunakan
+<strong>PowerShell → Run as administrator</strong>. Jalankan satu kotak perintah, lalu tunggu
+hasilnya sebelum menyalin kotak berikutnya.</p>
+<p><strong>Cara membaca perintah:</strong> <code>.\VanGuard.bat status</code> berarti “jalankan VanGuard
+pada folder sekarang untuk melihat status”. Tanda <code>.\</code> harus ikut disalin.
+Jika muncul pertanyaan, isi jawabannya dahulu. BAT dapat menampilkan
+<strong>Press any key to continue</strong>; tekan Enter, tunggu prompt <code>PS ...&gt;</code> kembali,
+baru jalankan langkah berikutnya. Saat <code>connect</code> aktif, terminal tetap terbuka.</p>
+<h4 id="bagian-2-2-1">2.2.1 Buat folder untuk file dari admin</h4>
+<pre><code class="language-powershell">New-Item -ItemType Directory -Path 'C:\Program Files\VanGuardTrust' -Force
 </code></pre>
-<p>Lewat File Explorer, salin <code>root.crt</code>, <code>profile.json</code>, dan <code>server-wg.pub</code> dari
-media transfer ke folder yang baru terbuka. Jika file lama sudah ada dan berbeda,
-berhenti untuk review admin; jangan menimpa trust existing secara sembarang.
-Lalu kembali ke <strong>PowerShell Administrator yang sama</strong> dan periksa:</p>
-<pre><code class="language-powershell">Get-Item 'C:\Program Files\VanGuardTrust\root.crt', 'C:\Program Files\VanGuardTrust\profile.json', 'C:\Program Files\VanGuardTrust\server-wg.pub'
-Get-Item 'C:\Program Files\VanGuardEndpoint\VanGuard.bat'
+<p><strong>Hasil:</strong> folder <code>VanGuardTrust</code> tersedia. Buka folder itu:</p>
+<pre><code class="language-powershell">explorer.exe 'C:\Program Files\VanGuardTrust'
 </code></pre>
-<p>Ketiga file trust harus terlihat dan ukurannya tidak nol. Jika <code>Cannot find path</code>,
-periksa tempat menyalin file. Jika <code>VanGuard.bat</code> tidak ditemukan, selesaikan
-instalasi EXE dahulu; jangan lanjut configure.</p>
-<p>Sekarang jalankan <strong>configure saja</strong>, lalu jawab pertanyaannya:</p>
-<pre><code class="language-powershell">$vg = Join-Path $env:ProgramFiles 'VanGuardEndpoint\VanGuard.bat'
-&amp; $vg configure
+<p>Salin <code>root.crt</code>, <code>profile.json</code>, dan <code>server-wg.pub</code> dari admin ke folder
+tersebut menggunakan File Explorer. Jika sudah ada file lama yang berbeda,
+hentikan dan minta admin meninjau sebelum menimpanya.</p>
+<p>Lihat isi folder melalui PowerShell:</p>
+<pre><code class="language-powershell">Get-ChildItem 'C:\Program Files\VanGuardTrust'
 </code></pre>
+<p><strong>Hasil:</strong> tiga nama file di atas terlihat dan ukurannya bukan nol. Jika tidak,
+periksa tempat menyalinnya. Jangan lanjut menggunakan folder kosong.</p>
+<h4 id="bagian-2-2-2">2.2.2 Masuk ke folder aplikasi</h4>
+<pre><code class="language-powershell">Set-Location &quot;$env:ProgramFiles\VanGuardEndpoint&quot;
+</code></pre>
+<p>Lalu cek file peluncurnya:</p>
+<pre><code class="language-powershell">Get-Item .\VanGuard.bat
+</code></pre>
+<p><strong>Hasil:</strong> <code>VanGuard.bat</code> ditemukan. Jika <code>Cannot find path</code>, selesaikan instalasi
+EXE terlebih dahulu. Mulai sekarang, semua perintah aplikasi menggunakan bentuk
+pendek <code>.\VanGuard.bat ...</code>. Ulangi <strong>Set-Location</strong> di atas setiap membuka
+PowerShell baru; tidak ada variabel <code>$vg</code> yang perlu dibuat.</p>
+<h4 id="bagian-2-2-3">2.2.3 Masukkan konfigurasi dari admin</h4>
+<pre><code class="language-powershell">.\VanGuard.bat configure
+</code></pre>
+<p><strong>Jangan menyalin baris perintah lain saat program bertanya.</strong> Jawab satu per satu:</p>
 <table>
 <thead>
 <tr>
-<th>Pertanyaan program</th>
-<th>Yang diketik sebagai jawaban</th>
+<th>Pertanyaan di layar</th>
+<th>Jawaban yang dimasukkan</th>
 </tr>
 </thead>
 <tbody>
@@ -642,40 +656,59 @@ instalasi EXE dahulu; jangan lanjut configure.</p>
 </tr>
 <tr>
 <td>Fingerprint SHA256 Root CA</td>
-<td>Nilai 64 karakter hex yang telah dikonfirmasi admin dari hasil ekspor</td>
+<td>Nilai 64 karakter hex yang dikonfirmasi admin dari hasil ekspor</td>
 </tr>
 <tr>
 <td>Public key WireGuard server</td>
-<td>Nilai public key server yang telah dikonfirmasi admin</td>
+<td>Nilai public key server yang dikonfirmasi admin</td>
 </tr>
 </tbody>
 </table>
-<p>Pada jawaban interaktif path, tempel alamatnya tanpa tanda kutip luar. Pada
-perintah PowerShell, path yang mengandung spasi harus diberi tanda kutip seperti
-contoh. Jangan mengetik nama variabel atau perintah berikutnya sebagai jawaban.
-Sesudah configure selesai dan prompt <code>PS ...&gt;</code> muncul lagi, baru jalankan:</p>
-<pre><code class="language-powershell">&amp; $vg status
-&amp; $vg diagnose
+<p>Alamat file sebagai <strong>jawaban pertanyaan</strong> ditulis tanpa tanda kutip luar.
+Fingerprint dan public key diisi dengan nilainya, bukan nama file atau nama
+variabel. Jangan menebaknya atau mengganti trust lama agar konfigurasi lolos.</p>
+<p><strong>Hasil yang diharapkan:</strong> muncul pesan <strong>Profil tersimpan</strong>. Jika ada error,
+hentikan dan periksa pesan sebelum melanjutkan. Tutup jeda BAT dengan Enter
+apabila diminta, lalu jalankan:</p>
+<pre><code class="language-powershell">.\VanGuard.bat status
 </code></pre>
-<p><strong>Hasil wajib:</strong> konfigurasi lengkap dan server dapat diperiksa. Jika menutup
-PowerShell lalu membuka lagi, isi ulang <code>$vg = Join-Path ...</code> sebelum memakai
-<code>&amp; $vg</code>. Jangan mengganti root lama atau mengabaikan TLS agar lolos.</p>
-<p>Untuk <strong>perangkat baru</strong>, jalankan:</p>
-<pre><code class="language-powershell">&amp; $vg init
+<p>Periksa informasi konfigurasi, kemudian cek koneksi layanan:</p>
+<pre><code class="language-powershell">.\VanGuard.bat diagnose
 </code></pre>
-<p>Masukkan device ID dan IP tunnel dari admin. Kirim <strong>hanya</strong> berkas berikut:</p>
-<p><code>C:\Program Files\VanGuardEndpointData\identity\request.json</code></p>
-<p><strong>WINDOWS — sesudah init sukses</strong>, buka lokasi request dengan:</p>
+<p><strong>Hasil wajib:</strong> konfigurasi terbaca dan layanan dapat diperiksa. Status ini belum
+berarti perangkat sudah terdaftar atau mendapat izin akses.</p>
+<h4 id="bagian-2-2-4">2.2.4 Buat request untuk perangkat baru</h4>
+<p><strong>Hanya untuk perangkat yang belum mempunyai identitas.</strong> Untuk mode internet
+terkelola/schema2, selesaikan <strong>Bagian 8 setelah configure dan sebelum langkah ini</strong>;
+aktifkan lockdown hanya setelah jalur layanan dan recovery siap.</p>
+<pre><code class="language-powershell">.\VanGuard.bat init
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Pertanyaan di layar</th>
+<th>Jawaban</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Device ID</td>
+<td>ID unik yang diberikan admin</td>
+</tr>
+<tr>
+<td>IP tunnel</td>
+<td>IP tunnel yang diberikan admin; berbeda dari IP LAN</td>
+</tr>
+</tbody>
+</table>
+<p>Sesudah init berhasil, buka folder hasil:</p>
 <pre><code class="language-powershell">explorer.exe 'C:\Program Files\VanGuardEndpointData\identity'
 </code></pre>
-<p>Pilih <code>request.json</code> pada folder yang terbuka. Jika folder tidak terbuka,
-tekan Ctrl+L, masukkan
-<code>C:\Program Files\VanGuardEndpointData\identity</code>, lalu pilih <code>request.json</code>.
-Kirim hanya file itu kepada admin. Jangan menjalankan init ulang hanya karena
-lupa lokasi file; identitas yang sudah dibuat harus tetap dipakai.</p>
-<p>Kunci X.509 dan WireGuard dibuat di PC. Jangan kirim <code>identity.key</code>, <code>wg.key</code>,
-token, atau seluruh folder identity. Jika memakai schema2, aktifkan policy
-Bagian8 <strong>sebelum</strong> init/enrollment. Perangkat yang sudah punya identitas melewati init.</p>
+<p><strong>File yang dikirim ke admin: <code>request.json</code> saja.</strong> Lokasi lengkapnya:
+<code>C:\Program Files\VanGuardEndpointData\identity\request.json</code>.
+Jangan kirim <code>identity.key</code>, <code>wg.key</code>, token, atau seluruh folder identity.
+Jangan menjalankan init ulang hanya karena lupa lokasi file. Tunggu persetujuan
+admin di Bagian 3; perangkat yang sudah mempunyai identitas melewati langkah init.</p>
 <h2 id="bab-4">3. Daftarkan perangkat di dashboard</h2>
 <p><strong>DASHBOARD ADMIN:</strong></p>
 <ol>
@@ -706,31 +739,49 @@ alamat yang benar-benar terlihat di Explorer, bukan menebak nama akun.</p>
 <p>CA menerbitkan sertifikat dari CSR; root CA tidak dibuat ulang. Registrasi dan
 login karyawan saja <strong>belum</strong> menambahkan peer atau memberikan akses VPN.</p>
 <h2 id="bab-5">4. Import, login, connect dan logout</h2>
-<p><strong>WINDOWS:</strong> buka PowerShell Administrator. Untuk endpoint dari EXE umum:</p>
-<pre><code class="language-powershell">$vg = Join-Path $env:ProgramFiles 'VanGuardEndpoint\VanGuard.bat'
-&amp; $vg import-bundle
+<p><strong>WINDOWS — PowerShell Administrator.</strong> Untuk endpoint dari EXE umum, masuk
+folder aplikasi terlebih dahulu; ini juga langkah pertama setiap terminal baru:</p>
+<pre><code class="language-powershell">Set-Location &quot;$env:ProgramFiles\VanGuardEndpoint&quot;
 </code></pre>
-<p>Jawab pertanyaan lokasi bundle dan tunggu selesai. Setelah prompt PowerShell
-kembali, jalankan perintah berikut satu per satu; tunggu setiap langkah selesai:</p>
-<pre><code class="language-powershell">&amp; $vg status
-&amp; $vg diagnose
-&amp; $vg login
-&amp; $vg connect
+<h3 id="bagian-4-1">4.1 Masukkan bundle dari admin</h3>
+<pre><code class="language-powershell">.\VanGuard.bat import-bundle
 </code></pre>
-<ul>
-<li>Saat import, buka File Explorer dan temukan ZIP bundle yang diterima. Gunakan
-<strong>Copy as path/Salin sebagai jalur</strong>, lalu tempel sebagai jawaban program dan
-hapus tanda kutip luar bila ikut tersalin. Bundle harus cocok dengan profil,
-root dan kunci PC yang membuat request. Jangan tempel alamat folder saja.</li>
-<li>Saat login, masukkan akun karyawan dan password secara interaktif.</li>
-<li>Biarkan terminal <strong>connect</strong> terbuka untuk renewal lease.</li>
-<li>Server menambah peer hanya setelah sesi dan enam pemeriksaan perangkat lolos.
-Jangan menambahkan peer statis melalui GUI WireGuard.</li>
-</ul>
-<p><strong>Mengakhiri pemakaian:</strong> Ctrl+C pada terminal connect. Atau di terminal admin kedua:</p>
-<pre><code class="language-powershell">$vg = Join-Path $env:ProgramFiles 'VanGuardEndpoint\VanGuard.bat'
-&amp; $vg disconnect
-&amp; $vg logout
+<p>Program bertanya <strong>Path bundle ZIP publik dari admin</strong>. Temukan file ZIP melalui
+File Explorer, gunakan <strong>Copy as path/Salin sebagai jalur</strong>, lalu tempel sebagai
+jawaban. Hapus tanda kutip luar jika ikut tersalin. Berikan alamat file ZIP,
+bukan hanya alamat folder. Bundle harus milik PC yang membuat request.</p>
+<p><strong>Hasil:</strong> import selesai tanpa error. Jika BAT meminta tombol untuk melanjutkan,
+tekan Enter dan tunggu prompt PowerShell. Lihat status:</p>
+<pre><code class="language-powershell">.\VanGuard.bat status
+</code></pre>
+<p>Kemudian periksa layanan:</p>
+<pre><code class="language-powershell">.\VanGuard.bat diagnose
+</code></pre>
+<p>Jika ada error pada import atau diagnose, selesaikan dulu sebelum login/connect.</p>
+<h3 id="bagian-4-2">4.2 Login akun karyawan</h3>
+<pre><code class="language-powershell">.\VanGuard.bat login
+</code></pre>
+<p>Isi username karyawan ketika diminta, lalu password pada pertanyaan berikutnya.
+Ini akun yang diberikan admin untuk akses VanGuard. Jangan menempel perintah
+<code>connect</code> sebagai jawaban username/password. Tunggu login selesai dan prompt
+PowerShell kembali.</p>
+<h3 id="bagian-4-3">4.3 Hubungkan perangkat</h3>
+<pre><code class="language-powershell">.\VanGuard.bat connect
+</code></pre>
+<p><strong>Biarkan terminal ini terbuka</strong> agar lease diperbarui otomatis. Server memasang
+peer setelah sesi karyawan dan enam pemeriksaan perangkat lolos. Jika connect
+gagal, catat error; jangan memasang peer manual melalui GUI WireGuard.
+Uji akses aplikasi mengikuti Bagian 5; tunnel terpasang saja belum membuktikan izin.</p>
+<h3 id="bagian-4-4">4.4 Putuskan koneksi dan logout</h3>
+<p>Pada terminal connect, tekan <strong>Ctrl+C</strong> dan tunggu cleanup selesai. Jika perlu
+memutus dari terminal lain, buka <strong>PowerShell Administrator baru</strong>, lalu:</p>
+<pre><code class="language-powershell">Set-Location &quot;$env:ProgramFiles\VanGuardEndpoint&quot;
+</code></pre>
+<pre><code class="language-powershell">.\VanGuard.bat disconnect
+</code></pre>
+<p>Tunggu proses selesai; jika BAT meminta tombol, tekan Enter. Setelah prompt
+PowerShell kembali, cabut sesi login dengan:</p>
+<pre><code class="language-powershell">.\VanGuard.bat logout
 </code></pre>
 <p>Disconnect menutup tunnel; logout mencabut sesi server. Jika server tidak
 terjangkau, pencabutan <strong>belum terkonfirmasi</strong>: retry setelah layanan pulih.
@@ -902,10 +953,18 @@ pertahankan root/key/resource, pasang profil sama di admin dan endpoint.</p>
 </li>
 <li>
 <p><strong>WINDOWS setelah configure, sebelum enrollment:</strong> sediakan console dan media
-transfer request/bundle. Jalankan:</p>
-<pre><code class="language-powershell">&amp; $vg internet-preview
-&amp; $vg internet-enable
-&amp; $vg internet-status
+transfer request/bundle. Buka PowerShell Administrator. Masuk folder aplikasi:</p>
+<pre><code class="language-powershell">Set-Location &quot;$env:ProgramFiles\VanGuardEndpoint&quot;
+</code></pre>
+<p>Lihat rencana aturan terlebih dahulu:</p>
+<pre><code class="language-powershell">.\VanGuard.bat internet-preview
+</code></pre>
+<p>Periksa rencana bersama admin. Hanya setelah gateway, jalur layanan dan
+recovery siap, aktifkan policy yang sudah disetujui:</p>
+<pre><code class="language-powershell">.\VanGuard.bat internet-enable
+</code></pre>
+<p>Tunggu selesai. Jika BAT meminta tombol, tekan Enter, lalu periksa statusnya:</p>
+<pre><code class="language-powershell">.\VanGuard.bat internet-status
 </code></pre>
 <p>Internet langsung diblok <strong>setelah enable berhasil</strong>, bukan saat klik EXE umum.
 Wizard per-device schema2 menjalankan tahap ini. Endpoint domain atau GPO yang
@@ -921,7 +980,8 @@ reboot dan isolasi perangkat lain. Jangan menganggap PASS hanya karena install s
 </li>
 </ol>
 <p><strong>Recovery:</strong> disconnect, pastikan tunnel/service berhenti, lalu admin lokal
-menjalankan <code>&amp; $vg internet-recover</code> dan mengonfirmasi <code>PULIHKAN</code>. Ini memulihkan
+masuk ke folder aplikasi dengan <code>Set-Location</code> seperti di atas, lalu menjalankan
+<code>.\VanGuard.bat internet-recover</code> dan mengonfirmasi <code>PULIHKAN</code>. Ini memulihkan
 policy sebelum lockdown dan dapat membuka internet langsung; <strong>bukan revoke server</strong>.
 Jangan hapus state/backup firewall. Maintenance runtime saat lockdown aktif harus
 melalui recovery terencana. Tidak ada fallback otomatis yang membuka internet.</p>

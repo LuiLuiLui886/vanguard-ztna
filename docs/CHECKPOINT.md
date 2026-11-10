@@ -20,6 +20,14 @@ Ekspor aktual schema2 lulus; hasil tersedia di `state/endpoint-public-u8wsu2hh/`
 Helper dan preflight lulus14tes Linux terarah. Preflight kini mewajibkan5Ubuntu,
 namun tetap BLOCKED karena Ethernet.50.10 tidak aktif saat pemeriksaan terakhir.
 
+## Perintah Windows pada manual
+
+Alur pengguna memakai Set-Location ke folder aplikasi, lalu perintah singkat
+`.\VanGuard.bat ACTION`, satu aksi per blok. Configure/import/login/connect
+terpisah dengan jawaban prompt, hasil dan jeda BAT.14pemanggilan dicocokkan
+terhadap action launcher; HTML/tautan valid. Ini revisi dokumentasi, tanpa tes
+Windows native atau rebuild paket lama.
+
 ## Petunjuk terminal dan file
 
 Manual diperinci pada Bagian0.2.1–0.2.3 dan1.1.1–1.1.2: posisi terminal,
