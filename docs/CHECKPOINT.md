@@ -2,6 +2,9 @@
 
 ## Tujuh VM dinyalakan — 10 November 2026 15:24 WIB
 
+Commit boot `13b26fd` dan koreksi SSH masih lokal; push tertunda karena DNS
+GitHub gagal.
+
 Semua tujuh domain `running`. Kelima Ubuntu lulus SSH BatchMode dan jendela
 terminal SSH interaktif diluncurkan. Dua viewer Windows11/10 berproses; tampilan
 fisik di layar pengguna belum diverifikasi. RAM host31GiB, disk bebas2,6GiB
