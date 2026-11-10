@@ -1,7 +1,9 @@
 # Panduan penggunaan VanGuard
 
-Edisi 4 November 2026 · panduan admin dan pengguna Windows.
+Edisi 10 November 2026 · panduan admin dan pengguna Windows.
 Markdown dan HTML adalah dua format dari **manual yang sama**.
+Manual yang tertanam di EXE/ZIP rilis lama belum dibangun ulang; gunakan edisi
+MD/HTML terbaru di folder `docs` ini saat mengikuti tutorial.
 Ganti `/PATH/...`, `ID_PERANGKAT`, `IP_TUNNEL` dan placeholder kapital dengan
 nilai yang sudah disiapkan admin; jangan menyalin placeholder apa adanya.
 
@@ -19,7 +21,8 @@ Lihat [checkpoint](CHECKPOINT.md) dan [hasil validasi](reports/VALIDASI_0.1.15_2
 
 | Kebutuhan | Mulai dari |
 |---|---|
-| Sistem sudah terpasang, tambah PC Windows | Bagian 1–5 |
+| Baru pertama membaca / memakai lab yang sudah ada | Bagian 0, lalu 1–6 |
+| Sistem sudah terpasang, tambah PC Windows | Bagian 0–5 |
 | Perangkat sudah terdaftar | Bagian 4 |
 | Cabut akses atau lihat aktivitas | Bagian 6 |
 | Membuat paket satu BAT/EXE per perangkat | Bagian 7 |
@@ -31,6 +34,106 @@ Lihat [checkpoint](CHECKPOINT.md) dan [hasil validasi](reports/VALIDASI_0.1.15_2
 Lihat [checkpoint](CHECKPOINT.md) untuk versi yang benar-benar terpasang dan hasil
 uji. Instalasi aplikasi tidak otomatis mengaktifkan profil server atau gateway
 internet; admin tetap perlu mengikuti konfigurasi pada Bagian 1 dan 8.
+
+## 0. Mulai di sini: komputer dan terminal yang digunakan
+
+Mulai tutorial dari awal berarti mengikuti langkah pemakaian dari awal. Pada
+laptop ini backend dan CA sudah terpasang; **lewati Bagian 9**. CA baru hanya
+untuk instalasi lingkungan yang benar-benar baru. Setiap komputer Windows baru
+mendapat sertifikat perangkat dari CA yang sama.
+
+### 0.1 Arti host, VM, endpoint, dan dashboard
+
+| Istilah | Maksudnya pada sistem ini | Tempat mengetik / membuka |
+|---|---|---|
+| HOST | Laptop Linux fisik yang menjalankan semua VM; folder proyek ada di `/home/lui/vanguard` | Terminal laptop Linux |
+| VM | Komputer virtual yang berjalan di dalam host; masing-masing punya OS, file dan terminal sendiri | Terminal sesudah SSH atau console VM |
+| VM-CA | Layanan penerbit dan pencabut sertifikat perangkat | `ubuntu@vm-ca:~$` |
+| VM-SERVER | Pemeriksa akses, WireGuard dan gateway | `ubuntu@vm-server:~$` |
+| VM-ADMIN | Layanan aplikasi dashboard admin | `ubuntu@vm-admin:~$` |
+| Endpoint | PC/laptop Windows yang akan mendapat akses | PowerShell Windows, Run as administrator |
+| Dashboard | Halaman web untuk admin mengelola perangkat/akun/izin | Browser host → `https://192.168.100.40:5000` |
+| `.venv` | Lingkungan Python proyek di host; bukan nama aplikasi pada semua VM | `/home/lui/vanguard/.venv/bin/python` |
+| Profil | File JSON yang mengatur alamat layanan, trust dan mode akses endpoint | Dibuat/disiapkan admin lalu dipakai Windows |
+
+### 0.2 Kenali prompt dan folder sebelum menyalin perintah
+
+Prompt adalah tulisan sebelum kursor; **jangan ikut menyalin prompt atau tanda `$`**.
+`~` berarti folder home akun yang sedang dipakai. `~/vanguard` berarti folder proyek.
+Folder home host dan folder home VM adalah lokasi berbeda.
+
+| Yang terlihat | Artinya | Langkah berikut |
+|---|---|---|
+| `lui@lui-Vostro-15-3510:~$` | Terminal host, masih di home | Jalankan `cd /home/lui/vanguard` |
+| `lui@lui-Vostro-15-3510:~/vanguard$` | Terminal host sudah di proyek | Perintah `scripts/...` dan `.venv/...` dapat dijalankan |
+| `ubuntu@vm-server:~$`, `ubuntu@vm-ca:~$`, atau `ubuntu@vm-admin:~$` | Sudah masuk VM melalui SSH | Jalankan perintah khusus VM itu; jangan ulang helper login host |
+| `PS C:\...>` | PowerShell Windows | Jalankan blok bertanda WINDOWS |
+
+**HOST — buka terminal baru pada laptop Linux**, lalu:
+
+```bash
+cd /home/lui/vanguard
+pwd
+ls -l .venv/bin/python scripts/prepare_endpoint_pilot.py
+.venv/bin/python --version
+```
+
+Hasil `pwd` harus `/home/lui/vanguard`; Python harus menampilkan versinya.
+Jalankan `cd` lagi pada setiap terminal host baru. Jika prompt sudah `ubuntu@vm-*`,
+ketik `exit` untuk kembali dari SSH ke host atau buka terminal host baru.
+
+Jika `.venv/bin/python` tetap tidak ditemukan setelah masuk folder yang benar,
+berhenti dan periksa instalasi proyek; jangan membuat ulang CA/VM. Pada host
+baru, langkah instalasi Python tersedia di Bagian 9. File `state/` berisi bahan
+lokal, sehingga clone GitHub baru tidak otomatis memiliki inventory/sertifikatnya.
+
+**Cara membaca contoh:** `/PATH/root.crt` berarti “isi alamat file root.crt yang
+benar”, bukan folder yang harus dibuat bernama PATH. `ID_PERANGKAT`, `IP_TUNNEL`
+dan tulisan kapital serupa harus diisi sesuai data admin. Bagian 1.1 di bawah
+memakai lokasi nyata pada host ini supaya tidak perlu menebak `/PATH`.
+
+### 0.3 Nyalakan backend, lalu buka terminal VM
+
+**HOST — dari `/home/lui/vanguard`:**
+
+```bash
+virsh -c qemu:///system list --all
+```
+
+Untuk tiap VM yang masih `shut off`, jalankan baris yang sesuai:
+
+```bash
+virsh -c qemu:///system start VM-CA
+virsh -c qemu:///system start VM-SERVER
+virsh -c qemu:///system start VM-ADMIN
+```
+
+Lewati `start` jika sudah `running`. Tunggu boot selesai. Tiga layanan ini cukup
+untuk melayani endpoint Windows fisik; VM client/attacker hanya untuk skenario lab.
+
+Jika terminal `ubuntu@vm-ca`, `ubuntu@vm-server`, dan `ubuntu@vm-admin` sudah
+terbuka, langsung lanjut Bagian 1. Jika belum, buka tiga terminal **host** dan
+jalankan pada masing-masing. Baca username SSH dari inventaris privat
+`/home/lui/VanGuard-Privat/KREDENSIAL_VANGUARD.md` di host; simpan isinya lokal:
+
+```bash
+cd /home/lui/vanguard
+read -r -p 'Username SSH VM dari inventaris privat: ' VG_SSH_USER
+# Tab CA:
+ssh -F /home/lui/.ssh/vanguard_lab_config -o StrictHostKeyChecking=yes "$VG_SSH_USER@192.168.100.10"
+```
+
+Pada tab server ganti alamat terakhir menjadi `192.168.100.20`; pada tab admin
+menjadi `192.168.100.40`. Isi variabel username lagi pada setiap terminal baru.
+Sesudah login, jalankan `hostname` dan cocokkan peran. Tutup sesi dengan `exit`;
+VM tetap hidup. File konfigurasi SSH di atas hanya tersedia pada host yang sudah
+disiapkan. Jika host key berubah, verifikasi lewat console sebelum melanjutkan.
+
+Urutan setelah ini: **Bagian 1** periksa layanan dan ambil profil → **Bagian 2**
+install Windows serta buat request → **Bagian 3** admin setujui → **Bagian 4**
+import/login/connect → **Bagian 5** uji izin → **Bagian 6** logout/revoke dan audit.
+Untuk mode internet terkelola (schema2), ikuti **Bagian 8 sebelum init/enrollment**
+pada Bagian 2.2; jangan mengaktifkan lockdown sebelum jalur server teruji.
 
 ## 1. Persiapan admin
 
@@ -44,20 +147,24 @@ internet; admin tetap perlu mengikuti konfigurasi pada Bagian 1 dan 8.
 | Dashboard admin | https://192.168.100.40:5000 |
 | Tunnel server | 10.8.0.1 |
 
-1. Nyalakan VM-CA, VM-SERVER, lalu VM-ADMIN. Lab yang sudah terpasang memakai CA
-   yang sama; **jangan generate CA baru untuk setiap komputer**.
-2. Periksa jam, ruang disk, dan service pada masing-masing VM:
+1. Ikuti Bagian 0 sampai ketiga VM menyala dan terminalnya terbuka.
+   Lab ini memakai CA existing; jangan generate CA baru untuk setiap komputer.
+2. Di setiap terminal VM, periksa `timedatectl status` dan `df -h`, lalu
+   jalankan **hanya perintah sesuai VM tersebut**:
+
+   | Terminal | Perintah yang harus menghasilkan `active` |
+   |---|---|
+   | VM-CA | `sudo systemctl is-active vanguard-ca` |
+   | VM-SERVER | `sudo systemctl is-active wg-quick@wg0 vanguard-server vanguard-daemon` |
+   | VM-ADMIN | `sudo systemctl is-active vanguard-admin` |
+
+   Jika ada `failed`/`inactive`, periksa status unit tersebut sebelum melanjutkan.
+
+3. Di **VM-ADMIN**, pastikan ketiga pemeriksaan menghasilkan HTTP200 dan `ready`:
 
    ```bash
-   timedatectl status
-   df -h
-   # Sesuaikan role: vanguard-ca, vanguard-server, atau vanguard-admin.
-   sudo systemctl is-active vanguard-server
-   ```
-
-3. Di **VM-ADMIN**, pastikan kedua pemeriksaan menghasilkan HTTP200 dan `ready`:
-
-   ```bash
+   curl --fail --connect-timeout 3 --max-time 8 --cacert /etc/vanguard/root.crt \
+     https://192.168.100.10:8080/readyz
    curl --fail --connect-timeout 3 --max-time 8 --cacert /etc/vanguard/root.crt \
      https://192.168.100.20:8081/readyz
    curl --fail --connect-timeout 3 --max-time 8 --cacert /etc/vanguard/root.crt \
@@ -73,28 +180,91 @@ internet; admin tetap perlu mengikuti konfigurasi pada Bagian 1 dan 8.
 **IP tunnel bukan IP LAN.** Lab mencadangkan10.8.0.2/.3/.4; periksa registry sebelum
 mengalokasikan IP lain. PC berbeda harus mempunyai ID dan kunci berbeda.
 
-### 1.1 Menyiapkan profil jika belum tersedia
+### 1.1 Ambil profil yang sudah aktif pada lab ini
 
-Di HOST, gunakan salinan **root publik** dan **public key server** yang diverifikasi:
+**Jalur normal untuk sistem existing:** gunakan profil aktif VM-ADMIN. Pada
+pemeriksaan 10 November, profil ini **schema2 (internet terkelola)**. Generator
+`prepare_endpoint_pilot.py` menghasilkan schema1; jangan menjalankannya hanya
+karena ingin menambah komputer pada sistem yang sudah bekerja.
+
+**HOST — terminal lokal, bukan shell VM:** perintah berikut mengambil tiga
+berkas publik lewat jalur SSH yang sudah diverifikasi. Buat folder baru setiap
+pengambilan agar bahan sebelumnya tidak tertimpa.
 
 ```bash
-.venv/bin/python scripts/prepare_endpoint_pilot.py \
-  --root /PATH/root.crt --server-public-key-file /PATH/server-wg.pub \
-  --output /PATH/PROFIL_BARU
+cd /home/lui/vanguard
+read -r -p 'Username SSH VM dari inventaris privat: ' VG_SSH_USER
+VG_PUBLIC_DIR=$(mktemp -d "$PWD/state/endpoint-public.XXXXXX")
+printf 'Folder hasil: %s\n' "$VG_PUBLIC_DIR"
+ssh -F /home/lui/.ssh/vanguard_lab_config -o StrictHostKeyChecking=yes "$VG_SSH_USER@192.168.100.10" \
+  'cat /etc/vanguard/root.crt' > "$VG_PUBLIC_DIR/root.crt"
+ssh -F /home/lui/.ssh/vanguard_lab_config -o StrictHostKeyChecking=yes "$VG_SSH_USER@192.168.100.20" \
+  'sudo wg show wg0 public-key' > "$VG_PUBLIC_DIR/server-wg.pub"
+ssh -F /home/lui/.ssh/vanguard_lab_config -o StrictHostKeyChecking=yes "$VG_SSH_USER@192.168.100.40" \
+  'sudo -n cat /etc/vanguard/endpoint-profile.json' > "$VG_PUBLIC_DIR/profile.json"
 ```
 
-Hasilnya profil **aplikasi internal/schema1**, bukan internet terkelola. Generator
-menggunakan alamat lab pada tabel di atas. Pada jaringan lain, alamat, SAN HTTPS,
-routing dan firewall harus disesuaikan oleh operator.
+Jalankan berurutan; jika salah satu perintah gagal atau meminta hak yang belum
+tersedia, **berhenti**. Berkas hasil bisa kosong jika SSH gagal; jangan langsung
+menyalinnya ke Windows. Kredensial VM harus sesuai inventaris privat host ini.
 
-Pada VM-ADMIN, setelah backup konfigurasi/database yang konsisten:
+**HOST — validasi hasil dan tampilkan nilai publik untuk dicocokkan admin:**
 
-1. Salin profil ke `/etc/vanguard/endpoint-profile.json`, owner root:vanguard,
-   mode0640. Profil tidak memuat password atau private key.
-2. Tambahkan `VANGUARD_CLIENT_PROFILE=/etc/vanguard/endpoint-profile.json` melalui
-   `sudoedit /etc/vanguard/admin.env`; pertahankan nilai env lainnya.
-3. Restart `vanguard-admin` dan ulangi readiness. Bundle harus berisi profil yang
-   sama dengan profil endpoint. Berhenti jika tidak cocok.
+```bash
+.venv/bin/python - "$VG_PUBLIC_DIR" <<'PYPROFILE'
+import sys
+from pathlib import Path
+from vanguard.profile import load_profile
+from vanguard.pki import fingerprint, load_cert
+folder = Path(sys.argv[1])
+profile = load_profile(folder / 'profile.json', folder / 'root.crt')
+key = (folder / 'server-wg.pub').read_text().strip()
+assert key == profile['server_public_key'], 'Public key server tidak cocok'
+print('Mode/schema:', profile['schema'])
+print('API:', profile['api_url'])
+print('Fingerprint root:', fingerprint(load_cert((folder / 'root.crt').read_bytes())))
+print('Public key server:', key)
+print('Folder siap diperiksa admin:', folder)
+PYPROFILE
+```
+
+Cocokkan fingerprint dengan CA melalui jalur admin tepercaya (Bagian 9.2 memuat
+perintah membaca fingerprint; tidak perlu menjalankan init). Salin `profile.json`
+dan `root.crt` ke folder Windows pada Bagian 2.2. Catat fingerprint/public key
+untuk isian configure. Folder ini tidak berisi private key, token atau password.
+`VG_PUBLIC_DIR` hanya berlaku pada terminal yang sama; jika membuka terminal baru,
+isi kembali dengan alamat folder hasil yang tadi dicetak.
+
+### 1.2 Opsional: buat kandidat profil aplikasi internal baru
+
+Gunakan bagian ini hanya jika admin memang memilih **mode aplikasi internal**.
+Pada host existing tersedia `state/deployment/root.crt` dan
+`state/deployment/server-wg.pub`; salinan keduanya dicocokkan dengan VM aktif pada
+10 November. Periksa kembali jika CA/server berubah. Salinan ini tidak tersedia
+pada clone GitHub baru; gunakan bahan publik terverifikasi dari Bagian 1.1.
+
+**HOST — contoh lengkap dengan lokasi pada komputer ini:**
+
+```bash
+cd /home/lui/vanguard
+.venv/bin/python scripts/prepare_endpoint_pilot.py \
+  --root state/deployment/root.crt \
+  --server-public-key-file state/deployment/server-wg.pub \
+  --output state/profil-aplikasi-pertama
+```
+
+Hasil berada di `/home/lui/vanguard/state/profil-aplikasi-pertama/`: profil,
+root publik, rencana jaringan dan kandidat env admin. Jika folder sudah ada,
+generator menolak menimpa; gunakan nama folder baru, jangan hapus konfigurasi
+existing. Generator tidak membuat CA, menerbitkan sertifikat, memasang firewall,
+atau menambahkan peer. Alamatnya mengikuti lab pada tabel layanan.
+
+**Hanya bila admin memutuskan menerapkan profil baru**, buat backup konfigurasi/
+database VM-ADMIN yang konsisten, pasang profil di `/etc/vanguard/endpoint-profile.json`
+dengan owner root:vanguard dan mode0640, pertahankan env lain saat mengatur
+`VANGUARD_CLIENT_PROFILE`, lalu restart admin dan ulang readiness. Bundle dan
+profil endpoint harus cocok. Ini perubahan mode sistem, bukan syarat menambah PC
+pada profil existing.
 
 **PC fisik pada pilot .50/24:** host Linux192.168.50.10 meneruskan koneksi ke
 backend .100/24. Operator menyiapkan forwarding dan jalur balik, membatasi endpoint
@@ -311,10 +481,12 @@ sebelum mengubah runtime. Pemulihan kode tidak berarti rollback histori CA/datab
 Jalur ini menggantikan konfigurasi manual Bagian2.2. Admin menyiapkan profil,
 root dan alokasi; pengguna menjalankan wizard yang sama sampai connect.
 
-**HOST:** ambil folder `wheels` dan `runtimes` dari
+**HOST, dari folder proyek:** contoh di bawah adalah template build opsional;
+isi semua `/PATH/...` dari lokasi hasil ekstraksi sendiri. Ambil folder `wheels` dan `runtimes` dari
 [template offline](../downloads/README.md), verifikasi checksum, lalu:
 
 ```bash
+cd /home/lui/vanguard
 .venv/bin/python scripts/build_endpoint_package.py \
   --wheelhouse /PATH/windows-wheels --runtime-directory /PATH/runtime-installers \
   --output /PATH/paket-perangkat-baru \
@@ -498,6 +670,9 @@ sebagai satu state konsisten; jangan memulihkan sebagian file lama.
 
 | Gejala | Tindakan |
 |---|---|
+| `.venv/bin/python: No such file or directory` | Di HOST jalankan `cd /home/lui/vanguard`, lalu cek `.venv/bin/python`; ikuti Bagian 0.2 |
+| Inventory tidak ditemukan pada `ubuntu@vm-*` | Sudah login ke VM; helper login hanya untuk host. Lanjut pemeriksaan layanan Bagian 1 |
+| `/PATH/...` tidak ditemukan | Itu placeholder. Gunakan file nyata atau ikuti pengambilan profil Bagian 1.1 |
 | Readiness503/unknown | Periksa service, jam, disk dan dependency. Catat kegagalan; HTTP200 sesudah retry tidak menghapus kejadian awal |
 | Configure ditolak | Cocokkan profil/root/fingerprint/key; jangan hapus trust lama untuk memaksa lolos |
 | Login gagal | Periksa akun karyawan, password, status aktif dan koneksi HTTPS |

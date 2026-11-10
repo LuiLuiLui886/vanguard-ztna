@@ -1,5 +1,15 @@
 # Checkpoint VanGuard — 10 November 2026
 
+## Modul penggunaan dari awal — edisi 10 November 2026
+
+Manual utama MD/HTML kini dimulai dari Bagian0: arti host/VM/endpoint, prompt,
+folder, `.venv`, placeholder, boot dan SSH. Bagian1.1 mengambil profil existing
+schema2 serta bahan trust publik; generator schema1 dipindahkan ke opsi1.2.
+Contoh pengambilan bahan publik aktual dan validasi dari manual PASS; generator
+schema1 diuji di direktori sementara. Render HTML dan validasi tautan lulus.
+Tidak mengubah runtime, CA, profil admin atau paket installer. Mulai dari
+[manual terbaru](MODUL_PENGGUNAAN_VANGUARD.md); pada host jalankan `cd /home/lui/vanguard` dahulu.
+
 ## Diagnosis FileNotFoundError SSH — 10 November 2026
 
 Pengguna menjalankan helper login host di prompt `ubuntu@vm-ca/admin/server`.
