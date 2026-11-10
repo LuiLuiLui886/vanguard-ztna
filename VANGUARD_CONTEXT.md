@@ -40,7 +40,7 @@ The proposal explicitly defines MTTR as Mean Time to Respond, not recovery/repai
 and scopes MTTD/MTTR to stolen valid employee credentials on an untrusted device.
 Version 0.1.4 adds request-local monotonic denial timing and server-generated
 correlation IDs. Application detection/response boundaries are defined in
-docs/RESPONSE_METRICS.md; they are distinct from network RTT, prior S-04 revocation
+docs/testing/RESPONSE_METRICS.md; they are distinct from network RTT, prior S-04 revocation
 bounds, credential-theft onset and operational recovery. Timing records never
 include passwords, sessions, bodies, certificate PEM, proof signatures or nonces.
 This telemetry does not change any admission check or add an alternative peer path.
@@ -90,7 +90,7 @@ extends certificates. Readiness is bounded/read-only, separate from liveness.
 An opt-in explicit resource policy gates internal-demo 10.8.0.1 TCP8082 before
 established-flow acceptance; an empty policy denies access. This does not change
 WireGuard or relax six-check admission/employee sessions. Deployment and native
-versus mock evidence must follow docs/CHECKPOINT.md and docs/HARDENING_0.1.9.md.
+versus mock evidence must follow docs/CHECKPOINT.md and docs/reference/HARDENING_0.1.9.md.
 
 Windows VM optimization — 19 October 2026:
 The existing Windows domain now exposes hypervclock plus vpindex/synic/stimer.
@@ -109,7 +109,7 @@ primary identity hashes precede rollout. The CA root/index/serial were preserved
 no old index/CRL restoration or counter guessing was performed. The server now
 enables the explicit TCP8082 application gate with default deny. Temporary
 identity .3 is used sequentially, not either primary client identity.
-Linux live matrix is recorded in docs/VALIDASI_ROLLOUT_2026-10-20.md; Windows
+Linux live matrix is recorded in docs/reports/VALIDASI_ROLLOUT_2026-10-20.md; Windows
 live work remains in progress until its final evidence/cleanup is recorded.
 A Windows teardown timeout preserved config; verified operator recovery stopped
 the exact service before confirming1060. Do not blindly delete leftover config.
@@ -459,7 +459,7 @@ Linux isolated regression89PASS/1SKIP; Windows/EXE not rerun. Initial health sam
 follow-up30/30 succeeded, but the original cause is unconfirmed, not fixed.
 No product code or admission policy weakened. Runtime TOTP replay counter advances
 on successful admin login and must not be treated as immutable history during
-verification. See docs/UJI_INTEGRASI_0.1.14_2026-10-31.md for harness failures and
+verification. See docs/reports/UJI_INTEGRASI_0.1.14_2026-10-31.md for harness failures and
 scope. Four Ubuntu backend/client VMs running, other three off; host1.3GiB free,
 managed internet/profile deployment still pending. Private evidence retained.
 
@@ -499,3 +499,130 @@ Current links were updated; historical evidence/flowcharts/Git history preserved
 No product/VM/credential changes or ZIP/EXE rebuild. Embedded manuals in existing
 packages remain older editions. Source fixes and deployment gaps remain as
 recorded31October; documentation editing does not imply execution or rollout.
+
+
+Release and operational update — 2 November 2026:
+CA/server/admin upgraded0.1.14→0.1.15 with quiescent backups, source-wheel parity,
+dependency and state verification. Ubuntu client upgraded0.1.9→0.1.15. Original
+expired vm-client identity was revoked through the dashboard; its files remain.
+Active primary is vm-client-20261102 at /var/lib/vanguard/client-20261102 via
+/etc/systemd/system/vanguard-client.service.d/identity-20261102.conf. Both keys
+were generated on the client; immutable replacement inherits old account/IP.
+Password unchanged. Handshake and two automatic renewals passed. Do not reenroll
+or restart the revoked old identity as a recovery method.
+
+Main server now has empty/default-deny VANGUARD_INTERNET_POLICY at
+/var/lib/vanguard/server/internet-policy.json, IPv4 forwarding and NAT on eth0.
+Admin VANGUARD_CLIENT_PROFILE points to /etc/vanguard/endpoint-profile.json,
+schema2 public lab profile. No permanent Internet grant was added. An exact-table
+config recovery timer was prepared and canceled after fresh SSH/readiness
+checks; no CA or database rollback. Gateway availability does not enable endpoint
+lockdown or authorize unmanaged Internet access.
+
+Full Linux348PASS/1SKIP; native final EXE identical on Windows10 build19044 and
+Windows11 build26300: actual upgrade exit0,0.1.15/27source parity/pip check,
+primary config/identity/firewall retained, no tunnel created. Installed runtime
+prerequisites were reused; legacy files and releases retained. Not fresh OS/UAC.
+Live installed0.1.15 HTTPS/WireGuard tests passed negative admission, application
+policy/LAN denial, active TCP blocking, two renewals, scoped/idempotent logout,
+and CA-only revoke (one peer-removal sample6.828s). Main gateway Linux /32 fixture
+passed no-grant→grant→removal. Fixture cleaned, account disabled/cert revoked,
+original policy bytes restored and primary client active. Postflight30/30HTTP,
+root/key unchanged, all30old CRL revocations retained within32current entries.
+
+Windows0.1.15 native main-gateway follow-up — 2–3 November 2026:
+Windows10 build19044 passed122probes; Windows11 build26300 passed98probes.
+Both passed two renewals, pre-certificate/pre-admission lockdown, Internet grant,
+removal/regrant, explicit direct-LAN-route bypass denial, CA-only revocation,
+403readmission and policy remaining blocked after disconnect. Single peer-removal
+samples were10.056s and4.359s. Explicit local recovery restored original files and
+firewall; fixture accounts disabled/certificates revoked/grants and tasks removed.
+Windows11 originally had no ProgramFiles identity directory; preserve that absence
+and the separate legacy ProgramData identity. Evidence under windows-managed-r2/.
+These fixtures called installed client APIs directly; production launcher subnet
+overlap guard stays intact. Do not count this as physical launcher/UAC coverage.
+Persistent Internet TCP revocation, physicalLAN/Wi-Fi, interactiveUAC/MOTW/GPO,
+freshOS, long-load and physical CA power-loss acceptance remain BELUM_TERUJI.
+Earlier transient public egress/upstream failures remain unexplained; no host
+firewall/router changes and no claim they were fixed. Failed evidence retained.
+
+After host reboot3November, Ubuntu employee session was expired and fail-closed.
+Owner was stopped, lock acquired, no tunnel verified, and only proven stale owned
+files archived. Existing account login, handshake and automatic renewal passed;
+primary identity hashes unchanged. Do not reenroll vm-client-20261102. Host now
+reports15GiB RAM; VM definitions were not changed. Free disk about1.5GiB; retain
+backups and obtain capacity before long tests. Six VMs running, attacker preserved
+off. See docs/reports/VALIDASI_0.1.15_2026-11-02.md and latest checkpoint for final postflight
+and publication. Main c8af46f merged previous work through13dbb18;0.1.15 is published
+separately on the existing feature branch, never assume main has the same package.
+
+
+CA storage update — 3 November 2026:
+VM-CA now runs0.1.17; server/admin and Windows installer remain0.1.15. The old
+seal serialized all file flushes under the CA lock; temporary-VM fixture confirmed
+5.487s for the second generation. First0.1.16 parallel-fsync candidate was deployed
+but still failed29/30 and25/30HTTPS; preserve those failures. Final0.1.17 uses
+Linux>=5.8 syncfs for the private generation, verifies all members share its
+filesystem, checks errors, and waits before directory barriers and commit. Older
+platforms retain per-file fsync. Publication/recovery journal format, counters,
+CRL freshness, admission and readiness budgets are unchanged. Never restore old
+index/CRL or disable storage barriers to recover readiness.
+Final tests:26CA durability/interruption/error/fallback cases plus74health/PKI/
+admission cases passed. Selected100tests, not a new full suite or Windows test.
+Two verified quiescent code/config/state backups are private under
+state/ca-io-20261103/ and v2/. Only code rollback is allowed; no rollback was needed.
+27installed source members and196state files verified before restart; CA invariant,
+root/key/bindings/history retained. Final live postflight30/30HTTPS plus5/5fresh
+CRLs; separate normal-load30/30HTTPS. All35revocations retained. Real admin
+password/TOTP login, dashboard200, scoped logout passed; credentials remain local.
+Host later rebooted; latest VM/display status is in checkpoint. Do not rerun
+rollout scripts: finished milestones exist. See docs/reports/PERBAIKAN_CA_IO_2026-11-03.md.
+
+
+Repository organization — 4 November 2026:
+Documentation is grouped under docs/progress, reports, proposal, reference,
+testing (including results XML), and history/checkpoints. The active checkpoint,
+API, SECURITY, WINDOWS_CLIENT and single manual MD/HTML keep their existing paths.
+New journals belong in docs/progress/PROGRESS_YYYY-MM-DD.md. Start at docs/README.md
+or the root README. Older installers moved to downloads/archive with unchanged
+bytes; latest 0.1.15 paths remain stable. No application/VM/security behavior was
+changed by this organization. Released ZIP/EXE contents were not rebuilt.
+
+
+Pre-field verification — 9–10 November 2026:
+User flowchart commit ef14b07 was integrated without replacing their changes.
+Keep CA0.1.17 and server/admin0.1.15: runtime changes since0.1.15 affect CA seal;
+server's imported durable_write is AST-identical. All27installed source members
+per VM match their release. No runtime rollout, identity reset or grant changes.
+Full local Linux baseline:355pass/1skip (Windows ACL APIs),1010.63s; lint passed
+with two test import-order fixes; README uses python -m pytest as CI does.
+Initial boot samples13/30HTTPS on9Nov and28/30on10Nov retained; the latter had
+transient database unknown. Root cause unproven, do not claim a startup fix.
+Final10Nov11:53WIB postflight30/30HTTPS, all3services active, diagnostics ready.
+Nov9read-only CA invariants/history35revocations, DB integrity and scoped admin
+login/TOTP/logout passed. No new Windows native or physical endpoint acceptance.
+Only CA/server/admin running, all7definitions preserved. Host not on pilot
+Ethernet192.168.50.10; disk3.2GiBfree/99%used needs capacity before pilot backups.
+Existing Windows identity expires14Nov13:16:28WIB; lease renewal cannot extend it.
+See docs/reports/PRA_UJI_LAPANGAN_2026-11-09.md and latest checkpoint. Completed
+suite/postflight must not be rerun merely to resume; do not run old finalize or
+rollout scripts. Private evidence is under state/preflight-20261109/ and state/preflight-20261110/.
+
+Pilot host correction — 10 November 2026 afternoon:
+Current host Wi-Fi wlx76012dc00ec5 uses DHCP192.168.50.101/24 via router .50.1;
+planned Ethernet192.168.50.10/24 is absent. All VM domains shut off in latest
+observation. Pilot preflight from repository root BLOCKED (host_lan and3services
+FAIL, bridge/forward flag PASS, firewall MANUAL, HTTPS/endpoint NOT_TESTED).
+Libvirt NAT rules exist but observed FORWARD counters0, no endpoint forwarding
+proof. Manual updated: check .10 availability/reservation, use Ethernet for
+approved topology, start services, rerun preflight and verify traffic before
+Windows route/lockdown. No host/firewall/VM/IP changes were made in this step.
+
+
+Pilot Ethernet host update — 10 November 2026 15:04 WIB:
+enp3s0 linked, initially DHCP192.168.50.102. Static manual profile now
+192.168.50.10/24, gateway/DNS192.168.50.1; router ping2/2. Wi-Fi .50.101 kept.
+Original profile/address/routes saved privately state/pilot-host-20261110/.
+Preflight host_lan PASS, overall BLOCKED due three services off; firewall and
+endpoint traffic untested. Router DHCP reservation/exclusion for .10 unverified;
+check before physical client pilot. Do not infer backend readiness from host IP.

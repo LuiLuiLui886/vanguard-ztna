@@ -1,5 +1,19 @@
 # Bukti operasional client Windows VanGuard
 
+## 2–3 November — installer dan gateway utama0.1.15
+
+EXE final identik lulus instalasi native pada Windows10 build19044 dan Windows11
+build26300: exit0, versi0.1.15, pip check/27source cocok, identitas/config/firewall
+tetap dan tidak membuat tunnel. Runtime Python/WireGuard sudah tersedia; bukan
+fresh OS atau klik UAC interaktif. Gabungan lockdown0.1.15 dengan gateway utama
+PASS: Windows10 122probe dan Windows11 98probe, masing-masing dua renewal,
+grant/remove/regrant, larangan bypass route LAN, CA-only revoke dan readmission403.
+Peer hilang10,056/4,359detik pada satu sampel perOS. State asli dipulihkan dan
+fixture dibersihkan. Fixture memanggil API client langsung; guard overlap subnet
+launcher tetap ada. TCP Internet persisten, UAC dan fisik belum diuji.
+Rincian pada [laporan rilis](reports/VALIDASI_0.1.15_2026-11-02.md).
+
+
 Dokumen ini menyimpan bukti dan pemulihan historis VM, bukan tutorial aktif.
 Seluruh langkah penggunaan terbaru ada dalam [manual admin tunggal](MODUL_PENGGUNAAN_VANGUARD.md).
 
@@ -21,7 +35,7 @@ utama, Secure Boot/TPM dan definisi VM tetap sama. Ini tidak mencakup seluruh
 kegagalan OS atau soak test panjang; cleanup interupsi di bawah masih risiko.
 Readiness CA dapat sementara503 karena contention lock; liveness bukan readiness.
 Untuk rincian dan batas bukti,
-lihat [matriks aktual](VALIDASI_ROLLOUT_2026-10-20.md) dan [checkpoint](CHECKPOINT.md).
+lihat [matriks aktual](reports/VALIDASI_ROLLOUT_2026-10-20.md) dan [checkpoint](CHECKPOINT.md).
 
 Jika cleanup menampilkan timeout, **jangan hapus config**. Pada uji interupsi
 segera setelah install, service masih running meskipun uninstall telah diminta;
@@ -32,7 +46,7 @@ config diarsipkan sebelum dihapus. Pemulihan ini tidak membenarkan penghapusan
 service/config yang kepemilikannya belum dipastikan. Detail bukti tetap privat.
 
 ## Riwayat validasi0.1.8 dan kandidat0.1.9
-Kandidat 0.1.9: [hardening dan rollout](HARDENING_0.1.9.md) menambahkan logout,
+Kandidat 0.1.9: [hardening dan rollout](reference/HARDENING_0.1.9.md) menambahkan logout,
 lock proses dan guard ownership saat cleanup. Gunakan `python -m vanguard.client
 logout` setelah paket yang mendukungnya dipasang. Kegagalan kontak server
 mempertahankan token untuk retry; config dipertahankan bila service belum pasti
@@ -47,7 +61,7 @@ Pengamatan lease expiry terakhir masih IN_PROGRESS, belum dapat dinyatakan lulus
 
 Permintaan 13 Oktober 2026 menambahkan client Windows di samping lima VM Ubuntu.
 VM-CLIENT lama tidak diganti. Status instalasi terbaru ada di
-[checkpoint](CHECKPOINT.md) dan [jurnal](PROGRESS_2026-10-15.md).
+[checkpoint](CHECKPOINT.md) dan [jurnal](progress/PROGRESS_2026-10-15.md).
 Kode client lintas platform belum berarti tunnel Windows sudah terbukti hidup.
 
 | Node | LAN | Tunnel | Peran |
@@ -153,7 +167,7 @@ penyalinan image kemarin terhenti 90%; mengulang seed awal akan memformat disk.
    SSH, Secure Boot, TPM, alamat, aplikasi, admission dan cleanup secara terpisah.
    Catat tahap yang benar-benar terbukti; jangan mengulang setup saat masih berjalan.
 
-Bukti pemulihan hari ini: [jurnal](PROGRESS_2026-10-14.md). Petunjuk diagnosis:
+Bukti pemulihan hari ini: [jurnal](progress/PROGRESS_2026-10-14.md). Petunjuk diagnosis:
 [log Windows Setup](https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/deployment-troubleshooting-and-log-files?view=windows-11).
 
 ## Server dan validasi wajib
@@ -240,7 +254,7 @@ bersamaan. Pengukuran ini tidak mengubah atau menghapus lima Ubuntu.
 
 Client Windows VM lama tetap dipertahankan. Pilot PC LAN dan laptop Wi-Fi adalah
 endpoint tambahan, bukan penggantian VM dan bukan hasil yang sudah diuji. Gunakan
-[panduan pilot lengkap](ENDPOINT_WINDOWS_PILOT.md) dan Bab15.3 pada modul tunggal.
+[panduan pilot lengkap](reports/ENDPOINT_WINDOWS_PILOT.md) dan Bab15.3 pada modul tunggal.
 Source installer ada di `deploy/endpoint/windows`; jangan menggunakan
 `deploy/windows/bootstrap.ps1` provisioning VM pada perangkat fisik.
 

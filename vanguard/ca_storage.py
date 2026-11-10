@@ -10,6 +10,7 @@ import json
 import os
 import shutil
 import stat
+import sys
 import uuid
 from pathlib import Path
 
@@ -39,6 +40,39 @@ def durable_write(path, data, *, sync_parent=True):
     os.replace(temporary, path)
     if sync_parent:
         sync_dir(path.parent)
+
+
+def sync_generation(directory, members):
+    """Persist a private generation before publishing its commit decision.
+
+    Linux syncfs waits for all data/metadata on this filesystem. Since 5.8 it
+    also reports writeback errors. Older/other platforms retain per-file fsync.
+    The caller still syncs directories and the commit manifest in order.
+    """
+    syncfs = None
+    if sys.platform == 'linux':
+        import ctypes
+        import re
+        version = re.match(r'(\d+)\.(\d+)', os.uname().release)
+        if version and tuple(map(int, version.groups())) >= (5, 8):
+            syncfs = getattr(ctypes.CDLL(None, use_errno=True), 'syncfs', None)
+    if syncfs is None:
+        for path in members:
+            with open(path, 'rb') as stream:
+                os.fsync(stream.fileno())
+        return
+    syncfs.argtypes = [ctypes.c_int]
+    syncfs.restype = ctypes.c_int
+    fd = os.open(directory, os.O_RDONLY | os.O_DIRECTORY)
+    try:
+        device = os.fstat(fd).st_dev
+        if any(path.stat().st_dev != device for path in members):
+            raise OSError('CA generation crosses filesystems')
+        if syncfs(fd) != 0:
+            error = ctypes.get_errno()
+            raise OSError(error, os.strerror(error))
+    finally:
+        os.close(fd)
 
 
 class Publication:
@@ -147,15 +181,18 @@ class Publication:
 
     def seal(self):
         manifest = {}
+        members = []
         for path in sorted(self.work.rglob('*')):
             if path.is_file() and path.name != 'ca.lock':
                 name = str(path.relative_to(self.work))
                 if name not in FILES and path.relative_to(self.work).parts[0] not in DIRECTORIES:
                     continue
                 os.chmod(path, 0o600)
-                with open(path, 'rb') as stream:
-                    os.fsync(stream.fileno())
                 manifest[name] = hashlib.sha256(path.read_bytes()).hexdigest()
+                members.append(path)
+        # All writes are closed. The whole generation must be durable before
+        # any commit manifest can become visible; a failed barrier aborts here.
+        sync_generation(self.work, members)
         for path in sorted(self.work.rglob('*'), reverse=True):
             if path.is_dir():
                 sync_dir(path)

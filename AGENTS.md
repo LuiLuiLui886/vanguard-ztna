@@ -15,7 +15,7 @@ Before making any change:
 ## Required progress recording
 
 The user requires a resumable record of every change. Before each related group of
-changes, append the intended work to `docs/PROGRESS_YYYY-MM-DD.md`. After the work,
+changes, append the intended work to `docs/progress/PROGRESS_YYYY-MM-DD.md`. After the work,
 record affected files/VMs, actual validation results, remaining issues, and the next
 step. Update `docs/CHECKPOINT.md` and `LANJUTKAN_PROYEK.md` before stopping. Mark
 interrupted/in-progress work explicitly; never infer success from an incomplete log.

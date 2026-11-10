@@ -1,4 +1,275 @@
-# Checkpoint VanGuard — 1 November 2026
+# Checkpoint VanGuard — 10 November 2026
+
+## Ethernet host aktif — 10 November 2026 15:04 WIB
+
+Kabel `enp3s0` tersambung. Profil NetworkManager kini memakai IPv4 manual
+`192.168.50.10/24`, gateway/DNS `.50.1`; ping router 2/2. Wi-Fi `.50.101`
+tetap aktif. Cadangan konfigurasi awal privat ada di
+`state/pilot-host-20261110/`. Reservasi `.10` di router belum diverifikasi;
+operator harus memastikan alamat itu tidak dibagikan DHCP ke perangkat lain.
+Preflight host_lan PASS, tetapi status keseluruhan BLOCKED karena CA/server/admin
+mati; firewall MANUAL dan lalu lintas endpoint BELUM_TERUJI. Nyalakan layanan
+dan uji jalur balik sebelum memasang route Windows atau memulai lockdown.
+
+## Koreksi alamat pilot — 10 November 2026
+
+Koreksi panduan `99d2024` dan catatan pemulihan `8ddf9b4` sudah dipush ke
+branch feature setelah DNS pulih. Pemeriksaan ulang 14:30 WIB masih menunjukkan
+Wi-Fi `.50.101`, Ethernet `.50.10` belum aktif, dan CA/server/admin shut off.
+
+Host saat diperiksa memakai Wi-Fi DHCP `192.168.50.101/24`; panduan `.50.10`
+adalah alamat rencana Ethernet host, belum aktif. Seluruh VM saat ini shut off.
+Preflight dari root repo berstatus BLOCKED: host_lan dan tiga VM layanan FAIL;
+bridge dan ip_forward PASS; firewall MANUAL, HTTPS/traffic NOT_TESTED. Snapshot
+NAT libvirt dan `ip_forward=1` belum membuktikan forwarding endpoint.
+Panduan lapangan kini menjelaskan mismatch, perintah `cd /home/lui/vanguard`,
+dan pemeriksaan alamat sebelum route Windows. Jangan gunakan next-hop `.50.10`
+sebelum Ethernet host aktif, alamatnya bebas konflik, dan jalur terbukti.
+[Lihat panduan](../docs/PERSIAPAN_UJI_LAPANGAN.md).
+
+## Pra-uji lapangan — selesai 10 November 2026 11:53 WIB
+
+Hasil dan perbaikan dipush pada `80394ca` ke branch feature; SHA remote terverifikasi.
+
+Baseline Linux: **355 PASS, 1 SKIP**, 0 failure/error, 1010,63 detik. Skip memerlukan
+Windows ACL asli; ini bukan hasil Windows native atau endpoint fisik. Ruff lulus.
+Postflight akhir setelah boot: **30/30 HTTPS HTTP200**; CA/server/admin active.
+Kegagalan awal 9 November (13/30) dan 10 November (28/30, database unknown sesaat)
+dipertahankan; penyebab spesifik startup belum terbukti dan tidak diklaim selesai.
+
+CA tetap **0.1.17**, admin/server **0.1.15**: perubahan terbaru khusus penyimpanan
+CA; kode peran admin/server dan fungsi durable_write yang dipakai server tidak
+berubah. Hash 27 file source per VM cocok acuannya. Tidak ada rollout runtime,
+reset identitas atau perubahan grant/firewall. Source pengguna ef14b07 dan
+flowchart-nya terpelihara. Perbaikan source hanya import lint tes dan contoh
+perintah pytest pada README. CA invariant, 35 revokasi lama, DB integrity dan
+login/TOTP/logout scoped admin lulus pemeriksaan 9 November.
+
+Pilot fisik belum siap dinyatakan diterima: host belum Ethernet192.168.50.10;
+forwarding/filter host perlu pembuktian lapangan. Sertifikat vm-client-windows
+berakhir **14 November 2026 13:16:28 WIB**; renewal lease tidak memperpanjangnya.
+Ruang host sekitar **3,2 GiB (99%)**; siapkan kapasitas backup tanpa menghapus bukti.
+Windows native dan PC LAN/Wi-Fi tidak diuji ulang pada sesi ini (**BELUM_TERUJI**).
+CA/server/admin running, empat VM lain off, tujuh definisi VM dipertahankan.
+
+Bukti: state/preflight-20261109/ dan state/preflight-20261110/settled/.
+Baseline dan postflight sudah selesai; jangan ulang finalize-checks.py lama,
+suite atau script rollout. Lanjutkan persiapan jaringan, kapasitas dan identitas
+sesuai runbook, kemudian uji satu endpoint fisik.
+[Laporan pemeriksaan](reports/PRA_UJI_LAPANGAN_2026-11-09.md). [Jurnal hasil](progress/PROGRESS_2026-11-10.md).
+
+## Flowchart terpadu — 5 November 2026
+
+Dipush pada `0d9a4a1` ke branch feature; SHA remote terverifikasi.
+
+[Satu flowchart lengkap](FLOWCHART_SISTEM_LENGKAP.md) menghubungkan
+backend/CA, installer, enrollment, enam cek admission, kebijakan akses, renewal,
+logout/revoke, cleanup, recovery dan audit. README/manual mengarah ke diagram ini;
+lima SVG lama tetap arsip. Tidak ada perubahan aplikasi, installer atau VM.
+Diagram adalah dokumentasi implementasi, bukan hasil uji fisik baru.
+
+## Persiapan lapangan kampus — 4 November 2026
+
+Dokumen dipush pada `3041a18` ke branch feature; SHA remote terverifikasi.
+
+[Satu dokumen kerja lapangan](PERSIAPAN_UJI_LAPANGAN.md) menyiapkan pilot
+router 192.168.50.0/24, host .10, PC .20 dan laptop .30. Memuat inventaris,
+gerbang kesiapan jaringan/domain-GPO, install/enrollment, matriks uji, recovery
+dan formulir hasil kosong. Tutorial terminal untuk start VM, SSH/console,
+service dan shutdown juga ada pada file yang sama. Backend existing dan CA dipertahankan.
+Ini pekerjaan dokumentasi; tidak menerapkan konfigurasi atau membuktikan uji
+fisik. Forwarding host/libvirt wajib diperiksa operator; mode internet pada
+endpoint domain/GPO masih terhalang. Berikutnya isi inventaris aktual dan lakukan
+preflight lapangan sebelum lockdown. Status operasional terdahulu ada di bawah.
+
+## Panduan instalasi — 4 November 2026
+
+[Manual terbaru](MODUL_PENGGUNAAN_VANGUARD.md) dan
+[HTML](MODUL_PENGGUNAAN_VANGUARD.html) adalah satu panduan dalam dua format.
+Versi CA 0.1.17 dan installer Windows 0.1.15, checksum EXE, serta batas pengujian
+dijelaskan. Paket EXE/ZIP lama tidak dibangun ulang; manual di dalamnya mungkin
+masih edisi lama. Tidak ditemukan manual instalasi duplikat aktif untuk dihapus.
+Validasi render, tautan lokal dan lima checksum unduhan lulus. Tidak ada tes VM baru.
+Penerimaan nyata tetap belum selesai; baca status pengujian di bawah.
+
+
+## Penataan repository — 4 November 2026
+
+Mulai dari [indeks dokumentasi](README.md). File dikelompokkan tanpa
+penghapusan: jurnal di `docs/progress/`, laporan di `docs/reports/`, proposal di
+`docs/proposal/`, referensi di `docs/reference/`, metode/hasil XML di `docs/testing/`,
+dan snapshot lama di `docs/history/checkpoints/`. Manual utama, API, SECURITY,
+WINDOWS_CLIENT dan CHECKPOINT tetap pada alamat lama. Installer lama berada di
+`downloads/archive/`; EXE/ZIP 0.1.15 tetap di `downloads/`.
+
+Seluruh 246 file awal masih tersedia; 84 dipindahkan. Hash 23 file binary, XML,
+SVG dan patch identik; checksum kelima unduhan lulus. Tautan lokal valid dan
+hasil render manual MD ke HTML identik. Pembuat kit diperbaiki agar menyertakan
+dokumen subfolder: regresi gagal sebelum perbaikan, kemudian 12 tes packaging dan
+ruff lulus. Build source terisolasi juga memuat dokumentasi yang dipindahkan.
+
+Tidak ada rebuild installer atau perubahan VM. Status operasional terakhir ada
+di bawah. Detail penataan: [jurnal 4 November](progress/PROGRESS_2026-11-04.md).
+Susunan baru dipush pada `7b58a53` ke `feature/2026-10-22-physical-endpoints`;
+SHA remote terverifikasi. Main belum diubah.
+
+## Status operasional terakhir
+
+## Status terbaru 4 November 12:33 WIB — tiga VM siap, observasi terverifikasi
+
+CA 0.1.17; server/admin 0.1.15. Observasi dari VM admin selesai 600 detik,
+60 siklus: **210/210 HTTP 200** (180 readiness + 30 liveness). Tidak ada kegagalan
+pada sampel kemarin. Hari ini ketiga VM dinyalakan kembali; **30/30 HTTPS HTTP200**
+pascaboot dan layanan/daemon active. Unit observer lama sudah not-found setelah
+boot; PASS berasal dari complete.json, bukan default exit status systemd. Ini beban
+daemon normal, bukan soak panjang atau pengujian endpoint tambahan.
+
+Ruang host dipulihkan sekitar **4,90 GB** (21 fragmen ISO duplikat terverifikasi),
+tersisa sekitar **5,4 GiB** pada 4 November. ISO utuh, disk VM, backup, identitas dan bukti tetap.
+DB server/admin integrity_check ok; audit lama tidak dihapus. Tiga console dan
+terminal SSH CA/server/admin tampil serta sesi login terkonfirmasi; empat VM lain tetap mati.
+
+Bukti `state/stability-20261103-2238/`, hasil final `vm-admin/complete.json` dan
+`summary.json`. Probe host yang salah asal tetap disimpan; CA hanya mengizinkan
+asal server/admin. **Jangan ulang rollout CA, cleanup fragmen, atau memulihkan
+index/CRL/counter lama.** Kode aplikasi dan installer tidak diubah pada tindak lanjut ini.
+Laporan [observasi layanan](reports/OBSERVASI_LAYANAN_2026-11-03.md),
+[jurnal terbaru](progress/PROGRESS_2026-11-04.md). Branch tetap
+`feature/2026-10-22-physical-endpoints`; main tidak diubah.
+
+Berikutnya: kapasitas jangka panjang, beban endpoint lebih lama, dan pengujian fisik
+LAN/Wi-Fi ketika tersedia. Fresh OS/UAC, Internet TCP persisten pascarevoke dan
+power loss fisik tetap BELUM_TERUJI; jangan mengklaim seluruh penerimaan selesai.
+
+Bukti pascaboot hari ini: `state/resume-20261104-1230/`. Metrik storage akhir
+diambil hari ini, bukan tepat setelah observasi kemarin. Hasil dipush pada `04bef56`; SHA remote sudah diverifikasi pada 4 November.
+
+## Riwayat sebelum observasi lanjutan
+
+## Status terbaru 3 November22:28WIB — layanan dan terminal siap
+
+CA0.1.17 terpasang; server/admin0.1.15. Ketiga VM running setelah hostreboot,
+SSHterminal desktop sudahlogin dan shellprompt terverifikasi. ConsoleSerial1 juga
+terbuka. Browser diminta membuka https://192.168.100.40:5000/login; gunakan login
+admin dan TOTP existing. Tidak mengaktifkan autologin atau mengganti password.
+EmpatVM lain tetapoff. Readiness setelahboot **30/30HTTP200**.
+
+Perbaikan `Publication.seal`: barrier Linux syncfs untuk generasi privat sebelum
+commit, error ditolak, fallback fsync pada platformlama. Tidak mengubah format
+jurnal/recovery, CRLfreshness, admissionenamcek atau budgetreadiness. Revisi awal
+0.1.16 masihgagal dan digantikan0.1.17; semua bukti gagalretained. Sourcefinal
+**100PASS** (CA26 danhealth/PKI/admission74), bukanfullsuite/Windowsulang.
+
+Rolloutv2 dengan backupkode/config/state,27filekode dan196filestate/invariantCA
+PASS. Root/key/index/serial/binding/config tetap;35revokasi preserved. Sebelumboot:
+30/30HTTP+5/5CRLvalid, beban normalterpisah30/30HTTP; dashboardloginTOTP/GET200/
+logoutscopedPASS. Sesudahboot baru30/30HTTP. Kriteria perbaikan pada sampel ini
+terpenuhi; bukanjaminan semua beban/powerloss fisik. Diskhost sekitar1,3GiB bebas.
+
+Bukti `state/ca-io-20261103/`, finalrollout `v2/`, pascareboot `reboot-2226/`.
+**Jangan ulang rollout/enrollment atau restoreindex/CRL/counter dari backup**.
+Semua milestone selesai; rollbackkode disiapkan tetapi tidak dieksekusi. Backend
+client/EXE/ZIPWindows tetap0.1.15, tidak perlu rebuild untuk perubahan khususCA.
+Laporan [perbaikan CA](reports/PERBAIKAN_CA_IO_2026-11-03.md),
+[jurnal](progress/PROGRESS_2026-11-03.md). Perbaikan dipush pada `be600d5` ke branch
+`feature/2026-10-22-physical-endpoints`; SHA remote terverifikasi22:29WIB.
+Main belumdiubah. Berikutnya kapasitasdisk dan pengujian fisik/soak yang tersisa.
+
+## Riwayat sebelum perbaikan0.1.17 (bukan status terbaru)
+
+## Kesiapan pemakaian — 3 November setelah pembukaan console
+
+Tiga terminal desktop sudah login SSH ke CA/server/admin, diverifikasi shell
+prompt dan sesi `who`. Gunakan jendela ubuntu@vm-ca, ubuntu@vm-server,
+ubuntu@vm-admin untuk perintah; tanpa perubahan password/autologin.
+Dashboard HTTPS mengarah /login; browser diminta membuka alamat admin.
+Aplikasi **BELUM_SIAP penuh**: sampel terakhir readiness ketiganya503 terkait
+CA lock/CRL, walau liveness200. Latensi flush penyimpanan teramati, penyebab
+mendasar belum terkonfirmasi; jangan mematikan durability atau menganggap sehat.
+Bukti state/ready-20261103/, jurnal3November. Perlu lanjut diagnosis penyimpanan/
+transaksi CA dan kapasitas host (1,3GiB bebas) sebelum klaim siap admission.
+
+
+## Console desktop — 3 November16:03WIB
+
+Ketiga jendela VM-CA/server/admin kini terbuka pada virt-manager, masing-masing
+View → Consoles → Serial1. AT-SPI memverifikasi terminal showing dan prompt login
+nyata pada ketiganya. Domain hanya punya serial PTY, tidak graphics/video;
+virt-viewer sebelumnya tidak dapat menampilkan layar. GUI berjalan melalui
+transient user service vanguard-vm-console-windows. Serial-getty direfresh setelah
+dibuktikan hanya agetty tanpa sesi login. Tidak ada reboot/perubahan hardware.
+Status console ini tidak mengubah hasil readiness layanan yang dicatat di bawah.
+
+
+## Pemantauan 15:49 WIB — VM aktif, readiness campuran
+
+CA lock sempat lepas tanpa intervensi. Sampel terakhir: CA ready, admin ready,
+server not_ready saat probe CA bertabrakan dengan lock/CRL; daemon heartbeat sudah
+ready. Readiness ketiganya serempak dan stabil **BELUM_TERKONFIRMASI**. Tiga VM
+tetap running; jangan restart/hapus lock atau mengubah CA berdasarkan sampel ini.
+Detail ada di [jurnal3November](progress/PROGRESS_2026-11-03.md).
+
+## 3 November 15:46 WIB — tiga VM menyala; aplikasi BELUM_SIAP
+
+Atas permintaan pengguna, VM-CA, VM-SERVER, VM-ADMIN running; empat VM lain
+shut off. SSH dan unit ketiga layanan active. HTTPS `/healthz` 3/3 HTTP200,
+`/readyz` 3/3 HTTP503. CA `ca_state=unknown/lock_busy`; worker CA memegang
+`ca.lock`, satu thread menunggu commit filesystem. Server dan admin tidak ready
+karena dependensi CA; server daemon juga not_ready. Jangan menganggap dashboard
+atau admission siap. Tidak ada restart, hapus lock, restore CA atau perubahan
+identitas. Lanjut pantau/diagnosis nonmutasi dan ulang readiness; lihat
+[jurnal3November](progress/PROGRESS_2026-11-03.md) untuk bukti dan kriteria selesai.
+
+## Status 3 November — rilis0.1.15 dan pengujian VM selesai
+
+**Rilis dipush pada `7e5d632` ke branch `feature/2026-10-22-physical-endpoints`;
+SHA remote terverifikasi 3 November13:37WIB.**
+Main c8af46f sudah merge pekerjaan terdahulu sampai13dbb18; belum memuat0.1.15.
+EXE/ZIP final beserta checksum ada di downloads. Manual tunggal MD/HTML disertakan.
+
+CA/server/admin dan client Ubuntu sudah0.1.15. Gateway utama default-deny dan
+profil schema2 aktif, tanpa grant Internet permanen. Installer EXE final lulus
+native Windows10/11; baseline Linux348PASS/1SKIP, packaging12PASS overlap.
+Windows10 gabungan gateway PASS122probe dan Windows11 PASS98probe, masing-masing
+dua renewal, grant/remove/regrant, blokir sebelum sertifikat/admission, bypass LAN
+ditolak dan readmission403 setelah revoke. Peer hilang10,056/4,359detik pada satu
+sampel perOS. Recovery dan verifikasi terpisah state asli keduaWindows PASS;
+fixture revoked/disabled, grant, route dan task uji sudah dibersihkan.
+
+Ubuntu pulih setelah reboot: sesi lama expired fail-closed, artefak lama yang
+terbukti milik client diarsipkan setelah owner stop/lock/no tunnel. Login ulang
+existing, handshake dan renewal PASS; identitas tidak berubah. Aktif adalah
+`vm-client-20261102` pada `/var/lib/vanguard/client-20261102`, melalui drop-in
+`/etc/systemd/system/vanguard-client.service.d/identity-20261102.conf`.
+**Jangan reenroll, membuat ulang CA, atau mengaktifkan ID vm-client lama revoked.**
+Windows11 generik semula tidak mempunyai folder identitas Program Files;
+ketidakhadiran itu dan identitas legacy ProgramData dipertahankan.
+
+Postflight3November: empatLinuxactive0.1.15, daemon/WireGuard aktif, integritas
+kedua DB ok, primary lease/peer/handshake sah,30/30HTTPhealth/readiness200.
+Hashroot/keyCA tetap;30revokasi lama tercakup pada35revokasi kini. Empatidentitas
+uji revoked/disabled tanpa lease/peer. Policy Internet semantik semula dan resource
+byte semula; tidak restore CA/DB. Bukti baru `state/release-20261101/final-postflight-20261103/`,
+Windows `windows-managed-r2/10/` dan `11/`, Ubuntu `client-reboot-20261103/`.
+Seluruh direktori tersebut berada di bawah `state/release-20261101/`, tetap privat.
+Jangan menjalankan ulang rollout/prepare/enrollment atau menimpa bukti selesai.
+
+EnamVM running, attacker preserved/off. RAM host15GiB; disk tinggal1,5GiB, perlu
+kapasitas sebelum uji panjang. Credential hanya inventaris privat0700/0600,
+backup dan histori gagal tetap disimpan. Tidak ada perubahan router/firewallhost.
+
+Sisa **BELUM_TERUJI**: TCP Internet persisten sepanjang revocation Windows,
+PCfisik LAN/Wi-Fi (belum tersedia), UAC/MOTW/GPO interaktif, Windows kosong/fresh
+prasyarat, launcher EXE per-device schema2 end-to-end dan soak/powerloss fisikCA.
+Fixture API langsung bukan bukti launcher: guard overlap subnet tetap ada.
+503/upstream timeout dan egress gagal historis belum diketahui penyebabnya;
+probe terbaru lulus tidak berarti insiden tersebut fixed. Prioritas berikutnya:
+kapasitas disk, lalu batas pengujian di atas.
+
+Laporan [validasi0.1.15](reports/VALIDASI_0.1.15_2026-11-02.md),
+[jurnal3November](progress/PROGRESS_2026-11-03.md).
+
+## Riwayat sebelum rilis0.1.15
 
 ## 1 November — manual penggunaan disederhanakan
 
@@ -29,7 +300,7 @@ tambahan, (P3) logoutnon-object memicu exception tanpa pesan belumterkonfirmasi.
 Validasi readiness kini memeriksa role/check/status; login memvalidasi sebelum
 menulis3field; logoutmalformed mempertahankan token untukretry. Enamcek/HTTPS/
 immutablebinding dan scope sesi tidak berubah. File health.py/client.py dan dua
-regresi baru; rincian pada [laporan uji](UJI_INTEGRASI_0.1.14_2026-10-31.md).
+regresi baru; rincian pada [laporan uji](reports/UJI_INTEGRASI_0.1.14_2026-10-31.md).
 
 Baseline61PASS/1SKIP107,37detik; reproduksi27FAIL serta3FAIL/1PASSlogout. Setelah
 fixreadiness/login89PASS/1SKIP106,02detik, sesudahguardlogout23PASS31,36detik
@@ -56,7 +327,7 @@ API publik/fail-closed tidak berubah. Tes baru `tests/test_health_diagnostics.py
 Baseline16PASS47,57detik; kandidat26PASS61,39detik. Source staging di ketigaVM
 memakai environment/user service:36/36ready; postflight layanan terpasang30/30
 HTTP200 dan nolpeer. Config/root/key/index/serial tidak berubah. ManualMD/HTML
-Bab7.3 dan API diperbarui; hasil ada pada [laporan uji](UJI_INTEGRASI_0.1.14_2026-10-31.md).
+Bab7.3 dan API diperbarui; hasil ada pada [laporan uji](reports/UJI_INTEGRASI_0.1.14_2026-10-31.md).
 
 **503 awal belum direproduksi dengan penyebab terkonfirmasi**, bukan fixed.
 Kode diagnostik mencerminkan kelas exception library, bukan kepastian fase
@@ -72,7 +343,7 @@ penggantian identitas client utama serta deployment/testgatewayinternet.
 
 ## 31 Oktober — pengujian layanan0.1.14 selesai, satu readiness sementara gagal
 
-[Laporan uji terbaru](UJI_INTEGRASI_0.1.14_2026-10-31.md) mencatat VM langsung CA/server/admin0.1.14 dengan
+[Laporan uji terbaru](reports/UJI_INTEGRASI_0.1.14_2026-10-31.md) mencatat VM langsung CA/server/admin0.1.14 dengan
 sourceclient0.1.14 terisolasi pada Ubuntu (instalasi client utama tetap0.1.9).
 Registrasi/login tanpa peer,4admission negatif, handshake nyata, default-deny,
 grant aplikasiTCP8082, penolakanLAN/portlain, TCP aktif setelah pencabutan grant,
@@ -158,7 +429,7 @@ ini menggantikan kondisi akhir shut off pada sesi pengujian sebelumnya.
 ## 30 Oktober — uji kelayakan dan panduan EXE dari nol
 
 **Keputusan: layak untuk uji lab terkontrol, belum penerimaan produksi penuh.**
-[Laporan lengkap](UJI_KELAYAKAN_2026-10-30.md) memisahkan scope/bukti dan8temuan.
+[Laporan lengkap](reports/UJI_KELAYAKAN_2026-10-30.md) memisahkan scope/bukti dan8temuan.
 Source baseline7fa2e7c: Linux307PASS/1SKIP919,32detik; Ruff/pip/Bash/build/hash
 artefak PASS. HTTPS utama30/30HTTP200, firewall40/40, negative API/LAN7/7;
 CA invariant/CRL dan DB server/admin OK. Resource nft/veth7perilaku PASS.
@@ -213,7 +484,7 @@ Flowchart/manual dipush sebagai `feac013` ke origin feature; SHA remote cocok.
 
 ## 29 Oktober — EXE offline dibuat dan diuji di Windows10
 
-Kandidat `downloads/Setup-VanGuard-0.1.14-fix1.exe` (44.718.592byte) membundel
+Kandidat `downloads/archive/Setup-VanGuard-0.1.14-fix1.exe` (44.718.592byte) membundel
 Python/WireGuard/wheel aplikasi0.1.14. SHA256:
 `f74a3b7b72373dbe55c1cc5b771938108cc683e930949c861cea7422415c7f69`.
 Paket umum memasang runtime/aplikasi; profil/CA publik/alokasi belum disertakan.
@@ -231,7 +502,7 @@ postflight terpisah sesudah boot membuktikan hasilnya, bukan menimpa bukti lama.
 Probe final pertama ditolak mutex karena installer lain aktif; retry berurutan
 6PASS. Linux paket6PASS0,08detik. Binary terunduh: SHA native cocok, embeddedZIP
 CRC+manifest39anggota+kesamaan payload lokal PASS; scan rahasia dan diff PASS.
-Lihat [validasi EXE](VALIDASI_EXE_2026-10-29.md); bukti privat `state/exe-20261029/`.
+Lihat [validasi EXE](reports/VALIDASI_EXE_2026-10-29.md); bukti privat `state/exe-20261029/`.
 
 Task uji dihapus,0EXE aktif, service tunnel1060, no managed-policy marker;
 backup dan release lama retained. VM Windows10 mengalami event1074 wlms.exe
@@ -264,7 +535,7 @@ serta release lama/parsial terjaga; retry lengkap tidak reinstall. Kegagalan awa
 fixture akibat path panjang serta timeout observasi tetap dicatat, bukan PASS.
 Instalasi utama tetap; no CA issuance, no tunnel/policy, task fixture dihapus.
 
-Laporan: [audit wizard](AUDIT_WIZARD_2026-10-29.md). Template admin0.1.14-fix1 menggantikan template
+Laporan: [audit wizard](reports/AUDIT_WIZARD_2026-10-29.md). Template admin0.1.14-fix1 menggantikan template
 kandidat sebelumnya di downloads, wheel tetap0.1.14. Admin perlu build ulang
 paket per-device supaya checksum mencakup script terbaru. Stable0.1.12/main tetap.
 Manual MD/HTML, jurnal dan tes regresi ditambahkan; tidak mengklaim CI baru.
@@ -299,7 +570,7 @@ PASS, histori1001–1004 retained; firewall root server sama selain counter.
 Credential hanya inventaris privat, staging VM dibuang, status CLEANED.
 Windows10+SERVER running,5guest lain off; kandidat endpoint0.1.14 tetap terpasang.
 
-Laporan: [validasi setup terpadu](VALIDASI_SETUP_TERPADU_2026-10-29.md); manual tunggal Bab14.0 diperjelas.
+Laporan: [validasi setup terpadu](reports/VALIDASI_SETUP_TERPADU_2026-10-29.md); manual tunggal Bab14.0 diperjelas.
 Source produk/ZIP kandidat tidak berubah; tidak perlu membangun ulang ZIP atau
 mengulang suite Linux110PASS/1SKIP hanya untuk dokumentasi. Tidak mengklaim CI baru.
 Bukti lokal `state/setup-win10-20261029/`. Branch tetap feature/2026-10-22-physical-endpoints;
@@ -320,7 +591,7 @@ approval/resume9PASS melalui PS1. R3 repacked BAT langsung9PASS: exit0,
 READY_FOR_LOGIN, key/runtime sama, no tunnel. ZIP r3 awal mengalami CRC rusak,
 checksum installer menolak dengan benar; repack dari direktori tervalidasi
 mempertahankan manifest/pin. Penyebab kerusakan byte belum diketahui, bukti FAIL
-retained. Laporan [validasi setup terpadu](VALIDASI_SETUP_TERPADU_2026-10-29.md) dan jurnal29Oktober membedakan bukti.
+retained. Laporan [validasi setup terpadu](reports/VALIDASI_SETUP_TERPADU_2026-10-29.md) dan jurnal29Oktober membedakan bukti.
 
 Login/admission/handshake, default-deny/grant TCP+DNS baru,2renewal, logout dan
 owner cleanup PASS memakai client kandidat dan fixture login. Recovery selesai:
@@ -342,7 +613,7 @@ Tidak ada hasil CI baru yang diklaim.
 Dua bug dibuktikan dengan tes gagal sebelum patch: profil menerima DNS/route
 integer, dan renewal meminta lease sebelum pemeriksaan firewall lokal. Source
 sekarang menolak tipe network non-string dan memeriksa guard sebelum renewal;
-cleanup tetap berjalan saat guard gagal. Lihat [audit bug](AUDIT_BUG_2026-10-28.md) untuk file/fungsi,
+cleanup tetap berjalan saat guard gagal. Lihat [audit bug](reports/AUDIT_BUG_2026-10-28.md) untuk file/fungsi,
 prioritas, bukti dan kriteria selesai. Baseline84PASS/1SKIP; reproduksi4FAIL;
 regresi patch awal5PASS. Suite diperluas **98PASS/1SKIP162,45detik**; Ruff,
 pip check dan diff PASS. Ini Linux/mock OS, bukan rerun native Windows.
@@ -366,7 +637,7 @@ sesudah reboot PASS. Admission/handshake, default-deny/grant TCP+DNS baru,
 Revoke sertifikat1002 memutus TCP aktif dengan reset dan menghapus peer;
 fresh admission403. Assertion alat ukur awal hanya menerima timeout sehingga
 FAIL; pemeriksaan ulang bukti reset+peer absent+fresh denial PASS perilaku
-jaringan, tanpa mengklaim rerun. Lihat [laporan Windows11](VALIDASI_WINDOWS11_INTERNET_2026-10-28.md).
+jaringan, tanpa mengklaim rerun. Lihat [laporan Windows11](reports/VALIDASI_WINDOWS11_INTERNET_2026-10-28.md).
 
 Recovery selesai:110inbound rule asli terjaga,0rule LocalGPO/0task test, config
 awal serta primary identity hash-identik. Legacy runtime0.1.9, SecureBoot/TPM dan
@@ -400,7 +671,7 @@ ZIP stabil0.1.12 tetap. Sisa pengujian dan batasan kandidat tercatat di bagian
 
 Kandidat0.1.13 berada pada `feature/2026-10-22-physical-endpoints`; main/ZIP stabil
 0.1.12 belum diganti. Implementasi memakai gateway Linux dan Local GPO Windows
-terkelola tanpa perubahan router. [Laporan bukti](VALIDASI_INTERNET_2026-10-27.md) dan [manual tunggal
+terkelola tanpa perubahan router. [Laporan bukti](reports/VALIDASI_INTERNET_2026-10-27.md) dan [manual tunggal
 Bab14.1](MODUL_PENGGUNAAN_VANGUARD.md) memisahkan status kandidat dari rilis.
 
 Hasil Windows10 LTSC19044 native:9kasus lockdown PASS;6kasus setelah reboot
@@ -506,7 +777,7 @@ langsung. Sebelum agent terpasang, perangkat belum dapat dikendalikan. Server
 HTTPS/WireGuard harus reachable dari jaringan client. Full-tunnel, enforcement
 persisten dan fail-closed internet masih FITUR_BELUM_TERSEDIA/BELUM_TERUJI.
 Tidak ada rollout atau perubahan jaringan pada diskusi ini. Arahan ini mengganti
-usulan wajib konfigurasi router pada catatan sebelumnya. Jurnal: [27 Oktober](PROGRESS_2026-10-27.md).
+usulan wajib konfigurasi router pada catatan sebelumnya. Jurnal: [27 Oktober](progress/PROGRESS_2026-10-27.md).
 
 
 ## 27 Oktober — batas kontrol internet diklarifikasi
@@ -520,7 +791,7 @@ Rancangan berikutnya memerlukan gateway/firewall jaringan terkelola, larangan
 WAN langsung, pengecualian bootstrap/manajemen, serta pengujian IPv4/IPv6 dan
 koneksi aktif. Model router belum diketahui; jangan mengganti route/firewall
 aktif hanya dengan menyalin contoh full-tunnel. Semua VM sekarang shut off;
-audit ini read-only, tanpa uji live atau perubahan jaringan. Rincian: [jurnal27Oktober](PROGRESS_2026-10-27.md).
+audit ini read-only, tanpa uji live atau perubahan jaringan. Rincian: [jurnal27Oktober](progress/PROGRESS_2026-10-27.md).
 Status running pada26Oktober di bawah adalah riwayat, bukan keadaan terkini.
 
 
@@ -533,7 +804,7 @@ terverifikasi pada desktop. Windows10 sempat shutdown normal pada start pertama;
 start kedua dan pemeriksaan akhir berhasil. Penyebab shutdown belum diuji.
 Tidak mengubah source, definisi/disk VM, identitas atau credential; tidak login
 otomatis. Readiness aplikasi belum diuji pada tindakan ini. Bukti lokal
-`state/vm-start-20261026/final.json`; jurnal `docs/PROGRESS_2026-10-26.md`.
+`state/vm-start-20261026/final.json`; jurnal `docs/progress/PROGRESS_2026-10-26.md`.
 Catatan keadaan VM di bawah adalah riwayat sebelum startup26Oktober.
 
 
@@ -541,7 +812,7 @@ Catatan keadaan VM di bawah adalah riwayat sebelum startup26Oktober.
 
 WIN-CONFIG-01 diperbaiki pada source/paket **307b86a**: retry pasangan root/profil
 identik memulihkan state parsial tanpa menimpa trust berbeda. Status parsial exit1
-dengan penjelasan. [Laporan audit dan batas bukti](AUDIT_WINDOWS_CONFIG_2026-10-25.md).
+dengan penjelasan. [Laporan audit dan batas bukti](reports/AUDIT_WINDOWS_CONFIG_2026-10-25.md).
 
 - ZIP fix1 **44.675.510 byte**, SHA256 `26ba30082b2c21da3a0d81d9670f5ae7e2eb5157cca566b662fbafb2d1790515`.
   Unduhan ulang GitHub byte-identik paket yang diuji. Gunakan ZIP tunggal di main;
@@ -585,7 +856,7 @@ Git tetap. [Paket lengkap](../downloads/README.md) memuat BAT, Python3.13.17, Wi
   ISO/seed Windows10 sudah ejected; tidak ada runner/tunnel uji aktif. Backup/key/
   credential hanya lokal. Jangan provisioning/format VM10 atau reset credential.
 
-[Laporan dan batas bukti](VALIDASI_WINDOWS10_2026-10-25.md): Windows10 Home/Pro22H2 native, VPN Windows10,
+[Laporan dan batas bukti](reports/VALIDASI_WINDOWS10_2026-10-25.md): Windows10 Home/Pro22H2 native, VPN Windows10,
 UAC interaktif/cancel, browser/MOTW/GPO, PC LAN/laptop Wi-Fi tetap BELUM_TERUJI.
 CA power-loss/soak/WIN-CLEANUP-02 tetap terbuka; keberhasilan installer bukan
 bukti backend sehat. Pilot membutuhkan admin0.1.12, profil/trust/routing dan
@@ -606,7 +877,7 @@ jurnal aktif25Oktober. Catatan di bawah merupakan riwayat sebelumnya.
 Source5aa6e9f memperbaiki BAT default-policy, ACL SID native dan uninstall yang
 menghapus script-nya sendiri. ZIP r6 **44.649.724byte** memuat Python3.13.17,
 WireGuard1.1.1,20wheel dan panduan setup→CSR→admin→import→login/connect.
-[Download/petunjuk](../downloads/README.md), [hasil lengkap](VALIDASI_INSTALLER_2026-10-24.md).
+[Download/petunjuk](../downloads/README.md), [hasil lengkap](reports/VALIDASI_INSTALLER_2026-10-24.md).
 
 - Native Windows11 build26300: reuse runtime7kasus lulus sebelum bug uninstall
   ditutup; r6 uninstall/reinstall3PASS; guards5PASS; default/explicit policy PASS.
@@ -833,8 +1104,8 @@ terpasang. Usulan tunnel.5/.6 belum dialokasikan; .2/.3/.4 tetap dicadangkan.
 Bukti lokal `state/endpoint-20261022/`; public-pilot berisi profil/root/admin env/
 network-plan, server-firewall.candidate.nft hanya kandidat. Kredensial tidak diubah,
 tetap inventaris privat di luar Git. Tidak ada backup/live rollout baru karena
-tidak ada perubahan aktif. Panduan [pilot](ENDPOINT_WINDOWS_PILOT.md),
-[jurnal](PROGRESS_2026-10-22.md), [modul tunggal Bab15.3](MODUL_PENGGUNAAN_VANGUARD.html)
+tidak ada perubahan aktif. Panduan [pilot](reports/ENDPOINT_WINDOWS_PILOT.md),
+[jurnal](progress/PROGRESS_2026-10-22.md), [modul tunggal Bab15.3](MODUL_PENGGUNAAN_VANGUARD.html)
 menjelaskan audit, langkah admin/pengguna, backup dan rollback terencana.
 
 Berikutnya: setelah persiapan lokal selesai, penilaian paket/native Windows secara
@@ -874,8 +1145,8 @@ reload systemd dan restart terencana; **jangan restore state CA/database**.
 Arsip source0.1.11 lama tetap dipertahankan; patch unit ada pada Git40c7f74 dan
 harus dipasang bersama source terkini, bukan diasumsikan ikut upgrade wheel.
 
-Baca [catatan kapasitas](CA_SERVICE_CAPACITY.md), [jurnal](PROGRESS_2026-10-21.md),
-[modul](MODUL_PENGGUNAAN_VANGUARD.html) dan [audit](AUDIT_HARDENING_2026-10-18.md).
+Baca [catatan kapasitas](reference/CA_SERVICE_CAPACITY.md), [jurnal](progress/PROGRESS_2026-10-21.md),
+[modul](MODUL_PENGGUNAAN_VANGUARD.html) dan [audit](reports/AUDIT_HARDENING_2026-10-18.md).
 **Berikutnya:** soak dan kapasitas lebih tinggi BELUM_TERUJI; WIN-CLEANUP-02
 perlu reproduksi race startup/cleanup dengan ownership terkonfirmasi; power-loss
 media CA tetap BELUM_TERUJI. Jangan menambah timeout atau menganggap seluruh
@@ -907,8 +1178,8 @@ wajib. Tidak ada restore index/CRL, tebakan counter, atau perubahan admission.
   0.1.9. Tidak ada perubahan password, key, enrollment atau service Windows.
   Inventaris credential hanya di direktori privat host, tidak dikirim ke GitHub.
 
-Baca [jurnal21 Oktober](PROGRESS_2026-10-21.md),
-[catatan readiness/CA](READINESS_0.1.10.md), [audit](AUDIT_HARDENING_2026-10-18.md)
+Baca [jurnal21 Oktober](progress/PROGRESS_2026-10-21.md),
+[catatan readiness/CA](reference/READINESS_0.1.10.md), [audit](reports/AUDIT_HARDENING_2026-10-18.md)
 dan [modul tunggal](MODUL_PENGGUNAAN_VANGUARD.html). Bukti privat:
 `state/hardening/2026-10-21-readiness/`. Jangan mengulang runner rollout yang
 sudah mempunyai rollout-steps.json atau menimpa hasil gagal.
@@ -930,8 +1201,8 @@ Main/hardening belum digabung; perubahan origin/main76af7e6 harus dipertahankan.
 
 Semua enam node sudah memakai **0.1.9** pada branch
 [hardening/2026-10-18-resilience](https://github.com/LuiLuiLui886/vanguard-ztna/tree/52e31dbbfb044306fdd1bddcbee9dd5f42608c59).
-Branch hardening masih terpisah dari main. Baca [matriks bukti](VALIDASI_ROLLOUT_2026-10-20.md) dan
-[jurnal 20 Oktober](PROGRESS_2026-10-20.md); riwayat di bawah bukan status terkini.
+Branch hardening masih terpisah dari main. Baca [matriks bukti](reports/VALIDASI_ROLLOUT_2026-10-20.md) dan
+[jurnal 20 Oktober](progress/PROGRESS_2026-10-20.md); riwayat di bawah bukan status terkini.
 
 - Ubuntu dan Windows VM asli: admission/handshake/HTTP, default-deny/LAN/port,
   TCP aktif setelah grant/revoke, dua renewal otomatis, natural lease expiry,
@@ -988,7 +1259,7 @@ dengan status historis pada main.
 Branch [hardening/2026-10-18-resilience](https://github.com/LuiLuiLui886/vanguard-ztna/tree/52e31dbbfb044306fdd1bddcbee9dd5f42608c59).
 CA b922f03, lifecycle/features65c486e dan dokumentasi84f4a81 sudah dipush;
 SHA remote84f4a81 terverifikasi; commit timer42028cf juga sudah dipush.
-Main tetap c454c0c. Hasil artefak/publikasi ada di [jurnal19 Oktober](PROGRESS_2026-10-19.md).
+Main tetap c454c0c. Hasil artefak/publikasi ada di [jurnal19 Oktober](progress/PROGRESS_2026-10-19.md).
 Kandidat aplikasi belum di-rollout ke CA/server/admin/client utama.
 
 - Baseline Linux18 Oktober163 PASS/1 SKIP. Full19 Oktober199 PASS/1 SKIP,
@@ -1014,10 +1285,10 @@ Kandidat aplikasi belum di-rollout ke CA/server/admin/client utama.
   Pembatalan run84f4a81 diminta karena sudah digantikan.
 - BELUM_TERUJI: rollout0.1.9 utama, Windows VPN revoke/reboot tunnel aktif,
   seluruh matriks lifecycle guest, power-loss disk dan benchmark boot berulang.
-  Selanjutnya periksa CI, ikuti [backup/rollout](HARDENING_0.1.9.md) dan gunakan
+  Selanjutnya periksa CI, ikuti [backup/rollout](reference/HARDENING_0.1.9.md) dan gunakan
   identitas disposable untuk matriks VM. Jangan rollback CA/index/CRL.
 
-Baca [audit/resolusi](AUDIT_HARDENING_2026-10-18.md). Modul gabungan bagian15.1/15.2
+Baca [audit/resolusi](reports/AUDIT_HARDENING_2026-10-18.md). Modul gabungan bagian15.1/15.2
 memuat fitur kandidat dan pemakaian Windows setelah perbaikan.
 
 ## Terbaru: satu modul lengkap termasuk CA/PKI
@@ -1086,7 +1357,7 @@ admin dan karyawan, dari instalasi hingga penggunaan/arsip/shutdown.
 
 Catatan15 Oktober di bawah adalah riwayat. Hasil yang lebih baru pada paragraf
 di atas menggantikan status renewal yang sebelumnya masih terinterupsi.
-Lihat [jurnal17 Oktober](PROGRESS_2026-10-17.md) untuk validasi/push dokumentasi.
+Lihat [jurnal17 Oktober](progress/PROGRESS_2026-10-17.md) untuk validasi/push dokumentasi.
 
 ## Riwayat checkpoint15 Oktober
 
@@ -1121,7 +1392,7 @@ otomatis terinterupsi, belum dinyatakan lulus. CI78ff14e sudah SUCCESS.
 
 Berikutnya: uji pencabutan menggunakan identitas disposable, renewal otomatis
 jangka panjang dan reboot Windows, lalu gap proposal/benchmark yang masih terbuka.
-Baca [jurnal 15 Oktober](PROGRESS_2026-10-15.md) dan
+Baca [jurnal 15 Oktober](progress/PROGRESS_2026-10-15.md) dan
 [panduan Windows](WINDOWS_CLIENT.md). Status push/CI dicatat setelah selesai.
 
 ## Catatan historis 14 Oktober
@@ -1144,7 +1415,7 @@ UEFI Secure Boot/TPM2, VNC localhost. Rencana LAN .60/tunnel .4 tetap.
 - Source 0.1.7 `3467802` dipush private. CI `38366413893` sukses: Linux3.10/3.12
   masing-masing160 PASS +1 SKIP; Windows20 PASS. Belum bukti tunnel guest nyata.
 - Bukti privat `state/deployment/windows-2026-10-14/`, log guest lama disalin ke
-  `C:\VG-Recovery-20261014`. [Jurnal](PROGRESS_2026-10-14.md),
+  `C:\VG-Recovery-20261014`. [Jurnal](progress/PROGRESS_2026-10-14.md),
   [panduan Windows](WINDOWS_CLIENT.md). Autostart tetap mati.
 
 Tahap 0.1.6 sebelumnya selesai dan dipush (`49dd332`, dokumentasi `aa291f1`), CI
@@ -1165,7 +1436,7 @@ Catatan running 12 Oktober di bawah merupakan bukti historis, bukan status hari 
   `state/deployment/activity-0.1.6/live/`.
 - Backup konsisten admin sebelum migrasi:
   `state/backups/before-0.1.6-2026-10-12/`.
-- [Pilot benchmark](BENCHMARK_PILOT_2026-10-12.md) selesai n=1; iperf3 3.9 tersedia
+- [Pilot benchmark](reports/BENCHMARK_PILOT_2026-10-12.md) selesai n=1; iperf3 3.9 tersedia
   pada client/server, tanpa daemon permanen. Pilot gagal 10 Oktober dipertahankan.
 - Bukti aktif: `state/deployment/audit-2026-10-12/`.
   Backup: `state/backups/before-0.1.5-2026-10-12/`.
@@ -1204,15 +1475,15 @@ tersimpan lokal pada `state/deployment/ci-49dd332/`. Jangan jalankan eksperimen
 2. Periksa lima domain lama; jangan recreate lab/CA. Autostart VM masih nonaktif.
 3. Preflight lalu health dengan direktori bukti baru. Login ulang karyawan secara
    privat jika expired, sesuai [panduan](MODUL_PENGGUNAAN_VANGUARD.md).
-4. Lanjutkan gap [matriks proposal](PROPOSAL_ALIGNMENT.md) dan
-   [saran revisi](SARAN_REVISI_PROPOSAL_2026-10-12.md). Baseline WG tanpa admission
-   belum diotorisasi; [rencana isolasi/cleanup](BENCHMARK_PLAN.md) sudah tersedia.
+4. Lanjutkan gap [matriks proposal](proposal/PROPOSAL_ALIGNMENT.md) dan
+   [saran revisi](proposal/SARAN_REVISI_PROPOSAL_2026-10-12.md). Baseline WG tanpa admission
+   belum diotorisasi; [rencana isolasi/cleanup](testing/BENCHMARK_PLAN.md) sudah tersedia.
 5. Catat intent sebelum perubahan dan hasil sesudahnya. Credential/state/key/disk
    tetap lokal. GitHub private; CLI `state/tooling/github/cli/usr/bin/gh`.
 
 S-01 kuantitatif tetap bukti 0.1.4; S-03/S-04 ICMP tetap bukti 0.1.3, tidak diulang
-penuh. [Laporan aktif](IMPLEMENTATION_REPORT.md), [tutorial](MODUL_PENGGUNAAN_VANGUARD.md),
-[checkpoint lama](CHECKPOINT_2026-10-10.md). Login HP pribadi,
+penuh. [Laporan aktif](reports/IMPLEMENTATION_REPORT.md), [tutorial](MODUL_PENGGUNAAN_VANGUARD.md),
+[checkpoint lama](history/checkpoints/CHECKPOINT_2026-10-10.md). Login HP pribadi,
 reboot workstation, serta penyebab shutdown belum terverifikasi.
 Tindak lanjut operasional: ketahanan counter CA saat shutdown mendadak dan warning
 control socket Gunicorn pada sandbox service; API dan admission sudah lulus uji akhir.
@@ -1221,7 +1492,7 @@ Tes admin setelah perubahan terakhir 26 PASS; verifikasi HTTPS/TOTP final 4/4 PA
 Wheel final terpasang dengan force-reinstall setelah ditemukan pip mempertahankan
 wheel versi sama. Backup kedua menjaga database yang sudah berisi arsip uji.
 Arsip final 17 baris, ZIP dan hash isi cocok, tanpa password/seed TOTP. Rincian
-dan bukti privat ada pada `docs/PROGRESS_2026-10-12.md`. Source/dokumen final sudah
+dan bukti privat ada pada `docs/progress/PROGRESS_2026-10-12.md`. Source/dokumen final sudah
 dipush private; CI Python 3.10/3.12 masing-masing 137 PASS. Empat VM lain tetap
 0.1.5 dan tidak perlu di-rollout.
 

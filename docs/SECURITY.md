@@ -3,7 +3,7 @@
 Dokumen ini memperinci aturan dalam VANGUARD_CONTEXT.md dan AGENTS.md. Tidak mengganti
 topologi atau mengubah implementasi kernel WireGuard.
 
-Versi0.1.9 menambahkan perilaku pada [catatan hardening](HARDENING_0.1.9.md).
+Versi0.1.9 menambahkan perilaku pada [catatan hardening](reference/HARDENING_0.1.9.md).
 Status pengujian/deployment ada di checkpoint; source tidak otomatis berarti VM
 sudah memakai versi tersebut.
 
@@ -38,12 +38,13 @@ Penonaktifan akun menghapus sesi dan peer; daemon juga memeriksa validitas sesi.
 Perangkat lama tanpa binding akun gagal admission. Metadata pemilik/departemen
 hanya deskriptif, bukan kebijakan akses atau attestation hardware.
 
-Kandidat source31Oktober memvalidasi respons login sebelum mengganti file sesi
+Mulai0.1.15 client memvalidasi respons login sebelum mengganti file sesi
 client dan menyimpan hanya username, token serta expiry. Respons rusak tidak
 menimpa sesi lama. Respons logout yang tidak mengonfirmasi pencabutan dan
 penghapusan peer mempertahankan token untuk retry, termasuk JSON non-object.
-Ini validasi respons, bukan jalur admission baru. Belum di-rollout ke paket/EXE;
-hasil regresi dan batas bukti tercatat pada laporan uji31Oktober.
+Ini validasi respons, bukan jalur admission baru. Paket0.1.15 kini terpasang pada
+empat peran Linux dan kedua installer Windows VM. Hasil dan batas buktinya ada
+pada [validasi2November](reports/VALIDASI_0.1.15_2026-11-02.md).
 
 Lease maksimal 300 detik. Daemon memeriksa ulang setiap 5 detik **setelah** siklus sebelumnya
 selesai. Peer expired/revoked/disabled/unknown dihapus. Kegagalan fetch/validasi CRL membatalkan
@@ -85,7 +86,7 @@ dipertahankan sebagai bukti; state rusak tanpa manifest ditolak. Tidak ada resto
 index/CRL lama atau tebakan counter. SIGKILL sudah diuji pada CA sementara;
 rollout CA utama20 Oktober sudah lolos invariant/salinan terisolasi dan backup;
 power-loss disk tetap memerlukan bukti terpisah. Lihat
-[matriks live](VALIDASI_ROLLOUT_2026-10-20.md).
+[matriks live](reports/VALIDASI_ROLLOUT_2026-10-20.md).
 
 TLS client memverifikasi chain dan IP terhadap Root CA. Implementasi Requests tidak menerapkan
 CRL untuk **sertifikat HTTPS service**; revoke admission berlaku pada sertifikat perangkat.
@@ -141,7 +142,7 @@ Gunicorn/TLS nyata mereproduksinya sebelum patch. Penambahan kapasitas tidak
 mengubah lock mutasi CA, verifikasi TLS, deadline6detik atau penolakan ketika
 pemeriksaan gagal. Layanan tetap dapat not_ready saat overload; jangan mengubahnya
 menjadi200 atau menggunakan CRL lama. Bukti dan pemulihan unit tersedia pada
-[catatan kapasitas](CA_SERVICE_CAPACITY.md).
+[catatan kapasitas](reference/CA_SERVICE_CAPACITY.md).
 
 ## Persiapan endpoint0.1.12, belum rollout
 
@@ -163,13 +164,13 @@ hanya jika semua scope Undefined; policy eksplisit tidak diubah. Jangan bypass
 kebijakan organisasi. Runtime Python3.13x64/WireGuard resmi disertakan dengan
 pin SHA256 dan Authenticode publisher, dipasang jika belum ada. Runtime parsial
 ditolak dan runtime bersama yang sesuai dipertahankan. Lihat
-[hasil installer](VALIDASI_INSTALLER_2026-10-24.md). Launcher memeriksa konflik subnet/route sebelum admission; snapshot
+[hasil installer](reports/VALIDASI_INSTALLER_2026-10-24.md). Launcher memeriksa konflik subnet/route sebelum admission; snapshot
 bukan proof firewall/UDP. Pemulihan service yang belum terkonfirmasi tetap manual.
 
 `CA.sign_tls` tambahan DNS/IP memerlukan allowlist operator eksplisit. Sanitasi
 host mencegah injeksi ekstensi; default tetap alamat layanan lab. Perubahan ini
 diuji pada CA sementara, bukan penerbitan/rotasi sertifikat utama. Riwayat CA dan
-revocation tidak dipulihkan saat rollback paket. Baca [rencana pilot](ENDPOINT_WINDOWS_PILOT.md).
+revocation tidak dipulihkan saat rollback paket. Baca [rencana pilot](reports/ENDPOINT_WINDOWS_PILOT.md).
 
 ## Kandidat0.1.13 — internet terkelola tanpa konfigurasi router
 
@@ -199,4 +200,15 @@ JSON dan memeriksa policy lokal **sebelum** setiap permintaan renewal. Guard yan
 gagal masuk jalur cleanup tanpa meminta lease baru. Ini bukan attestation remote
 atau jaminan policy tidak berubah setelah pemeriksaan. Lease lama tetap dibatasi
 server; tidak menganggap cleanup lokal sebagai konfirmasi revocation server.
-Bukti patch Linux/mock dan batas native tercatat di [audit bug](AUDIT_BUG_2026-10-28.md).
+Bukti patch Linux/mock dan batas native tercatat di [audit bug](reports/AUDIT_BUG_2026-10-28.md).
+
+
+## CA0.1.17 — barrier generasi sebelum commit
+
+Pada Linux>=5.8, seal menunggu syncfs pada filesystem generasi privat, memeriksa
+error dan filesystem seluruh anggota, lalu menyinkronkan directory/manifest.
+Kernel/platform lama memakai fsync perfile. Error menghentikan commit; recovery
+manifest tetap roll-forward, tanpa restorecounter/CRL. Flush filesystem tidak
+menggantikan validasi signature/invariant atau membolehkan readinessfalse200.
+[Laporan perbaikan dan bukti interupsi](reports/PERBAIKAN_CA_IO_2026-11-03.md) memisahkan
+tesCA sementara, benchmarkfixture, rollout utama dan batas hardware powerloss.
