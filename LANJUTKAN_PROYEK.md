@@ -2,6 +2,9 @@
 
 ## Koreksi contoh SSH terminal — 10 November 2026
 
+Commit lokal `7e88edc` belum ter-push karena DNS GitHub timeout; ulang push
+saat koneksi pulih.
+
 Contoh pada panduan lapangan sebelumnya gagal saat membuka `/dev/tty` dengan
 mode `r+` (`io.UnsupportedOperation`). Kini input peran dibaca dengan mode `r`.
 Uji PTY lokal dengan koneksi SSH dimock PASS untuk pilihan `ca` dan argumen SSH;
