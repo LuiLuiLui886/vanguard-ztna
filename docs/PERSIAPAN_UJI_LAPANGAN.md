@@ -69,7 +69,7 @@ instalasi pengguna. Inventaris kredensial tetap privat pada komputer pengelola;
 repo GitHub hanya menerima dokumentasi yang sudah disanitasi.
 
 Sebelum perjalanan, periksa `df -h` dan `free -h`. Catatan terakhir host sekitar
-5,4 GiB ruang bebas; ini **bukan jaminan cukup** untuk backup dan pertumbuhan disk.
+3,2 GiB ruang bebas pada pemeriksaan 10 November; ini **bukan jaminan cukup** untuk backup dan pertumbuhan disk.
 Hitung kebutuhan nyata sebelum sesi. Gunakan PC fisik sebagai endpoint; tidak
 perlu menjalankan VM Windows tambahan bersamaan jika sumber daya host terbatas.
 
@@ -127,9 +127,21 @@ sudo nft list ruleset
 sudo iptables-save
 ```
 
-Host Ethernet harus `.50.10/24`, bridge `virbr-vg` harus `.100.1/24`.
-Atur IP melalui pengelola jaringan host yang sudah digunakan; jangan mengganti
-konfigurasi interface lain atau menambahkan alamat yang sudah dipakai.
+`.50.10/24` adalah **alamat rencana untuk Ethernet host**, bukan alamat yang
+otomatis diberikan router. Pada pemeriksaan 10 November, host justru memakai
+Wi-Fi `wlx76012dc00ec5` dengan DHCP `192.168.50.101/24`; tidak ada Ethernet
+`192.168.50.10/24`. Karena itu gerbang `host_lan` gagal meski subnetnya sama.
+Jangan menulis route Windows dengan next-hop `.50.10` sampai alamat itu benar-benar
+aktif dan dapat dijangkau. `virbr-vg` memiliki alamat `.100.1/24`, tetapi status
+`DOWN` saat seluruh VM mati; alamat bridge saja belum membuktikan koneksi.
+
+Sebelum pilot, pastikan `.50.10` belum dipakai perangkat lain dan reservasi DHCP
+atau IP statisnya tidak masuk pool DHCP. Hubungkan Ethernet host ke router,
+konfigurasikan `.50.10/24` lewat pengelola jaringan host, lalu cek alamat dan
+konektivitas dari PC. Simpan akses console selama perubahan jaringan. Jangan
+menambah `.50.10` secara serampangan pada Wi-Fi `.101` atau mengganti route
+Windows sebelum jalur host→VM dan firewall teruji. Atur IP melalui pengelola
+jaringan yang sudah digunakan; jangan mengganti konfigurasi interface lain.
 
 **Firewall host/libvirt belum mempunyai installer universal pada proyek ini.**
 Operator wajib mengidentifikasi interface Ethernet, backend nft/iptables, chain
@@ -149,11 +161,20 @@ Jangan memakai `nft flush ruleset`, membuka semua forwarding, atau memasang NAT
 masquerade umum endpoint→VM untuk menyembunyikan sumber. Jangan memulihkan seluruh
 snapshot firewall lama jika aturan lain telah berubah sejak backup.
 
-Pemeriksa tambahan dari root repo, setelah konfigurasi operator:
+Pemeriksa tambahan dari **direktori proyek pada host**, setelah konfigurasi
+operator (prompt `~$` berarti masih di home, sehingga `scripts/` tidak ditemukan):
 
 ```bash
+cd /home/lui/vanguard
 python3 scripts/pilot_preflight.py
 ```
+
+Jalankan ulang setelah CA, server dan admin dinyalakan. Pada 10 November saat
+seluruh VM mati, hasil aktual `BLOCKED`: `host_lan` FAIL,
+`backend_bridge` dan `forwarding_flag` PASS, tiga VM layanan FAIL;
+firewall MANUAL dan HTTPS/traffic NOT_TESTED. Aturan NAT libvirt ada, tetapi
+counter FORWARD nol pada snapshot tersebut; keberhasilan paket dari endpoint
+belum terbukti.
 
 Exit **2** memang normal untuk alat ini: masih memerlukan pemeriksaan manual
 firewall/HTTPS/traffic. `MANUAL_REVIEW_REQUIRED` bukan kelulusan akhir. Jika belum

@@ -607,3 +607,13 @@ Existing Windows identity expires14Nov13:16:28WIB; lease renewal cannot extend i
 See docs/reports/PRA_UJI_LAPANGAN_2026-11-09.md and latest checkpoint. Completed
 suite/postflight must not be rerun merely to resume; do not run old finalize or
 rollout scripts. Private evidence is under state/preflight-20261109/ and state/preflight-20261110/.
+
+Pilot host correction — 10 November 2026 afternoon:
+Current host Wi-Fi wlx76012dc00ec5 uses DHCP192.168.50.101/24 via router .50.1;
+planned Ethernet192.168.50.10/24 is absent. All VM domains shut off in latest
+observation. Pilot preflight from repository root BLOCKED (host_lan and3services
+FAIL, bridge/forward flag PASS, firewall MANUAL, HTTPS/endpoint NOT_TESTED).
+Libvirt NAT rules exist but observed FORWARD counters0, no endpoint forwarding
+proof. Manual updated: check .10 availability/reservation, use Ethernet for
+approved topology, start services, rerun preflight and verify traffic before
+Windows route/lockdown. No host/firewall/VM/IP changes were made in this step.

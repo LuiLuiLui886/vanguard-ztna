@@ -1,5 +1,17 @@
 # Lanjutkan proyek VanGuard
 
+## Koreksi alamat pilot — 10 November 2026
+
+Host saat diperiksa memakai Wi-Fi DHCP `192.168.50.101/24`; panduan `.50.10`
+adalah alamat rencana Ethernet host, belum aktif. Seluruh VM saat ini shut off.
+Preflight dari root repo berstatus BLOCKED: host_lan dan tiga VM layanan FAIL;
+bridge dan ip_forward PASS; firewall MANUAL, HTTPS/traffic NOT_TESTED. Snapshot
+NAT libvirt dan `ip_forward=1` belum membuktikan forwarding endpoint.
+Panduan lapangan kini menjelaskan mismatch, perintah `cd /home/lui/vanguard`,
+dan pemeriksaan alamat sebelum route Windows. Jangan gunakan next-hop `.50.10`
+sebelum Ethernet host aktif, alamatnya bebas konflik, dan jalur terbukti.
+[Lihat panduan](docs/PERSIAPAN_UJI_LAPANGAN.md).
+
 ## Pra-uji lapangan — selesai 10 November 2026 11:53 WIB
 
 Hasil dan perbaikan dipush pada `80394ca` ke branch feature; SHA remote terverifikasi.
