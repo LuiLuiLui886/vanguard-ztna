@@ -194,8 +194,10 @@ berikutnya yang scope-nya cocok. Penerimaan paper tetap keputusan reviewer.
 
 - [Naskah Inggris](DRAFT_PAPER_ICIMPACT.md) dan [file Word](DRAFT_PAPER_ICIMPACT.docx).
 - Sekitar2627kata termasuk catatan editor, tabel dan referensi; bukan bukti6halaman.
-  DOCX memakai A4 dan geometri dua kolom dari template. Rendering dan pemeriksaan
-  PDF final belum dilakukan; format final wajib ditinjau kembali dalam template.
+  DOCX memakai A4 dan geometri dua kolom dari template. Draft kini juga ada
+  pada tab **Draft VanGuard** di GoogleDoc pengguna. ExportPDF11November
+  menunjukkan4halaman draft termasuk referensi, terpisah dari3halaman template
+  asli. Setelah gambar/hasil final dimasukkan, pagination wajib diperiksa ulang.
 - Dua placeholder gambar dan satu placeholder hasil media sengaja belum diisi.
   Tidak ada screenshot buatan, angka media rekaan atau nama penulis yang ditebak.
 - Angka6.828/10.056/4.359detik serta122/98probe berasal dari
@@ -205,8 +207,10 @@ berikutnya yang scope-nya cocok. Penerimaan paper tetap keputusan reviewer.
   paperWireGuardNDSS2017 dan RFC5280. Related work terkini belum lengkap.
 - Target GoogleDoc adalah tautan pengguna diBagian1. Template asli disimpan
   lokal di state/conference-draft-20261111/template-original.docx (diabaikan Git).
-  Belum ada sesi dokumen/GoogleDrive terhubung untuk menulis; GoogleDoc belum
-  diubah. Draft lokal siap ditransfer ketika koneksi tersedia.
+  GoogleDrive sudah terhubung dan draft berhasil ditulis pada tabbaru
+  t.9hvk2e9fx9bh; tabtemplate t.0 dipertahankan identik berdasarkan readback.
+  Semua paragraf dan28sel pada2tabel native cocok draft lokal. Tidak perlu
+  mengimpor ulang salinanWord untuk melihat draft pada dokumen target.
 
 Jika memakai Word sebagai jalan sementara, unduh DOCX lalu buka melalui Google
 Docs sebagai dokumen terpisah untuk meninjau. Untuk mengisi template target,
