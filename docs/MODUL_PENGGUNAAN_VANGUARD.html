@@ -36,6 +36,12 @@ nilai yang sudah disiapkan admin; jangan menyalin placeholder apa adanya.</p>
 <p><strong>Versi panduan ini:</strong> source CA 0.1.17; server, admin, dan installer Windows
 0.1.15 pada branch <code>feature/2026-10-22-physical-endpoints</code>. Versi pada VM harus
 diperiksa terlebih dahulu; jangan menyimpulkan versi terpasang hanya dari GitHub.</p>
+<p><strong>Installer yang digunakan tetap 0.1.15.</strong> Penyederhanaan langkah Windows pada
+edisi ini hanya mengubah panduan, bukan EXE, ZIP atau launcher BAT/PowerShell.
+Keempatnya dicocokkan dengan rilis teruji pada 11 November dan identik.
+Tidak perlu menginstal ulang atau menurunkan versi untuk mengikuti perintah
+yang lebih singkat. Jika sudah terpasang dan terdaftar, mulai dari Bagian 4;
+jangan ulang <code>init</code> pada identitas yang sudah ada.</p>
 <p><strong>Status:</strong> alur lab sudah diuji, tetapi penerapan nyata belum selesai diterima.
 Instalasi Windows dari OS kosong, UAC interaktif, PC fisik LAN/Wi-Fi, koneksi TCP
 internet yang tetap aktif saat revoke, dan uji daya putus CA masih BELUM_TERUJI.
@@ -554,18 +560,25 @@ hak administrator lokal. Akun VPN tetap terpisah dari akun admin Windows.</p>
 <h3 id="bagian-2-1">2.1 Install EXE umum</h3>
 <ol>
 <li>
-<p>Unduh EXE terbaru dari <a href="../downloads/README.md">halaman unduhan</a>
+<p>Unduh <a href="../downloads/Setup-VanGuard-0.1.15.exe">Setup-VanGuard-0.1.15.exe</a>
 dari branch <code>feature/2026-10-22-physical-endpoints</code>, folder <code>downloads</code>, tombol
-<strong>Download raw file</strong>. Tidak perlu GitHub CLI.</p>
+<strong>Download raw file</strong>. Tidak perlu GitHub CLI. Simpan dengan nama tersebut di
+folder <strong>Downloads</strong> akun Windows. Jika browser menyimpan di tempat lain,
+pindahkan file lewat File Explorer ke Downloads sebelum mengikuti contoh ini.</p>
 </li>
 <li>
 <p>Cocokkan hash dengan <a href="../downloads/SHA256SUMS">SHA256SUMS</a> dan nilai tepercaya
-dari admin:</p>
-<pre><code class="language-powershell">Get-FileHash '.\NAMA_FILE_INSTALLER.exe' -Algorithm SHA256
+dari admin. Buka PowerShell pada Windows, lalu masuk ke folder unduhan:</p>
+<pre><code class="language-powershell">Set-Location &quot;$env:USERPROFILE\Downloads&quot;
+</code></pre>
+<p>Jalankan pemeriksaan file berikut:</p>
+<pre><code class="language-powershell">Get-FileHash '.\Setup-VanGuard-0.1.15.exe' -Algorithm SHA256
 </code></pre>
 <p>Untuk EXE 0.1.15 yang tercatat saat panduan ini diperbarui, SHA-256 adalah
 <code>01bdfd418cf8ab97543b172d7abaedb1baba507ac215900f895eb18ced591031</code>.
-Pastikan juga nilai tersebut cocok dengan checksum yang diverifikasi admin.</p>
+Pastikan juga nilai tersebut cocok dengan checksum yang diverifikasi admin.
+Jika file tidak ditemukan atau hash berbeda, jangan jalankan installer;
+periksa lokasi/nama file dan unduh ulang dari sumber yang sama.</p>
 </li>
 <li>
 <p>Klik kanan EXE → <strong>Run as administrator</strong>, setujui UAC, tunggu selesai.

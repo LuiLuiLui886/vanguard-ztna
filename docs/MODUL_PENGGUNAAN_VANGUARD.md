@@ -11,6 +11,13 @@ nilai yang sudah disiapkan admin; jangan menyalin placeholder apa adanya.
 0.1.15 pada branch `feature/2026-10-22-physical-endpoints`. Versi pada VM harus
 diperiksa terlebih dahulu; jangan menyimpulkan versi terpasang hanya dari GitHub.
 
+**Installer yang digunakan tetap 0.1.15.** Penyederhanaan langkah Windows pada
+edisi ini hanya mengubah panduan, bukan EXE, ZIP atau launcher BAT/PowerShell.
+Keempatnya dicocokkan dengan rilis teruji pada 11 November dan identik.
+Tidak perlu menginstal ulang atau menurunkan versi untuk mengikuti perintah
+yang lebih singkat. Jika sudah terpasang dan terdaftar, mulai dari Bagian 4;
+jangan ulang `init` pada identitas yang sudah ada.
+
 **Status:** alur lab sudah diuji, tetapi penerapan nyata belum selesai diterima.
 Instalasi Windows dari OS kosong, UAC interaktif, PC fisik LAN/Wi-Fi, koneksi TCP
 internet yang tetap aktif saat revoke, dan uji daya putus CA masih BELUM_TERUJI.
@@ -417,19 +424,29 @@ hak administrator lokal. Akun VPN tetap terpisah dari akun admin Windows.
 
 ### 2.1 Install EXE umum
 
-1. Unduh EXE terbaru dari [halaman unduhan](../downloads/README.md)
+1. Unduh [Setup-VanGuard-0.1.15.exe](../downloads/Setup-VanGuard-0.1.15.exe)
    dari branch `feature/2026-10-22-physical-endpoints`, folder `downloads`, tombol
-   **Download raw file**. Tidak perlu GitHub CLI.
+   **Download raw file**. Tidak perlu GitHub CLI. Simpan dengan nama tersebut di
+   folder **Downloads** akun Windows. Jika browser menyimpan di tempat lain,
+   pindahkan file lewat File Explorer ke Downloads sebelum mengikuti contoh ini.
 2. Cocokkan hash dengan [SHA256SUMS](../downloads/SHA256SUMS) dan nilai tepercaya
-   dari admin:
+   dari admin. Buka PowerShell pada Windows, lalu masuk ke folder unduhan:
 
    ```powershell
-   Get-FileHash '.\NAMA_FILE_INSTALLER.exe' -Algorithm SHA256
+   Set-Location "$env:USERPROFILE\Downloads"
+   ```
+
+   Jalankan pemeriksaan file berikut:
+
+   ```powershell
+   Get-FileHash '.\Setup-VanGuard-0.1.15.exe' -Algorithm SHA256
    ```
 
    Untuk EXE 0.1.15 yang tercatat saat panduan ini diperbarui, SHA-256 adalah
    `01bdfd418cf8ab97543b172d7abaedb1baba507ac215900f895eb18ced591031`.
    Pastikan juga nilai tersebut cocok dengan checksum yang diverifikasi admin.
+   Jika file tidak ditemukan atau hash berbeda, jangan jalankan installer;
+   periksa lokasi/nama file dan unduh ulang dari sumber yang sama.
 
 3. Klik kanan EXE → **Run as administrator**, setujui UAC, tunggu selesai.
    Python, WireGuard dan dependensi disertakan. Jika kebijakan Windows memblokir

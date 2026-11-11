@@ -10,6 +10,12 @@ memuat perbaikan respons login/logout, diagnostik readiness dan manual ringkas.
 Cocokkan [checksum](SHA256SUMS). Profil, CA publik, approval admin dan login
 karyawan tetap diperlukan; kunci privat dibuat di endpoint.
 
+**Panduan terbaru:** ikuti [manual utama](../docs/MODUL_PENGGUNAAN_VANGUARD.md)
+atau [format HTML](../docs/MODUL_PENGGUNAAN_VANGUARD.html) edisi11November.
+Perintah Windows telah dipermudah; EXE/ZIP dan launcher tetap versi teruji0.1.15,
+identik dengan rilis7e5d632. Manual di dalam paket belum dibangun ulang.
+Tidak perlu menginstal ulang hanya karena panduannya diperbarui.
+
 Windows10 build19044 dan Windows11 build26300: EXE identik terpasang dengan
 exit0, versi0.1.15; hash identitas, konfigurasi dan profil firewall tetap.
 Rincian hasil dan batas pengujian tersedia dalam

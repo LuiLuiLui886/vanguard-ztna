@@ -109,3 +109,12 @@ EXE0.1.15, ZIP template dan launcher BAT/PowerShell identik SHA-256 dengan rilis
 7e5d632; revisi kemudahan terbaru hanya panduan. Tidak dilakukan rollback atau
 perubahan runtime. Bukti native historis tetap terbatas pada lingkungan uji;
 endpoint fisik/fresh OS/UAC/GPO BELUM_TERUJI. Gunakan installer0.1.15 yang tersedia.
+
+## Panduan Windows diselaraskan — 11 November
+
+Manual MD/HTML Bagian2.1 kini memakai nama EXE0.1.15 dan folder Downloads nyata,
+checksum serta petunjuk tidak mengulang instalasi/init untuk revisi dokumentasi.
+Halaman unduhan dan dokumen lapangan selaras; manual dalam paket belum dibangun
+ulang.14action cocok launcher, hash EXE/ZIP cocok rilis dan0tautan rusak.
+Tidak ada perubahan runtime atau uji Windows native baru; lanjut pilot fisik
+sesudah backend/jaringan siap.
