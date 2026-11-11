@@ -74,7 +74,17 @@ sesudah backend/jaringan siap.
 
 Pengguna ingin paper Inggris maksimal6halaman termasuk referensi, pengujian VM
 dan screenshot. [Rencana lengkap](docs/proposal/RENCANA_B_KONFERENSI.md) tersedia; belum draft siap submit.
-Target ICIMPACT2027 menampilkan deadline1Oktober2026 (sudah lewat), status
-perpanjangan/scope perlu dikonfirmasi. Screenshot/log perlu diinventaris; tidak
+Pengguna mengonfirmasi deadline diperpanjang30November2026 dan kategori
+cyber/network diEDAS; situs publik masih menampilkan tanggal lama. Fokus
+layanan media digital telah dipilih, eksperimennya belum dijalankan. Screenshot/log perlu diinventaris; tidak
 ada bukti baru yang dibuat, tidak otomatis membuat ulang WindowsVM. Pengujian
 fisik tetap pekerjaan terpisah; runtime dan instalasi tidak berubah.
+
+## Draft paper Inggris — 11 November
+
+[Draft awal](docs/proposal/DRAFT_PAPER_ICIMPACT.md) dan DOCX tersedia. Hasil media, screenshot, penulis
+dan pagination6halaman belum lengkap. Hasil historis0.1.15 diberi label terpisah;
+empat sumber primer diverifikasi. GoogleDoc belum diubah: sesi edit tidak
+terhubung, koneksi GoogleDrive disarankan. Lanjutkan transfer ke dokumen target
+setelah koneksi terverifikasi, kemudian lengkapi bukti nyata dan review pembimbing.
+Tidak ada perubahan runtime/VM atau submission konferensi.

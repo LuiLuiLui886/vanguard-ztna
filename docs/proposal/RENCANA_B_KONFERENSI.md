@@ -1,6 +1,6 @@
 # Rencana B: paper VanGuard berbasis pengujian VM
 
-Status 11 November 2026: rencana penelitian dan bukti, **bukan paper siap submit**.
+Status 11 November 2026: draft awal tersedia, **bukan paper siap submit**.
 Rencana B berjalan sebagai alternatif keluaran penelitian; tidak menghapus
 rencana paten atau mengubah instalasi. Dokumen kerja ini berbahasa Indonesia;
 naskah submission, judul, caption, tabel dan abstrak akan berbahasa Inggris.
@@ -11,9 +11,11 @@ Target pengguna: [ICIMPACT](https://icimpact.telkomuniversity.ac.id/#call-for-pa
 Hasil pencarian situs resmi mencantumkan ICIMPACT2027, 3–5Februari2027,
 Bandung/hybrid, maksimal6halaman termasuk referensi, bahasa Inggris, format IEEE,
 blind peer review dan EDAS. Deadline submission tercantum **1Oktober2026**,
-sudah lewat pada tanggal sesi11November. Akses halaman langsung403; belum ada
-bukti perpanjangan. Konfirmasi status submission dengan panitia sebelum menetapkan
-jadwal atau membayar. Tidak ada submission/registrasi/email yang dilakukan.
+sudah lewat pada tanggal sesi11November. Pengguna kemudian mengonfirmasi
+perpanjangan sampai **30November2026** dan kategori cyber/network diEDAS.
+Pakai tanggal tersebut sebagai target kerja berdasarkan informasi pengguna;
+situs publik lama belum memverifikasi perpanjangan. Tidak ada submission,
+registrasi, pembayaran atau email yang dilakukan.
 
 [Dokumen pengguna](https://docs.google.com/document/d/1S9KanGfrsU7Ir62cIVfqIDfHBTnBfJDdKgZ96y26a4k/edit)
 berhasil dibaca lewat ekspor teks: template IEEE untuk A4. Pertahankan style/margin
@@ -31,7 +33,11 @@ identitas penulis/repository harus disembunyikan. Pertahankan batas6halaman.
 
 Usulan judul Inggris:
 
-**VanGuard: Certificate-Based Admission and Access Revocation for WireGuard in a Virtual Testbed**
+**Certificate-Based Access Control and Revocation for a Virtualized Digital Media Service Using WireGuard**
+
+Fokus media disetujui pengguna: layanan distribusi berkas media uji pada VM,
+dengan autentikasi perangkat dan pencabutan akses. Layanan/eksperimen media
+belum dijalankan; hasil aplikasi generik lama tidak diberi label hasil media.
 
 Fokus: apakah kredensial karyawan yang sah tetap tidak memberi akses pada perangkat
 yang gagal autentikasi; apakah pencabutan menghentikan akses yang sudah aktif;
@@ -183,3 +189,26 @@ production-ready, penurunan insiden organisasi, atau semua Windows sudah teruji.
 
 Jika deadline target tertutup, naskah dan dataset tetap bisa disiapkan untuk venue
 berikutnya yang scope-nya cocok. Penerimaan paper tetap keputusan reviewer.
+
+## 9. Draft awal dan status Google Docs
+
+- [Naskah Inggris](DRAFT_PAPER_ICIMPACT.md) dan [file Word](DRAFT_PAPER_ICIMPACT.docx).
+- Sekitar2627kata termasuk catatan editor, tabel dan referensi; bukan bukti6halaman.
+  DOCX memakai A4 dan geometri dua kolom dari template. Rendering dan pemeriksaan
+  PDF final belum dilakukan; format final wajib ditinjau kembali dalam template.
+- Dua placeholder gambar dan satu placeholder hasil media sengaja belum diisi.
+  Tidak ada screenshot buatan, angka media rekaan atau nama penulis yang ditebak.
+- Angka6.828/10.056/4.359detik serta122/98probe berasal dari
+  [laporan0.1.15](../reports/VALIDASI_0.1.15_2026-11-02.md); semuanya berlabel
+  historis dan sampel tunggal/probe. Audit ulang log mentah sebelum submission.
+- Empat referensi primer terverifikasi: NISTSP800-207, BeyondCorp2014,
+  paperWireGuardNDSS2017 dan RFC5280. Related work terkini belum lengkap.
+- Target GoogleDoc adalah tautan pengguna diBagian1. Template asli disimpan
+  lokal di state/conference-draft-20261111/template-original.docx (diabaikan Git).
+  Belum ada sesi dokumen/GoogleDrive terhubung untuk menulis; GoogleDoc belum
+  diubah. Draft lokal siap ditransfer ketika koneksi tersedia.
+
+Jika memakai Word sebagai jalan sementara, unduh DOCX lalu buka melalui Google
+Docs sebagai dokumen terpisah untuk meninjau. Untuk mengisi template target,
+pindahkan isi tiap bagian dan gunakan style template; periksa kembali tabel,
+kolom dan jumlah halaman. Jangan menganggap impor otomatis menjamin formatIEEE.
