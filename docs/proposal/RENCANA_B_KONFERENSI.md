@@ -193,7 +193,7 @@ berikutnya yang scope-nya cocok. Penerimaan paper tetap keputusan reviewer.
 ## 9. Draft awal dan status Google Docs
 
 - [Naskah Inggris](DRAFT_PAPER_ICIMPACT.md) dan [file Word](DRAFT_PAPER_ICIMPACT.docx).
-- Sekitar2627kata termasuk catatan editor, tabel dan referensi; bukan bukti6halaman.
+- Sekitar2947kata termasuk catatan editor, tabel dan referensi; bukan bukti6halaman.
   DOCX memakai A4 dan geometri dua kolom dari template. Draft kini juga ada
   pada tab **Draft VanGuard** di GoogleDoc pengguna. ExportPDF11November
   menunjukkan4halaman draft termasuk referensi, terpisah dari3halaman template
@@ -203,8 +203,9 @@ berikutnya yang scope-nya cocok. Penerimaan paper tetap keputusan reviewer.
 - Angka6.828/10.056/4.359detik serta122/98probe berasal dari
   [laporan0.1.15](../reports/VALIDASI_0.1.15_2026-11-02.md); semuanya berlabel
   historis dan sampel tunggal/probe. Audit ulang log mentah sebelum submission.
-- Empat referensi primer terverifikasi: NISTSP800-207, BeyondCorp2014,
-  paperWireGuardNDSS2017 dan RFC5280. Related work terkini belum lengkap.
+- Delapan referensi primer terverifikasi: empat landasan awal dan empat
+  artikel dari proposal yang metadata-nya dicocokkan ke penerbit. Related work
+  diperluas; ini belum tinjauan seluruh literatur atau bukti novelty mutlak.
 - Target GoogleDoc adalah tautan pengguna diBagian1. Template asli disimpan
   lokal di state/conference-draft-20261111/template-original.docx (diabaikan Git).
   GoogleDrive sudah terhubung dan draft berhasil ditulis pada tabbaru
@@ -216,3 +217,23 @@ Jika memakai Word sebagai jalan sementara, unduh DOCX lalu buka melalui Google
 Docs sebagai dokumen terpisah untuk meninjau. Untuk mengisi template target,
 pindahkan isi tiap bagian dan gunakan style template; periksa kembali tabel,
 kolom dan jumlah halaman. Jangan menganggap impor otomatis menjamin formatIEEE.
+
+## 10. Referensi proposal yang dipakai dalam paper
+
+Proposal dibaca ulang melalui GoogleDocs pada11November. Nomor di bawah
+mengacu daftar pustaka proposal, bukan nomor sitasi pada paper. Proposal asli
+tidak diedit. Empat judul relevan dipakai dengan metadata penerbit; entri lainnya
+belum diaudit menyeluruh dan tidak otomatis dianggap salah.
+
+| Proposal → paper | Perbedaan metadata dan sumber verifikasi |
+| --- | --- |
+| [1] → [5], ZT-VPN | Penulis terverifikasi: Zohaib, Sajjad, Iqbal, Yousaf, Haseeb, Muhammad; Information15(11),734,2024. Proposal menulis Alshehri/Alzahrani dan15(4), serta tambahan kata Environments pada judul. [Penerbit](https://www.mdpi.com/2078-2489/15/11/734). |
+| [8] → [6], industrial remote access | Penulis Federici, Martintoni, Senni; Electronics12(3),566,2023. Proposal menulis Iurshina/Boussard/Bonald dan12(5). [Penerbit](https://www.mdpi.com/2079-9292/12/3/566). |
+| [9] → [7], WireGuard vs OpenVPN | Penulis Anyam, Singh, Larijani, Philip; Computers14(8),326,2025. Proposal menulis Owezarski/Lagraa sebagai coauthor. [Penerbit](https://www.mdpi.com/2073-431X/14/8/326). |
+| [10] → [8], overlay/VPN performance | Penulis Gentile, Macrì, Greco, Fazio; FutureInternet16(8),283,2024. Proposal menulis Aiello/Mongelli/Papaleo dan16(3). [Penerbit](https://www.mdpi.com/1999-5903/16/8/283). |
+
+Semua tambahan disitasi pada BagianII paper, bukan hanya ditambahkan ke daftar.
+Naskah MD/DOCX dan tab Draft VanGuard telah disinkronkan. ExportPDF sesudah
+penambahan masih4halaman draft termasuk8referensi;3halaman lain adalah template.
+Hasil media/screenshot masih PENDING. Penambahan referensi tidak menambah bukti
+implementasi atau menjamin novelty/penerimaan paper.

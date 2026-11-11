@@ -84,7 +84,8 @@ fisik tetap pekerjaan terpisah; runtime dan instalasi tidak berubah.
 
 [Draft awal](docs/proposal/DRAFT_PAPER_ICIMPACT.md) dan DOCX tersedia. Hasil media, screenshot, penulis
 dan pagination6halaman belum lengkap. Hasil historis0.1.15 diberi label terpisah;
-empat sumber primer diverifikasi. GoogleDrive kini terhubung; draft sudah
+delapan sumber primer diverifikasi (empat diambil dari proposal dengan metadata
+penerbit yang dikoreksi). GoogleDrive kini terhubung; draft sudah
 masuk tab Draft VanGuard pada GoogleDoc target, template t.0 tetap identik.
 ExportPDF menunjukkan4halaman draft termasuk referensi;3halaman lain adalah
 template asli. Lengkapi bukti nyata/gambar dan periksa ulang pagination sebelum

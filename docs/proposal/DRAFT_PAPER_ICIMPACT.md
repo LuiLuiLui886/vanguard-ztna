@@ -24,7 +24,13 @@ NIST SP 800-207 describes zero trust in terms of subjects, assets, resources, au
 
 WireGuard associates peer public keys with tunnel addresses and provides encrypted network transport. Its design leaves public-key distribution to mechanisms outside the tunnel protocol [3]. VanGuard uses that separation: X.509 validation and employee-session checks occur over HTTPS before peer activation, while the WireGuard handshake remains unchanged. Certificate and CRL terminology follows the Internet X.509 profile [4]; an application must still decide how certificate status affects an existing authorization.
 
-The scope of this work is the coordination between admission, application policy, and access withdrawal in a virtualized service. A broader comparison with recent certificate-based VPN and software-defined perimeter studies remains necessary before making a novelty claim. Access authentication must also be distinguished from content provenance: authorizing a download neither proves who created the media nor detects a manipulated recording.
+Zohaib et al. [5] review zero trust VPN research and propose a framework combining certificate-based authentication, user identity checks, and session controls for hybrid and remote work. Their framework also considers contextual checks such as device health and location. VanGuard addresses a narrower implementation problem: enforcing certificate-to-WireGuard-key binding and revocable access without changing the tunnel protocol. It does not implement all contextual controls described in that framework.
+
+Federici, Martintoni, and Senni [6] propose multi-level authorization for industrial remote access, supported by software-defined networking and trusted execution environments. This provides relevant precedent for separating network access from resource authorization. The present prototype instead uses a small VM deployment and does not claim trusted-execution or hardware-attestation guarantees.
+
+Anyam et al. [7] compare WireGuard and OpenVPN in Azure and VMware and find that performance depends on deployment and network conditions. Gentile et al. [8] evaluate RTT and bandwidth across VPN and overlay configurations using virtualized testbeds. These studies support recording the environment and separating transport measurements from authorization outcomes; their results cannot be reused as VanGuard performance measurements.
+
+These selected studies motivate evaluating how admission, resource policy, and revocation interact during an ongoing media transfer. They do not establish an exhaustive novelty review or prove that the integration is unprecedented. Access authentication must also be distinguished from content provenance: authorizing a download neither proves who created the media nor detects a manipulated recording.
 
 ## III. System Design and Threat Model
 
@@ -135,3 +141,11 @@ VanGuard implements certificate-based admission, employee-session checks, and re
 [3] J. A. Donenfeld, “WireGuard: Next Generation Kernel Network Tunnel,” in Proc. Network and Distributed System Security Symposium (NDSS), 2017, doi: 10.14722/ndss.2017.23160. https://www.ndss-symposium.org/wp-content/uploads/2017/09/ndss2017_04A-3_Donenfeld_paper.pdf
 
 [4] D. Cooper, S. Santesson, S. Farrell, S. Boeyen, R. Housley, and W. Polk, “Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile,” RFC 5280, May 2008, doi: 10.17487/RFC5280. https://www.rfc-editor.org/rfc/rfc5280
+
+[5] S. M. Zohaib, S. M. Sajjad, Z. Iqbal, M. Yousaf, M. Haseeb, and Z. Muhammad, “Zero Trust VPN (ZT-VPN): A Systematic Literature Review and Cybersecurity Framework for Hybrid and Remote Work,” Information, vol. 15, no. 11, Art. no. 734, 2024, doi: 10.3390/info15110734. https://doi.org/10.3390/info15110734
+
+[6] F. Federici, D. Martintoni, and V. Senni, “A Zero-Trust Architecture for Remote Access in Industrial IoT Infrastructures,” Electronics, vol. 12, no. 3, Art. no. 566, 2023, doi: 10.3390/electronics12030566. https://doi.org/10.3390/electronics12030566
+
+[7] J. Anyam, R. R. Singh, H. Larijani, and A. Philip, “Empirical Performance Analysis of WireGuard vs. OpenVPN in Cloud and Virtualised Environments Under Simulated Network Conditions,” Computers, vol. 14, no. 8, Art. no. 326, 2025, doi: 10.3390/computers14080326. https://doi.org/10.3390/computers14080326
+
+[8] A. F. Gentile, D. Macrì, E. Greco, and P. Fazio, “Overlay and Virtual Private Networks Security Performances Analysis with Open Source Infrastructure Deployment,” Future Internet, vol. 16, no. 8, Art. no. 283, 2024, doi: 10.3390/fi16080283. https://doi.org/10.3390/fi16080283
