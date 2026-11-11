@@ -15,6 +15,7 @@ Untuk jaringan kampus `192.168.50.0/24`, gunakan **[dokumen kerja lapangan](PERS
 | Membaca audit, validasi dan hasil uji | [Laporan](reports/) |
 | Menyiapkan pengujian atau memahami metrik | [Metode pengujian](testing/) |
 | Membuka keluaran XML pengujian lama | [Artefak pengujian](testing/results/) |
+| Menyiapkan paper konferensi berbasis VM | [Rencana B](proposal/RENCANA_B_KONFERENSI.md) |
 | Memeriksa kesesuaian proposal TA | [Proposal](proposal/) |
 | Membaca catatan kapasitas, hardening dan CI | [Referensi teknis](reference/) |
 | Membuka snapshot checkpoint/handoff lama | [Arsip](history/) |

@@ -118,3 +118,12 @@ Halaman unduhan dan dokumen lapangan selaras; manual dalam paket belum dibangun
 ulang.14action cocok launcher, hash EXE/ZIP cocok rilis dan0tautan rusak.
 Tidak ada perubahan runtime atau uji Windows native baru; lanjut pilot fisik
 sesudah backend/jaringan siap.
+
+## Rencana B konferensi — 11 November
+
+Pengguna ingin paper Inggris maksimal6halaman termasuk referensi, pengujian VM
+dan screenshot. [Rencana lengkap](proposal/RENCANA_B_KONFERENSI.md) tersedia; belum draft siap submit.
+Target ICIMPACT2027 menampilkan deadline1Oktober2026 (sudah lewat), status
+perpanjangan/scope perlu dikonfirmasi. Screenshot/log perlu diinventaris; tidak
+ada bukti baru yang dibuat, tidak otomatis membuat ulang WindowsVM. Pengujian
+fisik tetap pekerjaan terpisah; runtime dan instalasi tidak berubah.

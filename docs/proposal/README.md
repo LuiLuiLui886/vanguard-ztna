@@ -6,3 +6,5 @@ Pemetaan sistem terhadap proposal Tugas Akhir dan catatan revisi proposal.
 
 - [PROPOSAL_ALIGNMENT.md](PROPOSAL_ALIGNMENT.md)
 - [SARAN_REVISI_PROPOSAL_2026-10-12.md](SARAN_REVISI_PROPOSAL_2026-10-12.md)
+
+- [Rencana B konferensi: paper VM dan bukti screenshot](RENCANA_B_KONFERENSI.md)
