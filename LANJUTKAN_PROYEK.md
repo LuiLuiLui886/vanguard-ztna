@@ -24,7 +24,7 @@ mengganti profil ke schema1 hanya untuk mengikuti tutorial dari awal.
   server/admin berdasarkan perbandingan kode, bukan sekadar nomor versi.
 - Pengguna11November mengizinkan penghapusan Windows11/10: domain dan dua disk
   sudah dihapus,135file identitas/config dan XML disimpan privat; NVRAM/TPM tetap.
-  Lima Ubuntu terpelihara; CA/server/admin running. Jangan buat ulang Windows otomatis.
+  Lima Ubuntu terpelihara; pemeriksaan terbaru seluruhnya shut off. Jangan buat ulang Windows otomatis.
 - Host kini Wi-Fi .66.9; sambungkan kembali Ethernet .50.10. DHCP reservation, forwarding/filter host dan
   koneksi endpoint fisik belum dibuktikan. Ikuti
   [dokumen lapangan](docs/PERSIAPAN_UJI_LAPANGAN.md).
@@ -52,3 +52,11 @@ Catatan lama tetap tersedia di
 [arsip handoff](docs/history/checkpoints/LANJUTKAN_PROYEK_2026-11-10_before_cleanup.md)
 dan [arsip checkpoint](docs/history/checkpoints/CHECKPOINT_2026-11-10_before_cleanup.md).
 Status lama pada arsip bukan instruksi untuk mengulang milestone yang selesai.
+
+## Klarifikasi installer Windows — 11 November
+
+Preferensi pengguna mempertahankan versi teruji berlaku khusus installer Windows.
+EXE0.1.15, ZIP template dan launcher BAT/PowerShell identik SHA-256 dengan rilis
+7e5d632; revisi kemudahan terbaru hanya panduan. Tidak dilakukan rollback atau
+perubahan runtime. Bukti native historis tetap terbatas pada lingkungan uji;
+endpoint fisik/fresh OS/UAC/GPO BELUM_TERUJI. Gunakan installer0.1.15 yang tersedia.

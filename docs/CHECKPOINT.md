@@ -57,7 +57,7 @@ Tidak ada perubahan aplikasi atau pengujian Windows native pada edit manual ini.
 | CA | 0.1.17; invariant CA dan 35 revokasi lama terjaga pada audit 9 November |
 | Server/admin | 0.1.15 dipertahankan; delta 0.1.17 hanya relevan ke penyimpanan CA |
 | Installer Windows | 0.1.15 di downloads; EXE/ZIP belum dibangun ulang untuk edisi manual terbaru |
-| VM | Lima Ubuntu tetap terdaftar; CA/server/admin running, client/attacker off; dua Windows dihapus |
+| VM | Lima Ubuntu tetap terdaftar; seluruh5Ubuntu shut off pada pemeriksaan terbaru; dua Windows dihapus |
 | Host | Saat cek11November memakai Wi-Fi192.168.66.9; Ethernet.50.10 belum aktif |
 | Kapasitas | Ruang disk sekitar77GiB bebas setelah penghapusan dua disk Windows |
 
@@ -101,3 +101,11 @@ lalu salinan ekstraksinya dihapus bersama cache dan build sementara: 373 file,
 51.780.579 byte logis. Snapshot checkpoint/handoff lama masuk history; kedua
 file aktif diringkas. Source, tes, manual, installer, histori, credential lokal,
 state dan VM dipertahankan. Manifest privat: `state/cleanup-20261110/`.
+
+## Klarifikasi installer Windows — 11 November
+
+Preferensi pengguna mempertahankan versi teruji berlaku khusus installer Windows.
+EXE0.1.15, ZIP template dan launcher BAT/PowerShell identik SHA-256 dengan rilis
+7e5d632; revisi kemudahan terbaru hanya panduan. Tidak dilakukan rollback atau
+perubahan runtime. Bukti native historis tetap terbatas pada lingkungan uji;
+endpoint fisik/fresh OS/UAC/GPO BELUM_TERUJI. Gunakan installer0.1.15 yang tersedia.
