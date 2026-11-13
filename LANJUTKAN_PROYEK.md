@@ -136,5 +136,6 @@ Tidak mengulang tes aplikasi/VM untuk perubahan dokumentasi ini.
 Lanjutkan bukti media yang masihPENDING, screenshot nyata, runindependen,
 penulis/afiliasi, basisSJR jika diwajibkan, serta layout akhir. Jangan membuat
 ulang WindowsVM atau mengubahruntime untuk menyelesaikan tugas literatur.
-Publikasi branchfeature dilakukan setelah pemeriksaan tautan/diff; konfirmasi
-commit ada pada jurnal14November. Jangan menganggap sudah disubmit konferensi.
+Publikasi branchfeature sudah dikonfirmasi14November pada a84e783; SHAremote
+cocoklokal. Validatortautan/diff lulus; rincian pada jurnal14November.
+Jangan menganggap sudah disubmit konferensi.

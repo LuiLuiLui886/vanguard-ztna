@@ -186,5 +186,6 @@ Audit lokal:state/conference-draft-20261111/twenty-citation-audit.json.
 Hasil media,2gambar,sampelindependen,penulis dan layoutfinal masihPENDING.
 Tidak ada uji baru/perubahanruntime/VM/CA. Bukti lama dipertahankan. Berikutnya
 selesaikan eksperimenmedia yang terencana, bukan menyalin angka artikel lain.
-Publikasi dokumentasi di branchfeature dicatat pada jurnal14November setelah
-verifikasi remote; main tidak diubah.
+Publikasi dokumentasi dikonfirmasi14November:commit a84e783 pada branchfeature,
+SHAremote cocok denganlokal. Catatan penutup ada pada jurnal14November;
+main tidak diubah.
