@@ -141,7 +141,7 @@ template asli. Lengkapi bukti nyata/gambar dan periksa ulang pagination sebelum
 review pembimbing.
 Tidak ada perubahan runtime/VM atau submission konferensi.
 
-## Referensi paper diperluas — 13 November
+## Referensi paper diperluas — tahap awal 13 November
 
 Draft MD/DOCX dan tab Draft VanGuard kini memuat12artikel jurnal2022–2025,
 dalam batas2022–2026. Empat artikel proposal dipertahankan, delapan tambahan;
@@ -166,3 +166,25 @@ Lihat RencanaB Bagian11–12 untuk audit/sumber dan jurnal13November untuk bukti
 
 Revisi referensi sudah dipush pada7549689 ke feature/2026-10-22-physical-endpoints;
 SHA remote cocok dengan commit lokal pada verifikasi13November. Main tidak berubah.
+
+## Terbaru — perluasan menjadi 20 referensi, 13 November
+
+MD/DOCX dan tabDraft VanGuard kini20artikel jurnal2022–2026,21sitasi dan
+0orphan, urutan pertama[1]–[20].8tambahan diverifikasi sumberprimer/Crossref;
+kuartilJCR2024 Q1–Q3 terverifikasi, kelayakanSJR-saja masihBELUM_DIVERIFIKASI.
+Lihat [RencanaB Bagian13](proposal/RENCANA_B_KONFERENSI.md) untuk metadata,
+bukti kategori/ISSN, pemetaan fungsi/tes/laporan dan batas tiap klaim. Tidak
+menyamakan kajianliteratur dengan pengujianVanGuard atau bukti novelty.
+
+Readback110paragraf/sel cocokMD kecuali spasi labelAbstract yang sudah ada;
+template t.0 dan2tabel/28sel terpelihara. EksporPDF:8halaman total=3template+
+5draft termasuk20referensi; halaman desain/referensi diperiksa secara visual.
+DOCXZIP/XML valid; paginationDOCX belum dirender. Pencocokan20DOI dan20judul
+padaRetractionWatch73.786record tidak menemukan kecocokan; bukan jaminan.
+Audit lokal:state/conference-draft-20261111/twenty-citation-audit.json.
+
+Hasil media,2gambar,sampelindependen,penulis dan layoutfinal masihPENDING.
+Tidak ada uji baru/perubahanruntime/VM/CA. Bukti lama dipertahankan. Berikutnya
+selesaikan eksperimenmedia yang terencana, bukan menyalin angka artikel lain.
+Publikasi dokumentasi di branchfeature dicatat pada jurnal14November setelah
+verifikasi remote; main tidak diubah.

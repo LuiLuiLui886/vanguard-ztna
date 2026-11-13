@@ -193,7 +193,7 @@ berikutnya yang scope-nya cocok. Penerimaan paper tetap keputusan reviewer.
 ## 9. Draft awal dan status Google Docs
 
 - [Naskah Inggris](DRAFT_PAPER_ICIMPACT.md) dan [file Word](DRAFT_PAPER_ICIMPACT.docx).
-- Sekitar3282kata termasuk catatan editor, tabel dan referensi; bukan bukti6halaman.
+- Sekitar3808kata termasuk catatan editor, tabel dan referensi; bukan bukti6halaman.
   DOCX memakai A4 dan geometri dua kolom dari template. Draft kini juga ada
   pada tab **Draft VanGuard** di GoogleDoc pengguna. ExportPDF13November
   menunjukkan5halaman draft termasuk referensi, terpisah dari3halaman template
@@ -203,9 +203,9 @@ berikutnya yang scope-nya cocok. Penerimaan paper tetap keputusan reviewer.
 - Angka6.828/10.056/4.359detik serta122/98probe berasal dari
   [laporan0.1.15](../reports/VALIDASI_0.1.15_2026-11-02.md); semuanya berlabel
   historis dan sampel tunggal/probe. Audit ulang log mentah sebelum submission.
-- Dua belas artikel jurnal2022–2025 (dalam batas2022–2026): empat dari
-  proposal dan delapan tambahan. DOI/metadata dicocokkan; bukti kuartil yang
-  dipakai adalah JCR2024, bukan SJR. Lihat audit Bagian11. Ini bukan tinjauan
+- Dua puluh artikel jurnal2022–2026: empat dari
+  proposal dan enam belas tambahan. DOI/metadata dicocokkan; bukti kuartil yang
+  dipakai adalah JCR2024, bukan SJR. Lihat audit Bagian11 dan13. Ini bukan tinjauan
   sistematis seluruh literatur atau bukti novelty mutlak.
 - Target GoogleDoc adalah tautan pengguna diBagian1. Template asli disimpan
   lokal di state/conference-draft-20261111/template-original.docx (diabaikan Git).
@@ -233,16 +233,19 @@ belum diaudit menyeluruh dan tidak otomatis dianggap salah.
 | [9] → [11], WireGuard vs OpenVPN | Penulis Anyam, Singh, Larijani, Philip; Computers14(8),326,2025. Proposal menulis Owezarski/Lagraa sebagai coauthor. [Penerbit](https://www.mdpi.com/2073-431X/14/8/326). |
 | [10] → [12], overlay/VPN performance | Penulis Gentile, Macrì, Greco, Fazio; FutureInternet16(8),283,2024. Proposal menulis Aiello/Mongelli/Papaleo dan16(3). [Penerbit](https://www.mdpi.com/1999-5903/16/8/283). |
 
-Semua tambahan disitasi pada BagianII paper, bukan hanya ditambahkan ke daftar.
+Empat sumber proposal disitasi pada BagianII paper, bukan hanya ditambahkan ke daftar.
 Naskah MD/DOCX dan tab Draft VanGuard telah disinkronkan. ExportPDF13November setelah penyaringan
-menjadi5halaman draft termasuk12referensi;3halaman lain adalah template.
+tetap5halaman draft termasuk20referensi;3halaman lain adalah template.
 Hasil media/screenshot masih PENDING. Penambahan referensi tidak menambah bukti
 implementasi atau menjamin novelty/penerimaan paper.
 
-## 11. Audit referensi jurnal — 13 November 2026
+## 11. Audit tahap pertama: 12 referensi — 13 November 2026
+
+Catatan tahap pertama dipertahankan di bawah. Status terkini adalah20referensi;
+audit delapan tambahan dan pemetaan bukti tersedia diBagian13.
 
 Batas pengguna: artikel jurnal SINTA2 atau Q1–Q3, lima tahun terakhir.
-Rentang kerja ditetapkan2022–2026 inklusif. Daftar sekarang berisi12artikel
+Rentang kerja ditetapkan2022–2026 inklusif. Daftar pada tahap ini berisi12artikel
 jurnal, bukan prosiding/preprint/standar:2dari2022,4dari2023,5dari2024,
 dan1dari2025. Empat sumber lama diganti dalam paper; jejaknya diBagian12.
 
@@ -319,7 +322,7 @@ setelah bukti dimasukkan. Naskah belum siap submit.
 ## 12. Landasan teknis di luar daftar jurnal aktif
 
 Empat rujukan awal berikut tetap berguna sebagai dokumen teknis/historis,
-tetapi tidak dihitung dalam12referensi jurnal atau rentang2022–2026:
+tetapi tidak dihitung dalam20referensi jurnal atau rentang2022–2026:
 
 - [NIST SP800-207,2020](https://doi.org/10.6028/NIST.SP.800-207).
 - [BeyondCorp,2014](https://research.google/pubs/beyondcorp-a-new-approach-to-enterprise-security/).
@@ -330,3 +333,81 @@ Pembatasan daftar referensi adalah keputusan penyusunan paper; standar teknis
 dan arsitektur implementasi tidak berubah. Jika pembimbing membutuhkan sitasi
 normatif langsung, sepakati pengecualiannya dahulu; jangan mengubah tahun atau
 mengganti sumber standar dengan jurnal seolah jurnal tersebut menerbitkan standar.
+
+## 13. Dukungan literatur terhadap pekerjaan VanGuard — tambahan 13 November
+
+**Status terkini:20artikel jurnal,21kemunculan sitasi,0orphan,urutan pertama
+[1]–[20].** Delapan artikel ditambahkan ke BagianIII–IV, bukan sekadar daftar
+pustaka. Distribusi tahun edisi final:2022=2,2023=5,2024=9,2025=2,2026=2.
+Sumber baru melengkapi kebijakan resource, autentikasi, lifecycle sertifikat,
+otorisasi berkelanjutan, batas audit, dan metode pengujian.
+
+Literatur mendukung alasan desain dan pilihan metode. Bukti bahwa implementasi
+VanGuard bekerja berasal dari source, regresi, dan laporan eksperimen VanGuard
+sendiri. Jumlah referensi atau kuartil jurnal tidak membuktikan sistem aman,
+selesai, bebas bug, atau memiliki kebaruan yang belum pernah diteliti.
+
+### 13.1 Identitas dan kelayakan delapan sumber tambahan
+
+Semua memakai dasar yang sama:kolomJIF padaJCR2024 resmiUEFISCDI diBagian11.
+Kategori adalah **Computer Science, Information Systems**, kecualiACMComputing
+Surveys yang memakai **Computer Science, Theory & Methods**. Tahun2024 adalah
+tahun pemeringkatan, bukan otomatis tahun artikel. SJR khusus tetap
+BELUM_DIVERIFIKASI; tidak ada klaim akreditasi SINTA untuk sumber ini.
+
+| Ref | Artikel dan bukti primer | Jurnal / ISSN / JCR2024 | Bagian sumber yang diperiksa dan batas pemakaian |
+| --- | --- | --- | --- |
+| [13] | Zanasi, Russo, Colajanni,2024. Flexible zero trust architecture for the cybersecurity of industrial IoT infrastructures. [Penerbit](https://www.sciencedirect.com/science/article/pii/S1570870524000258), [repositori penulis](https://cris.unibo.it/handle/11585/958250). DOI10.1016/j.adhoc.2024.103414. | Ad Hoc Networks /1570-8705 /Q1 | Abstrak dan§3:microsegmentation, pengelolaan kebijakan pusat dan enforcement terdistribusi. VanGuard memakai gateway pusat; ketahanan terdistribusi sumber ini tidak diwarisi. |
+| [14] | Ang, Chekole, Zhou,2025. Unveiling the covert vulnerabilities in multi-factor authentication protocols: A systematic review and security analysis. [Penerbit](https://doi.org/10.1145/3734864), [institusi penulis](https://repository.sutd.edu.sg/esploro/outputs/journalArticle/Unveiling-the-Covert-Vulnerabilities-in-Multi-Factor/9911699509846). | ACM Computing Surveys /0360-0300 /Q1 | Abstrak:kelemahan desain dapat tetap ada padaMFA. Mendukung perlunya pengujian negatif; bukan bukti eksploitasi atau kekebalanTOTPVanGuard. Tidak mengklaim telaah menyeluruh37halaman. |
+| [15] | Göppert, Walz, Sikora,2024. A survey on life-cycle-oriented certificate management in industrial networking environments. [Penerbit](https://www.mdpi.com/2224-2708/13/2/26). DOI10.3390/jsan13020026. | Journal of Sensor and Actuator Networks /2224-2708 /Q2 | §2 dan§5.2.6:proof-of-possession serta perbedaan permintaan pencabutan dan distribusi statusCRL. Bukan pembuktian transaksi storageCA atau waktu revokeVanGuard. |
+| [16] | Ameer, Praharaj, Sandhu, Bhatt, Gupta,2024. ZTA-IoT: A novel architecture for zero-trust in IoT systems and an ensuing usage control model. [Penerbit](https://doi.org/10.1145/3671147). | ACM Transactions on Privacy and Security /2471-2566 /Q2 | §4.1, algoritmeADE langkahvi:periksa ulang dan hentikan operasi panjang jika otorisasi tidak berlaku. Model IoT berbasis skor berbeda dari rekonsiliasi periodikVanGuard. |
+| [17] | Guardiola-Múzquiz, Soriano-Salvador,2023. SealFSv2: Combining storage-based and ratcheting for tamper-evident logging. [Penerbit](https://link.springer.com/article/10.1007/s10207-022-00643-1). | International Journal of Information Security /1615-5262 /Q2 | Abstrak dan§1–2:forward integrity membutuhkan perlindungan log khusus. VanGuard belum memakaiSealFSv2/ratchet; checksum arsip bukan bukti tahan manipulasi olehroot. Edisi2023, onlineDesember2022. |
+| [18] | Sáez-de-Cámara, Flores, Arellano, Urbieta, Zurutuza,2024. Gotham testbed: A reproducible IoT testbed for security experiments and dataset generation. [Institusi penulis](https://research.mondragon.edu/documentos/6416a58c5db420433b7b6cab?lang=en), [naskah diterima](https://ebiltegia.mondragon.edu/xmlui/bitstream/handle/20.500.11984/6000/Gotham_Testbed_A_Reproducible_IoT_Testbed_for_Security_Experiments_and_Dataset_Generation.pdf?isAllowed=y&sequence=1). DOI10.1109/TDSC.2023.3247166. | IEEE Transactions on Dependable and Secure Computing /1545-5971 /Q1 | §3.2.4,6.1–6.2,7:konfigurasi, skrip dan topologi yang dapat direproduksi; batas emulasi. Tahun edisi final2024; DOI/online2023 tidak mengubah tahun sitasi final. VanGuard tidak menggunakanGotham atau meminjam hasilnya. |
+| [19] | Kampourakis, Kampourakis, Takaronis, Gkioulos,2026. A systematic review of cybersecurity testbeds for smart environments: Architectures, attack coverage, and defensive evidence. [Penerbit](https://www.mdpi.com/1999-5903/18/9/445). DOI10.3390/fi18090445. | Future Internet /1999-5903 /Q2 | §3,5,9Tabel7,10–11:bedakan bukti emulasi, fisik, dan rekomendasi. Penerapan pelabelan bukti padaVanGuard adalah inferensi metodologis; domain asalnya smart environments. |
+| [20] | Chang, Xu,2026. Design and implementation of a zero trust access control model driven by session lifecycle. [Penerbit](https://doi.org/10.1109/ACCESS.2026.3669103). | IEEE Access /2169-3536 /Q2 | §III-E,IV-B/C,V-B/C:receipt enforcement sebagai batas ukur, kegagalan dependensi dan tradeoff keamanan/ketersediaan. Hasil latensinya tidak dibandingkan denganVanGuard karena arsitektur dan batas timer berbeda. |
+
+Metadata8tambahan berhasil dicocokkan melaluiCrossref dan sumber primer.
+Nomor artikelACM293/22 diperiksa pada penerbit, karena fieldCrossref tidak
+menyertakannya. HalamanACM/IEEE/Elsevier tertentu menolak pembukaan langsung;
+teks primer terindeks dan repositori penulis dipakai dengan batas cakupan di
+atas, bukan mengklaim semuaPDF berhasil diunduh atau dibaca penuh.
+
+### 13.2 Peta literatur → implementasi → bukti → batas
+
+Tabel ini adalah penelusuran bukti pada13November, **bukan pengujian ulang**.
+Keberadaan fungsi tes saja tidak dinyatakan sebagai hasilPASS terbaru.
+
+| Pekerjaan yang didukung | Literatur | Source/tes yang dapat ditelusuri | Bukti VanGuard dan batas kesimpulan |
+| --- | --- | --- | --- |
+| Registrasi berbeda dari admission; enam pemeriksaan perangkat | [1],[7],[9],[15] | [Admission.register/verify](../../vanguard/server.py), [validate_certificate/verify_proof](../../vanguard/pki.py), [regresi admission](../../tests/test_admission.py) | [Laporan0.1.15](../reports/VALIDASI_0.1.15_2026-11-02.md):admissionHTTPS/WG dan penolakan nyata. Tidak membuktikan hardware binding atau perlindungan jika seluruh private key dicuri. |
+| TOTP admin, sesi karyawan, proof perangkat adalah kontrol terpisah | [7],[14] | [dashboard](../../vanguard/admin.py), test_login_requires_totp_and_rejects_replay pada[tes admin](../../tests/test_admin.py), [tes logout](../../tests/test_logout.py) | [Pra-uji9November](../reports/PRA_UJI_LAPANGAN_2026-11-09.md) merekam login/TOTP/logout; tidak berarti ketahanan terhadap seluruh seranganMFA/phishing. |
+| CRL segar, certificate expiry, penggantian identitas | [9],[10],[15] | [validate_crl](../../vanguard/pki.py), [Authority.revoke](../../vanguard/ca.py), test_identity_replacement_preserves_old_binding_and_requires_revocation pada[tes admin](../../tests/test_admin.py) | [Laporan0.1.15](../reports/VALIDASI_0.1.15_2026-11-02.md):replacement primaryUbuntu danCA-only revoke. Renewallease tidak memperpanjang sertifikat; pencabutan harus terdistribusi dan diterapkan. |
+| Lease, logout terlingkup dan pencabutan saat sesi berjalan | [16],[20] | [Admission.reconcile/logout_employee](../../vanguard/server.py), [regresi logout/renewal](../../tests/test_logout.py) | [Laporan0.1.15](../reports/VALIDASI_0.1.15_2026-11-02.md):renewal/logout dan satu waktu peer-removal per lingkungan. Bukan distribusi statistik, SLA, atau bukti media download sudah berhenti. |
+| Resource/protokol/port eksplisit;default-deny dan penolakanLAN | [8],[13] | [NftResources.sync](../../vanguard/resource_policy.py), [tes resource policy](../../tests/test_resource_policy.py) | [Laporan0.1.15](../reports/VALIDASI_0.1.15_2026-11-02.md):grantTCP8082, activeinternalTCPblocking dan pemeriksaan bypass. InternetTCPpanjang/media workload tetapBELUM_TERUJI. |
+| Dependencyfailure dan fail-closed | [10],[20] | [Admission.reconcile](../../vanguard/server.py), [health](../../vanguard/health.py), [tes admission](../../tests/test_admission.py) | [Laporan lifecycle20Oktober](../reports/VALIDASI_ROLLOUT_2026-10-20.md) dan[pra-ujiNovember](../reports/PRA_UJI_LAPANGAN_2026-11-09.md) dipisahkan menurutversi. Readiness503 historis tidak dihapus oleh probe berikutnya yang sukses. |
+| KonsistensiCA saat interupsi | [15] sebagai konteks lifecycle saja | [Authority.transaction/check_state](../../vanguard/ca.py), [regresi durability](../../tests/test_ca_durability.py) | [PerbaikanCA0.1.17](../reports/PERBAIKAN_CA_IO_2026-11-03.md):26kasusdurability/interupsi/error/fallback dan74health/PKI/admission. Literatur yang ditambahkan tidak membuktikan atomicity lintasfile; power-lossmedia fisik tetapBELUM_TERUJI. |
+| Audit timestamp dan arsip yang tidak menghapus bukti | [17] sebagai pembanding batas | [ActivityArchive.create](../../vanguard/admin_activity.py), [tes arsip](../../tests/test_admin.py) | Source membentuk snapshotCSV/JSON+checksum; audit integritasdatabase tercatat pada[pra-ujiNovember](../reports/PRA_UJI_LAPANGAN_2026-11-09.md). Tidak menyediakanforward integrity atau ledgerimmutable. |
+| Reproduksibilitas dan pelabelan buktiLinux/mock/Windows/VM/fisik | [11],[12],[18],[19] | [Metode pada draftBagianIV](DRAFT_PAPER_ICIMPACT.md), [laporan0.1.15](../reports/VALIDASI_0.1.15_2026-11-02.md) | 122/98probeWindows bukan122/98runindependen; hasil tamuVM yang telah dipensiunkan bukan penerimaanendpointfisik. Topologi/build/config/skrip dan bukti asli harus dipertahankan. |
+
+### 13.3 Validasi naskah dan yang masih tersisa
+
+MD/DOCX dan tabDraft VanGuard tersinkron:3808kata,20referensi/DOIunik,
+21sitasi; tidak ada referensi tanpa sitasi atau sebaliknya. Angka historis,
+dua tabel,placeholdergambar dan hasilmediaPENDING dipertahankan. Readback
+memastikan7paragraf revisi dan8referensi tambahan cocok; template t.0 identik.
+EksporPDF terakhir8halaman=3template+5draft, termasuk20referensi. Halaman
+desain dan daftar pustaka dirender/diperiksa, tanpa clipping/overlap; tidak
+mengecilkanfont/margin. DOCXZIP/XML valid, tetapi paginationDOCX belum dirender.
+
+Pencocokan20DOI dan20judul ternormalisasi dengan datasetRetractionWatch
+73.786record13November tidak menemukan kecocokan. MetadataCrossref8tambahan
+tidak memiliki update-to; keduanya bukan jaminan tidak ada koreksi/retraction,
+dan bukan pemeriksaan plagiarisme. Ulangi status sumber menjelang submission.
+Data audit lokal:state/conference-draft-20261111/expanded-metadata.json dan
+twenty-citation-audit.json. Tahun/DOI/kuartil tidak boleh direka untuk memenuhi
+syarat jurnal.
+
+Tersisa:hasil dan screenshotmedia nyata, runindependen, penulis/afiliasi,
+penetapanSJR jika wajib, pemeriksaan pembimbing dan pagination setelah gambar.
+Tidak ada eksperimenbaru, perubahanruntime/VM/CA, atau klaim selesai melalui
+penambahan referensi ini.

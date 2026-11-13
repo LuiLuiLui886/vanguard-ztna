@@ -6,7 +6,7 @@ Baca `AGENTS.md`, `VANGUARD_CONTEXT.md`, lalu
 [checkpoint terbaru](docs/CHECKPOINT.md). Branch kerja:
 `feature/2026-10-22-physical-endpoints`. Periksa perubahan pengguna dan commit
 terbaru sebelum mengedit. Semua perubahan memerlukan intent dan hasil di
-[jurnal](docs/progress/PROGRESS_2026-11-11.md).
+[jurnal terbaru](docs/progress/PROGRESS_2026-11-14.md).
 
 [Manual utama](docs/MODUL_PENGGUNAAN_VANGUARD.md) edisi 10 November dimulai dari
 arti host/VM, prompt terminal, `cd /home/lui/vanguard`, boot dan SSH. Revisi
@@ -92,7 +92,7 @@ template asli. Lengkapi bukti nyata/gambar dan periksa ulang pagination sebelum
 review pembimbing.
 Tidak ada perubahan runtime/VM atau submission konferensi.
 
-## Referensi paper diperluas — 13 November
+## Referensi paper diperluas — tahap awal 13 November
 
 Draft MD/DOCX dan tab Draft VanGuard kini memuat12artikel jurnal2022–2025,
 dalam batas2022–2026. Empat artikel proposal dipertahankan, delapan tambahan;
@@ -117,3 +117,24 @@ Lihat RencanaB Bagian11–12 untuk audit/sumber dan jurnal13November untuk bukti
 
 Revisi referensi sudah dipush pada7549689 ke feature/2026-10-22-physical-endpoints;
 SHA remote cocok dengan commit lokal pada verifikasi13November. Main tidak berubah.
+
+## Status terbaru — 20 referensi dan peta bukti implementasi
+
+Permintaan tambahan referensi selesai di MD/DOCX dan GoogleDocs tabDraft
+VanGuard:20artikel jurnal2022–2026,21sitasi,0orphan. Delapan tambahan mendukung
+resource policy,MFA,lifecyclePKI,otorisasi berkelanjutan,batas audit,metodeVM
+dan pengukuran revoke. Dasar kuartil tetapJCR2024 Q1–Q3;SJRkhusus belum
+diverifikasi. RencanaB Bagian13 memetakan literatur→fungsi/tes→laporan uji→batas;
+referensi bukan bukti eksperimenVanGuard dan tidak menjamin novelty.
+
+110paragraf/sel native sesuaiMD kecuali spasi lama labelAbstract; template
+t.0 dan2tabel/28sel identik. PDF8halaman=3template+5draft termasuk20referensi;
+font/margin tetap. DOCXZIP/XML valid, paginationDOCX belum dirender.20DOI/judul
+tidak cocok dengan datasetRetractionWatch73.786record; bukan jaminan validitas.
+Tidak mengulang tes aplikasi/VM untuk perubahan dokumentasi ini.
+
+Lanjutkan bukti media yang masihPENDING, screenshot nyata, runindependen,
+penulis/afiliasi, basisSJR jika diwajibkan, serta layout akhir. Jangan membuat
+ulang WindowsVM atau mengubahruntime untuk menyelesaikan tugas literatur.
+Publikasi branchfeature dilakukan setelah pemeriksaan tautan/diff; konfirmasi
+commit ada pada jurnal14November. Jangan menganggap sudah disubmit konferensi.
