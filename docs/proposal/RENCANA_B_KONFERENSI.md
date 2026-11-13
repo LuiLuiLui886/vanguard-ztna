@@ -193,19 +193,20 @@ berikutnya yang scope-nya cocok. Penerimaan paper tetap keputusan reviewer.
 ## 9. Draft awal dan status Google Docs
 
 - [Naskah Inggris](DRAFT_PAPER_ICIMPACT.md) dan [file Word](DRAFT_PAPER_ICIMPACT.docx).
-- Sekitar2947kata termasuk catatan editor, tabel dan referensi; bukan bukti6halaman.
+- Sekitar3282kata termasuk catatan editor, tabel dan referensi; bukan bukti6halaman.
   DOCX memakai A4 dan geometri dua kolom dari template. Draft kini juga ada
-  pada tab **Draft VanGuard** di GoogleDoc pengguna. ExportPDF11November
-  menunjukkan4halaman draft termasuk referensi, terpisah dari3halaman template
+  pada tab **Draft VanGuard** di GoogleDoc pengguna. ExportPDF13November
+  menunjukkan5halaman draft termasuk referensi, terpisah dari3halaman template
   asli. Setelah gambar/hasil final dimasukkan, pagination wajib diperiksa ulang.
 - Dua placeholder gambar dan satu placeholder hasil media sengaja belum diisi.
   Tidak ada screenshot buatan, angka media rekaan atau nama penulis yang ditebak.
 - Angka6.828/10.056/4.359detik serta122/98probe berasal dari
   [laporan0.1.15](../reports/VALIDASI_0.1.15_2026-11-02.md); semuanya berlabel
   historis dan sampel tunggal/probe. Audit ulang log mentah sebelum submission.
-- Delapan referensi primer terverifikasi: empat landasan awal dan empat
-  artikel dari proposal yang metadata-nya dicocokkan ke penerbit. Related work
-  diperluas; ini belum tinjauan seluruh literatur atau bukti novelty mutlak.
+- Dua belas artikel jurnal2022–2025 (dalam batas2022–2026): empat dari
+  proposal dan delapan tambahan. DOI/metadata dicocokkan; bukti kuartil yang
+  dipakai adalah JCR2024, bukan SJR. Lihat audit Bagian11. Ini bukan tinjauan
+  sistematis seluruh literatur atau bukti novelty mutlak.
 - Target GoogleDoc adalah tautan pengguna diBagian1. Template asli disimpan
   lokal di state/conference-draft-20261111/template-original.docx (diabaikan Git).
   GoogleDrive sudah terhubung dan draft berhasil ditulis pada tabbaru
@@ -227,13 +228,105 @@ belum diaudit menyeluruh dan tidak otomatis dianggap salah.
 
 | Proposal → paper | Perbedaan metadata dan sumber verifikasi |
 | --- | --- |
-| [1] → [5], ZT-VPN | Penulis terverifikasi: Zohaib, Sajjad, Iqbal, Yousaf, Haseeb, Muhammad; Information15(11),734,2024. Proposal menulis Alshehri/Alzahrani dan15(4), serta tambahan kata Environments pada judul. [Penerbit](https://www.mdpi.com/2078-2489/15/11/734). |
-| [8] → [6], industrial remote access | Penulis Federici, Martintoni, Senni; Electronics12(3),566,2023. Proposal menulis Iurshina/Boussard/Bonald dan12(5). [Penerbit](https://www.mdpi.com/2079-9292/12/3/566). |
-| [9] → [7], WireGuard vs OpenVPN | Penulis Anyam, Singh, Larijani, Philip; Computers14(8),326,2025. Proposal menulis Owezarski/Lagraa sebagai coauthor. [Penerbit](https://www.mdpi.com/2073-431X/14/8/326). |
-| [10] → [8], overlay/VPN performance | Penulis Gentile, Macrì, Greco, Fazio; FutureInternet16(8),283,2024. Proposal menulis Aiello/Mongelli/Papaleo dan16(3). [Penerbit](https://www.mdpi.com/1999-5903/16/8/283). |
+| [1] → [7], ZT-VPN | Penulis terverifikasi: Zohaib, Sajjad, Iqbal, Yousaf, Haseeb, Muhammad; Information15(11),734,2024. Proposal menulis Alshehri/Alzahrani dan15(4), serta tambahan kata Environments pada judul. [Penerbit](https://www.mdpi.com/2078-2489/15/11/734). |
+| [8] → [8], industrial remote access | Penulis Federici, Martintoni, Senni; Electronics12(3),566,2023. Proposal menulis Iurshina/Boussard/Bonald dan12(5). [Penerbit](https://www.mdpi.com/2079-9292/12/3/566). |
+| [9] → [11], WireGuard vs OpenVPN | Penulis Anyam, Singh, Larijani, Philip; Computers14(8),326,2025. Proposal menulis Owezarski/Lagraa sebagai coauthor. [Penerbit](https://www.mdpi.com/2073-431X/14/8/326). |
+| [10] → [12], overlay/VPN performance | Penulis Gentile, Macrì, Greco, Fazio; FutureInternet16(8),283,2024. Proposal menulis Aiello/Mongelli/Papaleo dan16(3). [Penerbit](https://www.mdpi.com/1999-5903/16/8/283). |
 
 Semua tambahan disitasi pada BagianII paper, bukan hanya ditambahkan ke daftar.
-Naskah MD/DOCX dan tab Draft VanGuard telah disinkronkan. ExportPDF sesudah
-penambahan masih4halaman draft termasuk8referensi;3halaman lain adalah template.
+Naskah MD/DOCX dan tab Draft VanGuard telah disinkronkan. ExportPDF13November setelah penyaringan
+menjadi5halaman draft termasuk12referensi;3halaman lain adalah template.
 Hasil media/screenshot masih PENDING. Penambahan referensi tidak menambah bukti
 implementasi atau menjamin novelty/penerimaan paper.
+
+## 11. Audit referensi jurnal — 13 November 2026
+
+Batas pengguna: artikel jurnal SINTA2 atau Q1–Q3, lima tahun terakhir.
+Rentang kerja ditetapkan2022–2026 inklusif. Daftar sekarang berisi12artikel
+jurnal, bukan prosiding/preprint/standar:2dari2022,4dari2023,5dari2024,
+dan1dari2025. Empat sumber lama diganti dalam paper; jejaknya diBagian12.
+
+**Dasar kuartil: JIF/JCR2024, dirilis Juni2025, bukan SJR atau CiteScore.**
+Pertanyaan preferensi SJR-saja belum dijawab. Pemilihan JCR adalah asumsi kerja
+yang tercantum juga pada catatan editor draft, bukan persetujuan pengguna
+terhadap kesetaraan metrik. Seluruh kandidat memenuhi Q1–Q3 pada kategori
+JCR yang dicatat di bawah; **kelayakan khusus SJR masih BELUM_DIVERIFIKASI**.
+Tidak ada klaim akreditasi SINTA2 untuk jurnal internasional ini. Jika aturan
+kampus mensyaratkan SJR, validasi SJR tetap wajib sebelum daftar dinyatakan final.
+Tahun peringkat tidak disamakan dengan tahun terbit atau diklaim paling baru.
+
+Bukti peringkat: [katalog resmi UEFISCDI](https://uefiscdi.gov.ro/scientometrie-reviste)
+dan [tabel JCR2024, edisi Juni2025](https://uefiscdi.gov.ro/resource-865584-JCR_2024.iunie2025.pdf),
+kolom **JIF Quartile**, bukan AIS Quartile. Nomor ISSN digunakan untuk
+membedakan jurnal bernama mirip. Salinan dan SHA-256 disimpan di state lokal.
+Pemeriksaan struktur PDF bawaan ARS menghasilkan UNAVAILABLE karena pypdf
+tidak terpasang; ekstraksi Poppler dapat dibaca tetapi itu bukan PASS struktur.
+Peringkat juga dicocokkan bila tersedia ke pengumuman penerbit
+[Information](https://www.mdpi.com/about/announcements/12307),
+[Sensors](https://www.mdpi.com/journal/sensors/news-and-conferences/news/12201),
+dan [Computers](https://www.mdpi.com/journal/computers/history).
+
+| Ref | Artikel, tahun, dan bukti identitas sumber | Jurnal / ISSN | JIF quartile2024 dan kategori | Pemakaian dalam paper |
+| --- | --- | --- | --- | --- |
+| [1] | Syed et al.,2022, Zero trust architecture (ZTA): A comprehensive survey. [DOI](https://doi.org/10.1109/ACCESS.2022.3174679) | IEEE Access /2169-3536 | Q2; Computer Science, Information Systems | Landasan autentikasi, akses dan segmentasi; bukan bukti kelulusan VanGuard. |
+| [2] | Dhiman et al.,2024, A review and comparative analysis of relevant approaches of zero trust network model. [Penerbit](https://www.mdpi.com/1424-8220/24/4/1328) | Sensors /1424-8220 | Q2; Instruments & Instrumentation | Perbandingan pendekatan dan tantangan implementasi. |
+| [3] | Fernandez dan Brazhuk,2024, A critical analysis of Zero Trust Architecture (ZTA). [DOI](https://doi.org/10.1016/j.csi.2024.103832) | Computer Standards & Interfaces /0920-5489 | Q2; Computer Science, Software Engineering | Perlunya model ancaman dan kontrol yang dapat diuji. |
+| [4] | Phiayura dan Teerakanok,2023, A comprehensive framework for migrating to zero trust architecture. [Repositori penulis](https://murex.mahidol.ac.th/en/publications/a-comprehensive-framework-for-migrating-to-zero-trust-architectur/) | IEEE Access /2169-3536 | Q2; Computer Science, Information Systems | Migrasi dan dependensi operasional, bukan hasil implementasi organisasi. |
+| [5] | Tsai et al.,2024, Strategy for implementing of zero trust architecture. [DOI](https://doi.org/10.1109/TR.2023.3345665) | IEEE Transactions on Reliability /0018-9529 | Q1; Computer Science, Software Engineering | Strategi perlindungan resource dan batas penerapan. Tahun artikel2024 meskipun DOI memuat2023. |
+| [6] | Adahman et al.,2022, An analysis of zero-trust architecture and its cost-effectiveness for organizational security. [Penerbit](https://www.sciencedirect.com/science/article/pii/S0167404822003042) | Computers & Security /0167-4048 | Q1; Computer Science, Information Systems | Membedakan model biaya/risiko organisasi dari hasil teknis VM. |
+| [7] | Zohaib et al.,2024, Zero trust VPN (ZT-VPN). [Penerbit](https://www.mdpi.com/2078-2489/15/11/734) | Information /2078-2489 | Q2; Computer Science, Information Systems | Related work VPN, sertifikat dan sesi; kontrol health/location tidak diklaim ada di VanGuard. |
+| [8] | Federici et al.,2023, A zero-trust architecture for remote access in industrial IoT infrastructures. [Penerbit](https://www.mdpi.com/2079-9292/12/3/566) | Electronics /2079-9292 | Q3; Computer Science, Information Systems; Q2 pada Engineering, Electrical & Electronic | Pemisahan otorisasi jaringan/resource; tidak mengklaim jaminan TEE. |
+| [9] | Khan et al.,2023, A survey on X.509 public-key infrastructure, certificate revocation, and their modern implementation on blockchain and ledger technologies. [Repositori penulis](https://researchportal.hkust.edu.hk/en/publications/a-survey-on-x509-public-key-infrastructure-certificate-revocation/) | IEEE Communications Surveys & Tutorials /1553-877X | Q1; Computer Science, Information Systems | Konteks PKI/pencabutan; bukan klaim implementasi blockchain. |
+| [10] | Berbecaru dan Lioy,2023, An evaluation of X.509 certificate revocation and related privacy issues in the web PKI ecosystem. [Repositori penulis](https://iris.polito.it/handle/11583/2980760) | IEEE Access /2169-3536 | Q2; Computer Science, Information Systems | Temuan soft-fail browser memotivasi uji status pencabutan; tidak digeneralisasi sebagai hasil VPN. |
+| [11] | Anyam et al.,2025, Empirical performance analysis of WireGuard vs. OpenVPN. [Penerbit](https://www.mdpi.com/2073-431X/14/8/326) | Computers /2073-431X | Q2; Computer Science, Interdisciplinary Applications | Kondisi lingkungan harus dicatat; angka performanya bukan hasil VanGuard. |
+| [12] | Gentile et al.,2024, Overlay and virtual private networks security performances analysis. [Penerbit](https://www.mdpi.com/1999-5903/16/8/283) | Future Internet /1999-5903 | Q2; Computer Science, Information Systems | Membedakan pengukuran RTT/bandwidth dari enforcement akses. |
+
+Metadata judul/penulis/tahun/volume/halaman/DOI dicocokkan dengan sumber primer
+penerbit atau repositori penulis. Crossref memberi metadata10artikel; dua
+permintaanMDPI terkena429 dan diverifikasi lewat halaman penerbit, bukan
+dinyatakan lolos API. Ringkasan isi dipakai sesuai bagian yang bisa dibaca;
+tidak mengklaim semua full text telah ditelaah menyeluruh.
+
+Audit memakai **academic-research-suite3.24.2**, workflow academic-paper,
+mode citation-check dan citation_compliance_agent, dijalankan inline.
+[Skill sumber](https://github.com/Imbad0202/academic-research-skills-codex/blob/82725acb393c4410ac6f47634a7f51b40a162fa4/skills/academic-research-suite/SKILL.md)
+dipasang di /home/lui/.codex/skills/academic-research-suite melalui skill-installer.
+Commit sumber82725acb393c4410ac6f47634a7f51b40a162fa4; tidak menjalankan
+plugin hooks, eksperimen, layanan model eksternal atau submission.
+
+Hasil audit sitasi lokal:12referensi unik,12DOI,13kemunculan sitasi,
+0sitasi tanpa referensi,0referensi tanpa sitasi; urutan kemunculan[1]–[12]
+cocok. Gaya numerik IEEE dipertahankan, DOI yang semula diduplikasi sebagai
+URL diringkas menjadi satu DOI bertautan pada GoogleDocs. Seluruh nama penulis
+referensi dipertahankan. Self-citation belum dapat dinilai karena daftar penulis
+paper belum dikonfirmasi. Tidak ada pemeriksaan Turnitin/iThenticate.
+
+Pemeriksaan [Retraction Watch melalui Crossref](https://www.crossref.org/documentation/retrieve-metadata/retraction-watch/)
+mengunduh dataset publik resmi13November:73.786catatan. Pencocokan12DOI
+ke OriginalPaperDOI tidak menemukan catatan; pencocokan judul dilakukan untuk
+10entri yang tersedia dalam cache metadata. Ini **bukan jaminan tidak pernah
+ada pencabutan**, bukan penilaian kebenaran seluruh isi artikel, dan bukan
+cakupan lengkap expression of concern/correction. Periksa lagi menjelang submit.
+SHA-256 dataset:2ec0f845f1bbc1259278a461573308953f2f4ec7fde6d46aaae0eaceef38c7b0.
+
+Tab Draft VanGuard, MD dan DOCX telah diperbarui. Readback12referensi dan
+8paragraf related work cocok; template asli tetap identik,2tabel/28sel tetap.
+Catatan editor menjelaskan batas JCR/SJR. Ekspor PDF terakhir8halaman total:
+3template asli +5draft, termasuk referensi. Font/margin tidak diperkecil.
+Gambar dan hasil media masih PENDING; jumlah halaman akhir diperiksa kembali
+setelah bukti dimasukkan. Naskah belum siap submit.
+
+## 12. Landasan teknis di luar daftar jurnal aktif
+
+Empat rujukan awal berikut tetap berguna sebagai dokumen teknis/historis,
+tetapi tidak dihitung dalam12referensi jurnal atau rentang2022–2026:
+
+- [NIST SP800-207,2020](https://doi.org/10.6028/NIST.SP.800-207).
+- [BeyondCorp,2014](https://research.google/pubs/beyondcorp-a-new-approach-to-enterprise-security/).
+- [Paper WireGuard,NDSS2017](https://doi.org/10.14722/ndss.2017.23160).
+- [RFC5280,2008](https://www.rfc-editor.org/rfc/rfc5280).
+
+Pembatasan daftar referensi adalah keputusan penyusunan paper; standar teknis
+dan arsitektur implementasi tidak berubah. Jika pembimbing membutuhkan sitasi
+normatif langsung, sepakati pengecualiannya dahulu; jangan mengubah tahun atau
+mengganti sumber standar dengan jurnal seolah jurnal tersebut menerbitkan standar.

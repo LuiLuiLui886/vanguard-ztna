@@ -1,6 +1,6 @@
 # Certificate-Based Access Control and Revocation for a Virtualized Digital Media Service Using WireGuard
 
-**Working draft — 11 November 2026. Not ready for submission.** Author names and affiliations await confirmation. The digital media experiment and screenshots are pending; results below are explicitly historical platform evidence. Target: English, at most six pages including references. Final pagination has not been verified.
+**Working draft — 13 November 2026. Not ready for submission.** Author names and affiliations await confirmation. The digital media experiment and screenshots are pending; results below are explicitly historical platform evidence. Target: English, at most six pages including references. Final pagination must be rechecked after adding results and figures. Reference eligibility currently uses JCR 2024; SJR-specific eligibility has not been verified.
 
 **Authors:** [Author names, affiliations, city, country, and email; apply the confirmed blind-review rules before submission.]
 
@@ -20,17 +20,21 @@ The intended contributions are a documented admission and revocation design, an 
 
 ## II. Background and Related Work
 
-NIST SP 800-207 describes zero trust in terms of subjects, assets, resources, authentication, and authorization rather than privileged network location [1]. BeyondCorp illustrates the move away from a privileged enterprise intranet [2]. These sources motivate identity-oriented access control; they do not establish that this prototype satisfies every requirement of a complete enterprise zero trust deployment.
+Syed et al. [1] survey authentication, access control, trust assessment, micro-segmentation, and software-defined perimeters in zero trust architectures. Dhiman et al. [2] compare related approaches and their implementation challenges. Together, these reviews support evaluating user identity, device evidence, and resource permissions separately; they do not establish that any one VPN deployment implements every zero trust capability.
 
-WireGuard associates peer public keys with tunnel addresses and provides encrypted network transport. Its design leaves public-key distribution to mechanisms outside the tunnel protocol [3]. VanGuard uses that separation: X.509 validation and employee-session checks occur over HTTPS before peer activation, while the WireGuard handshake remains unchanged. Certificate and CRL terminology follows the Internet X.509 profile [4]; an application must still decide how certificate status affects an existing authorization.
+Fernandez and Brazhuk [3] argue that assembling security mechanisms is insufficient without a systematic treatment of threats and countermeasures. This motivates the explicit adversary assumptions and negative controls in this study. VanGuard's contribution is evaluated as an integration of existing mechanisms, without claiming a new cryptographic protocol or treating the zero trust label as proof of security.
 
-Zohaib et al. [5] review zero trust VPN research and propose a framework combining certificate-based authentication, user identity checks, and session controls for hybrid and remote work. Their framework also considers contextual checks such as device health and location. VanGuard addresses a narrower implementation problem: enforcing certificate-to-WireGuard-key binding and revocable access without changing the tunnel protocol. It does not implement all contextual controls described in that framework.
+Deployment also extends beyond tunnel configuration. Phiayura and Teerakanok [4] develop a migration framework covering organizational transition to zero trust, while Tsai et al. [5] discuss resource protection, implementation strategies, and limitations. Adahman et al. [6] analyze deployment costs and modeled organizational benefits. These works motivate documenting operational dependencies and evaluation boundaries. The present VM study does not measure enterprise migration success, organizational risk reduction, or cost savings.
 
-Federici, Martintoni, and Senni [6] propose multi-level authorization for industrial remote access, supported by software-defined networking and trusted execution environments. This provides relevant precedent for separating network access from resource authorization. The present prototype instead uses a small VM deployment and does not claim trusted-execution or hardware-attestation guarantees.
+Zohaib et al. [7] review zero trust VPN research and propose a framework combining certificate-based authentication, user identity checks, and session controls for hybrid and remote work. Their framework also considers device health and location. VanGuard addresses a narrower implementation problem: enforcing certificate-to-WireGuard-key binding and revocable access without changing the tunnel protocol. Those broader contextual controls are outside its evaluated feature set.
 
-Anyam et al. [7] compare WireGuard and OpenVPN in Azure and VMware and find that performance depends on deployment and network conditions. Gentile et al. [8] evaluate RTT and bandwidth across VPN and overlay configurations using virtualized testbeds. These studies support recording the environment and separating transport measurements from authorization outcomes; their results cannot be reused as VanGuard performance measurements.
+Federici et al. [8] propose multi-level authorization for industrial remote access, supported by software-defined networking and trusted execution environments. Their work provides precedent for separating network access from resource authorization. VanGuard instead uses a small VM deployment; its software-held private keys do not provide trusted-execution or hardware-attestation guarantees.
 
-These selected studies motivate evaluating how admission, resource policy, and revocation interact during an ongoing media transfer. They do not establish an exhaustive novelty review or prove that the integration is unprecedented. Access authentication must also be distinguished from content provenance: authorizing a download neither proves who created the media nor detects a manipulated recording.
+Certificate issuance and certificate-status enforcement are separate concerns. Khan et al. [9] survey X.509 infrastructure and revocation proposals, including blockchain and ledger approaches. Berbecaru and Lioy [10] experimentally identify incomplete revocation checking and soft-fail behavior in some browser configurations. Their findings concern web PKI, not VanGuard, but motivate directly testing how unavailable revocation information affects access. VanGuard uses a conventional private CA and CRLs; it neither implements blockchain revocation nor assumes browser certificate handling enforces VPN policy.
+
+Anyam et al. [11] compare WireGuard and OpenVPN in Azure and VMware and find that performance depends on deployment and network conditions. Gentile et al. [12] evaluate RTT and bandwidth across VPN and overlay configurations using virtualized testbeds. These studies motivate recording the environment and separating transport measurements from authorization outcomes. Their throughput results cannot be reused as VanGuard measurements or as evidence that an ongoing transfer stops after authorization is withdrawn.
+
+These selected studies motivate evaluating the interaction of admission, resource policy, and revocation during a media transfer. They do not establish an exhaustive novelty review or prove that the integration is unprecedented. Access authentication must also be distinguished from media authenticity: authorizing a download does not establish who created its content or detect a manipulated recording.
 
 ## III. System Design and Threat Model
 
@@ -134,18 +138,26 @@ VanGuard implements certificate-based admission, employee-session checks, and re
 
 ## References
 
-[1] S. Rose, O. Borchert, S. Mitchell, and S. Connelly, “Zero Trust Architecture,” NIST SP 800-207, Aug. 2020, doi: 10.6028/NIST.SP.800-207. https://doi.org/10.6028/NIST.SP.800-207
+[1] N. F. Syed, S. W. Shah, A. Shaghaghi, A. Anwar, Z. Baig, and R. Doss, “Zero trust architecture (ZTA): A comprehensive survey,” IEEE Access, vol. 10, pp. 57143–57179, 2022, doi: 10.1109/ACCESS.2022.3174679.
 
-[2] R. Ward and B. Beyer, “BeyondCorp: A New Approach to Enterprise Security,” ;login:, vol. 39, no. 6, pp. 6–11, 2014. https://research.google/pubs/beyondcorp-a-new-approach-to-enterprise-security/
+[2] P. Dhiman, N. Saini, Y. Gulzar, S. Turaev, A. Kaur, K. U. Nisa, and Y. Hamid, “A review and comparative analysis of relevant approaches of zero trust network model,” Sensors, vol. 24, no. 4, Art. no. 1328, 2024, doi: 10.3390/s24041328.
 
-[3] J. A. Donenfeld, “WireGuard: Next Generation Kernel Network Tunnel,” in Proc. Network and Distributed System Security Symposium (NDSS), 2017, doi: 10.14722/ndss.2017.23160. https://www.ndss-symposium.org/wp-content/uploads/2017/09/ndss2017_04A-3_Donenfeld_paper.pdf
+[3] E. B. Fernandez and A. Brazhuk, “A critical analysis of Zero Trust Architecture (ZTA),” Computer Standards & Interfaces, vol. 89, Art. no. 103832, 2024, doi: 10.1016/j.csi.2024.103832.
 
-[4] D. Cooper, S. Santesson, S. Farrell, S. Boeyen, R. Housley, and W. Polk, “Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile,” RFC 5280, May 2008, doi: 10.17487/RFC5280. https://www.rfc-editor.org/rfc/rfc5280
+[4] P. Phiayura and S. Teerakanok, “A comprehensive framework for migrating to zero trust architecture,” IEEE Access, vol. 11, pp. 19487–19511, 2023, doi: 10.1109/ACCESS.2023.3248622.
 
-[5] S. M. Zohaib, S. M. Sajjad, Z. Iqbal, M. Yousaf, M. Haseeb, and Z. Muhammad, “Zero Trust VPN (ZT-VPN): A Systematic Literature Review and Cybersecurity Framework for Hybrid and Remote Work,” Information, vol. 15, no. 11, Art. no. 734, 2024, doi: 10.3390/info15110734. https://doi.org/10.3390/info15110734
+[5] M. Tsai, S. Lee, and S. W. Shieh, “Strategy for implementing of zero trust architecture,” IEEE Transactions on Reliability, vol. 73, no. 1, pp. 93–100, 2024, doi: 10.1109/TR.2023.3345665.
 
-[6] F. Federici, D. Martintoni, and V. Senni, “A Zero-Trust Architecture for Remote Access in Industrial IoT Infrastructures,” Electronics, vol. 12, no. 3, Art. no. 566, 2023, doi: 10.3390/electronics12030566. https://doi.org/10.3390/electronics12030566
+[6] Z. Adahman, A. W. Malik, and Z. Anwar, “An analysis of zero-trust architecture and its cost-effectiveness for organizational security,” Computers & Security, vol. 122, Art. no. 102911, 2022, doi: 10.1016/j.cose.2022.102911.
 
-[7] J. Anyam, R. R. Singh, H. Larijani, and A. Philip, “Empirical Performance Analysis of WireGuard vs. OpenVPN in Cloud and Virtualised Environments Under Simulated Network Conditions,” Computers, vol. 14, no. 8, Art. no. 326, 2025, doi: 10.3390/computers14080326. https://doi.org/10.3390/computers14080326
+[7] S. M. Zohaib, S. M. Sajjad, Z. Iqbal, M. Yousaf, M. Haseeb, and Z. Muhammad, “Zero trust VPN (ZT-VPN): A systematic literature review and cybersecurity framework for hybrid and remote work,” Information, vol. 15, no. 11, Art. no. 734, 2024, doi: 10.3390/info15110734.
 
-[8] A. F. Gentile, D. Macrì, E. Greco, and P. Fazio, “Overlay and Virtual Private Networks Security Performances Analysis with Open Source Infrastructure Deployment,” Future Internet, vol. 16, no. 8, Art. no. 283, 2024, doi: 10.3390/fi16080283. https://doi.org/10.3390/fi16080283
+[8] F. Federici, D. Martintoni, and V. Senni, “A zero-trust architecture for remote access in industrial IoT infrastructures,” Electronics, vol. 12, no. 3, Art. no. 566, 2023, doi: 10.3390/electronics12030566.
+
+[9] S. Khan, F. Luo, Z. Zhang, F. Ullah, F. Amin, S. F. Qadri, M. B. B. Heyat, R. Ruby, L. Wang, S. Ullah, M. Li, V. C. M. Leung, and K. Wu, “A survey on X.509 public-key infrastructure, certificate revocation, and their modern implementation on blockchain and ledger technologies,” IEEE Communications Surveys & Tutorials, vol. 25, no. 4, pp. 2529–2568, 2023, doi: 10.1109/COMST.2023.3323640.
+
+[10] D. G. Berbecaru and A. Lioy, “An evaluation of X.509 certificate revocation and related privacy issues in the web PKI ecosystem,” IEEE Access, vol. 11, pp. 79156–79175, 2023, doi: 10.1109/ACCESS.2023.3299357.
+
+[11] J. Anyam, R. R. Singh, H. Larijani, and A. Philip, “Empirical performance analysis of WireGuard vs. OpenVPN in cloud and virtualised environments under simulated network conditions,” Computers, vol. 14, no. 8, Art. no. 326, 2025, doi: 10.3390/computers14080326.
+
+[12] A. F. Gentile, D. Macrì, E. Greco, and P. Fazio, “Overlay and virtual private networks security performances analysis with open source infrastructure deployment,” Future Internet, vol. 16, no. 8, Art. no. 283, 2024, doi: 10.3390/fi16080283.

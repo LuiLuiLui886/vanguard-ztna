@@ -91,3 +91,26 @@ ExportPDF menunjukkan4halaman draft termasuk referensi;3halaman lain adalah
 template asli. Lengkapi bukti nyata/gambar dan periksa ulang pagination sebelum
 review pembimbing.
 Tidak ada perubahan runtime/VM atau submission konferensi.
+
+## Referensi paper diperluas — 13 November
+
+Draft MD/DOCX dan tab Draft VanGuard kini memuat12artikel jurnal2022–2025,
+dalam batas2022–2026. Empat artikel proposal dipertahankan, delapan tambahan;
+empat sumber lama/nonjurnal dipindahkan ke catatan teknis RencanaB. Dasar
+kelayakan kuartil adalah JIF/JCR2024 Q1–Q3 dengan kategori dan URL bukti;
+SJR-saja BELUM_DIVERIFIKASI, preferensi pengguna belum dijawab. Jangan menyebut
+JCR sebagai SJR atau mengklaim daftar ini jurnal SINTA2.
+
+Skill academic-research-suite3.24.2 terpasang di luar repo, commit sumber
+82725acb393c4410ac6f47634a7f51b40a162fa4; mode citation-check dipakai inline.
+Metadata12artikel cocok sumber primer;12DOI tidak cocok dengan catatan pada
+dataset RetractionWatch73.786baris13November. Ketiadaan kecocokan bukan
+jaminan mutlak status artikel. Audit sitasi:13kemunculan,12sumber unik,
+0orphan,urutan[1]–[12]. Penulis final/self-citation belum dapat dinilai.
+
+Readback GoogleDocs:12referensi/8paragraf tambahan cocok, template t.0 dan
+2tabel/28sel tetap. PDF8halaman total=3template+5draft termasuk referensi;
+bukan jumlah halaman final setelah gambar/hasil. Dua placeholder gambar dan
+hasil media tetap PENDING, metode/angka hasil historis tidak berubah. Belum
+siap submit. Lanjutkan konfirmasi basis kuartil, penulis, dan eksperimen media.
+Lihat RencanaB Bagian11–12 untuk audit/sumber dan jurnal13November untuk bukti.
