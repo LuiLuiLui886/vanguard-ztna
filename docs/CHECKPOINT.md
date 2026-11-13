@@ -163,3 +163,6 @@ bukan jumlah halaman final setelah gambar/hasil. Dua placeholder gambar dan
 hasil media tetap PENDING, metode/angka hasil historis tidak berubah. Belum
 siap submit. Lanjutkan konfirmasi basis kuartil, penulis, dan eksperimen media.
 Lihat RencanaB Bagian11–12 untuk audit/sumber dan jurnal13November untuk bukti.
+
+Revisi referensi sudah dipush pada7549689 ke feature/2026-10-22-physical-endpoints;
+SHA remote cocok dengan commit lokal pada verifikasi13November. Main tidak berubah.
