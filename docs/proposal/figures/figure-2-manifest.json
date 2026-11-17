@@ -1,0 +1,37 @@
+[
+  {
+    "file": "panel-a-live-transfer.png",
+    "original_sha256": "22b8155adb2f5bf30784b7eb82c0747d4755732ec9070d3eb607520d349ff2fa",
+    "crop": [
+      0,
+      0,
+      1100,
+      145
+    ]
+  },
+  {
+    "file": "panel-b-admin-revoked.png",
+    "original_sha256": "cc15a75a9e9d32df58569796d7558b0e9fa62d1e7a15811baebebb07fadbba3b",
+    "crop": [
+      0,
+      0,
+      1052,
+      350
+    ]
+  },
+  {
+    "file": "panel-c-transfer-stopped.png",
+    "original_sha256": "4e18a501ec437cd62a8bac8cbf492924b938b2afbaaa370818e86ae44f1bbcb1",
+    "crop": [
+      0,
+      0,
+      1100,
+      225
+    ]
+  },
+  {
+    "file": "figure-2-media-revocation-20261117.png",
+    "sha256": "c8841c88a51e78ba90dbee3e4e2fb4660b4e1b0a0a33c8b45669151db55f73f8",
+    "composition": "Three actual captures, labels and documented crops only; no generated evidence"
+  }
+]

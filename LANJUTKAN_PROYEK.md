@@ -18,7 +18,22 @@ Detail lokasi file dan terminal ada pada Bagian0.2.1–0.2.3 serta1.1.1–1.1.2;
 contoh ekspor existing diuji tanpa membuat ulang identitas. Jangan mengulang instalasi CA atau
 mengganti profil ke schema1 hanya untuk mengikuti tutorial dari awal.
 
-## Kondisi terakhir dan prioritas
+## Handoff terbaru — 17 November, Figure 2
+
+Baca [laporan run media](docs/testing/results/media-20261117/README.md) dan
+[checkpoint](docs/CHECKPOINT.md) lebih dahulu. Figure 2 nyata dan draft lokal
+Inggris/Indonesia sudah disiapkan. Kontrol hash lulus; transfer aktif terputus,
+reconnect/readmission ditolak, cleanup lulus. Tidak ada rollback CA. Empat Ubuntu
+CA/server/admin/client aktif; attacker mati. Client utama dihentikan karena sesi
+lama kedaluwarsa; jangan reset kredensial/identitas untuk menutupi keadaan ini.
+
+Google Docs belum diperbarui (konektor tidak tersedia), pagination DOCX baru belum
+dirender. Prioritas berikutnya: sinkronisasi Figure 2/hasil terbatas ke kedua tab,
+cek batas halaman, lalu isolasi fetch CRL/renewal timeout sebelum pengulangan
+independen. Simpan kegagalan; satu identitas dengan retry bukan beberapa run.
+Tidak membuat ulang Windows VM atau menganggap hasil ini uji fisik.
+
+## Kondisi terakhir dan prioritas sebelumnya
 
 - CA 0.1.17, server/admin dan installer Windows 0.1.15. Keputusan mempertahankan
   server/admin berdasarkan perbandingan kode, bukan sekadar nomor versi.

@@ -1,4 +1,32 @@
-# Checkpoint VanGuard — 11 November 2026
+# Checkpoint VanGuard — 17 November 2026
+
+## Status terbaru — Figure 2 dari uji media VM
+
+Satu run representatif `media-20261117-r01` selesai. [Figure 2](proposal/figures/figure-2-media-revocation-20261117.png)
+dan [laporan bukti](testing/results/media-20261117/README.md) tersedia. Kontrol
+unduh 2.880.044 byte hash-cocok; transfer aktif berhenti pada 122.880 byte setelah
+pencabutan melalui dashboard. Koneksi ulang dan admission ulang ditolak; peer
+hilang. Ini bukan sampel latensi rata-rata, uji Windows, atau matriks lengkap.
+
+CA/server/admin/client berjalan; attacker mati. Windows tidak dibuat ulang.
+Versi terpasang CA 0.1.17, lainnya 0.1.15. Cleanup terverifikasi: akun uji nonaktif,
+logout terkonfirmasi, policy kembali byte-identik, tunnel/listener uji berhenti,
+identitas utama dan histori CA tetap. Client utama sengaja tetap berhenti karena
+sesi karyawan sudah kedaluwarsa sebelum eksperimen; perlu login sah untuk dipakai.
+Host saat uji Wi-Fi 10.211.64.20/22, RAM 7,5 GiB; bukan konfigurasi lapangan .50.10.
+
+Kegagalan CRL/upstream sempat menghapus peer secara fail-closed; penyebab belum
+terisolasi. Readiness akhir dari jalur yang diizinkan: CA/server/admin 200/ready.
+Timeout akses CA dari host sesuai filter sumber TCP8080, bukan bukti CA mati.
+Percobaan gagal dan keterbatasan buffer/timer dicatat; jangan hanya menyalin run
+berhasil. Tidak ada perubahan source layanan maupun rollback state CA.
+
+Draft MD/DOCX Inggris dan Indonesia lokal memuat Figure 2; gambar DOCX embedded
+serta XML/ZIP valid, pagination setelah gambar BELUM_TERUJI. Google Docs belum
+sinkron karena konektor/session tidak tersedia. Berikutnya: sinkronisasi kedua
+tab, periksa batas enam halaman, isolasi kegagalan CRL, lengkapi matriks dan run
+independen. Bukti privat di `/home/lui/VanGuard-Privat/conference-evidence/media-20261117-r01/`.
+Catatan di bawah adalah riwayat keputusan/status sebelumnya.
 
 ## Cara menggunakan checkpoint
 

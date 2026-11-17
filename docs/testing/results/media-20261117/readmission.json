@@ -1,0 +1,5 @@
+{
+  "denied": true,
+  "status": 502,
+  "reason": "Upstream rejected request (HTTP 403)"
+}
