@@ -1,0 +1,7 @@
+{
+  "root_and_private_ca_keys_unchanged": true,
+  "all_prior_index_entries_preserved": true,
+  "new_test_serial_102A_revoked": true,
+  "serial_102A_in_crl": true,
+  "prior_1029_in_crl": true
+}

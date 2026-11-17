@@ -1,0 +1,10 @@
+{
+  "started_utc": 1794938495.0098357,
+  "http_elapsed_seconds": 2.055117381999935,
+  "http_status": 302,
+  "status": "revoked",
+  "serial": "102A",
+  "revoked_at": 1794938497.0874507,
+  "revocation_reason": "operator_request",
+  "peer_present": false
+}

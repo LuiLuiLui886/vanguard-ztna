@@ -1,0 +1,11 @@
+{
+  "test_peer_absent": true,
+  "client_wg0_absent": true,
+  "employee_logout_confirmed": true,
+  "test_employee_disabled": true,
+  "resource_policy_exactly_restored": true,
+  "media_listener_stopped": true,
+  "primary_identity_hashes_unchanged": true,
+  "primary_client_service": "stopped; original employee session already expired before experiment",
+  "ca_state_rolled_back": false
+}

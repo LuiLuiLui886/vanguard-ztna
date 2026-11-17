@@ -1,0 +1,11 @@
+{
+  "http": 200,
+  "body": {
+    "checks": {
+      "ca": "ready",
+      "database": "ready",
+      "server": "ready"
+    },
+    "status": "ready"
+  }
+}

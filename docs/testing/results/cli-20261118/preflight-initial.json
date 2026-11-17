@@ -1,0 +1,11 @@
+{
+  "ca": 200,
+  "server": 200,
+  "admin": 503,
+  "admin_checks": {
+    "ca": "ready",
+    "database": "unknown",
+    "server": "ready"
+  },
+  "note": "First startup sample; preserved, not all dependencies ready"
+}

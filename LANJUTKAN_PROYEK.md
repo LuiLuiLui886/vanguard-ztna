@@ -6,7 +6,7 @@ Baca `AGENTS.md`, `VANGUARD_CONTEXT.md`, lalu
 [checkpoint terbaru](docs/CHECKPOINT.md). Branch kerja:
 `feature/2026-10-22-physical-endpoints`. Periksa perubahan pengguna dan commit
 terbaru sebelum mengedit. Semua perubahan memerlukan intent dan hasil di
-[jurnal terbaru](docs/progress/PROGRESS_2026-11-17.md).
+[jurnal terbaru](docs/progress/PROGRESS_2026-11-18.md).
 
 [Manual utama](docs/MODUL_PENGGUNAAN_VANGUARD.md) edisi 10 November dimulai dari
 arti host/VM, prompt terminal, `cd /home/lui/vanguard`, boot dan SSH. Revisi
@@ -18,7 +18,22 @@ Detail lokasi file dan terminal ada pada Bagian0.2.1–0.2.3 serta1.1.1–1.1.2;
 contoh ekspor existing diuji tanpa membuat ulang identitas. Jangan mengulang instalasi CA atau
 mengganti profil ke schema1 hanya untuk mengikuti tutorial dari awal.
 
-## Handoff terbaru — 17 November, Figure 2
+## Handoff terbaru — 18 November, screenshot CLI native
+
+Run baru `cli-20261118-r01` selesai: terminal GNOME asli, bukan browser/replay.
+[Laporan CLI](docs/testing/results/cli-20261118/README.md) dan [Figure2](docs/proposal/figures/cli-20261118/figure-2-native-cli-20261118.png)
+menunjukkan transferaktif, HTTPSrevoke terautentikasi, timeout98.304byte dan
+reconnectditolak. Kontrol hash, readmission403, peerabsent, cleanup dan pelestarian
+CA/identitas lulus. Serial102A dicabut; jangan mengulang prepare pada identitasini.
+Bukti17November tetap. Startupadmin503 disimpan; suksesrunbaru bukan perbaikanCRL.
+
+Empat Ubuntu aktif, attacker mati, Windows tetapdipensiunkan. Clientutama masih
+stop dengan sesikedaluwarsa, tidak resetcredential. DraftlokalInggris/Indonesia
+memuat gambarCLI. GoogleDocs belum sinkron/konektor taktersedia; paginationbaru
+belumdirender. Prioritas berikutnya: sinkronisasiDocs/layout6halaman dan eksperimen
+tersisa. Baca statusteratas checkpoint sebelum catatan lama di bawah.
+
+## Handoff sebelumnya — 17 November, Figure 2
 
 Baca [laporan run media](docs/testing/results/media-20261117/README.md) dan
 [checkpoint](docs/CHECKPOINT.md) lebih dahulu. Figure 2 nyata dan draft lokal
@@ -173,3 +188,5 @@ screenshotnyata,penulis/SJR/layoutfinal tidak berubah. Dokumentasi sudah
 dipush pada90f7178; SHAremote cocoklokal. Rincian pada jurnal17November.
 
 Figure 2/run media17November sudah dipush pada commit `2545624` (branch feature). Lanjutkan dari laporan run dan status teratas checkpoint, bukan mengulang prepare pada identitas yang sudah dicabut.
+
+Hasil CLI native18November sudah dipush pada `20718ff`. Run102A selesai/cleanup; jangan diulang dengan identitas yang sama. Lanjutkan pekerjaan tersisa dari status teratas checkpoint.

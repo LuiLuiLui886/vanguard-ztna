@@ -16,3 +16,7 @@ Pemetaan sistem terhadap proposal Tugas Akhir dan catatan revisi proposal.
 ## Bukti Figure 2 — 17 November
 
 [Figure 2](figures/figure-2-media-revocation-20261117.png) berasal dari satu uji media VM nyata. [Laporan, log, kegagalan dan cleanup](../testing/results/media-20261117/README.md) membatasi klaim pada satu run representatif. Draft lokal Inggris/Indonesia diperbarui; sinkronisasi Google Docs dan pagination akhir masih tertunda.
+
+## Figure 2 terminal native — 18 November
+
+Versi aktif memakai [screenshot GNOME Terminal asli](figures/cli-20261118/figure-2-native-cli-20261118.png) dari uji baru, serial102A. [Laporan dan bukti CLI](../testing/results/cli-20261118/README.md) menjelaskan capture, hasil98.304byte, cleanup, serta beda tanggal UTC/WIB. Bukti17November tetap tersedia; bukan replay log.

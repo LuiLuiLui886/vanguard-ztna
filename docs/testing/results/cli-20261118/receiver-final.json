@@ -1,0 +1,41 @@
+[
+  {
+    "event": "http_open",
+    "utc": 1794938492.181881,
+    "monotonic": 278.869573726,
+    "status": 200,
+    "content_length": 2880044
+  },
+  {
+    "event": "receiving",
+    "utc": 1794938492.1826484,
+    "monotonic": 278.870340603,
+    "bytes": 8192
+  },
+  {
+    "event": "receiving",
+    "utc": 1794938493.1833122,
+    "monotonic": 279.871004163,
+    "bytes": 40960
+  },
+  {
+    "event": "receiving",
+    "utc": 1794938494.1849754,
+    "monotonic": 280.87266754,
+    "bytes": 73728
+  },
+  {
+    "event": "transfer_stopped",
+    "utc": 1794938498.9404345,
+    "monotonic": 285.628126737,
+    "bytes": 98304,
+    "error": "TimeoutError",
+    "elapsed_seconds": 6.762
+  },
+  {
+    "event": "reconnect_denied",
+    "utc": 1794938501.9442487,
+    "monotonic": 288.631941814,
+    "error": "URLError"
+  }
+]

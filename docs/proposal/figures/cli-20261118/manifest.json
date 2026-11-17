@@ -1,0 +1,40 @@
+[
+  {
+    "file": "panel-a-native-active.png",
+    "original_sha256": "e4832588e701dcf7bad7fb57bec7e0ccb7a6110112eeecc0fed231c9c36b2bbd",
+    "crop": [
+      20,
+      15,
+      1144,
+      386
+    ],
+    "method": "Gdk pixbuf from native GNOME Terminal XWayland window; no synthetic terminal rendering"
+  },
+  {
+    "file": "panel-b-native-revoked.png",
+    "original_sha256": "b48025674c263ace96c013c9cf1cec2c0b1f48adf945c7f2e64f6e490f035140",
+    "crop": [
+      20,
+      15,
+      1144,
+      390
+    ],
+    "method": "Gdk pixbuf from native GNOME Terminal XWayland window; no synthetic terminal rendering"
+  },
+  {
+    "file": "panel-c-native-denied.png",
+    "original_sha256": "37b859b2b07c9d56f3fa1a4316953bb7e0196a721253317b48ba00ccefa72dc2",
+    "crop": [
+      20,
+      15,
+      1144,
+      494
+    ],
+    "method": "Gdk pixbuf from native GNOME Terminal XWayland window; no synthetic terminal rendering"
+  },
+  {
+    "file": "figure-2-native-cli-20261118.png",
+    "sha256": "2e456ede443c66b10a6831b1edeaa4d9374cef2b1919c4f91d0a22b799d973c4",
+    "composition": "Labels and crops of unused borders/blank area only; all displayed command/output bytes visually preserved"
+  }
+]

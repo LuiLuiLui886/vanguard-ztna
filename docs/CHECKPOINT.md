@@ -1,6 +1,32 @@
-# Checkpoint VanGuard — 17 November 2026
+# Checkpoint VanGuard — 18 November 2026
 
-## Status terbaru — Figure 2 dari uji media VM
+## Status terbaru — uji baru di CLI native
+
+Pengguna memilih uji baru. Run `cli-20261118-r01`, serial102A, selesai pada
+18November01:01WIB (17November18:01UTC). [Figure2 native](proposal/figures/cli-20261118/figure-2-native-cli-20261118.png)
+adalah capture langsung jendela GNOME Terminal, bukan log yang dirender browser.
+[Laporan CLI](testing/results/cli-20261118/README.md) menyimpan sumber workload,
+log, hash, metode capture dan batas bukti. Hasil17November tidak ditimpa.
+
+Kontrol2.880.044byte hash-cocok. Penerima HTTP200 dan counter meningkat; setelah
+pencabutan lewat HTTPS admin terautentikasi, timeout pada98.304byte, reconnect
+serta readmission ditolak. Peer hilang. Satu run baru, bukan rata-rata latensi.
+CA/server/admin/client tetap versi0.1.17/0.1.15/0.1.15/0.1.15 (hash diverifikasi).
+Startup admin503/databaseunknown disimpan; readiness kemudian200 sebelumtransfer.
+Tidak ada CRL peer withdrawal pada audit identitas baru; bukan bukti perbaikan
+kegagalan sebelumnya. Postflight semua backend200/ready melalui jalur sah.
+
+Cleanup lulus: akun uji nonaktif, logout terkonfirmasi, peer/tunnel/listenerhilang,
+policy pulih byte-identik, identitas utama/root/keyCA/indexlama tetap. Serial1029
+lama dan102A baru tetap diCRL. Empat Ubuntu hidup, attacker mati; Windows tidak
+dibuat ulang. Client utama tetapstop karena sesi kedaluwarsa sebelum eksperimen.
+
+Dua MD/DOCX lokal memuat gambar CLI; XML/ZIP/embeddedPNG valid. GoogleDocs dan
+pagination akhir enam halaman belum selesai. Berikutnya sinkronisasi kedua tab,
+periksa layout, lanjut investigasi startup/CRL dan matriks pengujian tersisa.
+Bukti privat: `/home/lui/VanGuard-Privat/conference-evidence/cli-20261118-r01/`.
+
+## Riwayat — Figure 2 dari uji media 17 November
 
 Satu run representatif `media-20261117-r01` selesai. [Figure 2](proposal/figures/figure-2-media-revocation-20261117.png)
 dan [laporan bukti](testing/results/media-20261117/README.md) tersedia. Kontrol
@@ -242,3 +268,5 @@ Publikasi dikonfirmasi:90f7178 dipush ke branchfeature, SHAremote cocoklokal.
 Tugas terjemahan selesai; tidak ada submission atau eksperimen baru.
 
 Publikasi Figure 2: commit `2545624` terkonfirmasi pada branch feature; bukti, dua draft lokal dan laporan sudah di GitHub. Google Docs belum sinkron.
+
+Publikasi CLI native18November: commit `20718ff` terkonfirmasi di branch feature; gambar dan kedua draft lokal sudah di GitHub. Google Docs/pagination masih tertunda.
