@@ -190,3 +190,7 @@ dipush pada90f7178; SHAremote cocoklokal. Rincian pada jurnal17November.
 Figure 2/run media17November sudah dipush pada commit `2545624` (branch feature). Lanjutkan dari laporan run dan status teratas checkpoint, bukan mengulang prepare pada identitas yang sudah dicabut.
 
 Hasil CLI native18November sudah dipush pada `20718ff`. Run102A selesai/cleanup; jangan diulang dengan identitas yang sama. Lanjutkan pekerjaan tersisa dari status teratas checkpoint.
+
+## Caption Google Docs — 18 November
+
+Konektor kembali tersedia. Fig.1/Fig.2 beserta penjelasan dan rujukan silang sudah ditambahkan langsung ke tab DraftInggris dan DraftIndonesia; gambar/tekslama/template terpelihara. PDF16halaman:3template+7Indonesia+6Inggris, caption dicek visual. Catatan dan caption ada di [CAPTION_FIGURE_IEEE.md](docs/proposal/CAPTION_FIGURE_IEEE.md). Caption selesai; teks hasil eksperimen GoogleDocs dan labeldiagramPLANNED masih perlu sinkronisasi. Jangan menimpa gambar/layout pengguna dengan draftlokal secara penuh.

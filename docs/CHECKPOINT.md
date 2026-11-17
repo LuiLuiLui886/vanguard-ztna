@@ -270,3 +270,7 @@ Tugas terjemahan selesai; tidak ada submission atau eksperimen baru.
 Publikasi Figure 2: commit `2545624` terkonfirmasi pada branch feature; bukti, dua draft lokal dan laporan sudah di GitHub. Google Docs belum sinkron.
 
 Publikasi CLI native18November: commit `20718ff` terkonfirmasi di branch feature; gambar dan kedua draft lokal sudah di GitHub. Google Docs/pagination masih tertunda.
+
+## Caption Google Docs — 18 November
+
+Konektor kembali tersedia. Fig.1/Fig.2 beserta penjelasan dan rujukan silang sudah ditambahkan langsung ke tab DraftInggris dan DraftIndonesia; gambar/tekslama/template terpelihara. PDF16halaman:3template+7Indonesia+6Inggris, caption dicek visual. Catatan dan caption ada di [CAPTION_FIGURE_IEEE.md](proposal/CAPTION_FIGURE_IEEE.md). Caption selesai; teks hasil eksperimen GoogleDocs dan labeldiagramPLANNED masih perlu sinkronisasi. Jangan menimpa gambar/layout pengguna dengan draftlokal secara penuh.
