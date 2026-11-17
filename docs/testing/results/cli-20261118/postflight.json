@@ -1,0 +1,132 @@
+{
+  "ca": {
+    "status": "unknown",
+    "error_class": "ConnectTimeout",
+    "seconds": 3.005,
+    "service": "active",
+    "source_hashes": {
+      "operations.py": "1073e7e504fbe719035a4bd4bc6451dbc7d1a606d986ae6ec74254dc586871e6",
+      "windows.py": "3a3e4aed544df0697b9d66be439243f74bb88b595d88617886ed6c5d4356b22a",
+      "profile.py": "ed7ad073c04c0564382cd0c8e5e4b2fc24d55f8804a53a05700704d6f21f14f9",
+      "__init__.py": "feadd4cd2759aa723632adfe089c6ead55b316d257e8a8ee3566db358e99e87b",
+      "ca.py": "b38ef618034377dd4b7822350ee0985e4f3e5aac81e576e20c03c314b8d78991",
+      "ca_storage.py": "5a28f82cb1207b6f6b865bd3f7a72eccfa08ab116cc54e3b99b1f2e3667c1d00",
+      "internet.py": "5691a7a88f9368dc9140e47ebdd0fabe8b065174c83fb55ae47478b5d115160b",
+      "admin_activity.py": "948dce6952acdb66eaadfea7faf599931ca9aebe8603fbb2cd15c813003e3124",
+      "onboarding.py": "d58b97ff5ad34d8b0877f375e91bf2d69804e55f71ef124b96cd66c059f4d73f",
+      "resource_policy.py": "d96c34c28c2010875caa948597be05ba0551a595b3c53ee7b6a413d4b61dabbc",
+      "provision.py": "9ba5ddb41675ee6200083011d4d6b204526401c79c2ed82bfaa4b5515c17935d",
+      "common.py": "90257ce2af69e9febde173d17d0f1bb9747df3fd4884027f53552bd870bff2ad",
+      "server.py": "3a097b5f7c9f249a1f6c33288f5191630389ee313980492edf09dde02c7dc4a1",
+      "telemetry.py": "6e569b4f79c6ebaf3df189ef572bb4adea816583728d44d16ab90de3c0d6a3b4",
+      "pki.py": "6e3ee30ac9b36a4ba0ad1b94e29e81c00adcf6b1bbfc7c9fa04cd0b9bfc11284",
+      "admin.py": "5aaa75bd289209b8b4f5ad2e27242cfa98b6e234c6aba6ac17b1455d4720cbb9",
+      "client.py": "7dff81fe092092cb3f07a243ca73d74287f30652003fd817b406439a9dfa016d",
+      "health.py": "3d3b4231eb1b3c6ff087a804ded2875d41cfa1fee2c3e0a8e0998f4aedcd29c6",
+      "employees.py": "57db5e73f3823d588f16c017798836a7cf2754aad372bc6b1eeb6fd0fac0be6f"
+    },
+    "host_probe_note": "CA firewall only permits server/admin on TCP8080; host timeout is not a readiness result.",
+    "from_server": {
+      "http": 200,
+      "response": {
+        "checks": {
+          "ca_state": "ready"
+        },
+        "status": "ready"
+      }
+    }
+  },
+  "server": {
+    "http": 200,
+    "seconds": 0.557,
+    "response": {
+      "checks": {
+        "ca": "ready",
+        "daemon": "ready",
+        "database": "ready",
+        "interface": "ready"
+      },
+      "status": "ready"
+    },
+    "service": "active",
+    "source_hashes": {
+      "operations.py": "1073e7e504fbe719035a4bd4bc6451dbc7d1a606d986ae6ec74254dc586871e6",
+      "windows.py": "3a3e4aed544df0697b9d66be439243f74bb88b595d88617886ed6c5d4356b22a",
+      "profile.py": "ed7ad073c04c0564382cd0c8e5e4b2fc24d55f8804a53a05700704d6f21f14f9",
+      "__init__.py": "feadd4cd2759aa723632adfe089c6ead55b316d257e8a8ee3566db358e99e87b",
+      "ca.py": "b38ef618034377dd4b7822350ee0985e4f3e5aac81e576e20c03c314b8d78991",
+      "ca_storage.py": "5b2bc4cbe1a74198de3e37ba43c616c676dd1bb5c2fe7711cd7c36679339c90f",
+      "internet.py": "5691a7a88f9368dc9140e47ebdd0fabe8b065174c83fb55ae47478b5d115160b",
+      "admin_activity.py": "948dce6952acdb66eaadfea7faf599931ca9aebe8603fbb2cd15c813003e3124",
+      "onboarding.py": "d58b97ff5ad34d8b0877f375e91bf2d69804e55f71ef124b96cd66c059f4d73f",
+      "resource_policy.py": "d96c34c28c2010875caa948597be05ba0551a595b3c53ee7b6a413d4b61dabbc",
+      "provision.py": "9ba5ddb41675ee6200083011d4d6b204526401c79c2ed82bfaa4b5515c17935d",
+      "common.py": "90257ce2af69e9febde173d17d0f1bb9747df3fd4884027f53552bd870bff2ad",
+      "server.py": "3a097b5f7c9f249a1f6c33288f5191630389ee313980492edf09dde02c7dc4a1",
+      "telemetry.py": "6e569b4f79c6ebaf3df189ef572bb4adea816583728d44d16ab90de3c0d6a3b4",
+      "pki.py": "6e3ee30ac9b36a4ba0ad1b94e29e81c00adcf6b1bbfc7c9fa04cd0b9bfc11284",
+      "admin.py": "5aaa75bd289209b8b4f5ad2e27242cfa98b6e234c6aba6ac17b1455d4720cbb9",
+      "client.py": "7dff81fe092092cb3f07a243ca73d74287f30652003fd817b406439a9dfa016d",
+      "health.py": "3d3b4231eb1b3c6ff087a804ded2875d41cfa1fee2c3e0a8e0998f4aedcd29c6",
+      "employees.py": "57db5e73f3823d588f16c017798836a7cf2754aad372bc6b1eeb6fd0fac0be6f"
+    }
+  },
+  "admin": {
+    "http": 200,
+    "seconds": 1.02,
+    "response": {
+      "checks": {
+        "ca": "ready",
+        "database": "ready",
+        "server": "ready"
+      },
+      "status": "ready"
+    },
+    "service": "active",
+    "source_hashes": {
+      "operations.py": "1073e7e504fbe719035a4bd4bc6451dbc7d1a606d986ae6ec74254dc586871e6",
+      "windows.py": "3a3e4aed544df0697b9d66be439243f74bb88b595d88617886ed6c5d4356b22a",
+      "profile.py": "ed7ad073c04c0564382cd0c8e5e4b2fc24d55f8804a53a05700704d6f21f14f9",
+      "__init__.py": "feadd4cd2759aa723632adfe089c6ead55b316d257e8a8ee3566db358e99e87b",
+      "ca.py": "b38ef618034377dd4b7822350ee0985e4f3e5aac81e576e20c03c314b8d78991",
+      "ca_storage.py": "5b2bc4cbe1a74198de3e37ba43c616c676dd1bb5c2fe7711cd7c36679339c90f",
+      "internet.py": "5691a7a88f9368dc9140e47ebdd0fabe8b065174c83fb55ae47478b5d115160b",
+      "admin_activity.py": "948dce6952acdb66eaadfea7faf599931ca9aebe8603fbb2cd15c813003e3124",
+      "onboarding.py": "d58b97ff5ad34d8b0877f375e91bf2d69804e55f71ef124b96cd66c059f4d73f",
+      "resource_policy.py": "d96c34c28c2010875caa948597be05ba0551a595b3c53ee7b6a413d4b61dabbc",
+      "provision.py": "9ba5ddb41675ee6200083011d4d6b204526401c79c2ed82bfaa4b5515c17935d",
+      "common.py": "90257ce2af69e9febde173d17d0f1bb9747df3fd4884027f53552bd870bff2ad",
+      "server.py": "3a097b5f7c9f249a1f6c33288f5191630389ee313980492edf09dde02c7dc4a1",
+      "telemetry.py": "6e569b4f79c6ebaf3df189ef572bb4adea816583728d44d16ab90de3c0d6a3b4",
+      "pki.py": "6e3ee30ac9b36a4ba0ad1b94e29e81c00adcf6b1bbfc7c9fa04cd0b9bfc11284",
+      "admin.py": "5aaa75bd289209b8b4f5ad2e27242cfa98b6e234c6aba6ac17b1455d4720cbb9",
+      "client.py": "7dff81fe092092cb3f07a243ca73d74287f30652003fd817b406439a9dfa016d",
+      "health.py": "3d3b4231eb1b3c6ff087a804ded2875d41cfa1fee2c3e0a8e0998f4aedcd29c6",
+      "employees.py": "57db5e73f3823d588f16c017798836a7cf2754aad372bc6b1eeb6fd0fac0be6f"
+    }
+  },
+  "client": {
+    "source_hashes": {
+      "operations.py": "1073e7e504fbe719035a4bd4bc6451dbc7d1a606d986ae6ec74254dc586871e6",
+      "windows.py": "3a3e4aed544df0697b9d66be439243f74bb88b595d88617886ed6c5d4356b22a",
+      "profile.py": "ed7ad073c04c0564382cd0c8e5e4b2fc24d55f8804a53a05700704d6f21f14f9",
+      "__init__.py": "feadd4cd2759aa723632adfe089c6ead55b316d257e8a8ee3566db358e99e87b",
+      "ca.py": "b38ef618034377dd4b7822350ee0985e4f3e5aac81e576e20c03c314b8d78991",
+      "ca_storage.py": "5b2bc4cbe1a74198de3e37ba43c616c676dd1bb5c2fe7711cd7c36679339c90f",
+      "internet.py": "5691a7a88f9368dc9140e47ebdd0fabe8b065174c83fb55ae47478b5d115160b",
+      "admin_activity.py": "948dce6952acdb66eaadfea7faf599931ca9aebe8603fbb2cd15c813003e3124",
+      "onboarding.py": "d58b97ff5ad34d8b0877f375e91bf2d69804e55f71ef124b96cd66c059f4d73f",
+      "resource_policy.py": "d96c34c28c2010875caa948597be05ba0551a595b3c53ee7b6a413d4b61dabbc",
+      "provision.py": "9ba5ddb41675ee6200083011d4d6b204526401c79c2ed82bfaa4b5515c17935d",
+      "common.py": "90257ce2af69e9febde173d17d0f1bb9747df3fd4884027f53552bd870bff2ad",
+      "server.py": "3a097b5f7c9f249a1f6c33288f5191630389ee313980492edf09dde02c7dc4a1",
+      "telemetry.py": "6e569b4f79c6ebaf3df189ef572bb4adea816583728d44d16ab90de3c0d6a3b4",
+      "pki.py": "6e3ee30ac9b36a4ba0ad1b94e29e81c00adcf6b1bbfc7c9fa04cd0b9bfc11284",
+      "admin.py": "5aaa75bd289209b8b4f5ad2e27242cfa98b6e234c6aba6ac17b1455d4720cbb9",
+      "client.py": "7dff81fe092092cb3f07a243ca73d74287f30652003fd817b406439a9dfa016d",
+      "health.py": "3d3b4231eb1b3c6ff087a804ded2875d41cfa1fee2c3e0a8e0998f4aedcd29c6",
+      "employees.py": "57db5e73f3823d588f16c017798836a7cf2754aad372bc6b1eeb6fd0fac0be6f"
+    }
+  },
+  "source_consistency": "CA/server/admin unchanged since 17Nov; client matches server 0.1.15 modules"
+}

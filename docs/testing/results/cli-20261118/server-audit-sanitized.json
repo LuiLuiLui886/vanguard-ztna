@@ -1,0 +1,24 @@
+[
+  {
+    "timestamp": 1794938367.155015,
+    "event": "registered"
+  },
+  {
+    "timestamp": 1794938368.6631505,
+    "event": "employee_bound"
+  },
+  {
+    "timestamp": 1794938404.164917,
+    "event": "accepted",
+    "reason": "all_six_checks_and_employee_passed"
+  },
+  {
+    "timestamp": 1794938468.5049458,
+    "event": "accepted",
+    "reason": "all_six_checks_and_employee_passed"
+  },
+  {
+    "timestamp": 1794938495.0949967,
+    "event": "disabled"
+  }
+]
