@@ -268,3 +268,5 @@ Publikasi dikonfirmasi:90f7178 dipush ke branchfeature, SHAremote cocoklokal.
 Tugas terjemahan selesai; tidak ada submission atau eksperimen baru.
 
 Publikasi Figure 2: commit `2545624` terkonfirmasi pada branch feature; bukti, dua draft lokal dan laporan sudah di GitHub. Google Docs belum sinkron.
+
+Publikasi CLI native18November: commit `20718ff` terkonfirmasi di branch feature; gambar dan kedua draft lokal sudah di GitHub. Google Docs/pagination masih tertunda.
