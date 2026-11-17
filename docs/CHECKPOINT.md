@@ -274,3 +274,7 @@ Publikasi CLI native18November: commit `20718ff` terkonfirmasi di branch feature
 ## Caption Google Docs — 18 November
 
 Konektor kembali tersedia. Fig.1/Fig.2 beserta penjelasan dan rujukan silang sudah ditambahkan langsung ke tab DraftInggris dan DraftIndonesia; gambar/tekslama/template terpelihara. PDF16halaman:3template+7Indonesia+6Inggris, caption dicek visual. Catatan dan caption ada di [CAPTION_FIGURE_IEEE.md](proposal/CAPTION_FIGURE_IEEE.md). Caption selesai; teks hasil eksperimen GoogleDocs dan labeldiagramPLANNED masih perlu sinkronisasi. Jangan menimpa gambar/layout pengguna dengan draftlokal secara penuh.
+
+## Sitasi akhir kalimat — 18 November
+
+Kedua tab GoogleDocs dan draftlokal MD/DOCX sekarang memakai angka[n] sebelum titik akhir kalimat, tanpa atribusi nama penulisnaratif.21kemunculan/20referensi perbahasa diperiksa; bibliografi,caption,gambar dan tabel tetap. Perubahan hanya28paragraf sitasi. PDFGoogleDocs tetap16halaman, tidak menyatakan seluruhhasilmedia lokal sudahsinkronkeDocs. Bukti:state/numeric-citations-20261118/.
