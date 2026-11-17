@@ -154,5 +154,5 @@ PDF14halaman=3template+5Inggris+6Indonesia, termasuk referensi masing-masing;
 header tabel berulang dan referensi tidak terpotong antarhalaman. DOCXZIP/XML
 valid; paginationDOCX belum dirender. Tidak ada uji aplikasi/VM/literatur baru.
 VersiIndonesia untuk penelaahan; pengajuan tetapInggris. Sisa eksperimenmedia,
-screenshotnyata,penulis/SJR/layoutfinal tidak berubah. Publikasi dokumentasi
-dicatat pada jurnal17November setelah push dan verifikasiSHAremote.
+screenshotnyata,penulis/SJR/layoutfinal tidak berubah. Dokumentasi sudah
+dipush pada90f7178; SHAremote cocoklokal. Rincian pada jurnal17November.
