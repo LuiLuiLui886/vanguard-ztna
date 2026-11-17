@@ -1,6 +1,6 @@
 # Pelaksanaan uji lapangan VanGuard — lab kampus
 
-Edisi 4 November 2026. **Satu dokumen kerja untuk dibawa ke lapangan.**
+Edisi 11 November 2026. **Satu dokumen kerja untuk dibawa ke lapangan.**
 Target: komputer Windows kampus yang sudah digunakan, router khusus
 `192.168.50.0/24`, dan backend VM yang sudah terpasang pada laptop Linux.
 Dokumen ini menyiapkan pilot; **belum merupakan laporan keberhasilan di kampus**.
@@ -43,7 +43,7 @@ aplikasi saja tidak boleh dicatat sebagai lulus tujuan internet.
 | Kebutuhan | Siapkan dan periksa |
 | --- | --- |
 | Laptop Linux backend | Charger, akses administrator host, libvirt/KVM, console VM dan ruang backup yang cukup |
-| VM backend | CA, server dan admin beserta disk/konfigurasi existing; kelima Ubuntu dan VM Windows lama tetap disimpan |
+| VM backend | CA, server dan admin beserta disk/konfigurasi existing; kelima Ubuntu dipertahankan. VM Windows sudah dipensiunkan, bukti uji dan arsip identitas privat tetap disimpan |
 | Router TP-Link khusus | Akses konfigurasi oleh petugas lab, adaptor daya, SSID uji dan akses WAN bila menguji internet |
 | Koneksi fisik | Ethernet host→router, Ethernet PC→router, laptop→Wi-Fi router; kabel cadangan bila tersedia |
 | Endpoint | Windows x64 yang memenuhi bagian 5; akun administrator lokal dan izin perubahan jaringan/firewall |
@@ -69,9 +69,11 @@ instalasi pengguna. Inventaris kredensial tetap privat pada komputer pengelola;
 repo GitHub hanya menerima dokumentasi yang sudah disanitasi.
 
 Sebelum perjalanan, periksa `df -h` dan `free -h`. Catatan terakhir host sekitar
-3,2 GiB ruang bebas pada pemeriksaan 10 November; ini **bukan jaminan cukup** untuk backup dan pertumbuhan disk.
+77 GiB ruang bebas setelah pensiun VM Windows pada 11 November; ini **bukan jaminan cukup** untuk backup dan pertumbuhan disk.
 Hitung kebutuhan nyata sebelum sesi. Gunakan PC fisik sebagai endpoint; tidak
-perlu menjalankan VM Windows tambahan bersamaan jika sumber daya host terbatas.
+perlu membuat ulang VM Windows untuk mengikuti panduan ini. Gunakan langkah
+Windows dalam [manual terbaru](MODUL_PENGGUNAAN_VANGUARD.md), Bagian2–4;
+installer tetap0.1.15 dan manual bawaan paket belum dibangun ulang.
 
 ## 3. Rencana jaringan yang harus dicocokkan di lokasi
 

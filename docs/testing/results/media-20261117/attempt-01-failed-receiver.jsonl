@@ -1,0 +1,2 @@
+{"event": "transfer_stopped", "utc": 1794900998.6286013, "monotonic": 1271.475007815, "bytes": 0, "error": "URLError", "elapsed": 4.115265145000194}
+{"event": "reconnect_denied", "utc": 1794901001.6887114, "monotonic": 1274.535117869, "error": "URLError"}
