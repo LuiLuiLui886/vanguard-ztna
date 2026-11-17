@@ -240,3 +240,5 @@ RencanaB14 dan jurnal17November untuk lokasi, validasi serta hasil publikasi.
 
 Publikasi dikonfirmasi:90f7178 dipush ke branchfeature, SHAremote cocoklokal.
 Tugas terjemahan selesai; tidak ada submission atau eksperimen baru.
+
+Publikasi Figure 2: commit `2545624` terkonfirmasi pada branch feature; bukti, dua draft lokal dan laporan sudah di GitHub. Google Docs belum sinkron.

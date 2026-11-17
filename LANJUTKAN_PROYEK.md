@@ -171,3 +171,5 @@ valid; paginationDOCX belum dirender. Tidak ada uji aplikasi/VM/literatur baru.
 VersiIndonesia untuk penelaahan; pengajuan tetapInggris. Sisa eksperimenmedia,
 screenshotnyata,penulis/SJR/layoutfinal tidak berubah. Dokumentasi sudah
 dipush pada90f7178; SHAremote cocoklokal. Rincian pada jurnal17November.
+
+Figure 2/run media17November sudah dipush pada commit `2545624` (branch feature). Lanjutkan dari laporan run dan status teratas checkpoint, bukan mengulang prepare pada identitas yang sudah dicabut.
