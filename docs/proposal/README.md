@@ -10,3 +10,5 @@ Pemetaan sistem terhadap proposal Tugas Akhir dan catatan revisi proposal.
 - [Rencana B konferensi: paper VM, audit 20 referensi dan pemetaan bukti implementasi](RENCANA_B_KONFERENSI.md)
 
 - [Draft paper ICIMPACT (Inggris)](DRAFT_PAPER_ICIMPACT.md) · [Word](DRAFT_PAPER_ICIMPACT.docx) — hasil media/screenshot belum diisi.
+
+- [Draft bahasa Indonesia untuk penelaahan](DRAFT_PAPER_ICIMPACT_ID.md) · [Word Indonesia](DRAFT_PAPER_ICIMPACT_ID.docx) — terjemahan lengkap dengan 20 referensi; tersedia juga pada tab **Draft Indonesia** di Google Docs yang sama. Naskah pengajuan tetap berbahasa Inggris.

@@ -189,3 +189,23 @@ selesaikan eksperimenmedia yang terencana, bukan menyalin angka artikel lain.
 Publikasi dokumentasi dikonfirmasi14November:commit a84e783 pada branchfeature,
 SHAremote cocok denganlokal. Catatan penutup ada pada jurnal14November;
 main tidak diubah.
+
+## Draft bahasa Indonesia — 17 November 2026
+
+Versi Indonesia lengkap tersedia di GoogleDocs target yang sama, tab
+**Draft Indonesia** (`t.2hkf7oqqsqly`), serta
+[MD](proposal/DRAFT_PAPER_ICIMPACT_ID.md)/[DOCX](proposal/DRAFT_PAPER_ICIMPACT_ID.docx).
+Template dan tab Inggris tetap identik dengan snapshot sebelum penambahan.
+Revision conflict awal diselesaikan dengan membaca ulang; format pengguna
+dipertahankan dan teks Inggris tidak berubah.
+
+110paragraf/sel cocokMD,2tabel/28sel,20referensi/DOI dan21sitasi setara sumber.
+Waktu6,828/10,056/4,359 memakai koma desimal dengan nilai yang sama; versi,
+build,alamat/port/lease danjumlahprobe tetap. PDF14halaman total=3template+
+5Inggris+6Indonesia. Previewjudul/tabel/referensi diperiksa, header tabel
+diulang dan entri bibliografi utuh. DOCXZIP/XMLvalid; paginationDOCX belum
+dirender. Tidak ada perubahan runtime,VM atau hasilpengujian.
+
+VersiIndonesia untuk penelaahan; naskah pengajuan tetapInggris. Hasilmedia,
+screenshot asli,runindependen,penulis dan kelayakanSJR tetapPENDING. Lihat
+RencanaB14 dan jurnal17November untuk lokasi, validasi serta hasil publikasi.

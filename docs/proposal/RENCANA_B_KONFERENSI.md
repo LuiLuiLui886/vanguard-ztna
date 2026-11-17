@@ -411,3 +411,33 @@ Tersisa:hasil dan screenshotmedia nyata, runindependen, penulis/afiliasi,
 penetapanSJR jika wajib, pemeriksaan pembimbing dan pagination setelah gambar.
 Tidak ada eksperimenbaru, perubahanruntime/VM/CA, atau klaim selesai melalui
 penambahan referensi ini.
+
+## 14. Draft bahasa Indonesia — 17 November 2026
+
+Versi Indonesia tersedia sebagai [Markdown](DRAFT_PAPER_ICIMPACT_ID.md),
+[Word](DRAFT_PAPER_ICIMPACT_ID.docx), dan tab **Draft Indonesia**
+(`t.2hkf7oqqsqly`) pada Google Docs yang sama dengan draf Inggris. Versi ini
+untuk penelaahan dan diskusi; bahasa naskah pengajuan tetap Inggris sesuai
+ketentuan yang telah diberikan pengguna. Template dan tab Draft VanGuard
+dipertahankan, bukan diganti terjemahannya.
+
+Terjemahan meliputi judul, catatan editor, abstrak, kata kunci, Bagian I–VI,
+dua tabel native, dan label gambar/hasil yang belum tersedia. Bibliografi
+20 artikel memakai judul asli dan DOI yang sama. Urutan 21 sitasi identik.
+Angka desimal waktu ditulis mengikuti bahasa Indonesia:6,828;10,056;4,359
+detik, tanpa mengubah nilainya. Build OS, versi paket, jumlah probe, alamat,
+port dan lease tetap sama. Tidak ada eksperimen atau validasi literatur baru.
+
+Pemeriksaan native:110 paragraf/sel cocok persis dengan MD;2 tabel/28 sel;
+20 DOI tertaut. Tab Inggris dan template identik dengan snapshot terbaru
+sebelum penambahan. Konflik revision pada percobaan awal ditangani dengan
+membaca ulang dokumen; teks Inggris tidak berubah, perubahan format pengguna
+dipertahankan. Tidak menimpa perubahan pengguna.
+
+Ekspor PDF final:14 halaman total, terdiri atas3 template,5 draf Inggris,
+dan6 draf Indonesia termasuk referensi. Halaman judul, desain, tabel dan
+referensi telah diperiksa; judul kolom tabel berulang saat pindah halaman,
+dan tiap entri bibliografi dijaga tetap utuh. DOCX ZIP/XML valid; jumlah
+halaman DOCX belum dirender. Tambahan gambar/hasil akan memerlukan pemeriksaan
+layout ulang. Eksperimen media, tangkapan layar asli, penulis/afiliasi, dan
+verifikasi SJR jika diwajibkan tetap belum lengkap seperti versi Inggris.

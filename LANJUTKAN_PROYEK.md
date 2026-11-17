@@ -6,7 +6,7 @@ Baca `AGENTS.md`, `VANGUARD_CONTEXT.md`, lalu
 [checkpoint terbaru](docs/CHECKPOINT.md). Branch kerja:
 `feature/2026-10-22-physical-endpoints`. Periksa perubahan pengguna dan commit
 terbaru sebelum mengedit. Semua perubahan memerlukan intent dan hasil di
-[jurnal terbaru](docs/progress/PROGRESS_2026-11-14.md).
+[jurnal terbaru](docs/progress/PROGRESS_2026-11-17.md).
 
 [Manual utama](docs/MODUL_PENGGUNAAN_VANGUARD.md) edisi 10 November dimulai dari
 arti host/VM, prompt terminal, `cd /home/lui/vanguard`, boot dan SSH. Revisi
@@ -139,3 +139,20 @@ ulang WindowsVM atau mengubahruntime untuk menyelesaikan tugas literatur.
 Publikasi branchfeature sudah dikonfirmasi14November pada a84e783; SHAremote
 cocoklokal. Validatortautan/diff lulus; rincian pada jurnal14November.
 Jangan menganggap sudah disubmit konferensi.
+
+## Draft Indonesia — 17 November
+
+Permintaan terjemahan lengkap sudah ditulis ke tab **Draft Indonesia**
+(`t.2hkf7oqqsqly`) pada Google Docs yang sama. Salinan ada di
+[MD Indonesia](docs/proposal/DRAFT_PAPER_ICIMPACT_ID.md) dan DOCX sejajar.
+Judul/abstrak/BagianI–VI/dua tabel/label pending diterjemahkan;20 referensi
+dalam judul asli,21sitasi dan angka historis tetap setara.110paragraf/sel
+native cocokMD; template dan tab Inggris dipertahankan, termasuk perubahan
+format pengguna yang terdeteksi saat revision conflict.
+
+PDF14halaman=3template+5Inggris+6Indonesia, termasuk referensi masing-masing;
+header tabel berulang dan referensi tidak terpotong antarhalaman. DOCXZIP/XML
+valid; paginationDOCX belum dirender. Tidak ada uji aplikasi/VM/literatur baru.
+VersiIndonesia untuk penelaahan; pengajuan tetapInggris. Sisa eksperimenmedia,
+screenshotnyata,penulis/SJR/layoutfinal tidak berubah. Publikasi dokumentasi
+dicatat pada jurnal17November setelah push dan verifikasiSHAremote.
